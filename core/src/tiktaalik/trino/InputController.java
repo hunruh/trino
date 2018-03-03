@@ -70,6 +70,10 @@ public class InputController {
 	/** Whether the exit button was pressed. */
 	private boolean exitPressed;
 	private boolean exitPrevious;
+	/**transformation */
+	private boolean dollFormPressed;
+	private boolean herbiFormPressed;
+	private boolean carniFormPressed;
 	
 	/** How much did we move horizontally? */
 	private float horizontal;
@@ -238,12 +242,14 @@ public class InputController {
 		prevPrevious = prevPressed;
 		
 		// Check to see if a GamePad is connected
+		/*
 		if (xbox.isConnected()) {
 			readGamepad(bounds, scale);
 			readKeyboard(bounds, scale, true); // Read as a back-up
 		} else {
 			readKeyboard(bounds, scale, false);
 		}
+		*/
 	}
 
 	/**
@@ -256,6 +262,7 @@ public class InputController {
 	 * @param bounds The input bounds for the crosshair.  
 	 * @param scale  The drawing scale
 	 */
+	/*
 	private void readGamepad(Rectangle bounds, Vector2 scale) {
 		resetPressed = xbox.getStart();
 		exitPressed  = xbox.getBack();
@@ -283,7 +290,7 @@ public class InputController {
 		}
 		clampPosition(bounds);
 	}
-
+*/
 	/**
 	 * Reads input from the keyboard.
 	 *
@@ -295,6 +302,7 @@ public class InputController {
 	 */
 	private void readKeyboard(Rectangle bounds, Vector2 scale, boolean secondary) {
 		// Give priority to gamepad results
+		/*
 		resetPressed = (secondary && resetPressed) || (Gdx.input.isKeyPressed(Input.Keys.R));
 		debugPressed = (secondary && debugPressed) || (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (secondary && primePressed) || (Gdx.input.isKeyPressed(Input.Keys.UP));
@@ -302,7 +310,19 @@ public class InputController {
 		prevPressed = (secondary && prevPressed) || (Gdx.input.isKeyPressed(Input.Keys.P));
 		nextPressed = (secondary && nextPressed) || (Gdx.input.isKeyPressed(Input.Keys.N));
 		exitPressed  = (secondary && exitPressed) || (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
-		
+		*/
+
+		resetPressed = Gdx.input.isKeyPressed(Input.Keys.R);
+		dollFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_1) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1);
+		herbiFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
+		carniFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_3) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3);
+		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
+		//primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
+		//secondPressed = (Gdx.input.isKeyPressed(Input.Keys.SPACE));
+		//prevPressed = (Gdx.input.isKeyPressed(Input.Keys.P));
+		//nextPressed = (Gdx.input.isKeyPressed(Input.Keys.N));
+
+		exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
 		// Directional controls
 		horizontal = (secondary ? horizontal : 0.0f);
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
