@@ -70,6 +70,13 @@ public class InputController {
 	/** Whether the exit button was pressed. */
 	private boolean exitPressed;
 	private boolean exitPrevious;
+	/**transformation */
+	private boolean dollFormPressed;
+	private boolean dollFormPrevious;
+	private boolean herbiFormPressed;
+	private boolean herbiFormPrevious;
+	private boolean carniFormPressed;
+	private boolean carniFormPrevious;
 	
 	/** How much did we move horizontally? */
 	private float horizontal;
@@ -118,9 +125,9 @@ public class InputController {
 	 *
 	 * @return the current position of the crosshairs on the screen.
 	 */
-	public Vector2 getCrossHair() {
+	/*public Vector2 getCrossHair() {
 		return crosscache.set(crosshair);
-	}
+	}*/
 
 	/**
 	 * Returns true if the primary action button was pressed.
@@ -163,36 +170,36 @@ public class InputController {
 	 *
 	 * @return true if the reset button was pressed.
 	 */
-	public boolean didReset() {
+	/*public boolean didReset() {
 		return resetPressed && !resetPrevious;
-	}
+	}*/
 
 	/**
 	 * Returns true if the player wants to go to the next level.
 	 *
 	 * @return true if the player wants to go to the next level.
 	 */
-	public boolean didAdvance() {
+	/*public boolean didAdvance() {
 		return nextPressed && !nextPrevious;
-	}
+	}*/
 	
 	/**
 	 * Returns true if the player wants to go to the previous level.
 	 *
 	 * @return true if the player wants to go to the previous level.
 	 */
-	public boolean didRetreat() {
+	/*public boolean didRetreat() {
 		return prevPressed && !prevPrevious;
-	}
+	}*/
 	
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.
 	 *
 	 * @return true if the player wants to go toggle the debug mode.
 	 */
-	public boolean didDebug() {
+	/*public boolean didDebug() {
 		return debugPressed && !debugPrevious;
-	}
+	}*/
 	
 	/**
 	 * Returns true if the exit button was pressed.
@@ -201,6 +208,18 @@ public class InputController {
 	 */
 	public boolean didExit() {
 		return exitPressed && !exitPrevious;
+	}
+
+	public boolean didTransformDoll(){
+		return dollFormPressed && !dollFormPrevious;
+	}
+
+	public boolean didTransformHerbi(){
+		return herbiFormPressed && !herbiFormPrevious;
+	}
+
+	public boolean didTransformCarni(){
+		return carniFormPressed && !carniFormPrevious;
 	}
 	
 	/**
@@ -238,12 +257,14 @@ public class InputController {
 		prevPrevious = prevPressed;
 		
 		// Check to see if a GamePad is connected
+		/*
 		if (xbox.isConnected()) {
 			readGamepad(bounds, scale);
 			readKeyboard(bounds, scale, true); // Read as a back-up
-		} else {
-			readKeyboard(bounds, scale, false);
+		} else {*/
+			readKeyboard(bounds, scale, false);/*
 		}
+		*/
 	}
 
 	/**
@@ -256,6 +277,7 @@ public class InputController {
 	 * @param bounds The input bounds for the crosshair.  
 	 * @param scale  The drawing scale
 	 */
+	/*
 	private void readGamepad(Rectangle bounds, Vector2 scale) {
 		resetPressed = xbox.getStart();
 		exitPressed  = xbox.getBack();
@@ -283,7 +305,7 @@ public class InputController {
 		}
 		clampPosition(bounds);
 	}
-
+*/
 	/**
 	 * Reads input from the keyboard.
 	 *
@@ -295,6 +317,7 @@ public class InputController {
 	 */
 	private void readKeyboard(Rectangle bounds, Vector2 scale, boolean secondary) {
 		// Give priority to gamepad results
+		/*
 		resetPressed = (secondary && resetPressed) || (Gdx.input.isKeyPressed(Input.Keys.R));
 		debugPressed = (secondary && debugPressed) || (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (secondary && primePressed) || (Gdx.input.isKeyPressed(Input.Keys.UP));
@@ -302,9 +325,21 @@ public class InputController {
 		prevPressed = (secondary && prevPressed) || (Gdx.input.isKeyPressed(Input.Keys.P));
 		nextPressed = (secondary && nextPressed) || (Gdx.input.isKeyPressed(Input.Keys.N));
 		exitPressed  = (secondary && exitPressed) || (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
-		
+		*/
+
+		resetPressed = Gdx.input.isKeyPressed(Input.Keys.R);
+		dollFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_1) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1);
+		herbiFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
+		carniFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_3) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3);
+		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
+		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
+		secondPressed = (Gdx.input.isKeyPressed(Input.Keys.SPACE));
+		//prevPressed = (Gdx.input.isKeyPressed(Input.Keys.P));
+		//nextPressed = (Gdx.input.isKeyPressed(Input.Keys.N));
+
+		exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
 		// Directional controls
-		horizontal = (secondary ? horizontal : 0.0f);
+		horizontal = 0.0f;
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			horizontal += 1.0f;
 		}
@@ -312,7 +347,7 @@ public class InputController {
 			horizontal -= 1.0f;
 		}
 		
-		vertical = (secondary ? vertical : 0.0f);
+		vertical = 0.0f;
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			vertical += 1.0f;
 		}
@@ -322,10 +357,10 @@ public class InputController {
 		
 		// Mouse results
         tertiaryPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-		crosshair.set(Gdx.input.getX(), Gdx.input.getY());
-		crosshair.scl(1/scale.x,-1/scale.y);
-		crosshair.y += bounds.height;
-		clampPosition(bounds);
+		//crosshair.set(Gdx.input.getX(), Gdx.input.getY());
+		//crosshair.scl(1/scale.x,-1/scale.y);
+		//crosshair.y += bounds.height;
+		//clampPosition(bounds);
 	}
 	
 	/**
@@ -333,9 +368,9 @@ public class InputController {
 	 *
 	 * While this is not usually a problem with mouse control, this is critical 
 	 * for the gamepad controls.
-	 */
+	 *//*
 	private void clampPosition(Rectangle bounds) {
 		crosshair.x = Math.max(bounds.x, Math.min(bounds.x+bounds.width, crosshair.x));
 		crosshair.y = Math.max(bounds.y, Math.min(bounds.y+bounds.height, crosshair.y));
-	}
+	}*/
 }
