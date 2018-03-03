@@ -137,9 +137,9 @@ public class InputController {
 	 *
 	 * @return true if the primary action button was pressed.
 	 */
-	/*public boolean didPrimary() {
+	public boolean didPrimary() {
 		return primePressed && !primePrevious;
-	}*/
+	}
 
 	/**
 	 * Returns true if the secondary action button was pressed.
@@ -149,9 +149,9 @@ public class InputController {
 	 *
 	 * @return true if the secondary action button was pressed.
 	 */
-	/*public boolean didSecondary() {
+	public boolean didSecondary() {
 		return secondPressed && !secondPrevious;
-	}*/
+	}
 
 	/**
 	 * Returns true if the tertiary action button was pressed.
@@ -248,21 +248,21 @@ public class InputController {
 	public void readInput(Rectangle bounds, Vector2 scale) {
 		// Copy state from last animation frame
 		// Helps us ignore buttons that are held down
-		//primePrevious  = primePressed;
-		//secondPrevious = secondPressed;
+		primePrevious  = primePressed;
+		secondPrevious = secondPressed;
 		resetPrevious  = resetPressed;
-		//debugPrevious  = debugPressed;
+		debugPrevious  = debugPressed;
 		exitPrevious = exitPressed;
-		//nextPrevious = nextPressed;
-		//prevPrevious = prevPressed;
+		nextPrevious = nextPressed;
+		prevPrevious = prevPressed;
 		
 		// Check to see if a GamePad is connected
 		/*
 		if (xbox.isConnected()) {
 			readGamepad(bounds, scale);
 			readKeyboard(bounds, scale, true); // Read as a back-up
-		} else {
-			readKeyboard(bounds, scale, false);
+		} else {*/
+			readKeyboard(bounds, scale, false);/*
 		}
 		*/
 	}
@@ -332,8 +332,8 @@ public class InputController {
 		herbiFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
 		carniFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_3) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3);
 		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
-		//primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
-		//secondPressed = (Gdx.input.isKeyPressed(Input.Keys.SPACE));
+		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
+		secondPressed = (Gdx.input.isKeyPressed(Input.Keys.SPACE));
 		//prevPressed = (Gdx.input.isKeyPressed(Input.Keys.P));
 		//nextPressed = (Gdx.input.isKeyPressed(Input.Keys.N));
 
