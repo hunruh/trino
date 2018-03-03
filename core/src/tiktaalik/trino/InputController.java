@@ -170,9 +170,9 @@ public class InputController {
 	 *
 	 * @return true if the reset button was pressed.
 	 */
-	/*public boolean didReset() {
+	public boolean didReset() {
 		return resetPressed && !resetPrevious;
-	}*/
+	}
 
 	/**
 	 * Returns true if the player wants to go to the next level.

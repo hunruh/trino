@@ -493,11 +493,11 @@ public abstract class WorldController implements Screen {
 			debug = !debug;
 		}
 		
-		// Handle resets
+		// Handle resets*/
 		if (input.didReset()) {
 			reset();
 		}
-		
+		/*
 		// Now it is time to maybe switch screens.
 		if (input.didExit()) {
 			listener.exitScreen(this, EXIT_QUIT);
