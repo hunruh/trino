@@ -32,10 +32,12 @@ import tiktaalik.trino.obstacle.*;
  * place nicely with the static assets.
  */
 public class PlatformController extends WorldController implements ContactListener {
-	/** The texture file for the character avatar (no animation) */
-	private static final String DUDE_FILE  = "platform/dude.png";
-	/** The texture file for the spinning barrier */
-	private static final String BARRIER_FILE = "platform/barrier.png";
+	/** The texture file for the three dinosaurs (no animation) */
+	private static final String DOLL_FILE  = "trino/doll.png";
+	private static final String HERBIVORE_FILE  = "trino/herbivore.png";
+	private static final String CARNIVORE_FILE  = "trino/carnivore.png";
+	/** The texture file for the inedible walls */
+	private static final String WALL_FILE = "trino/wall.png";
 	/** The texture file for the bullet */
 	private static final String BULLET_FILE  = "platform/bullet.png";
 	/** The texture file for the bridge plank */
@@ -76,10 +78,10 @@ public class PlatformController extends WorldController implements ContactListen
 		}
 		
 		platformAssetState = AssetState.LOADING;
-		manager.load(DUDE_FILE, Texture.class);
-		assets.add(DUDE_FILE);
-		manager.load(BARRIER_FILE, Texture.class);
-		assets.add(BARRIER_FILE);
+		manager.load(DOLL_FILE, Texture.class);
+		assets.add(DOLL_FILE);
+		manager.load(WALL_FILE, Texture.class);
+		assets.add(WALL_FILE);
 		manager.load(BULLET_FILE, Texture.class);
 		assets.add(BULLET_FILE);
 		manager.load(ROPE_FILE, Texture.class);
@@ -110,8 +112,8 @@ public class PlatformController extends WorldController implements ContactListen
 			return;
 		}
 		
-		avatarTexture = createTexture(manager,DUDE_FILE,false);
-		barrierTexture = createTexture(manager,BARRIER_FILE,false);
+		avatarTexture = createTexture(manager,DOLL_FILE,false);
+		barrierTexture = createTexture(manager,WALL_FILE,false);
 		bulletTexture = createTexture(manager,BULLET_FILE,false);
 		bridgeTexture = createTexture(manager,ROPE_FILE,false);
 
