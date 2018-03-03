@@ -1,0 +1,3 @@
+# trino
+
+A young girl dreams about her favorite doll, a plush dinosaur named Duggi. Duggi gets separated from its family and struggles to find its way home. Small and helpless, Duggi imagines itself bigger and stronger, wandering through endless mazes in order to see its clan once more. Desperate to see loved ones again, Duggi takes on more powerful forms to fight, escape and reunite with its family.
