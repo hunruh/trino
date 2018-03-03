@@ -38,8 +38,8 @@ public class PlatformController extends WorldController implements ContactListen
 	private static final String CARNIVORE_FILE  = "trino/carnivore.png";
 	/** The texture file for the inedible walls */
 	private static final String WALL_FILE = "trino/wall.png";
-	/** The texture file for the bullet */
-	private static final String BULLET_FILE  = "platform/bullet.png";
+	/** The texture file for the walkable path */
+	private static final String PATH_FILE = "trino/path.png";
 	/** The texture file for the bridge plank */
 	private static final String ROPE_FILE  = "platform/ropebridge.png";
 	
@@ -53,9 +53,9 @@ public class PlatformController extends WorldController implements ContactListen
 	/** Texture asset for character avatar */
 	private TextureRegion avatarTexture;
 	/** Texture asset for the spinning barrier */
-	private TextureRegion barrierTexture;
+	private TextureRegion wallTexture;
 	/** Texture asset for the bullet */
-	private TextureRegion bulletTexture;
+	private TextureRegion pathTexture;
 	/** Texture asset for the bridge plank */
 	private TextureRegion bridgeTexture;
 	
@@ -82,8 +82,8 @@ public class PlatformController extends WorldController implements ContactListen
 		assets.add(DOLL_FILE);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
-		manager.load(BULLET_FILE, Texture.class);
-		assets.add(BULLET_FILE);
+		manager.load(PATH_FILE, Texture.class);
+		assets.add(PATH_FILE);
 		manager.load(ROPE_FILE, Texture.class);
 		assets.add(ROPE_FILE);
 		
@@ -113,8 +113,8 @@ public class PlatformController extends WorldController implements ContactListen
 		}
 		
 		avatarTexture = createTexture(manager,DOLL_FILE,false);
-		barrierTexture = createTexture(manager,WALL_FILE,false);
-		bulletTexture = createTexture(manager,BULLET_FILE,false);
+		wallTexture = createTexture(manager,WALL_FILE,false);
+		pathTexture = createTexture(manager,PATH_FILE,false);
 		bridgeTexture = createTexture(manager,ROPE_FILE,false);
 
 		SoundController sounds = SoundController.getInstance();
@@ -151,22 +151,23 @@ public class PlatformController extends WorldController implements ContactListen
 	private static final float[][] WALLS = { 
 			  								{16.0f, 18.0f, 16.0f, 17.0f,  1.0f, 17.0f,
 			  								  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, 18.0f},
-			  								{32.0f, 18.0f, 32.0f,  0.0f, 31.0f,  0.0f,
-			  							     31.0f, 17.0f, 16.0f, 17.0f, 16.0f, 18.0f}
+//			  								{32.0f, 18.0f, 32.0f,  0.0f, 31.0f,  0.0f,
+//			  							     31.0f, 17.0f, 16.0f, 17.0f, 16.0f, 18.0f}
 											};
 	
 	/** The outlines of all of the platforms */
-	private static final float[][] PLATFORMS = { 
-												{ 1.0f, 3.0f, 6.0f, 3.0f, 6.0f, 2.5f, 1.0f, 2.5f},
-												{ 6.0f, 4.0f, 9.0f, 4.0f, 9.0f, 2.5f, 6.0f, 2.5f},
-												{23.0f, 4.0f,31.0f, 4.0f,31.0f, 2.5f,23.0f, 2.5f},
-												{26.0f, 5.5f,28.0f, 5.5f,28.0f, 5.0f,26.0f, 5.0f},
-												{29.0f, 7.0f,31.0f, 7.0f,31.0f, 6.5f,29.0f, 6.5f},
-												{24.0f, 8.5f,27.0f, 8.5f,27.0f, 8.0f,24.0f, 8.0f},
-												{29.0f,10.0f,31.0f,10.0f,31.0f, 9.5f,29.0f, 9.5f},
-												{23.0f,11.5f,27.0f,11.5f,27.0f,11.0f,23.0f,11.0f},
-												{19.0f,12.5f,23.0f,12.5f,23.0f,12.0f,19.0f,12.0f},
-												{ 1.0f,12.5f, 7.0f,12.5f, 7.0f,12.0f, 1.0f,12.0f}
+	private static final float[][] PLATFORMS = {
+
+											{ 1.0f, 3.0f, 6.0f, 3.0f, 6.0f, 2.5f, 1.0f, 2.5f}
+//												{ 6.0f, 4.0f, 9.0f, 4.0f, 9.0f, 2.5f, 6.0f, 2.5f},
+//												{23.0f, 4.0f,31.0f, 4.0f,31.0f, 2.5f,23.0f, 2.5f},
+//												{26.0f, 5.5f,28.0f, 5.5f,28.0f, 5.0f,26.0f, 5.0f},
+//												{29.0f, 7.0f,31.0f, 7.0f,31.0f, 6.5f,29.0f, 6.5f},
+//												{24.0f, 8.5f,27.0f, 8.5f,27.0f, 8.0f,24.0f, 8.0f},
+//												{29.0f,10.0f,31.0f,10.0f,31.0f, 9.5f,29.0f, 9.5f},
+//												{23.0f,11.5f,27.0f,11.5f,27.0f,11.0f,23.0f,11.0f},
+//												{19.0f,12.5f,23.0f,12.5f,23.0f,12.0f,19.0f,12.0f},
+//												{ 1.0f,12.5f, 7.0f,12.5f, 7.0f,12.0f, 1.0f,12.0f}
 											   };
 
 	// Other game objects
@@ -233,13 +234,10 @@ public class PlatformController extends WorldController implements ContactListen
 		float dheight = goalTile.getRegionHeight()/scale.y;
 		goalDoor = new BoxObstacle(GOAL_POS.x,GOAL_POS.y,dwidth,dheight);
 		goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
-		goalDoor.setDensity(0.0f);
-		goalDoor.setFriction(0.0f);
-		goalDoor.setRestitution(0.0f);
 		goalDoor.setSensor(true);
 		goalDoor.setDrawScale(scale);
 		goalDoor.setTexture(goalTile);
-		goalDoor.setName("goal");
+		goalDoor.setName("exit");
 		addObject(goalDoor);
 
 	    String wname = "wall";
@@ -251,7 +249,7 @@ public class PlatformController extends WorldController implements ContactListen
 			obj.setFriction(BASIC_FRICTION);
 			obj.setRestitution(BASIC_RESTITUTION);
 			obj.setDrawScale(scale);
-			obj.setTexture(earthTile);
+			obj.setTexture(wallTexture);
 			obj.setName(wname+ii);
 			addObject(obj);
 	    }
@@ -265,7 +263,7 @@ public class PlatformController extends WorldController implements ContactListen
 			obj.setFriction(BASIC_FRICTION);
 			obj.setRestitution(BASIC_RESTITUTION);
 			obj.setDrawScale(scale);
-			obj.setTexture(earthTile);
+			obj.setTexture(wallTexture);
 			obj.setName(pname+ii);
 			addObject(obj);
 	    }
@@ -287,11 +285,11 @@ public class PlatformController extends WorldController implements ContactListen
 		addObject(bridge);
 		
 		// Create spinning platform
-		dwidth  = barrierTexture.getRegionWidth()/scale.x;
-		dheight = barrierTexture.getRegionHeight()/scale.y;
+		dwidth  = wallTexture.getRegionWidth()/scale.x;
+		dheight = wallTexture.getRegionHeight()/scale.y;
 		Spinner spinPlatform = new Spinner(SPIN_POS.x,SPIN_POS.y,dwidth,dheight);
 		spinPlatform.setDrawScale(scale);
-		spinPlatform.setTexture(barrierTexture);
+		spinPlatform.setTexture(wallTexture);
 		addObject(spinPlatform);
 	}
 	
@@ -336,9 +334,9 @@ public class PlatformController extends WorldController implements ContactListen
 		avatar.setShooting(InputController.getInstance().didSecondary());
 		
 		// Add a bullet if we fire
-		if (avatar.isShooting()) {
-			createBullet();
-		}
+//		if (avatar.isShooting()) {
+//			createBullet();
+//		}
 		
 		avatar.applyForce();
 	    if (avatar.isJumping()) {
@@ -352,25 +350,25 @@ public class PlatformController extends WorldController implements ContactListen
 	/**
 	 * Add a new bullet to the world and send it in the right direction.
 	 */
-	private void createBullet() {
-		float offset = (avatar.isFacingRight() ? BULLET_OFFSET : -BULLET_OFFSET);
-		float radius = bulletTexture.getRegionWidth()/(2.0f*scale.x);
-		WheelObstacle bullet = new WheelObstacle(avatar.getX()+offset, avatar.getY(), radius);
-		
-	    bullet.setName("bullet");
-		bullet.setDensity(HEAVY_DENSITY);
-	    bullet.setDrawScale(scale);
-	    bullet.setTexture(bulletTexture);
-	    bullet.setBullet(true);
-	    bullet.setGravityScale(0);
-		
-		// Compute position and velocity
-		float speed  = (avatar.isFacingRight() ? BULLET_SPEED : -BULLET_SPEED);
-		bullet.setVX(speed);
-		addQueuedObject(bullet);
-		
-		SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
-	}
+	//private void createBullet() {
+		//float offset = (avatar.isFacingRight() ? BULLET_OFFSET : -BULLET_OFFSET);
+		//float radius = bulletTexture.getRegionWidth()/(2.0f*scale.x);
+//		WheelObstacle bullet = new WheelObstacle(avatar.getX()+offset, avatar.getY(), radius);
+//
+//	    bullet.setName("bullet");
+//		bullet.setDensity(HEAVY_DENSITY);
+//	    bullet.setDrawScale(scale);
+//	    bullet.setTexture(bulletTexture);
+//	    bullet.setBullet(true);
+//	    bullet.setGravityScale(0);
+//
+//		// Compute position and velocity
+//		float speed  = (avatar.isFacingRight() ? BULLET_SPEED : -BULLET_SPEED);
+//		bullet.setVX(speed);
+//		addQueuedObject(bullet);
+//
+//		SoundController.getInstance().play(PEW_FILE, PEW_FILE, false, EFFECT_VOLUME);
+//	}
 	
 	/**
 	 * Remove a new bullet from the world.
