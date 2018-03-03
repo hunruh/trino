@@ -489,7 +489,7 @@ public abstract class WorldController implements Screen {
 		}
 
 		// Toggle debug
-		if (input.didDebug()) {
+		/*if (input.didDebug()) {
 			debug = !debug;
 		}
 		
@@ -517,7 +517,7 @@ public abstract class WorldController implements Screen {
 				listener.exitScreen(this, EXIT_NEXT);
 				return false;
 			}
-		}
+		}*/
 		return true;
 	}
 	
