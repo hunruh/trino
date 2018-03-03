@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.*;
 
 import tiktaalik.util.*;
 import tiktaalik.trino.*;
+import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.obstacle.*;
 
 /**
@@ -181,7 +182,7 @@ public class PlatformController extends WorldController implements ContactListen
 
 	// Physics objects for the game
 	/** Reference to the character avatar */
-	private DudeModel avatar;
+	private DuggiModel avatar;
 	/** Reference to the goalDoor (for collision detection) */
 	private BoxObstacle goalDoor;
 
@@ -273,7 +274,7 @@ public class PlatformController extends WorldController implements ContactListen
 		// Create dude
 		dwidth  = avatarTexture.getRegionWidth()/scale.x;
 		dheight = avatarTexture.getRegionHeight()/scale.y;
-		avatar = new DudeModel(DUDE_POS.x, DUDE_POS.y, dwidth, dheight);
+		avatar = new DuggiModel(DUDE_POS.x, DUDE_POS.y, dwidth, dheight);
 		avatar.setDrawScale(scale);
 		avatar.setTexture(avatarTexture);
 		addObject(avatar);
@@ -332,18 +333,6 @@ public class PlatformController extends WorldController implements ContactListen
 	public void update(float dt) {
 		// Process actions in object model
 		avatar.setMovement(InputController.getInstance().getHorizontal() *avatar.getForce());
-		avatar.setJumping(InputController.getInstance().didPrimary());
-		avatar.setShooting(InputController.getInstance().didSecondary());
-		
-		// Add a bullet if we fire
-		if (avatar.isShooting()) {
-			createBullet();
-		}
-		
-		avatar.applyForce();
-	    if (avatar.isJumping()) {
-	        SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-	    }
 		
 	    // If we use sound, we must remember this.
 	    SoundController.getInstance().update();
@@ -418,7 +407,6 @@ public class PlatformController extends WorldController implements ContactListen
 			// See if we have landed on the ground.
 			if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
 				(avatar.getSensorName().equals(fd1) && avatar != bd2)) {
-				avatar.setGrounded(true);
 				sensorFixtures.add(avatar == bd1 ? fix2 : fix1); // Could have more than one ground
 			}
 			
@@ -456,9 +444,6 @@ public class PlatformController extends WorldController implements ContactListen
 		if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
 			(avatar.getSensorName().equals(fd1) && avatar != bd2)) {
 			sensorFixtures.remove(avatar == bd1 ? fix2 : fix1);
-			if (sensorFixtures.size == 0) {
-				avatar.setGrounded(false);
-			}
 		}
 	}
 	
