@@ -508,16 +508,16 @@ public abstract class WorldController implements Screen {
 		} else if (input.didRetreat()) {
 			listener.exitScreen(this, EXIT_PREV);
 			return false;
-		} else if (countdown > 0) {
+		*/
+
+		// reset level when colliding with enemy
+		if (countdown > 0) {
 			countdown--;
 		} else if (countdown == 0) {
 			if (failed) {
 				reset();
-			} else if (complete) {
-				listener.exitScreen(this, EXIT_NEXT);
-				return false;
 			}
-		}*/
+		}
 		return true;
 	}
 	
