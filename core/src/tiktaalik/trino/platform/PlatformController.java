@@ -347,8 +347,8 @@ public class PlatformController extends WorldController implements ContactListen
 	 */
 	public void update(float dt) {
 		// Process actions in object model
-		avatar.setMovement(InputController.getInstance().getHorizontal());
-		avatar.setUpDown(InputController.getInstance().getVertical());
+		avatar.setMovement(InputController.getInstance().getHorizontal()*avatar.getForce());
+		avatar.setUpDown(InputController.getInstance().getVertical()*avatar.getForce());
 		//avatar.setJumping(InputController.getInstance().didPrimary());
 		//avatar.setShooting(InputController.getInstance().didSecondary());
 		

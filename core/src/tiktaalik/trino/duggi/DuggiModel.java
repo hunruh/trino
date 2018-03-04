@@ -13,6 +13,7 @@ public class DuggiModel extends CapsuleObstacle {
     // Physics constants
     /** The density of the character */
     private static final float DUDE_DENSITY = 1.0f;
+    private static final float DUGGI_UP = 1.0f;
     /** The factor to multiply by the input */
     private static final float DUDE_FORCE = 20.0f;
     /** The amount to slow the character down */
@@ -79,6 +80,7 @@ public class DuggiModel extends CapsuleObstacle {
 
     public void setUpDown(float value) {
         upDown = value;
+        System.out.println(value);
         // Change facing if appropriate
         if (upDown < 0) {
             faceUp = false;
@@ -230,7 +232,7 @@ public class DuggiModel extends CapsuleObstacle {
             body.applyForce(forceCache,getPosition(),true);
         }
         if (getUpDown() == 0f) {
-            forceCache.set(-getDamping()*getVY(),0);
+            forceCache.set(0,-getDamping()*getVY());
             body.applyForce(forceCache,getPosition(),true);
         }
         // Velocity too high, clamp it
@@ -244,7 +246,7 @@ public class DuggiModel extends CapsuleObstacle {
         if (Math.abs(getVY()) >= getMaxSpeed()) {
             setVY(Math.signum(getVY())*getMaxSpeed());
         } else {
-            forceCache.set(getUpDown(),0);
+            forceCache.set(0,getUpDown());
             body.applyForce(forceCache,getPosition(),true);
         }
     }
