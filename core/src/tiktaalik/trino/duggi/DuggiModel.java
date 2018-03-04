@@ -48,9 +48,11 @@ public class DuggiModel extends CapsuleObstacle {
 
     /** The current horizontal movement of the character */
     private float   movement;
+    /** The current vertical movement of the character */
     private float upDown;
     /** Which direction is the character facing */
     private boolean faceRight;
+    /** Which direction is the character facing up*/
     private boolean faceUp;
     /** Ground sensor to represent our feet */
     private Fixture sensorFixture;
@@ -70,6 +72,13 @@ public class DuggiModel extends CapsuleObstacle {
         return movement;
     }
 
+    /**
+     * Returns up/down movement of this character.
+     *
+     * This is the result of input times dude force.
+     *
+     * @return up/down movement of this character.
+     */
     public float getUpDown() {return upDown;}
 
     /**
@@ -89,9 +98,15 @@ public class DuggiModel extends CapsuleObstacle {
         }
     }
 
+    /**
+     * Sets up/down movement of this character.
+     *
+     * This is the result of input times dude force.
+     *
+     * @param value up/down movement of this character.
+     */
     public void setUpDown(float value) {
         upDown = value;
-        System.out.println(value);
         // Change facing if appropriate
         if (upDown < 0) {
             faceUp = false;
@@ -236,24 +251,7 @@ public class DuggiModel extends CapsuleObstacle {
         if (!isActive()) {
             return;
         }
-
-        // Don't want to be moving. Damp out player motion
-        /*
-        if (getMovement() == 0f) {
-            forceCache.set(-getDamping()*getVX(),0);
-            body.applyForce(forceCache,getPosition(),true);
-        }else {
-            forceCache.set(getMovement(),0);
-            body.applyForce(forceCache,getPosition(),true);
-        }
-
-        if (getUpDown() == 0f) {
-            forceCache.set(0,-getDamping()*getVY());
-            body.applyForce(forceCache,getPosition(),true);
-        } else {
-            forceCache.set(0,getUpDown());
-            body.applyForce(forceCache,getPosition(),true);
-        }*/
+        
         body.setLinearVelocity(getMovement(),getUpDown());
     }
 

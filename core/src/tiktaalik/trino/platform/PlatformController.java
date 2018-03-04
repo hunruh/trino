@@ -167,17 +167,20 @@ public class PlatformController extends WorldController implements ContactListen
 	// Since these appear only once, we do not care about the magic numbers.
 	// In an actual game, this information would go in a data file.
 	// Wall vertices
-	private static final float[][] WALLS = { 
-			  								{16.0f, 18.0f, 16.0f, 17.0f,  1.0f, 17.0f,
-			  								  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, 18.0f},
-//			  								{32.0f, 18.0f, 32.0f,  0.0f, 31.0f,  0.0f,
-//			  							     31.0f, 17.0f, 16.0f, 17.0f, 16.0f, 18.0f}
-											};
+	private static final float[] WALL1 = { 0.0f, 18.0f, 16.0f, 18.0f, 16.0f, 17.0f,
+			8.0f, 15.0f,  1.0f, 17.0f,  2.0f,  7.0f,
+			3.0f,  5.0f,  3.0f,  1.0f, 16.0f,  1.0f,
+			16.0f,  0.0f,  0.0f,  0.0f};
+	private static final float[] WALL2 = {32.0f, 18.0f, 32.0f,  0.0f, 16.0f,  0.0f,
+			16.0f,  1.0f, 31.0f,  1.0f, 30.0f, 10.0f,
+			31.0f, 16.0f, 16.0f, 17.0f, 16.0f, 18.0f};
+	private static final float[] WALL3 = { 4.0f, 10.5f,  8.0f, 10.5f,
+			8.0f,  9.5f,  4.0f,  9.5f};
 	
 	/** The outlines of all of the platforms */
 	private static final float[][] PLATFORMS = {
 
-											{ 1.0f, 3.0f, 6.0f, 3.0f, 6.0f, 2.5f, 1.0f, 2.5f}
+											{ 1.0f, 8.0f, 6.0f, 4.0f, 6.0f, 2.5f, 1.0f, 2.5f}
 //												{ 6.0f, 4.0f, 9.0f, 4.0f, 9.0f, 2.5f, 6.0f, 2.5f},
 //												{23.0f, 4.0f,31.0f, 4.0f,31.0f, 2.5f,23.0f, 2.5f},
 //												{26.0f, 5.5f,28.0f, 5.5f,28.0f, 5.0f,26.0f, 5.0f},
@@ -263,32 +266,49 @@ public class PlatformController extends WorldController implements ContactListen
 		goalDoor.setName("exit");
 		addObject(goalDoor);
 
-	    String wname = "wall";
-	    for (int ii = 0; ii < WALLS.length; ii++) {
-	        PolygonObstacle obj;
-	    	obj = new PolygonObstacle(WALLS[ii], 0, 0);
-			obj.setBodyType(BodyDef.BodyType.StaticBody);
-			obj.setDensity(BASIC_DENSITY);
-			obj.setFriction(BASIC_FRICTION);
-			obj.setRestitution(BASIC_RESTITUTION);
-			obj.setDrawScale(scale);
-			obj.setTexture(wallTexture);
-			obj.setName(wname+ii);
-			addObject(obj);
-	    }
+		PolygonObstacle obj;
+		obj = new PolygonObstacle(WALL1, 0, 0);
+		obj.setBodyType(BodyDef.BodyType.StaticBody);
+		obj.setDensity(BASIC_DENSITY);
+		obj.setFriction(BASIC_FRICTION);
+		obj.setRestitution(BASIC_RESTITUTION);
+		obj.setDrawScale(scale);
+		obj.setTexture(wallTexture);
+		obj.setName("wall1");
+		addObject(obj);
+
+		obj = new PolygonObstacle(WALL2, 0, 0);
+		obj.setBodyType(BodyDef.BodyType.StaticBody);
+		obj.setDensity(BASIC_DENSITY);
+		obj.setFriction(BASIC_FRICTION);
+		obj.setRestitution(BASIC_RESTITUTION);
+		obj.setDrawScale(scale);
+		obj.setTexture(wallTexture);
+		obj.setName("wall2");
+		addObject(obj);
+
+		obj = new PolygonObstacle(WALL3, 0, 0);
+		obj.setBodyType(BodyDef.BodyType.StaticBody);
+		obj.setDensity(BASIC_DENSITY);
+		obj.setFriction(BASIC_FRICTION);
+		obj.setRestitution(BASIC_RESTITUTION);
+		obj.setDrawScale(scale);
+		obj.setTexture(wallTexture);
+		obj.setName("wall3");
+		addObject(obj);
 	    
 	    String pname = "platform";
 	    for (int ii = 0; ii < PLATFORMS.length; ii++) {
-	        PolygonObstacle obj;
-	    	obj = new PolygonObstacle(PLATFORMS[ii], 0, 0);
-			obj.setBodyType(BodyDef.BodyType.StaticBody);
-			obj.setDensity(BASIC_DENSITY);
-			obj.setFriction(BASIC_FRICTION);
-			obj.setRestitution(BASIC_RESTITUTION);
-			obj.setDrawScale(scale);
-			obj.setTexture(wallTexture);
-			obj.setName(pname+ii);
-			addObject(obj);
+	        PolygonObstacle path;
+	    	path = new PolygonObstacle(PLATFORMS[ii], 0, 0);
+			path.setBodyType(BodyDef.BodyType.StaticBody);
+			path.setDensity(BASIC_DENSITY);
+			path.setFriction(BASIC_FRICTION);
+			path.setRestitution(BASIC_RESTITUTION);
+			path.setDrawScale(scale);
+			path.setTexture(wallTexture);
+			path.setName(pname+ii);
+			addObject(path);
 	    }
 
 		// Create dude
@@ -343,10 +363,10 @@ public class PlatformController extends WorldController implements ContactListen
 			return false;
 		}
 		
-		if (!isFailure() && avatar.getY() < -1) {
-			setFailure(true);
-			return false;
-		}
+//		if (!isFailure() && avatar.getY() < -1) {
+//			setFailure(true);
+//			return false;
+//		}
 		
 		return true;
 	}
