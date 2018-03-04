@@ -1,7 +1,6 @@
-package tiktaalik.trino.duggi;
+package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -10,19 +9,18 @@ import com.badlogic.gdx.physics.box2d.World;
 import tiktaalik.trino.GameCanvas;
 import tiktaalik.trino.obstacle.CapsuleObstacle;
 
-public class DuggiModel extends CapsuleObstacle {
+public class EnemyModel extends CapsuleObstacle {
     // Physics constants
     /** The density of the character */
-    private static final float DUGGI_DENSITY = 1.0f;
-    private static final float DUGGI_UP = 1.0f;
+    private static final float DUDE_DENSITY = 1.0f;
     /** The factor to multiply by the input */
-    private static final float DUGGI_FORCE = 20.0f;
+    private static final float DUDE_FORCE = 20.0f;
     /** The amount to slow the character down */
-    private static final float DUGGI_DAMPING = 10.0f;
+    private static final float DUDE_DAMPING = 10.0f;
     /** The dude is a slippery one */
-    private static final float DUGGI_FRICTION = 0.0f;
+    private static final float DUDE_FRICTION = 0.0f;
     /** The maximum character speed */
-    private static final float DUGGI_MAXSPEED = 5.0f;
+    private static final float DUDE_MAXSPEED = 5.0f;
     /** Height of the sensor attached to the player's feet */
     private static final float SENSOR_HEIGHT = 0.05f;
     /** Identifier to allow us to track the sensor in ContactListener */
@@ -30,24 +28,16 @@ public class DuggiModel extends CapsuleObstacle {
 
     // This is to fit the image to a tigher hitbox
     /** The amount to shrink the body fixture (vertically) relative to the image */
-    private static final float DUGGI_VSHRINK = 0.95f;
+    private static final float DUDE_VSHRINK = 0.95f;
     /** The amount to shrink the body fixture (horizontally) relative to the image */
-    private static final float DUGGI_HSHRINK = 0.7f;
+    private static final float DUDE_HSHRINK = 0.7f;
     /** The amount to shrink the sensor fixture (horizontally) relative to the image */
-    private static final float DUGGI_SSHRINK = 0.6f;
-
-    private DollModel doll = new DollModel();
-    private HerbivoreModel herbivore = new HerbivoreModel();
-    private CarnivoreModel carnivore = new CarnivoreModel();
-
-    private FormModel currentForm = doll;
+    private static final float DUDE_SSHRINK = 0.6f;
 
     /** The current horizontal movement of the character */
     private float   movement;
-    private float upDown;
     /** Which direction is the character facing */
     private boolean faceRight;
-    private boolean faceUp;
     /** Ground sensor to represent our feet */
     private Fixture sensorFixture;
     private PolygonShape sensorShape;
@@ -66,8 +56,6 @@ public class DuggiModel extends CapsuleObstacle {
         return movement;
     }
 
-    public float getUpDown() {return upDown;}
-
     /**
      * Sets left/right movement of this character.
      *
@@ -85,17 +73,6 @@ public class DuggiModel extends CapsuleObstacle {
         }
     }
 
-    public void setUpDown(float value) {
-        upDown = value;
-        System.out.println(value);
-        // Change facing if appropriate
-        if (upDown < 0) {
-            faceUp = false;
-        } else if (upDown > 0) {
-            faceUp = true;
-        }
-    }
-
     /**
      * Returns how much force to apply to get the dude moving
      *
@@ -104,7 +81,7 @@ public class DuggiModel extends CapsuleObstacle {
      * @return how much force to apply to get the dude moving
      */
     public float getForce() {
-        return DUGGI_FORCE;
+        return DUDE_FORCE;
     }
 
     /**
@@ -113,7 +90,7 @@ public class DuggiModel extends CapsuleObstacle {
      * @return ow hard the brakes are applied to get a dude to stop moving
      */
     public float getDamping() {
-        return DUGGI_DAMPING;
+        return DUDE_DAMPING;
     }
 
     /**
@@ -124,7 +101,7 @@ public class DuggiModel extends CapsuleObstacle {
      * @return the upper limit on dude left-right movement.
      */
     public float getMaxSpeed() {
-        return DUGGI_MAXSPEED;
+        return DUDE_MAXSPEED;
     }
 
     /**
@@ -157,7 +134,7 @@ public class DuggiModel extends CapsuleObstacle {
      * @param width		The object width in physics units
      * @param height	The object width in physics units
      */
-    public DuggiModel(float width, float height) {
+    public EnemyModel(float width, float height) {
         this(0,0,width,height);
     }
 
@@ -173,10 +150,10 @@ public class DuggiModel extends CapsuleObstacle {
      * @param width		The object width in physics units
      * @param height	The object width in physics units
      */
-    public DuggiModel(float x, float y, float width, float height) {
-        super(x,y,width*DUGGI_HSHRINK,height*DUGGI_VSHRINK);
-        setDensity(DUGGI_DENSITY);
-        setFriction(DUGGI_FRICTION);  /// HE WILL STICK TO WALLS IF YOU FORGET
+    public EnemyModel(float x, float y, float width, float height) {
+        super(x,y,width*DUDE_HSHRINK,height*DUDE_VSHRINK);
+        setDensity(DUDE_DENSITY);
+        setFriction(DUDE_FRICTION);  /// HE WILL STICK TO WALLS IF YOU FORGET
         setFixedRotation(true);
 
         // Gameplay attributes
@@ -210,10 +187,10 @@ public class DuggiModel extends CapsuleObstacle {
         // collisions with the world but has no collision response.
         Vector2 sensorCenter = new Vector2(0, -getHeight() / 2);
         FixtureDef sensorDef = new FixtureDef();
-        sensorDef.density = DUGGI_DENSITY;
+        sensorDef.density = DUDE_DENSITY;
         sensorDef.isSensor = true;
         sensorShape = new PolygonShape();
-        sensorShape.setAsBox(DUGGI_SSHRINK*getWidth()/2.0f, SENSOR_HEIGHT, sensorCenter, 0.0f);
+        sensorShape.setAsBox(DUDE_SSHRINK*getWidth()/2.0f, SENSOR_HEIGHT, sensorCenter, 0.0f);
         sensorDef.shape = sensorShape;
 
         sensorFixture = body.createFixture(sensorDef);
@@ -234,35 +211,18 @@ public class DuggiModel extends CapsuleObstacle {
         }
 
         // Don't want to be moving. Damp out player motion
-        /*
         if (getMovement() == 0f) {
             forceCache.set(-getDamping()*getVX(),0);
             body.applyForce(forceCache,getPosition(),true);
-        }else {
+        }
+
+        // Velocity too high, clamp it
+        if (Math.abs(getVX()) >= getMaxSpeed()) {
+            setVX(Math.signum(getVX())*getMaxSpeed());
+        } else {
             forceCache.set(getMovement(),0);
             body.applyForce(forceCache,getPosition(),true);
         }
-
-        if (getUpDown() == 0f) {
-            forceCache.set(0,-getDamping()*getVY());
-            body.applyForce(forceCache,getPosition(),true);
-        } else {
-            forceCache.set(0,getUpDown());
-            body.applyForce(forceCache,getPosition(),true);
-        }*/
-        body.setLinearVelocity(getMovement(),getUpDown());
-    }
-
-    public void setDollTexture(TextureRegion texture) {
-        doll.setTexture(texture);
-    }
-
-    public void setHerbivoreTexture(TextureRegion texture) {
-        herbivore.setTexture(texture);
-    }
-
-    public void setCarnivoreTexture(TextureRegion texture) {
-        carnivore.setTexture(texture);
     }
 
     /**
@@ -283,8 +243,7 @@ public class DuggiModel extends CapsuleObstacle {
      */
     public void draw(GameCanvas canvas) {
         float effect = faceRight ? 1.0f : -1.0f;
-        canvas.draw(currentForm.getTexture(), Color.WHITE,origin.x,origin.y,
-                getX()*drawScale.x,getY()*drawScale.y,getAngle(),effect,1.0f);
+        canvas.draw(texture, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,getAngle(),effect,1.0f);
     }
 
     /**

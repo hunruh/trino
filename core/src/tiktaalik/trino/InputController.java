@@ -170,9 +170,9 @@ public class InputController {
 	 *
 	 * @return true if the reset button was pressed.
 	 */
-	/*public boolean didReset() {
+	public boolean didReset() {
 		return resetPressed && !resetPrevious;
-	}*/
+	}
 
 	/**
 	 * Returns true if the player wants to go to the next level.
@@ -341,18 +341,18 @@ public class InputController {
 		// Directional controls
 		horizontal = 0.0f;
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			horizontal += 1.0f;
+			horizontal += 5.0f;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			horizontal -= 1.0f;
+			horizontal -= 5.0f;
 		}
 		
 		vertical = 0.0f;
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			vertical += 1.0f;
+			vertical += 5.0f;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			vertical -= 1.0f;
+			vertical -= 5.0f;
 		}
 		
 		// Mouse results

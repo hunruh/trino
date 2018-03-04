@@ -22,6 +22,7 @@ import tiktaalik.util.*;
 import tiktaalik.trino.*;
 import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.obstacle.*;
+import tiktaalik.trino.enemy.*;
 
 /**
  * Gameplay specific controller for the platformer game.  
@@ -37,6 +38,7 @@ public class PlatformController extends WorldController implements ContactListen
 	private static final String DOLL_FILE  = "trino/doll.png";
 	private static final String HERBIVORE_FILE  = "trino/herbivore.png";
 	private static final String CARNIVORE_FILE  = "trino/carnivore.png";
+	private static final String ENEMY_FILE = "trino/enemy.png";
 	/** The texture file for the inedible walls */
 	private static final String WALL_FILE = "trino/wall.png";
 	/** The texture file for the walkable path */
@@ -55,7 +57,8 @@ public class PlatformController extends WorldController implements ContactListen
 	private TextureRegion dollTexture;
 	private TextureRegion herbivoreTexture;
 	private TextureRegion carnivoreTexture;
-
+	/** Texture asset for enemy */
+	private TextureRegion enemyTexture;
 	/** Texture asset for the spinning barrier */
 	private TextureRegion wallTexture;
 	/** Texture asset for the bullet */
@@ -91,6 +94,9 @@ public class PlatformController extends WorldController implements ContactListen
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
 
+		manager.load(ENEMY_FILE, Texture.class);
+		assets.add(ENEMY_FILE);
+
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(ROPE_FILE, Texture.class);
@@ -120,10 +126,11 @@ public class PlatformController extends WorldController implements ContactListen
 		if (platformAssetState != AssetState.LOADING) {
 			return;
 		}
-		
+
 		dollTexture = createTexture(manager,DOLL_FILE,false);
 		herbivoreTexture = createTexture(manager,DOLL_FILE,false);
 		carnivoreTexture = createTexture(manager,DOLL_FILE,false);
+		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
 
@@ -189,6 +196,8 @@ public class PlatformController extends WorldController implements ContactListen
 	private static Vector2 SPIN_POS = new Vector2(13.0f,12.5f);
 	/** The initial position of the dude */
 	private static Vector2 DUDE_POS = new Vector2(2.5f, 5.0f);
+	/** The initial position of the enemy */
+	private static Vector2 ENEMY_POS = new Vector2(20.5f, 5.0f);
 	/** The position of the rope bridge */
 	private static Vector2 BRIDGE_POS  = new Vector2(9.0f, 3.8f);
 
@@ -290,6 +299,14 @@ public class PlatformController extends WorldController implements ContactListen
 		avatar.setCarnivoreTexture(dollTexture);
 		addObject(avatar);
 
+		// Create enemy
+		dwidth  = dollTexture.getRegionWidth()/scale.x;
+		dheight = dollTexture.getRegionHeight()/scale.y;
+		EnemyModel enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
+		enemy.setDrawScale(scale);
+		enemy.setTexture(enemyTexture);
+		addObject(enemy);
+
 		// Create rope bridge
 		dwidth  = bridgeTexture.getRegionWidth()/scale.x;
 		dheight = bridgeTexture.getRegionHeight()/scale.y;
@@ -343,7 +360,15 @@ public class PlatformController extends WorldController implements ContactListen
 	 */
 	public void update(float dt) {
 		// Process actions in object model
-		avatar.setMovement(InputController.getInstance().getHorizontal() *avatar.getForce());
+		avatar.setMovement(InputController.getInstance().getHorizontal());
+		avatar.setUpDown(InputController.getInstance().getVertical());
+		//avatar.setJumping(InputController.getInstance().didPrimary());
+		//avatar.setShooting(InputController.getInstance().didSecondary());
+		
+		// Add a bullet if we fire
+//		if (avatar.isShooting()) {
+//			createBullet();
+//		}
 		avatar.applyForce();
 
 	    // If we use sound, we must remember this.
