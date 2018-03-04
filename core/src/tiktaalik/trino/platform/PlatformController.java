@@ -22,6 +22,7 @@ import tiktaalik.util.*;
 import tiktaalik.trino.*;
 import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.obstacle.*;
+import tiktaalik.trino.enemy.*;
 
 /**
  * Gameplay specific controller for the platformer game.  
@@ -180,6 +181,8 @@ public class PlatformController extends WorldController implements ContactListen
 	private static Vector2 SPIN_POS = new Vector2(13.0f,12.5f);
 	/** The initial position of the dude */
 	private static Vector2 DUDE_POS = new Vector2(2.5f, 5.0f);
+	/** The initial position of the enemy */
+	private static Vector2 ENEMY_POS = new Vector2(20.5f, 5.0f);
 	/** The position of the rope bridge */
 	private static Vector2 BRIDGE_POS  = new Vector2(9.0f, 3.8f);
 
@@ -278,6 +281,14 @@ public class PlatformController extends WorldController implements ContactListen
 		avatar.setDrawScale(scale);
 		avatar.setTexture(avatarTexture);
 		addObject(avatar);
+
+		// Create enemy
+		dwidth  = avatarTexture.getRegionWidth()/scale.x;
+		dheight = avatarTexture.getRegionHeight()/scale.y;
+		EnemyModel enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
+		enemy.setDrawScale(scale);
+		enemy.setTexture(avatarTexture);
+		addObject(enemy);
 
 		// Create rope bridge
 		dwidth  = bridgeTexture.getRegionWidth()/scale.x;
