@@ -69,11 +69,10 @@ public class PlatformController extends WorldController implements ContactListen
 	/** Track asset loading from all instances and subclasses */
 	private AssetState platformAssetState = AssetState.EMPTY;
 
-<<<<<<< HEAD
-=======
-	private float enemyHorizontal = 5.0f;
+
+	private float enemyVertical = 10.0f;
 	
->>>>>>> 4c6e9e68f6e98c70eb28fc55a6b55201fe380f61
+
 	/**
 	 * Preloads the assets for this controller.
 	 *
@@ -172,16 +171,17 @@ public class PlatformController extends WorldController implements ContactListen
 	// Since these appear only once, we do not care about the magic numbers.
 	// In an actual game, this information would go in a data file.
 	// Wall vertices
-	private static final float[][] WALL1 = {{ 0.0f, 4.5f, 0.0f, 18.0f, 2.0f, 18.0f, 2.0f, 4.5f},
-												{ 0.0f, 0.0f, 33.0f, 0.0f, 33.0f, 2.0f, 0.0f, 2.0f},
-//												{23.0f, 4.0f,31.0f, 4.0f,31.0f, 2.5f,23.0f, 2.5f},
-//												{26.0f, 5.5f,28.0f, 5.5f,28.0f, 5.0f,26.0f, 5.0f},
-//												{29.0f, 7.0f,31.0f, 7.0f,31.0f, 6.5f,29.0f, 6.5f},
-//												{24.0f, 8.5f,27.0f, 8.5f,27.0f, 8.0f,24.0f, 8.0f},
-//												{29.0f,10.0f,31.0f,10.0f,31.0f, 9.5f,29.0f, 9.5f},
-//												{23.0f,11.5f,27.0f,11.5f,27.0f,11.0f,23.0f,11.0f},
-//												{19.0f,12.5f,23.0f,12.5f,23.0f,12.0f,19.0f,12.0f},
-//												{ 1.0f,12.5f, 7.0f,12.5f, 7.0f,12.0f, 1.0f,12.0f}
+	private static final float[][] WALL1 = {{ 0.0f, 5.0f, 0.0f, 18.0f, 2.5f, 18.0f, 2.5f, 5.0f},
+												{ 0.0f, 0.0f, 30.0f, 0.0f, 30.0f, 2.5f, 0.0f, 2.5f},
+												{10.0f, 2.5f, 29.5f, 2.5f, 29.5f, 5.0f, 10.0f, 5.0f},
+												{29.5f, 0.0f,32.0f, 0.0f,32.0f, 11.5f,29.5f, 11.5f},
+												{29.5f, 18.0f,32.0f, 18.0f,32.0f, 14.0f,29.5f, 14.0f},
+												{10.0f, 5.0f,12.5f, 5.0f,12.5f, 14.0f,10.0f, 14.0f},
+												{7.5f,5.0f,10.0f,5.0f,10.0f, 14.0f,7.5f, 14.0f},
+												{12.5f,14.0f,15.5f,14.0f,15.5f,11.5f,12.5f,11.5f},
+												{18.0f,18.0f,25.0f,18.0f,25.0f,7.5f,18f,7.5f},
+												{ 2.5f,18.0f, 18.0f,18.0f, 18.0f,16.5f, 2.5f,16.5f},
+												{ 25.0f,18.0f, 29.5f,18.0f, 29.5f,16.5f, 25.0f,16.5f},
 	};
 
 
@@ -203,13 +203,13 @@ public class PlatformController extends WorldController implements ContactListen
 
 	// Other game objects
 	/** The goal door position */
-	private static Vector2 GOAL_POS = new Vector2(4.0f,14.0f);
+	private static Vector2 GOAL_POS = new Vector2(30.75f,12.75f);
 	/** The position of the spinning barrier */
 	private static Vector2 SPIN_POS = new Vector2(13.0f,12.5f);
 	/** The initial position of the dude */
 	private static Vector2 DUDE_POS = new Vector2(1.0f, 2.0f);
 	/** The initial position of the enemy */
-	private static Vector2 ENEMY_POS = new Vector2(30.5f, 5.0f);
+	private static Vector2 ENEMY_POS = new Vector2(28.25f, 5.0f);
 	/** The position of the rope bridge */
 	private static Vector2 BRIDGE_POS  = new Vector2(9.0f, 3.8f);
 
@@ -323,21 +323,21 @@ public class PlatformController extends WorldController implements ContactListen
 		enemy.setTexture(enemyTexture);
 		addObject(enemy);
 
-		// Create rope bridge
-		dwidth  = bridgeTexture.getRegionWidth()/scale.x;
-		dheight = bridgeTexture.getRegionHeight()/scale.y;
-		RopeBridge bridge = new RopeBridge(BRIDGE_POS.x, BRIDGE_POS.y, BRIDGE_WIDTH, dwidth, dheight);
-		bridge.setTexture(bridgeTexture);
-		bridge.setDrawScale(scale);
-		addObject(bridge);
+//		// Create rope bridge
+//		dwidth  = bridgeTexture.getRegionWidth()/scale.x;
+//		dheight = bridgeTexture.getRegionHeight()/scale.y;
+//		RopeBridge bridge = new RopeBridge(BRIDGE_POS.x, BRIDGE_POS.y, BRIDGE_WIDTH, dwidth, dheight);
+//		bridge.setTexture(bridgeTexture);
+//		bridge.setDrawScale(scale);
+//		addObject(bridge);
 		
-		// Create spinning platform
-		dwidth  = wallTexture.getRegionWidth()/scale.x;
-		dheight = wallTexture.getRegionHeight()/scale.y;
-		Spinner spinPlatform = new Spinner(SPIN_POS.x,SPIN_POS.y,dwidth,dheight);
-		spinPlatform.setDrawScale(scale);
-		spinPlatform.setTexture(wallTexture);
-		addObject(spinPlatform);
+//		// Create spinning platform
+//		dwidth  = wallTexture.getRegionWidth()/scale.x;
+//		dheight = wallTexture.getRegionHeight()/scale.y;
+//		Spinner spinPlatform = new Spinner(SPIN_POS.x,SPIN_POS.y,dwidth,dheight);
+//		spinPlatform.setDrawScale(scale);
+//		spinPlatform.setTexture(wallTexture);
+//		addObject(spinPlatform);
 	}
 	
 	/**
@@ -397,10 +397,10 @@ public class PlatformController extends WorldController implements ContactListen
 
 		// Process actions for the enemy model
 		if (enemy.getCounter() % 100 == 1){
-			enemyHorizontal = -enemyHorizontal;
+			enemyVertical = -enemyVertical;
 		}
-		enemy.setMovement(enemyHorizontal);
-		enemy.setUpDown(0f);
+		enemy.setUpDown(enemyVertical);
+		enemy.setMovement(0.0f);
 		enemy.applyForce();
 
 	    // If we use sound, we must remember this.
