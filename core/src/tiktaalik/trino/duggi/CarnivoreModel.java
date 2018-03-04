@@ -1,4 +1,7 @@
 package tiktaalik.trino.duggi;
 
-public class CarnivoreModel implements FormModel {
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+public class CarnivoreModel extends FormModel {
+
 }

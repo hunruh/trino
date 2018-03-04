@@ -51,8 +51,11 @@ public class PlatformController extends WorldController implements ContactListen
 	/** The sound file for a bullet collision */
 	private static final String POP_FILE = "platform/plop.mp3";
 
-	/** Texture asset for character avatar */
-	private TextureRegion avatarTexture;
+	/** Texture assets for Duggi's three forms */
+	private TextureRegion dollTexture;
+	private TextureRegion herbivoreTexture;
+	private TextureRegion carnivoreTexture;
+
 	/** Texture asset for the spinning barrier */
 	private TextureRegion wallTexture;
 	/** Texture asset for the bullet */
@@ -81,6 +84,10 @@ public class PlatformController extends WorldController implements ContactListen
 		platformAssetState = AssetState.LOADING;
 		manager.load(DOLL_FILE, Texture.class);
 		assets.add(DOLL_FILE);
+		manager.load(HERBIVORE_FILE, Texture.class);
+		assets.add(HERBIVORE_FILE);
+		manager.load(CARNIVORE_FILE, Texture.class);
+		assets.add(CARNIVORE_FILE);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
 
@@ -114,7 +121,9 @@ public class PlatformController extends WorldController implements ContactListen
 			return;
 		}
 		
-		avatarTexture = createTexture(manager,DOLL_FILE,false);
+		dollTexture = createTexture(manager,DOLL_FILE,false);
+		herbivoreTexture = createTexture(manager,DOLL_FILE,false);
+		carnivoreTexture = createTexture(manager,DOLL_FILE,false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
 
@@ -272,11 +281,13 @@ public class PlatformController extends WorldController implements ContactListen
 	    }
 
 		// Create dude
-		dwidth  = avatarTexture.getRegionWidth()/scale.x;
-		dheight = avatarTexture.getRegionHeight()/scale.y;
+		dwidth  = dollTexture.getRegionWidth()/scale.x;
+		dheight = dollTexture.getRegionHeight()/scale.y;
 		avatar = new DuggiModel(DUDE_POS.x, DUDE_POS.y, dwidth, dheight);
 		avatar.setDrawScale(scale);
-		avatar.setTexture(avatarTexture);
+		avatar.setDollTexture(dollTexture);
+		avatar.setHerbivoreTexture(dollTexture);
+		avatar.setCarnivoreTexture(dollTexture);
 		addObject(avatar);
 
 		// Create rope bridge
@@ -333,10 +344,8 @@ public class PlatformController extends WorldController implements ContactListen
 	public void update(float dt) {
 		// Process actions in object model
 		avatar.setMovement(InputController.getInstance().getHorizontal() *avatar.getForce());
-		
 		avatar.applyForce();
 
-		
 	    // If we use sound, we must remember this.
 	    SoundController.getInstance().update();
 	}
