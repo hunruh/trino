@@ -12,7 +12,7 @@ import tiktaalik.trino.obstacle.CapsuleObstacle;
 public class EnemyModel extends CapsuleObstacle {
     // Physics constants
     /** The density of the character */
-    private static final float DUDE_DENSITY = 1.0f;
+    private static final float DUDE_DENSITY = 100.0f;
     /** The factor to multiply by the input */
     private static final float DUDE_FORCE = 20.0f;
     /** The amount to slow the character down */

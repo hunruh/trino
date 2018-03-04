@@ -352,10 +352,10 @@ public class PlatformController extends WorldController implements ContactListen
 			return false;
 		}
 		
-		if (!isFailure() && avatar.getY() < -1) {
-			setFailure(true);
-			return false;
-		}
+//		if (!isFailure() && avatar.getY() < -1) {
+//			setFailure(true);
+//			return false;
+//		}
 		
 		return true;
 	}
@@ -374,21 +374,7 @@ public class PlatformController extends WorldController implements ContactListen
 		// Process actions in object model
 		avatar.setMovement(InputController.getInstance().getHorizontal());
 		avatar.setUpDown(InputController.getInstance().getVertical());
-		//avatar.setJumping(InputController.getInstance().didPrimary());
-		//avatar.setShooting(InputController.getInstance().didSecondary());
-		
-		// Add a bullet if we fire
-//		if (avatar.isShooting()) {
-//			createBullet();
-//		}
-		
 		avatar.applyForce();
-	    /*if (avatar.isJumping()) {
-	        SoundController.getInstance().play(JUMP_FILE,JUMP_FILE,false,EFFECT_VOLUME);
-	    }*/
-
-		
-	    // If we use sound, we must remember this.
 	    SoundController.getInstance().update();
 	}
 
