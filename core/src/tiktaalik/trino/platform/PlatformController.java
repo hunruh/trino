@@ -66,6 +66,8 @@ public class PlatformController extends WorldController implements ContactListen
 	
 	/** Track asset loading from all instances and subclasses */
 	private AssetState platformAssetState = AssetState.EMPTY;
+
+	private float enemyHorizontal = 5.0f;
 	
 	/**
 	 * Preloads the assets for this controller.
@@ -192,7 +194,7 @@ public class PlatformController extends WorldController implements ContactListen
 	/** The initial position of the dude */
 	private static Vector2 DUDE_POS = new Vector2(2.5f, 5.0f);
 	/** The initial position of the enemy */
-	private static Vector2 ENEMY_POS = new Vector2(20.5f, 5.0f);
+	private static Vector2 ENEMY_POS = new Vector2(30.5f, 5.0f);
 	/** The position of the rope bridge */
 	private static Vector2 BRIDGE_POS  = new Vector2(9.0f, 3.8f);
 
@@ -375,6 +377,14 @@ public class PlatformController extends WorldController implements ContactListen
 		avatar.setMovement(InputController.getInstance().getHorizontal());
 		avatar.setUpDown(InputController.getInstance().getVertical());
 		avatar.applyForce();
+
+		// Process actions for the enemy model
+		if (enemy.getCounter() % 100 == 1){
+			enemyHorizontal = -enemyHorizontal;
+		}
+		enemy.setMovement(enemyHorizontal);
+		enemy.setUpDown(0f);
+		enemy.applyForce();
 	    SoundController.getInstance().update();
 	}
 

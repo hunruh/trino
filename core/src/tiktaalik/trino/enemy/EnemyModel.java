@@ -49,6 +49,11 @@ public class EnemyModel extends CapsuleObstacle {
     /** Cache for internal force calculations */
     private Vector2 forceCache = new Vector2();
 
+    /** Counter for enemy movement */
+    private int counter;
+
+    public int getCounter() {return counter;}
+
     /**
      * Returns left/right movement of this character.
      *
@@ -240,19 +245,7 @@ public class EnemyModel extends CapsuleObstacle {
             return;
         }
 
-        // Don't want to be moving. Damp out player motion
-        if (getMovement() == 0f) {
-            forceCache.set(-getDamping()*getVX(),0);
-            body.applyForce(forceCache,getPosition(),true);
-        }
-
-        // Velocity too high, clamp it
-        if (Math.abs(getVX()) >= getMaxSpeed()) {
-            setVX(Math.signum(getVX())*getMaxSpeed());
-        } else {
-            forceCache.set(getMovement(),0);
-            body.applyForce(forceCache,getPosition(),true);
-        }
+        body.setLinearVelocity(getMovement(),getUpDown());
     }
 
     /**
@@ -263,6 +256,7 @@ public class EnemyModel extends CapsuleObstacle {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        counter++;
         super.update(dt);
     }
 
