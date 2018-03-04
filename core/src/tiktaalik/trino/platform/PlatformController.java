@@ -38,6 +38,7 @@ public class PlatformController extends WorldController implements ContactListen
 	private static final String DOLL_FILE  = "trino/doll.png";
 	private static final String HERBIVORE_FILE  = "trino/herbivore.png";
 	private static final String CARNIVORE_FILE  = "trino/carnivore.png";
+	private static final String ENEMY_FILE = "trino/enemy.png";
 	/** The texture file for the inedible walls */
 	private static final String WALL_FILE = "trino/wall.png";
 	/** The texture file for the walkable path */
@@ -54,6 +55,8 @@ public class PlatformController extends WorldController implements ContactListen
 
 	/** Texture asset for character avatar */
 	private TextureRegion avatarTexture;
+	/** Texture asset for enemy */
+	private TextureRegion enemyTexture;
 	/** Texture asset for the spinning barrier */
 	private TextureRegion wallTexture;
 	/** Texture asset for the bullet */
@@ -84,6 +87,9 @@ public class PlatformController extends WorldController implements ContactListen
 		assets.add(DOLL_FILE);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
+
+		manager.load(ENEMY_FILE, Texture.class);
+		assets.add(ENEMY_FILE);
 
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
@@ -116,6 +122,7 @@ public class PlatformController extends WorldController implements ContactListen
 		}
 		
 		avatarTexture = createTexture(manager,DOLL_FILE,false);
+		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
 
@@ -289,7 +296,7 @@ public class PlatformController extends WorldController implements ContactListen
 		dheight = avatarTexture.getRegionHeight()/scale.y;
 		enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
 		enemy.setDrawScale(scale);
-		enemy.setTexture(avatarTexture);
+		enemy.setTexture(enemyTexture);
 		addObject(enemy);
 
 		// Create rope bridge
@@ -345,8 +352,8 @@ public class PlatformController extends WorldController implements ContactListen
 	 */
 	public void update(float dt) {
 		// Process actions in object model
-		avatar.setMovement(InputController.getInstance().getHorizontal()*avatar.getForce());
-		avatar.setUpDown(InputController.getInstance().getVertical()*avatar.getForce());
+		avatar.setMovement(InputController.getInstance().getHorizontal());
+		avatar.setUpDown(InputController.getInstance().getVertical());
 		//avatar.setJumping(InputController.getInstance().didPrimary());
 		//avatar.setShooting(InputController.getInstance().didSecondary());
 		

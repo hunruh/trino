@@ -227,28 +227,23 @@ public class DuggiModel extends CapsuleObstacle {
         }
 
         // Don't want to be moving. Damp out player motion
+        /*
         if (getMovement() == 0f) {
             forceCache.set(-getDamping()*getVX(),0);
             body.applyForce(forceCache,getPosition(),true);
-        }
-        if (getUpDown() == 0f) {
-            forceCache.set(0,-getDamping()*getVY());
-            body.applyForce(forceCache,getPosition(),true);
-        }
-        // Velocity too high, clamp it
-        if (Math.abs(getVX()) >= getMaxSpeed()) {
-            setVX(Math.signum(getVX())*getMaxSpeed());
-        } else {
+        }else {
             forceCache.set(getMovement(),0);
             body.applyForce(forceCache,getPosition(),true);
         }
 
-        if (Math.abs(getVY()) >= getMaxSpeed()) {
-            setVY(Math.signum(getVY())*getMaxSpeed());
+        if (getUpDown() == 0f) {
+            forceCache.set(0,-getDamping()*getVY());
+            body.applyForce(forceCache,getPosition(),true);
         } else {
             forceCache.set(0,getUpDown());
             body.applyForce(forceCache,getPosition(),true);
-        }
+        }*/
+        body.setLinearVelocity(getMovement(),getUpDown());
     }
 
     /**
