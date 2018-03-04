@@ -36,8 +36,10 @@ public class DuggiModel extends CapsuleObstacle {
 
     /** The current horizontal movement of the character */
     private float   movement;
+    private float upDown;
     /** Which direction is the character facing */
     private boolean faceRight;
+    private boolean faceUp;
     /** Ground sensor to represent our feet */
     private Fixture sensorFixture;
     private PolygonShape sensorShape;
@@ -56,6 +58,8 @@ public class DuggiModel extends CapsuleObstacle {
         return movement;
     }
 
+    public float getUpDown() {return upDown;}
+
     /**
      * Sets left/right movement of this character.
      *
@@ -70,6 +74,16 @@ public class DuggiModel extends CapsuleObstacle {
             faceRight = false;
         } else if (movement > 0) {
             faceRight = true;
+        }
+    }
+
+    public void setUpDown(float value) {
+        upDown = value;
+        // Change facing if appropriate
+        if (upDown < 0) {
+            faceUp = false;
+        } else if (upDown > 0) {
+            faceUp = true;
         }
     }
 
@@ -215,12 +229,22 @@ public class DuggiModel extends CapsuleObstacle {
             forceCache.set(-getDamping()*getVX(),0);
             body.applyForce(forceCache,getPosition(),true);
         }
-
+        if (getUpDown() == 0f) {
+            forceCache.set(-getDamping()*getVY(),0);
+            body.applyForce(forceCache,getPosition(),true);
+        }
         // Velocity too high, clamp it
         if (Math.abs(getVX()) >= getMaxSpeed()) {
             setVX(Math.signum(getVX())*getMaxSpeed());
         } else {
             forceCache.set(getMovement(),0);
+            body.applyForce(forceCache,getPosition(),true);
+        }
+
+        if (Math.abs(getVY()) >= getMaxSpeed()) {
+            setVY(Math.signum(getVY())*getMaxSpeed());
+        } else {
+            forceCache.set(getUpDown(),0);
             body.applyForce(forceCache,getPosition(),true);
         }
     }
