@@ -189,6 +189,8 @@ public class PlatformController extends WorldController implements ContactListen
 	// Physics objects for the game
 	/** Reference to the character avatar */
 	private DuggiModel avatar;
+	/** Reference to the enemy avatar */
+	private EnemyModel enemy;
 	/** Reference to the goalDoor (for collision detection) */
 	private BoxObstacle goalDoor;
 
@@ -285,7 +287,7 @@ public class PlatformController extends WorldController implements ContactListen
 		// Create enemy
 		dwidth  = avatarTexture.getRegionWidth()/scale.x;
 		dheight = avatarTexture.getRegionHeight()/scale.y;
-		EnemyModel enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
+		enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
 		enemy.setDrawScale(scale);
 		enemy.setTexture(avatarTexture);
 		addObject(enemy);
@@ -439,6 +441,12 @@ public class PlatformController extends WorldController implements ContactListen
 			if ((bd1 == avatar   && bd2 == goalDoor) ||
 				(bd1 == goalDoor && bd2 == avatar)) {
 				setComplete(true);
+			}
+
+			// Check if collided with enemy
+			if ((bd1 == avatar   && bd2 == enemy) ||
+					(bd1 == enemy && bd2 == avatar)) {
+				setFailure(true);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
