@@ -332,10 +332,10 @@ public class PlatformController extends WorldController implements ContactListen
 			return false;
 		}
 		
-		if (!isFailure() && avatar.getY() < -1) {
-			setFailure(true);
-			return false;
-		}
+//		if (!isFailure() && avatar.getY() < -1) {
+//			setFailure(true);
+//			return false;
+//		}
 		
 		return true;
 	}
