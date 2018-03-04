@@ -221,6 +221,10 @@ public class InputController {
 	public boolean didTransformCarni(){
 		return carniFormPressed && !carniFormPrevious;
 	}
+
+	public boolean didTransform() {
+		return didTransformDoll() || didTransformHerbi() || didTransformCarni();
+	}
 	
 	/**
 	 * Creates a new input controller
