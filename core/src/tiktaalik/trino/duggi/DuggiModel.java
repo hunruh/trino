@@ -251,7 +251,7 @@ public class DuggiModel extends CapsuleObstacle {
         if (!isActive()) {
             return;
         }
-        
+
         body.setLinearVelocity(getMovement(),getUpDown());
     }
 
