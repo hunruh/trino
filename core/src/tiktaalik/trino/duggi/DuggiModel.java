@@ -11,6 +11,10 @@ import tiktaalik.trino.GameCanvas;
 import tiktaalik.trino.obstacle.CapsuleObstacle;
 
 public class DuggiModel extends CapsuleObstacle {
+    public static final int DOLL_FORM = 0;
+    public static final int HERBIVORE_FORM = 1;
+    public static final int CARNIVORE_FORM = 2;
+
     // Physics constants
     /** The density of the character */
     private static final float DUGGI_DENSITY = 1.0f;
@@ -265,6 +269,15 @@ public class DuggiModel extends CapsuleObstacle {
         carnivore.setTexture(texture);
     }
 
+    public void setTransformation(int form) {
+        if (form == DOLL_FORM)
+            currentForm = doll;
+        else if (form == HERBIVORE_FORM)
+            currentForm = herbivore;
+        else if (form == CARNIVORE_FORM)
+            currentForm = carnivore;
+    }
+
     /**
      * Updates the object's physics state (NOT GAME LOGIC).
      *
@@ -283,7 +296,7 @@ public class DuggiModel extends CapsuleObstacle {
      */
     public void draw(GameCanvas canvas) {
         float effect = faceRight ? 1.0f : -1.0f;
-        canvas.draw(texture, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,getAngle(),effect,1.0f);
+        canvas.draw(currentForm.getTexture(), Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,getAngle(),effect,1.0f);
     }
 
     /**

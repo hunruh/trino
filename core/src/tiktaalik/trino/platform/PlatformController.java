@@ -128,8 +128,8 @@ public class PlatformController extends WorldController implements ContactListen
 		}
 
 		dollTexture = createTexture(manager,DOLL_FILE,false);
-		herbivoreTexture = createTexture(manager,DOLL_FILE,false);
-		carnivoreTexture = createTexture(manager,DOLL_FILE,false);
+		herbivoreTexture = createTexture(manager,HERBIVORE_FILE,false);
+		carnivoreTexture = createTexture(manager,CARNIVORE_FILE,false);
 		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
@@ -298,14 +298,14 @@ public class PlatformController extends WorldController implements ContactListen
 		avatar.setTexture(dollTexture);
 		avatar.setDrawScale(scale);
 		avatar.setDollTexture(dollTexture);
-		avatar.setHerbivoreTexture(dollTexture);
-		avatar.setCarnivoreTexture(dollTexture);
+		avatar.setHerbivoreTexture(herbivoreTexture);
+		avatar.setCarnivoreTexture(carnivoreTexture);
 		addObject(avatar);
 
 		// Create enemy
 		dwidth  = dollTexture.getRegionWidth()/scale.x;
 		dheight = dollTexture.getRegionHeight()/scale.y;
-		EnemyModel enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
+		enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
 		enemy.setDrawScale(scale);
 		enemy.setTexture(enemyTexture);
 		addObject(enemy);
@@ -363,6 +363,14 @@ public class PlatformController extends WorldController implements ContactListen
 	 */
 	public void update(float dt) {
 		// Process actions in object model
+		if (InputController.getInstance().didTransform()) {
+			if (InputController.getInstance().didTransformDoll())
+				avatar.setTransformation(DuggiModel.DOLL_FORM);
+			else if (InputController.getInstance().didTransformHerbi())
+				avatar.setTransformation(DuggiModel.HERBIVORE_FORM);
+			else if (InputController.getInstance().didTransformCarni())
+				avatar.setTransformation(DuggiModel.CARNIVORE_FORM);
+		}
 		avatar.setMovement(InputController.getInstance().getHorizontal());
 		avatar.setUpDown(InputController.getInstance().getVertical());
 		//avatar.setJumping(InputController.getInstance().didPrimary());
