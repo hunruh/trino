@@ -88,6 +88,9 @@ public class PlatformController extends WorldController implements ContactListen
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
 
+		manager.load(ENEMY_FILE, Texture.class);
+		assets.add(ENEMY_FILE);
+
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(ROPE_FILE, Texture.class);
