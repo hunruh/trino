@@ -36,14 +36,23 @@ public class EnemyModel extends CapsuleObstacle {
 
     /** The current horizontal movement of the character */
     private float   movement;
+    /** The current vertical movement of the character */
+    private float upDown;
     /** Which direction is the character facing */
     private boolean faceRight;
+    /** Which direction is the character facing up*/
+    private boolean faceUp;
     /** Ground sensor to represent our feet */
     private Fixture sensorFixture;
     private PolygonShape sensorShape;
 
     /** Cache for internal force calculations */
     private Vector2 forceCache = new Vector2();
+
+    /** Counter for enemy movement */
+    private int counter;
+
+    public int getCounter() {return counter;}
 
     /**
      * Returns left/right movement of this character.
@@ -55,6 +64,15 @@ public class EnemyModel extends CapsuleObstacle {
     public float getMovement() {
         return movement;
     }
+
+    /**
+     * Returns up/down movement of this character.
+     *
+     * This is the result of input times dude force.
+     *
+     * @return up/down movement of this character.
+     */
+    public float getUpDown() {return upDown;}
 
     /**
      * Sets left/right movement of this character.
@@ -70,6 +88,23 @@ public class EnemyModel extends CapsuleObstacle {
             faceRight = false;
         } else if (movement > 0) {
             faceRight = true;
+        }
+    }
+
+    /**
+     * Sets up/down movement of this character.
+     *
+     * This is the result of input times dude force.
+     *
+     * @param value up/down movement of this character.
+     */
+    public void setUpDown(float value) {
+        upDown = value;
+        // Change facing if appropriate
+        if (upDown < 0) {
+            faceUp = false;
+        } else if (upDown > 0) {
+            faceUp = true;
         }
     }
 
@@ -210,19 +245,7 @@ public class EnemyModel extends CapsuleObstacle {
             return;
         }
 
-        // Don't want to be moving. Damp out player motion
-        if (getMovement() == 0f) {
-            forceCache.set(-getDamping()*getVX(),0);
-            body.applyForce(forceCache,getPosition(),true);
-        }
-
-        // Velocity too high, clamp it
-        if (Math.abs(getVX()) >= getMaxSpeed()) {
-            setVX(Math.signum(getVX())*getMaxSpeed());
-        } else {
-            forceCache.set(getMovement(),0);
-            body.applyForce(forceCache,getPosition(),true);
-        }
+        body.setLinearVelocity(getMovement(),getUpDown());
     }
 
     /**
@@ -233,6 +256,7 @@ public class EnemyModel extends CapsuleObstacle {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        counter++;
         super.update(dt);
     }
 

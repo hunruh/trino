@@ -53,8 +53,10 @@ public class PlatformController extends WorldController implements ContactListen
 	/** The sound file for a bullet collision */
 	private static final String POP_FILE = "platform/plop.mp3";
 
-	/** Texture asset for character avatar */
-	private TextureRegion avatarTexture;
+	/** Texture assets for Duggi's three forms */
+	private TextureRegion dollTexture;
+	private TextureRegion herbivoreTexture;
+	private TextureRegion carnivoreTexture;
 	/** Texture asset for enemy */
 	private TextureRegion enemyTexture;
 	/** Texture asset for the spinning barrier */
@@ -67,6 +69,11 @@ public class PlatformController extends WorldController implements ContactListen
 	/** Track asset loading from all instances and subclasses */
 	private AssetState platformAssetState = AssetState.EMPTY;
 
+<<<<<<< HEAD
+=======
+	private float enemyHorizontal = 5.0f;
+	
+>>>>>>> 4c6e9e68f6e98c70eb28fc55a6b55201fe380f61
 	/**
 	 * Preloads the assets for this controller.
 	 *
@@ -85,6 +92,10 @@ public class PlatformController extends WorldController implements ContactListen
 		platformAssetState = AssetState.LOADING;
 		manager.load(DOLL_FILE, Texture.class);
 		assets.add(DOLL_FILE);
+		manager.load(HERBIVORE_FILE, Texture.class);
+		assets.add(HERBIVORE_FILE);
+		manager.load(CARNIVORE_FILE, Texture.class);
+		assets.add(CARNIVORE_FILE);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
 
@@ -120,8 +131,10 @@ public class PlatformController extends WorldController implements ContactListen
 		if (platformAssetState != AssetState.LOADING) {
 			return;
 		}
-		
-		avatarTexture = createTexture(manager,DOLL_FILE,false);
+
+		dollTexture = createTexture(manager,DOLL_FILE,false);
+		herbivoreTexture = createTexture(manager,HERBIVORE_FILE,false);
+		carnivoreTexture = createTexture(manager,CARNIVORE_FILE,false);
 		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
@@ -196,7 +209,7 @@ public class PlatformController extends WorldController implements ContactListen
 	/** The initial position of the dude */
 	private static Vector2 DUDE_POS = new Vector2(1.0f, 2.0f);
 	/** The initial position of the enemy */
-	private static Vector2 ENEMY_POS = new Vector2(20.5f, 5.0f);
+	private static Vector2 ENEMY_POS = new Vector2(30.5f, 5.0f);
 	/** The position of the rope bridge */
 	private static Vector2 BRIDGE_POS  = new Vector2(9.0f, 3.8f);
 
@@ -292,16 +305,19 @@ public class PlatformController extends WorldController implements ContactListen
 //	    }
 
 		// Create dude
-		dwidth  = avatarTexture.getRegionWidth()/scale.x;
-		dheight = avatarTexture.getRegionHeight()/scale.y;
+		dwidth  = dollTexture.getRegionWidth()/scale.x;
+		dheight = dollTexture.getRegionHeight()/scale.y;
 		avatar = new DuggiModel(DUDE_POS.x, DUDE_POS.y, dwidth, dheight);
+		avatar.setTexture(dollTexture);
 		avatar.setDrawScale(scale);
-		avatar.setTexture(avatarTexture);
+		avatar.setDollTexture(dollTexture);
+		avatar.setHerbivoreTexture(herbivoreTexture);
+		avatar.setCarnivoreTexture(carnivoreTexture);
 		addObject(avatar);
 
 		// Create enemy
-		dwidth  = avatarTexture.getRegionWidth()/scale.x;
-		dheight = avatarTexture.getRegionHeight()/scale.y;
+		dwidth  = dollTexture.getRegionWidth()/scale.x;
+		dheight = dollTexture.getRegionHeight()/scale.y;
 		enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
 		enemy.setDrawScale(scale);
 		enemy.setTexture(enemyTexture);
@@ -360,9 +376,34 @@ public class PlatformController extends WorldController implements ContactListen
 	 */
 	public void update(float dt) {
 		// Process actions in object model
+		if (InputController.getInstance().didTransform()) {
+			if (InputController.getInstance().didTransformDoll())
+				avatar.setTransformation(DuggiModel.DOLL_FORM);
+			else if (InputController.getInstance().didTransformHerbi())
+				avatar.setTransformation(DuggiModel.HERBIVORE_FORM);
+			else if (InputController.getInstance().didTransformCarni())
+				avatar.setTransformation(DuggiModel.CARNIVORE_FORM);
+		}
 		avatar.setMovement(InputController.getInstance().getHorizontal());
 		avatar.setUpDown(InputController.getInstance().getVertical());
+		//avatar.setJumping(InputController.getInstance().didPrimary());
+		//avatar.setShooting(InputController.getInstance().didSecondary());
+		
+		// Add a bullet if we fire
+//		if (avatar.isShooting()) {
+//			createBullet();
+//		}
 		avatar.applyForce();
+
+		// Process actions for the enemy model
+		if (enemy.getCounter() % 100 == 1){
+			enemyHorizontal = -enemyHorizontal;
+		}
+		enemy.setMovement(enemyHorizontal);
+		enemy.setUpDown(0f);
+		enemy.applyForce();
+
+	    // If we use sound, we must remember this.
 	    SoundController.getInstance().update();
 	}
 
