@@ -255,6 +255,7 @@ public class DuggiModel extends CapsuleObstacle {
 
     public void setDollTexture(TextureRegion texture) {
         doll.setTexture(texture);
+        this.setTexture(texture);
     }
 
     public void setHerbivoreTexture(TextureRegion texture) {
@@ -283,8 +284,7 @@ public class DuggiModel extends CapsuleObstacle {
      */
     public void draw(GameCanvas canvas) {
         float effect = faceRight ? 1.0f : -1.0f;
-        canvas.draw(currentForm.getTexture(), Color.WHITE,origin.x,origin.y,
-                getX()*drawScale.x,getY()*drawScale.y,getAngle(),effect,1.0f);
+        canvas.draw(texture, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,getAngle(),effect,1.0f);
     }
 
     /**

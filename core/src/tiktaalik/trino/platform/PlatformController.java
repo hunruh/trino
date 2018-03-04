@@ -204,6 +204,8 @@ public class PlatformController extends WorldController implements ContactListen
 	// Physics objects for the game
 	/** Reference to the character avatar */
 	private DuggiModel avatar;
+	/** Reference to the enemy avatar */
+	private EnemyModel enemy;
 	/** Reference to the goalDoor (for collision detection) */
 	private BoxObstacle goalDoor;
 
@@ -451,6 +453,12 @@ public class PlatformController extends WorldController implements ContactListen
 			if ((bd1 == avatar   && bd2 == goalDoor) ||
 				(bd1 == goalDoor && bd2 == avatar)) {
 				setComplete(true);
+			}
+
+			// Check if collided with enemy
+			if ((bd1 == avatar   && bd2 == enemy) ||
+					(bd1 == enemy && bd2 == avatar)) {
+				setFailure(true);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
