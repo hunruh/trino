@@ -36,8 +36,12 @@ public class EnemyModel extends CapsuleObstacle {
 
     /** The current horizontal movement of the character */
     private float   movement;
+    /** The current vertical movement of the character */
+    private float upDown;
     /** Which direction is the character facing */
     private boolean faceRight;
+    /** Which direction is the character facing up*/
+    private boolean faceUp;
     /** Ground sensor to represent our feet */
     private Fixture sensorFixture;
     private PolygonShape sensorShape;
@@ -57,6 +61,15 @@ public class EnemyModel extends CapsuleObstacle {
     }
 
     /**
+     * Returns up/down movement of this character.
+     *
+     * This is the result of input times dude force.
+     *
+     * @return up/down movement of this character.
+     */
+    public float getUpDown() {return upDown;}
+
+    /**
      * Sets left/right movement of this character.
      *
      * This is the result of input times dude force.
@@ -70,6 +83,23 @@ public class EnemyModel extends CapsuleObstacle {
             faceRight = false;
         } else if (movement > 0) {
             faceRight = true;
+        }
+    }
+
+    /**
+     * Sets up/down movement of this character.
+     *
+     * This is the result of input times dude force.
+     *
+     * @param value up/down movement of this character.
+     */
+    public void setUpDown(float value) {
+        upDown = value;
+        // Change facing if appropriate
+        if (upDown < 0) {
+            faceUp = false;
+        } else if (upDown > 0) {
+            faceUp = true;
         }
     }
 
