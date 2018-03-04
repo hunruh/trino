@@ -255,7 +255,6 @@ public class DuggiModel extends CapsuleObstacle {
 
     public void setDollTexture(TextureRegion texture) {
         doll.setTexture(texture);
-        this.setTexture(texture);
     }
 
     public void setHerbivoreTexture(TextureRegion texture) {

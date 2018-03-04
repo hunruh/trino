@@ -295,6 +295,7 @@ public class PlatformController extends WorldController implements ContactListen
 		dwidth  = dollTexture.getRegionWidth()/scale.x;
 		dheight = dollTexture.getRegionHeight()/scale.y;
 		avatar = new DuggiModel(DUDE_POS.x, DUDE_POS.y, dwidth, dheight);
+		avatar.setTexture(dollTexture);
 		avatar.setDrawScale(scale);
 		avatar.setDollTexture(dollTexture);
 		avatar.setHerbivoreTexture(dollTexture);
