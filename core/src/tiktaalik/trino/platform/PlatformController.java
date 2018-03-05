@@ -69,11 +69,8 @@ public class PlatformController extends WorldController implements ContactListen
 	/** Track asset loading from all instances and subclasses */
 	private AssetState platformAssetState = AssetState.EMPTY;
 
-<<<<<<< HEAD
-=======
 	private float enemyHorizontal = 5.0f;
-	
->>>>>>> 4c6e9e68f6e98c70eb28fc55a6b55201fe380f61
+
 	/**
 	 * Preloads the assets for this controller.
 	 *
