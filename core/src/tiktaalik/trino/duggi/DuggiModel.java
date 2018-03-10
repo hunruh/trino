@@ -45,6 +45,7 @@ public class DuggiModel extends CapsuleObstacle {
     private CarnivoreModel carnivore = new CarnivoreModel();
 
     private FormModel currentForm = doll;
+    private int form = DOLL_FORM;
 
     /** The current horizontal movement of the character */
     private float   movement;
@@ -274,6 +275,10 @@ public class DuggiModel extends CapsuleObstacle {
             currentForm = herbivore;
         else if (form == CARNIVORE_FORM)
             currentForm = carnivore;
+    }
+
+    public int getForm(){
+        return form;
     }
 
     /**
