@@ -221,6 +221,18 @@ public class PlatformController extends WorldController implements ContactListen
 	/** Reference to the goalDoor (for collision detection) */
 	private BoxObstacle goalDoor;
 
+	// Variables for the enemy model
+	private Vector2 cachePosition1 = new Vector2(0,0);
+	private Vector2 cachePosition2 = new Vector2(0,0);
+	private Vector2 cacheDirection = new Vector2(0,0);
+	private float cacheDistance = 0;
+	private boolean enemyMoving = false;
+	private boolean goBackToStart = false;
+
+	private float enemySpeed = 5;
+	private float elapsed = 0.01f;
+
+
 	/** Mark set to handle more sophisticated collision callbacks */
 	protected ObjectSet<Fixture> sensorFixtures;
 
@@ -395,13 +407,40 @@ public class PlatformController extends WorldController implements ContactListen
 //		}
 		avatar.applyForce();
 
-		// Process actions for the enemy model
-		if (enemy.getCounter() % 100 == 1){
-			enemyVertical = -enemyVertical;
+		if (Vector2.dst(enemy.getPosition().x,enemy.getPosition().y,avatar.getPosition().x,avatar.getPosition().y) < 10){
+			enemyMoving = true;
+		} else {
+			enemyMoving = false;
 		}
-		enemy.setUpDown(enemyVertical);
-		enemy.setMovement(0.0f);
-		enemy.applyForce();
+
+
+		if (enemyMoving){
+			// Enemy Movement
+			cachePosition1 = enemy.getPosition();
+			cachePosition2 = avatar.getPosition();
+			cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
+					cachePosition2.x, cachePosition2.y);
+			cacheDirection = cachePosition2.sub(cachePosition1).nor();
+			cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
+					cacheDirection.y * enemySpeed * elapsed);
+
+			enemy.setPosition(enemy.getPosition().add(cacheDirection));
+
+
+
+		}
+		else {
+
+			// Process actions for the enemy model
+			if (enemy.getCounter() % 100 == 1){
+				enemyVertical = -enemyVertical;
+			}
+			enemy.setUpDown(enemyVertical);
+			enemy.setMovement(0.0f);
+			enemy.applyForce();
+		}
+
+
 
 	    // If we use sound, we must remember this.
 	    SoundController.getInstance().update();
