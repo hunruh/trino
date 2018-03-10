@@ -29,7 +29,7 @@ public class EdibleWall extends BoxObstacle {
     public float getY(){
         return super.getY();
     }
-    
+
 
 
 }

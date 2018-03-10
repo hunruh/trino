@@ -29,6 +29,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.DuggiModel;
 import tiktaalik.trino.enemy.EnemyModel;
+import tiktaalik.trino.resources.EdibleWall;
 import tiktaalik.util.*;
 import tiktaalik.trino.obstacle.*;
 
@@ -77,6 +78,7 @@ public class WorldController implements ContactListener, Screen {
 	private static final String CARNIVORE_FILE  = "trino/carnivore.png";
 	private static final String ENEMY_FILE = "trino/enemy.png";
 	private static final String WALL_FILE = "trino/wall.png";
+	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
 	private static final String PATH_FILE = "trino/path.png";
 
 	/** Texture assets for the general game */
@@ -94,6 +96,7 @@ public class WorldController implements ContactListener, Screen {
 
 	/* Texture assets for other world attributes */
 	private TextureRegion wallTexture;
+	private TextureRegion edibleWallTexture;
 	private TextureRegion pathTexture;
 
 	// GAME CONSTANTS AND VARIABLES
@@ -260,6 +263,8 @@ public class WorldController implements ContactListener, Screen {
 		carnivoreTexture = createTexture(manager,CARNIVORE_FILE,false);
 		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
+		System.out.println(EDIBLE_WALL_FILE);
+		edibleWallTexture = createTexture(manager, DOLL_FILE, false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
 
 		worldAssetState = AssetState.COMPLETE;
@@ -761,6 +766,14 @@ public class WorldController implements ContactListener, Screen {
 			obj.setName(wname + ii);
 			addObject(obj);
 		}
+
+
+		dwidth = edibleWallTexture.getRegionWidth() / scale.x;
+		dheight = edibleWallTexture.getRegionHeight() / scale.y;
+
+		EdibleWall wall = new EdibleWall(50, 50, dwidth, dheight);
+		wall.setTexture(edibleWallTexture);
+		addObject(wall);
 
 		// Create dude
 		dwidth = dollTexture.getRegionWidth() / scale.x;

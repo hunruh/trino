@@ -77,6 +77,7 @@ public class InputController {
 	private boolean herbiFormPrevious;
 	private boolean carniFormPressed;
 	private boolean carniFormPrevious;
+	private boolean eatPressed;
 	
 	/** How much did we move horizontally? */
 	private float horizontal;
@@ -225,6 +226,8 @@ public class InputController {
 	public boolean didTransform() {
 		return didTransformDoll() || didTransformHerbi() || didTransformCarni();
 	}
+
+	public boolean didEat(){ return eatPressed;}
 	
 	/**
 	 * Creates a new input controller
@@ -335,9 +338,9 @@ public class InputController {
 		dollFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_1) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1);
 		herbiFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
 		carniFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_3) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3);
+		eatPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
 		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
-		secondPressed = (Gdx.input.isKeyPressed(Input.Keys.SPACE));
 		//prevPressed = (Gdx.input.isKeyPressed(Input.Keys.P));
 		//nextPressed = (Gdx.input.isKeyPressed(Input.Keys.N));
 
