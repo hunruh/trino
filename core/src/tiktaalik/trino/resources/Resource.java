@@ -18,8 +18,4 @@ public abstract class Resource {
 
     public void setLocation(Vector2 location) {this.location = location;}
 
-
-
-
-
 }
