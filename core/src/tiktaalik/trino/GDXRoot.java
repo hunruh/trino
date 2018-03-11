@@ -21,9 +21,6 @@ import com.badlogic.gdx.assets.loaders.*;
 import com.badlogic.gdx.assets.loaders.resolvers.*;
 
 import tiktaalik.util.*;
-import tiktaalik.trino.rocket.*;
-import tiktaalik.trino.ragdoll.*;
-import tiktaalik.trino.platform.*;
 
 /**
  * Root class for a LibGDX.  
@@ -43,8 +40,8 @@ public class GDXRoot extends Game implements ScreenListener {
 	private LoadingMode loading;
 	/** Player mode for the the game proper (CONTROLLER CLASS) */
 	private int current;
-	/** List of all WorldControllers */
-	private WorldController[] controllers;
+	/** The world controller */
+	private WorldController controller;
 	
 	/**
 	 * Creates a new game from the configuration settings.
@@ -73,13 +70,9 @@ public class GDXRoot extends Game implements ScreenListener {
 		loading = new LoadingMode(canvas,manager,1);
 		
 		// Initialize the three game worlds
-		controllers = new WorldController[3];
-		controllers[1] = new RocketController();
-		controllers[0] = new PlatformController();
-		controllers[2] = new RagdollController();
-		for(int ii = 0; ii < controllers.length; ii++) {
-			controllers[ii].preLoadContent(manager);
-		}
+		controller = new WorldController();
+		controller.preLoadContent(manager);
+
 		current = 0;
 		loading.setScreenListener(this);
 		setScreen(loading);
@@ -93,10 +86,8 @@ public class GDXRoot extends Game implements ScreenListener {
 	public void dispose() {
 		// Call dispose on our children
 		setScreen(null);
-		for(int ii = 0; ii < controllers.length; ii++) {
-			controllers[ii].unloadContent(manager);
-			controllers[ii].dispose();
-		}
+		controller.unloadContent(manager);
+		controller.dispose();
 
 		canvas.dispose();
 		canvas = null;
@@ -131,24 +122,20 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
 		if (screen == loading) {
-			for(int ii = 0; ii < controllers.length; ii++) {
-				controllers[ii].loadContent(manager);
-				controllers[ii].setScreenListener(this);
-				controllers[ii].setCanvas(canvas);
-			}
-			controllers[current].reset();
-			setScreen(controllers[current]);
+			controller.loadContent(manager);
+			controller.setScreenListener(this);
+			controller.setCanvas(canvas);
+			controller.reset();
+			setScreen(controller);
 			
 			loading.dispose();
 			loading = null;
 		} else if (exitCode == WorldController.EXIT_NEXT) {
-			current = (current+1) % controllers.length;
-			controllers[current].reset();
-			setScreen(controllers[current]);
+			controller.reset();
+			setScreen(controller);
 		} else if (exitCode == WorldController.EXIT_PREV) {
-			current = (current+controllers.length-1) % controllers.length;
-			controllers[current].reset();
-			setScreen(controllers[current]);
+			controller.reset();
+			setScreen(controller);
 		} else if (exitCode == WorldController.EXIT_QUIT) {
 			// We quit the main application
 			Gdx.app.exit();
