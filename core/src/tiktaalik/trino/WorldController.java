@@ -81,6 +81,12 @@ public class WorldController implements ContactListener, Screen {
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
 	private static final String PATH_FILE = "trino/path.png";
 
+	private static final int COTTON = 0;
+	private static final int EDIBLEWALL = 1;
+	private static final int STUNNEDENEMY = 2;
+	private static final int WALL = 3;
+	private static final int ENEMY = 4;
+
 	/** Texture assets for the general game */
 	private TextureRegion earthTile;
 	private TextureRegion goalTile;
@@ -98,6 +104,10 @@ public class WorldController implements ContactListener, Screen {
 	private TextureRegion wallTexture;
 	private TextureRegion edibleWallTexture;
 	private TextureRegion pathTexture;
+
+	//index of the object Duggi collided with
+	private int collidedWith;
+	private int collidedType;
 
 	// GAME CONSTANTS AND VARIABLES
 	/** Constants for initialization */
@@ -182,6 +192,8 @@ public class WorldController implements ContactListener, Screen {
 	private EnemyModel enemy;
 	/** Reference to the goalDoor (for collision detection) */
 	private BoxObstacle goalDoor;
+
+	private EdibleWall edibleWall;
 
 	// Variables for the enemy model
 	private Vector2 cachePosition1 = new Vector2(0,0);
@@ -803,11 +815,11 @@ public class WorldController implements ContactListener, Screen {
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
 
-		EdibleWall wall = new EdibleWall(8, 8, dwidth, dheight);
-		wall.setBodyType(BodyDef.BodyType.StaticBody);
-		wall.setDrawScale(scale);
-		wall.setTexture(edibleWallTexture);
-		addObject(wall);
+		edibleWall = new EdibleWall(8, 8, dwidth, dheight, objects.size());
+		edibleWall.setBodyType(BodyDef.BodyType.StaticBody);
+		edibleWall.setDrawScale(scale);
+		edibleWall.setTexture(edibleWallTexture);
+		addObject(edibleWall);
 	}
 
 	/**
@@ -833,11 +845,25 @@ public class WorldController implements ContactListener, Screen {
 		avatar.setMovement(InputController.getInstance().getHorizontal());
 		avatar.setUpDown(InputController.getInstance().getVertical());
 		//avatar.setJumping(InputController.getInstance().didPrimary());
+		//System.out.println(avatar.getForm());
 		if (InputController.getInstance().didAction()) {
+			System.out.println(collidedWith);
+			System.out.println(objects.get(collidedWith).toString());
+			System.out.println(objects.size());
 			System.out.println(avatar.getForm());
 			if (avatar.getForm() == 1) {
-				objects.getTail().deactivatePhysics(world);
-				objects.removeTail();
+				System.out.println("collided with: " +collidedWith);
+				System.out.println("collided type: " +collidedType);
+				if (collidedType == EDIBLEWALL) {
+					System.out.println("sdga");
+					System.out.println(collidedWith);
+					System.out.println(objects.get(collidedWith).toString());
+					System.out.println(objects.size());
+					System.out.println(avatar.getForm());
+					objects.remove(edibleWall);
+					collidedType = -1;
+					collidedWith = -1;
+				}
 			}
 		}
 
@@ -908,11 +934,13 @@ public class WorldController implements ContactListener, Screen {
 	 * @param contact The two bodies that collided
 	 */
 	public void beginContact(Contact contact) {
+
 		Fixture fix1 = contact.getFixtureA();
 		Fixture fix2 = contact.getFixtureB();
 
 		Body body1 = fix1.getBody();
 		Body body2 = fix2.getBody();
+
 
 		Object fd1 = fix1.getUserData();
 		Object fd2 = fix2.getUserData();
@@ -920,6 +948,13 @@ public class WorldController implements ContactListener, Screen {
 		try {
 			Obstacle bd1 = (Obstacle)body1.getUserData();
 			Obstacle bd2 = (Obstacle)body2.getUserData();
+
+			if (bd1 == avatar || bd2 == avatar) {
+				System.out.println("dfghs'");
+				System.out.println(bd1.toString());
+				System.out.println(bd2.toString());
+				System.out.println(bd1 == edibleWall);
+			}
 
 			// See if we have landed on the ground.
 			if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
@@ -937,6 +972,12 @@ public class WorldController implements ContactListener, Screen {
 			if ((bd1 == avatar   && bd2 == enemy) ||
 					(bd1 == enemy && bd2 == avatar)) {
 				setFailure(true);
+			}
+
+			if ((bd1 == avatar && bd2 == edibleWall) || (bd1 == edibleWall && bd2 == avatar)) {
+				System.out.println("hi");
+				collidedWith = edibleWall.getIndex();
+				collidedType = EDIBLEWALL;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -964,12 +1005,34 @@ public class WorldController implements ContactListener, Screen {
 		Object bd1 = body1.getUserData();
 		Object bd2 = body2.getUserData();
 
+		if (bd1 == avatar || bd2 == avatar) {
+			collidedType = -1;
+			collidedWith = -1;
+		}
+
 		if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
 				(avatar.getSensorName().equals(fd1) && avatar != bd2)) {
 			sensorFixtures.remove(avatar == bd1 ? fix2 : fix1);
 		}
-	}
 
+	}
+/*
+	public boolean objectTooFarX(Obstacle object){
+		System.out.println("in objectTooFarX, dx,width");
+		System.out.println(Math.abs(object.getX() - avatar.getX()));
+		System.out.println(avatar.getWidth());
+		System.out.println(avatar.getHeight());
+		return (Math.abs(object.getX() - avatar.getX()) >= avatar.getWidth()/3);
+	}
+	public boolean objectTooFarY(Obstacle object){
+		System.out.println("in objectTooFar, dy, height");
+		System.out.println(Math.abs(object.getX() - avatar.getX()));
+		System.out.println(Math.abs(object.getY() - avatar.getY()));
+		System.out.println(avatar.getWidth());
+		System.out.println(avatar.getHeight());
+		return (Math.abs(object.getX() - avatar.getX()) >= avatar.getWidth()/3);
+	}
+*/
 	/** Unused ContactListener method */
 	public void postSolve(Contact contact, ContactImpulse impulse) {}
 	/** Unused ContactListener method */
