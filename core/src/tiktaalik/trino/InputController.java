@@ -227,7 +227,7 @@ public class InputController {
 		return didTransformDoll() || didTransformHerbi() || didTransformCarni();
 	}
 
-	public boolean didEat(){ return eatPressed;}
+	public boolean didAction(){ return eatPressed;}
 	
 	/**
 	 * Creates a new input controller

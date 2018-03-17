@@ -269,7 +269,7 @@ public class WorldController implements ContactListener, Screen {
 
 		worldAssetState = AssetState.COMPLETE;
 	}
-	
+
 	/**
 	 * Returns a newly loaded texture region for the given file.
 	 *
@@ -768,12 +768,6 @@ public class WorldController implements ContactListener, Screen {
 		}
 
 
-		dwidth = edibleWallTexture.getRegionWidth() / scale.x;
-		dheight = edibleWallTexture.getRegionHeight() / scale.y;
-
-		EdibleWall wall = new EdibleWall(50, 50, dwidth, dheight);
-		wall.setTexture(edibleWallTexture);
-		addObject(wall);
 
 		// Create dude
 		dwidth = dollTexture.getRegionWidth() / scale.x;
@@ -793,6 +787,15 @@ public class WorldController implements ContactListener, Screen {
 		enemy.setDrawScale(scale);
 		enemy.setTexture(enemyTexture);
 		addObject(enemy);
+
+		dwidth = dollTexture.getRegionWidth() / scale.x;
+		dheight = dollTexture.getRegionHeight() / scale.y;
+
+		EdibleWall wall = new EdibleWall(8, 8, dwidth, dheight);
+		wall.setBodyType(BodyDef.BodyType.StaticBody);
+		wall.setDrawScale(scale);
+		wall.setTexture(edibleWallTexture);
+		addObject(wall);
 	}
 
 	/**
@@ -818,6 +821,13 @@ public class WorldController implements ContactListener, Screen {
 		avatar.setMovement(InputController.getInstance().getHorizontal());
 		avatar.setUpDown(InputController.getInstance().getVertical());
 		//avatar.setJumping(InputController.getInstance().didPrimary());
+		if (InputController.getInstance().didAction()) {
+			System.out.println(avatar.getForm());
+			if (avatar.getForm() == 1) {
+				objects.getTail().deactivatePhysics(world);
+				objects.removeTail();
+			}
+		}
 
 		avatar.applyForce();
 
