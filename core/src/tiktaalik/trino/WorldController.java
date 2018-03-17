@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.DuggiModel;
+import tiktaalik.trino.enemy.EnemyList;
 import tiktaalik.trino.enemy.EnemyModel;
 import tiktaalik.trino.resources.EdibleWall;
 import tiktaalik.util.*;
@@ -184,6 +185,9 @@ public class WorldController implements ContactListener, Screen {
 	private BoxObstacle goalDoor;
 
 	// Variables for the enemy model
+
+	private EnemyList enemies;
+
 	private Vector2 cachePosition1 = new Vector2(0,0);
 	private Vector2 cachePosition2 = new Vector2(0,0);
 	private Vector2 cacheDirection = new Vector2(0,0);
@@ -799,6 +803,9 @@ public class WorldController implements ContactListener, Screen {
 		enemy.setDrawScale(scale);
 		enemy.setTexture(enemyTexture);
 		addObject(enemy);
+
+//		enemies = new EnemyList(1,scale, enemyTexture, objects);
+//		enemy = enemies.get(0);
 
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
