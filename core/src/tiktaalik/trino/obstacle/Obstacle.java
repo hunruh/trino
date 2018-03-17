@@ -67,6 +67,8 @@ public abstract class Obstacle {
 	/** A cache value for when the user wants to access the drawing scale */
 	protected Vector2 scaleCache = new Vector2();
 
+	private int type;
+
 
 	/// BodyDef Methods
 	/**
@@ -522,6 +524,14 @@ public abstract class Obstacle {
 		bodyinfo.gravityScale  = body.getGravityScale();
 		bodyinfo.angularDamping = body.getAngularDamping();
 		bodyinfo.linearDamping  = body.getLinearDamping();
+	}
+
+	public void setType(int type){
+		this.type = type;
+	}
+
+	public int getType(){
+		return type;
 	}
 	
 	/// FixtureDef Methods
