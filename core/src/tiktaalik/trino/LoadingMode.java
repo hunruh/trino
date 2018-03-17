@@ -46,7 +46,7 @@ import tiktaalik.util.*;
  */
 public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
-	private static final String BACKGROUND_FILE = "shared/loading.png";
+	private static final String BACKGROUND_FILE = "shared/trinoRoughTitle.png";
 	private static final String PROGRESS_FILE = "shared/progressbar.png";
 	private static final String PLAY_BTN_FILE = "shared/play.png";
 	
@@ -88,7 +88,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	/** Width of the middle portion in texture atlas */
 	private static int PROGRESS_MIDDLE = 200;
 	/** Amount to scale the play button */
-	private static float BUTTON_SCALE  = 0.75f;
+	private static float BUTTON_SCALE  = 0.60f;
 	
 	/** Start button for XBox controller on Windows */
 	private static int WINDOWS_START = 7;
@@ -270,13 +270,13 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 */
 	private void draw() {
 		canvas.begin();
-		canvas.draw(background, 0, 0);
+		canvas.draw(background, 0,0);
 		if (playButton == null) {
 			drawProgress(canvas);
 		} else {
-			Color tint = (pressState == 1 ? Color.GRAY: Color.WHITE);
+			Color tint = (pressState == 1 ? Color.GRAY: new Color(0x4DC068ff));
 			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2, 
-						centerX, centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+						centerX, centerY - playButton.getHeight()/4, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
 		}
 		canvas.end();
 	}

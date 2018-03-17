@@ -821,6 +821,8 @@ public class WorldController implements ContactListener, Screen {
 		avatar.applyForce();
 
 
+		// Enemy Movement - NEED TO MOVE TO OWN CONTROLLER
+
 		if (Vector2.dst(enemy.getPosition().x,enemy.getPosition().y,avatar.getPosition().x,avatar.getPosition().y) < 5){
 			enemyMoving = true;
 		} else {
@@ -829,7 +831,6 @@ public class WorldController implements ContactListener, Screen {
 
 
 		if (enemyMoving){
-			// Enemy Movement
 			cachePosition1 = enemy.getPosition();
 			cachePosition2 = avatar.getPosition();
 			cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
@@ -841,7 +842,7 @@ public class WorldController implements ContactListener, Screen {
 			enemy.setPosition(enemy.getPosition().add(cacheDirection));
 
 		}
-		else if (Math.abs(enemy.getPosition().x - ENEMY_POS.x) < 0.1f){
+		else if (Math.abs(enemy.getPosition().x - ENEMY_POS.x) < 0.2f){
 
 			// Process actions for the enemy model
 			if (enemy.getCounter() % 100 == 1) {
@@ -866,22 +867,9 @@ public class WorldController implements ContactListener, Screen {
 			enemy.setPosition(enemy.getPosition().add(cacheDirection));
 
 
-//			// Process actions for the enemy model
-//			if (enemy.getCounter() % 100 == 1){
-//				enemyVertical = -enemyVertical;
-//			}
-//			enemy.setUpDown(enemyVertical);
-//			enemy.setMovement(0.0f);
-//			enemy.applyForce();
+
 		}
 
-//		// Process actions for the enemy model
-//		if (enemy.getCounter() % 100 == 1) {
-//			enemyVertical = -enemyVertical;
-//		}
-//		enemy.setUpDown(enemyVertical);
-//		enemy.setMovement(0.0f);
-//		enemy.applyForce();
 
 		// If we use sound, we must remember this.
 		SoundController.getInstance().update();
