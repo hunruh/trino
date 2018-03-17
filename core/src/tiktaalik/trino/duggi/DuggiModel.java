@@ -276,6 +276,7 @@ public class DuggiModel extends CapsuleObstacle {
         else if (form == CARNIVORE_FORM)
             currentForm = carnivore;
         this.form = form;
+        //System.out.println(this.form);
     }
 
     public int getForm(){
