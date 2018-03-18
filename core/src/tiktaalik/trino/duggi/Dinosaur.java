@@ -45,6 +45,7 @@ public abstract class Dinosaur extends GameObject {
         this.texture = d.texture;
         this.origin = d.origin;
         setName(d.getName());
+        setType(d.getType());
 
         this.leftRight = d.leftRight;
         this.upDown = d.upDown;

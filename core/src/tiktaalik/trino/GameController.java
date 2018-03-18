@@ -193,8 +193,8 @@ public class GameController implements ContactListener, Screen {
 	/** Countdown active for winning or losing */
 	private int countdown;
 
-	/** Reference to the character avatar */
-	private Dinosaur avatar;
+	private Dinosaur avatar; // Reference to the character avatar
+	private int avatarIdx; // Position of the character avatar in the objects list
 	/** Reference to the enemy avatar */
 	private Enemy enemy;
 	/** Reference to the goalDoor (for collision detection) */
@@ -793,9 +793,21 @@ public class GameController implements ContactListener, Screen {
 	 * Lays out the game geography.
 	 */
 	private void populateLevel() {
+		// Create player character
+		// It is important that this is always created first, as transformations must swap the first element
+		// in the objects list
+		float dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
+		float dheight = dollTexture.getRegionHeight() / scale.y;
+		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
+		avatar.setTexture(dollTexture);
+		avatar.setDrawScale(scale);
+		avatar.setType(DUGGI);
+		addObject(avatar);
+
+
 		// Add level goal
-		float dwidth = goalTile.getRegionWidth() / scale.x;
-		float dheight = goalTile.getRegionHeight() / scale.y;
+		dwidth = goalTile.getRegionWidth() / scale.x;
+		dheight = goalTile.getRegionHeight() / scale.y;
 		goalDoor = new Wall(screenToMaze(16), screenToMaze(2), dwidth, dheight, false);
 		goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
 		goalDoor.setSensor(true);
@@ -804,15 +816,6 @@ public class GameController implements ContactListener, Screen {
 		goalDoor.setName("exit");
 		goalDoor.setType(GOAL);
 		addObject(goalDoor);
-
-		// Create player character
-		dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
-		dheight = dollTexture.getRegionHeight() / scale.y;
-		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
-		avatar.setTexture(dollTexture);
-		avatar.setDrawScale(scale);
-		avatar.setType(DUGGI);
-		addObject(avatar);
 
 		// Create enemy
 		dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
@@ -967,20 +970,22 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
-		//System.out.println("in update");
 		// Process actions in object model
 		if (InputHandler.getInstance().didTransform()) {
-			if (InputHandler.getInstance().didTransformDoll()) {
+			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
 				avatar = avatar.transformToDoll();
 				avatar.setTexture(dollTexture);
+				objects.set(1, avatar);
 			}
-			else if (InputHandler.getInstance().didTransformHerbi()) {
+			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 				avatar = avatar.transformToHerbivore();
 				avatar.setTexture(herbivoreTexture);
+				objects.set(1, avatar);
 			}
-			else if (InputHandler.getInstance().didTransformCarni()) {
+			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 				avatar = avatar.transformToCarnivore();
 				avatar.setTexture(carnivoreTexture);
+				objects.set(1, avatar);
 			}
 		}
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
@@ -988,10 +993,6 @@ public class GameController implements ContactListener, Screen {
 
 		boolean hasClone = false;
 		if (InputHandler.getInstance().didAction()) {
-			//System.out.println(collidedWith);
-			//System.out.println(objects.get(collidedWith).toString());
-			//System.out.println(objects.size());
-			//System.out.println(avatar.getForm());
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				if (!hasClone) {
 					float dwidth = dollTexture.getRegionWidth() / scale.x;
@@ -1006,7 +1007,9 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
+				System.out.println(collidedType);
 				if (collidedType == EDIBLEWALL) {
+					System.out.println("asdfA");
 					walls.get(collidedWith).deactivatePhysics(world);
 					objects.remove(walls.get(collidedWith));
 					collidedType = -1;
@@ -1115,13 +1118,11 @@ public class GameController implements ContactListener, Screen {
 		Object fd1 = fix1.getUserData();
 		Object fd2 = fix2.getUserData();
 
-
-
 		try {
 			GameObject bd1 = (GameObject)body1.getUserData();
 			GameObject bd2 = (GameObject)body2.getUserData();
 
-			if (bd1 == avatar || bd2 == avatar) {
+			if (bd1.getType() == DUGGI || bd2.getType() == DUGGI) {
 				//System.out.println("dfghs'");
 				//System.out.println(bd1.toString());
 				//System.out.println(bd2.toString());
@@ -1129,21 +1130,23 @@ public class GameController implements ContactListener, Screen {
 			}
 
 			// Check for win condition
-			if ((bd1 == avatar   && bd2 == goalDoor) ||
-					(bd1 == goalDoor && bd2 == avatar)) {
+			if ((bd1.getType() == DUGGI && bd2 == goalDoor) || (bd1 == goalDoor && bd2.getType() == DUGGI)) {
 				setComplete(true);
 			}
 
 			// Check if collided with enemy
-			if ((bd1 == avatar   && bd2 == enemy) ||
-					(bd1 == enemy && bd2 == avatar)) {
+			if ((bd1.getType() == DUGGI && bd2 == enemy) || (bd1 == enemy && bd2.getType() == DUGGI)) {
 				setFailure(true);
 			}
 
-			if ((bd1 == avatar && bd2.getType() == EDIBLEWALL) || (bd1.getType() == EDIBLEWALL && bd2 == avatar)) {
-				//System.out.println("hi");
-//				collidedWith = ((Wall)bd2).getIndex();
-//				collidedType = EDIBLEWALL;
+			if ((bd1.getType() == DUGGI && bd2.getType() == EDIBLEWALL) ||
+					(bd1.getType() == EDIBLEWALL && bd2.getType() == DUGGI)) {
+				System.out.println("colllided");
+				if (bd1.getType() == EDIBLEWALL)
+					collidedWith = walls.indexOf((Wall)bd1);
+				else
+					collidedWith = walls.indexOf((Wall)bd2);
+				collidedType = EDIBLEWALL;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1173,6 +1176,7 @@ public class GameController implements ContactListener, Screen {
 		Object bd2 = body2.getUserData();
 
 		if (bd1 == avatar || bd2 == avatar) {
+			System.out.println("Resetting");
 			collidedType = -1;
 			collidedWith = -1;
 		}

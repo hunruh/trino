@@ -17,6 +17,7 @@ public class Wall extends GameObject {
     private float[] vertices; // Cache of the polygon vertices (for resizing)
 
     private boolean edible;
+    private int index;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -25,7 +26,7 @@ public class Wall extends GameObject {
      * @param height	The object height in physics units
      * @param edible	If the wall can be consumed by the herbivore
      */
-    public Wall(float width, float height, boolean edible) {
+    public Wall(float width, float height, boolean edible, int index) {
         this(0,0,width,height, edible);
     }
 
