@@ -110,7 +110,7 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion pathTexture;
 
 	//index of the object Duggi collided with
-	private int collidedWith;
+	private GameObject collidedWith;
 	private int collidedType;
 
 	// GAME CONSTANTS AND VARIABLES
@@ -971,15 +971,15 @@ public class GameController implements ContactListener, Screen {
 		// Process actions in object model
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll()) {
-				avatar.transformToDoll();
+				avatar = avatar.transformToDoll();
 				avatar.setTexture(dollTexture);
 			}
 			else if (InputHandler.getInstance().didTransformHerbi()) {
-				avatar.transformToHerbivore();
+				avatar = avatar.transformToHerbivore();
 				avatar.setTexture(herbivoreTexture);
 			}
 			else if (InputHandler.getInstance().didTransformCarni()) {
-				avatar.transformToCarnivore();
+				avatar = avatar.transformToCarnivore();
 				avatar.setTexture(carnivoreTexture);
 			}
 		}
@@ -1007,10 +1007,10 @@ public class GameController implements ContactListener, Screen {
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				if (collidedType == EDIBLEWALL) {
-					walls.get(collidedWith).deactivatePhysics(world);
-					objects.remove(walls.get(collidedWith));
+					collidedWith.deactivatePhysics(world);
+					objects.remove(collidedWith);
 					collidedType = -1;
-					collidedWith = -1;
+					collidedWith = null;
 				}
 			}
 		}
@@ -1088,7 +1088,7 @@ public class GameController implements ContactListener, Screen {
 
 
 		}
-		System.out.println(avatar.getForm());
+		//System.out.println(avatar.getForm());
 
 
 		// If we use sound, we must remember this.
@@ -1144,7 +1144,9 @@ public class GameController implements ContactListener, Screen {
 			if ((bd1 == avatar && bd2.getType() == EDIBLEWALL) || (bd1.getType() == EDIBLEWALL && bd2 == avatar)) {
 				//System.out.println("hi");
 //				collidedWith = ((Wall)bd2).getIndex();
-//				collidedType = EDIBLEWALL;
+				collidedType = EDIBLEWALL;
+				collidedWith = bd2;
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1175,7 +1177,7 @@ public class GameController implements ContactListener, Screen {
 
 		if (bd1 == avatar || bd2 == avatar) {
 			collidedType = -1;
-			collidedWith = -1;
+			collidedWith = null;
 		}
 	}
 /*
