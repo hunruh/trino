@@ -19,9 +19,6 @@ package tiktaalik.trino;
 import java.util.Iterator;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -30,7 +27,6 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.DuggiModel;
-import tiktaalik.trino.enemy.EnemyList;
 import tiktaalik.trino.enemy.EnemyModel;
 import tiktaalik.trino.resources.EdibleWall;
 import tiktaalik.trino.resources.CottonFlower;

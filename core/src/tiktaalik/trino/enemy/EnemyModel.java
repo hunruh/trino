@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import tiktaalik.trino.Canvas;
+import tiktaalik.trino.InputController;
 import tiktaalik.trino.obstacle.CapsuleObstacle;
 
 public class EnemyModel extends CapsuleObstacle {
@@ -34,6 +35,8 @@ public class EnemyModel extends CapsuleObstacle {
     /** The amount to shrink the sensor fixture (horizontally) relative to the image */
     private static final float DUDE_SSHRINK = 0.6f;
 
+    private static final float MOVE_SPEED = 6.5f;
+
     /** The current horizontal movement of the character */
     private float   movement;
     /** The current vertical movement of the character */
@@ -54,7 +57,11 @@ public class EnemyModel extends CapsuleObstacle {
 
     private int id;
 
+    private Vector2 velocity;
+
     private boolean isAlive;
+
+    private Vector2 tmp;
 
     public void setId(int newId){
         this.id = newId;
@@ -64,11 +71,21 @@ public class EnemyModel extends CapsuleObstacle {
         return this.id;
     }
 
-    public void setIsAlive(boolean alive){
+    public float getVX(){return velocity.x;}
+
+    public void setVX(float value){velocity.x = value;}
+
+    public float getVY(){return velocity.y;}
+
+    public void setVY(float value){velocity.y = value;}
+
+    public Vector2 getVelocity(){return velocity;}
+
+    public void setAlive(boolean alive){
         this.isAlive = alive;
     }
 
-    public boolean getIsAlive(){
+    public boolean IsAlive(){
         return this.isAlive;
     }
 
@@ -180,20 +197,6 @@ public class EnemyModel extends CapsuleObstacle {
     }
 
     /**
-     * Creates a new dude at the origin.
-     *
-     * The size is expressed in physics units NOT pixels.  In order for
-     * drawing to work properly, you MUST set the drawScale. The drawScale
-     * converts the physics units to pixels.
-     *
-     * @param width		The object width in physics units
-     * @param height	The object width in physics units
-     */
-    public EnemyModel(float width, float height) {
-        this(0,0,width,height);
-    }
-
-    /**
      * Creates a new dude avatar at the given position.
      *
      * The size is expressed in physics units NOT pixels.  In order for
@@ -215,6 +218,10 @@ public class EnemyModel extends CapsuleObstacle {
         faceRight = true;
 
         setName("duggi");
+
+        // Initialize other variables
+        velocity = new Vector2();
+        isAlive = true;
     }
 
     /**
@@ -278,6 +285,35 @@ public class EnemyModel extends CapsuleObstacle {
     public void update(float dt) {
         counter++;
         super.update(dt);
+    }
+
+    public void updateMovement(int action){
+
+       // Determine how we are moving
+       boolean movingLeft = (action & InputController.CONTROL_MOVE_LEFT) != 0;
+       boolean movingRight = (action & InputController.CONTROL_MOVE_RIGHT) != 0;
+       boolean movingUp = (action & InputController.CONTROL_MOVE_UP) != 0;
+       boolean movingDown = (action & InputController.CONTROL_MOVE_DOWN) != 0;
+
+       // Process Movement command
+        if (movingLeft) {
+            velocity.x = -MOVE_SPEED;
+            velocity.y = 0;
+        } else if (movingRight) {
+            velocity.x = MOVE_SPEED;
+            velocity.y = 0;
+        } else if (movingUp) {
+            velocity.y = -MOVE_SPEED;
+            velocity.x = 0;
+        } else if (movingDown) {
+            velocity.y = MOVE_SPEED;
+            velocity.x = 0;
+        }
+
+        // Update position (Will probably move when we have collision controller
+        tmp.set(this.getX(),this.getY());
+        tmp.add(this.getVX(), this.getVY());
+        this.setPosition(tmp);
     }
 
     /**
