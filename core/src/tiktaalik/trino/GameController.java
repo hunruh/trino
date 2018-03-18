@@ -19,9 +19,6 @@ package tiktaalik.trino;
 import java.util.Iterator;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -30,11 +27,10 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.*;
-import tiktaalik.trino.enemy.EnemyModel;
-import tiktaalik.trino.resources.EdibleWall;
+import tiktaalik.trino.enemy.Enemy;
+import tiktaalik.trino.resources.Wall;
 import tiktaalik.trino.resources.CottonFlower;
 import tiktaalik.util.*;
-import tiktaalik.trino.obstacle.*;
 
 /**
  * Base class for a world-specific controller.
@@ -175,9 +171,9 @@ public class GameController implements ContactListener, Screen {
 	protected PooledList<GameObject> objects  = new PooledList<GameObject>();
 	/** Queue for adding objects */
 	private PooledList<GameObject> addQueue = new PooledList<GameObject>();
-	private PooledList<EdibleWall> edibleWalls = new PooledList<EdibleWall>();
+	private PooledList<Wall> walls = new PooledList<Wall>();
 	private PooledList<CottonFlower> cottonFlower = new PooledList<CottonFlower>();
-	private PooledList<EnemyModel> enemies = new PooledList<EnemyModel>();
+	private PooledList<Enemy> enemies = new PooledList<Enemy>();
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
 
@@ -200,9 +196,9 @@ public class GameController implements ContactListener, Screen {
 	/** Reference to the character avatar */
 	private Dinosaur avatar;
 	/** Reference to the enemy avatar */
-	private EnemyModel enemy;
+	private Enemy enemy;
 	/** Reference to the goalDoor (for collision detection) */
-	private BoxObstacle goalDoor;
+	private Wall goalDoor;
 
 
 	// Variables for the enemy model
@@ -549,9 +545,9 @@ public class GameController implements ContactListener, Screen {
 		g.activatePhysics(world);
 	}
 
-	public void addEdibleWall(EdibleWall obj){
+	public void addWall(Wall obj){
 		assert inBounds(obj): "Object is not in bounds";
-		edibleWalls.add(obj);
+		walls.add(obj);
 	}
 
 	public void addCottonFlower (CottonFlower obj) {
@@ -559,7 +555,7 @@ public class GameController implements ContactListener, Screen {
 		cottonFlower.add(obj);
 	}
 
-	public void addEnemy(EnemyModel obj){
+	public void addEnemy(Enemy obj){
 		assert inBounds(obj) : "Objects is not in bounds";
 		enemies.add(obj);
 	}
@@ -800,7 +796,7 @@ public class GameController implements ContactListener, Screen {
 		// Add level goal
 		float dwidth = goalTile.getRegionWidth() / scale.x;
 		float dheight = goalTile.getRegionHeight() / scale.y;
-		goalDoor = new BoxObstacle(screenToMaze(16), screenToMaze(2), dwidth, dheight);
+		goalDoor = new Wall(screenToMaze(16), screenToMaze(2), dwidth, dheight, false);
 		goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
 		goalDoor.setSensor(true);
 		goalDoor.setDrawScale(scale);
@@ -808,28 +804,9 @@ public class GameController implements ContactListener, Screen {
 		goalDoor.setName("exit");
 		goalDoor.setType(GOAL);
 		addObject(goalDoor);
-		//System.out.println(goalDoor.getType());
-
-//		String wname = "wall";
-//		for (int ii = 0; ii < WALL1.length; ii++) {
-//			PolygonObstacle obj;
-//			obj = new PolygonObstacle(WALL1[ii], 0, 0);
-//			obj.setBodyType(BodyDef.BodyType.StaticBody);
-//			obj.setDensity(BASIC_DENSITY);
-//			obj.setFriction(BASIC_FRICTION);
-//			obj.setRestitution(BASIC_RESTITUTION);
-//			obj.setDrawScale(scale);
-//			obj.setTexture(wallTexture);
-//			obj.setName(wname + ii);
-//			obj.setType(WALL);
-//			addObject(obj);
-//			//System.out.println(obj.getType());
-//		}
-
-
 
 		// Create player character
-		dwidth = dollTexture.getRegionWidth() / scale.x;
+		dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
 		dheight = dollTexture.getRegionHeight() / scale.y;
 		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
 		avatar.setTexture(dollTexture);
@@ -838,22 +815,22 @@ public class GameController implements ContactListener, Screen {
 		addObject(avatar);
 
 		// Create enemy
-		dwidth = dollTexture.getRegionWidth() / scale.x;
+		dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
 		dheight = dollTexture.getRegionHeight() / scale.y;
 
-		enemy = new EnemyModel(screenToMaze(11), screenToMaze(6), dwidth, dheight); // the only moving enemy right now
+		enemy = new Enemy(screenToMaze(11), screenToMaze(6), dwidth); // the only moving enemy right now
 		enemy.setType(ENEMY);
 		enemy.setDrawScale(scale);
 		enemy.setTexture(enemyTexture);
 		addObject(enemy);
 		addEnemy(enemy);
 		//adding the rest of the enemies; they're static right now
-		EnemyModel en1 = new EnemyModel(screenToMaze(4), screenToMaze(3), dwidth, dheight);
-		EnemyModel en2 = new EnemyModel(screenToMaze(6), screenToMaze(5), dwidth, dheight);
-		EnemyModel en3 = new EnemyModel(screenToMaze(9), screenToMaze(3), dwidth, dheight);
-		EnemyModel en4 = new EnemyModel(screenToMaze(12), screenToMaze(4), dwidth, dheight);
-		EnemyModel en5 = new EnemyModel(screenToMaze(14), screenToMaze(4), dwidth, dheight);
-		EnemyModel[] en = new EnemyModel[]{en1, en2, en3, en4, en5};
+		Enemy en1 = new Enemy(screenToMaze(4), screenToMaze(3), dwidth);
+		Enemy en2 = new Enemy(screenToMaze(6), screenToMaze(5), dwidth);
+		Enemy en3 = new Enemy(screenToMaze(9), screenToMaze(3), dwidth);
+		Enemy en4 = new Enemy(screenToMaze(12), screenToMaze(4), dwidth);
+		Enemy en5 = new Enemy(screenToMaze(14), screenToMaze(4), dwidth);
+		Enemy[] en = new Enemy[]{en1, en2, en3, en4, en5};
 		for (int i = 0; i < 5; i++) {
 			en[i].setType(ENEMY);
 			en[i].setDrawScale(scale);
@@ -870,33 +847,33 @@ public class GameController implements ContactListener, Screen {
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
 
-		EdibleWall ew1 = new EdibleWall(screenToMaze(2), screenToMaze(4), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew2 = new EdibleWall(screenToMaze(3), screenToMaze(3), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew3 = new EdibleWall(screenToMaze(3), screenToMaze(4), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew4 = new EdibleWall(screenToMaze(5), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew5 = new EdibleWall(screenToMaze(6), screenToMaze(1), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew6 = new EdibleWall(screenToMaze(6), screenToMaze(2), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew7 = new EdibleWall(screenToMaze(6), screenToMaze(3), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew8 = new EdibleWall(screenToMaze(6), screenToMaze(4), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew9 = new EdibleWall(screenToMaze(6), screenToMaze(6), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew10 = new EdibleWall(screenToMaze(6), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew11 = new EdibleWall(screenToMaze(7), screenToMaze(6), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew12 = new EdibleWall(screenToMaze(8), screenToMaze(6), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew13 = new EdibleWall(screenToMaze(8), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew14 = new EdibleWall(screenToMaze(9), screenToMaze(1), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew15 = new EdibleWall(screenToMaze(9), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew16 = new EdibleWall(screenToMaze(10), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew17 = new EdibleWall(screenToMaze(11), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew18 = new EdibleWall(screenToMaze(12), screenToMaze(2), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew19 = new EdibleWall(screenToMaze(12), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew20 = new EdibleWall(screenToMaze(13), screenToMaze(2), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew21 = new EdibleWall(screenToMaze(13), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew22 = new EdibleWall(screenToMaze(14), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew23 = new EdibleWall(screenToMaze(14), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew24 = new EdibleWall(screenToMaze(15), screenToMaze(3), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew25 = new EdibleWall(screenToMaze(15), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall ew26 = new EdibleWall(screenToMaze(15), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall[] veg = new EdibleWall[]{ew1, ew2, ew3, ew4, ew5, ew6, ew7, ew8, ew9, ew10, ew11, ew12, ew13,
+		Wall ew1 = new Wall(screenToMaze(2), screenToMaze(4), dwidth, dheight, true);
+		Wall ew2 = new Wall(screenToMaze(3), screenToMaze(3), dwidth, dheight, true);
+		Wall ew3 = new Wall(screenToMaze(3), screenToMaze(4), dwidth, dheight, true);
+		Wall ew4 = new Wall(screenToMaze(5), screenToMaze(5), dwidth, dheight, true);
+		Wall ew5 = new Wall(screenToMaze(6), screenToMaze(1), dwidth, dheight, true);
+		Wall ew6 = new Wall(screenToMaze(6), screenToMaze(2), dwidth, dheight, true);
+		Wall ew7 = new Wall(screenToMaze(6), screenToMaze(3), dwidth, dheight, true);
+		Wall ew8 = new Wall(screenToMaze(6), screenToMaze(4), dwidth, dheight, true);
+		Wall ew9 = new Wall(screenToMaze(6), screenToMaze(6), dwidth, dheight, true);
+		Wall ew10 = new Wall(screenToMaze(6), screenToMaze(7), dwidth, dheight, true);
+		Wall ew11 = new Wall(screenToMaze(7), screenToMaze(6), dwidth, dheight, true);
+		Wall ew12 = new Wall(screenToMaze(8), screenToMaze(6), dwidth, dheight, true);
+		Wall ew13 = new Wall(screenToMaze(8), screenToMaze(7), dwidth, dheight, true);
+		Wall ew14 = new Wall(screenToMaze(9), screenToMaze(1), dwidth, dheight, true);
+		Wall ew15 = new Wall(screenToMaze(9), screenToMaze(5), dwidth, dheight, true);
+		Wall ew16 = new Wall(screenToMaze(10), screenToMaze(5), dwidth, dheight, true);
+		Wall ew17 = new Wall(screenToMaze(11), screenToMaze(5), dwidth, dheight, true);
+		Wall ew18 = new Wall(screenToMaze(12), screenToMaze(2), dwidth, dheight, true);
+		Wall ew19 = new Wall(screenToMaze(12), screenToMaze(7), dwidth, dheight, true);
+		Wall ew20 = new Wall(screenToMaze(13), screenToMaze(2), dwidth, dheight, true);
+		Wall ew21 = new Wall(screenToMaze(13), screenToMaze(7), dwidth, dheight, true);
+		Wall ew22 = new Wall(screenToMaze(14), screenToMaze(5), dwidth, dheight, true);
+		Wall ew23 = new Wall(screenToMaze(14), screenToMaze(7), dwidth, dheight, true);
+		Wall ew24 = new Wall(screenToMaze(15), screenToMaze(3), dwidth, dheight, true);
+		Wall ew25 = new Wall(screenToMaze(15), screenToMaze(5), dwidth, dheight, true);
+		Wall ew26 = new Wall(screenToMaze(15), screenToMaze(7), dwidth, dheight, true);
+		Wall[] veg = new Wall[]{ew1, ew2, ew3, ew4, ew5, ew6, ew7, ew8, ew9, ew10, ew11, ew12, ew13,
 				ew14, ew15, ew16, ew17, ew18, ew19, ew20, ew21, ew22, ew23, ew24, ew25, ew26};
 		for (int i = 0; i < 26; i++) {
 			veg[i].setBodyType(BodyDef.BodyType.StaticBody);
@@ -904,35 +881,35 @@ public class GameController implements ContactListener, Screen {
 			veg[i].setTexture(edibleWallTexture);
 			veg[i].setType(EDIBLEWALL);
 			addObject(veg[i]);
-			addEdibleWall(veg[i]);
+			addWall(veg[i]);
 		}
 		//System.out.println(ew.getType());
 
 		/** Adding inedible walls */
-		EdibleWall iw1 = new EdibleWall(screenToMaze(2), screenToMaze(2), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw2 = new EdibleWall(screenToMaze(2), screenToMaze(3), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw3 = new EdibleWall(screenToMaze(2), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw4 = new EdibleWall(screenToMaze(2), screenToMaze(6), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw5 = new EdibleWall(screenToMaze(3), screenToMaze(6), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw6 = new EdibleWall(screenToMaze(3), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw7 = new EdibleWall(screenToMaze(4), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw8 = new EdibleWall(screenToMaze(5), screenToMaze(3), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw9 = new EdibleWall(screenToMaze(5), screenToMaze(4), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw10 = new EdibleWall(screenToMaze(5), screenToMaze(8), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw11 = new EdibleWall(screenToMaze(6), screenToMaze(8), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw12 = new EdibleWall(screenToMaze(7), screenToMaze(3), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw13 = new EdibleWall(screenToMaze(7), screenToMaze(4), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw14 = new EdibleWall(screenToMaze(8), screenToMaze(2), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw15 = new EdibleWall(screenToMaze(9), screenToMaze(4), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw16 = new EdibleWall(screenToMaze(10), screenToMaze(6), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw17 = new EdibleWall(screenToMaze(10), screenToMaze(7), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw18 = new EdibleWall(screenToMaze(10), screenToMaze(8), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw19 = new EdibleWall(screenToMaze(12), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw20 = new EdibleWall(screenToMaze(13), screenToMaze(4), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw21 = new EdibleWall(screenToMaze(13), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw22 = new EdibleWall(screenToMaze(16), screenToMaze(5), dwidth, dheight, edibleWalls.size());
-		EdibleWall iw23 = new EdibleWall(screenToMaze(4), screenToMaze(4), dwidth, dheight, edibleWalls.size());
-		EdibleWall[] iw = new EdibleWall[] {iw1, iw2, iw3, iw4, iw5, iw6, iw7, iw8, iw9, iw10, iw11, iw12, iw13, iw14,
+		Wall iw1 = new Wall(screenToMaze(2), screenToMaze(2), dwidth, dheight, false);
+		Wall iw2 = new Wall(screenToMaze(2), screenToMaze(3), dwidth, dheight, false);
+		Wall iw3 = new Wall(screenToMaze(2), screenToMaze(5), dwidth, dheight, false);
+		Wall iw4 = new Wall(screenToMaze(2), screenToMaze(6), dwidth, dheight, false);
+		Wall iw5 = new Wall(screenToMaze(3), screenToMaze(6), dwidth, dheight, false);
+		Wall iw6 = new Wall(screenToMaze(3), screenToMaze(7), dwidth, dheight, false);
+		Wall iw7 = new Wall(screenToMaze(4), screenToMaze(7), dwidth, dheight, false);
+		Wall iw8 = new Wall(screenToMaze(5), screenToMaze(3), dwidth, dheight, false);
+		Wall iw9 = new Wall(screenToMaze(5), screenToMaze(4), dwidth, dheight, false);
+		Wall iw10 = new Wall(screenToMaze(5), screenToMaze(8), dwidth, dheight, false);
+		Wall iw11 = new Wall(screenToMaze(6), screenToMaze(8), dwidth, dheight, false);
+		Wall iw12 = new Wall(screenToMaze(7), screenToMaze(3), dwidth, dheight, false);
+		Wall iw13 = new Wall(screenToMaze(7), screenToMaze(4), dwidth, dheight, false);
+		Wall iw14 = new Wall(screenToMaze(8), screenToMaze(2), dwidth, dheight, false);
+		Wall iw15 = new Wall(screenToMaze(9), screenToMaze(4), dwidth, dheight, false);
+		Wall iw16 = new Wall(screenToMaze(10), screenToMaze(6), dwidth, dheight, false);
+		Wall iw17 = new Wall(screenToMaze(10), screenToMaze(7), dwidth, dheight, false);
+		Wall iw18 = new Wall(screenToMaze(10), screenToMaze(8), dwidth, dheight, false);
+		Wall iw19 = new Wall(screenToMaze(12), screenToMaze(5), dwidth, dheight, false);
+		Wall iw20 = new Wall(screenToMaze(13), screenToMaze(4), dwidth, dheight, false);
+		Wall iw21 = new Wall(screenToMaze(13), screenToMaze(5), dwidth, dheight, false);
+		Wall iw22 = new Wall(screenToMaze(16), screenToMaze(5), dwidth, dheight, false);
+		Wall iw23 = new Wall(screenToMaze(4), screenToMaze(4), dwidth, dheight, false);
+		Wall[] iw = new Wall[] {iw1, iw2, iw3, iw4, iw5, iw6, iw7, iw8, iw9, iw10, iw11, iw12, iw13, iw14,
 				iw15, iw16, iw17, iw18, iw19, iw20, iw21, iw22, iw23};
 		for (int i =0; i < 23; i++) {
 			iw[i].setBodyType(BodyDef.BodyType.StaticBody);
@@ -940,27 +917,27 @@ public class GameController implements ContactListener, Screen {
 			iw[i].setTexture(wallTexture);
 			iw[i].setType(WALL);
 			addObject(iw[i]);
-			addEdibleWall(iw[i]);
+			addWall(iw[i]);
 		}
 
 		/** Adding cotton flowers */
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
-		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight, cottonFlower.size());
-		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf4 = new CottonFlower(screenToMaze(3), screenToMaze(5), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf5 = new CottonFlower(screenToMaze(3), screenToMaze(8), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf6 = new CottonFlower(screenToMaze(4), screenToMaze(5), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf7 = new CottonFlower(screenToMaze(4), screenToMaze(6), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf8 = new CottonFlower(screenToMaze(4), screenToMaze(8), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf9 = new CottonFlower(screenToMaze(7), screenToMaze(7), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf10 = new CottonFlower(screenToMaze(11), screenToMaze(2), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf11 = new CottonFlower(screenToMaze(13), screenToMaze(6), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf12 = new CottonFlower(screenToMaze(15), screenToMaze(8), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf13 = new CottonFlower(screenToMaze(16), screenToMaze(1), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf14 = new CottonFlower(screenToMaze(16), screenToMaze(4), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf15 = new CottonFlower(screenToMaze(16), screenToMaze(8), dwidth, dheight, cottonFlower.size());
+		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight);
+		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight);
+		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf4 = new CottonFlower(screenToMaze(3), screenToMaze(5), dwidth, dheight);
+		CottonFlower cf5 = new CottonFlower(screenToMaze(3), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf6 = new CottonFlower(screenToMaze(4), screenToMaze(5), dwidth, dheight);
+		CottonFlower cf7 = new CottonFlower(screenToMaze(4), screenToMaze(6), dwidth, dheight);
+		CottonFlower cf8 = new CottonFlower(screenToMaze(4), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf9 = new CottonFlower(screenToMaze(7), screenToMaze(7), dwidth, dheight);
+		CottonFlower cf10 = new CottonFlower(screenToMaze(11), screenToMaze(2), dwidth, dheight);
+		CottonFlower cf11 = new CottonFlower(screenToMaze(13), screenToMaze(6), dwidth, dheight);
+		CottonFlower cf12 = new CottonFlower(screenToMaze(15), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf13 = new CottonFlower(screenToMaze(16), screenToMaze(1), dwidth, dheight);
+		CottonFlower cf14 = new CottonFlower(screenToMaze(16), screenToMaze(4), dwidth, dheight);
+		CottonFlower cf15 = new CottonFlower(screenToMaze(16), screenToMaze(8), dwidth, dheight);
 		CottonFlower[] cf = new CottonFlower[] {cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
 				cf11, cf12, cf13, cf14, cf15};
 		for (int i = 0; i < 13; i++) {
@@ -1019,20 +996,19 @@ public class GameController implements ContactListener, Screen {
 				if (!hasClone) {
 					float dwidth = dollTexture.getRegionWidth() / scale.x;
 					float dheight = dollTexture.getRegionHeight() / scale.y;
-					DuggiModel clone = new DuggiModel(screenToMaze(1), screenToMaze(1), dwidth, dheight);
-					clone.setTexture(dollTexture);
-					clone.setDrawScale(scale);
-					clone.setDollTexture(dollTexture);
-					clone.setType(CLONE);
-					addObject(clone);
+//					DuggiModel clone = new DuggiModel(screenToMaze(1), screenToMaze(1), dwidth, dheight);
+//					clone.setTexture(dollTexture);
+//					clone.setDrawScale(scale);
+//					clone.setDollTexture(dollTexture);
+//					clone.setType(CLONE);
+//					addObject(clone);
 					hasClone = true;
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				if (collidedType == EDIBLEWALL) {
-					edibleWalls.get(collidedWith).deactivatePhysics(world);
-					objects.remove(edibleWalls.get(collidedWith));
-					System.out.println(edibleWalls.get(collidedWith));
+					walls.get(collidedWith).deactivatePhysics(world);
+					objects.remove(walls.get(collidedWith));
 					collidedType = -1;
 					collidedWith = -1;
 				}
@@ -1142,8 +1118,8 @@ public class GameController implements ContactListener, Screen {
 
 
 		try {
-			Obstacle bd1 = (Obstacle)body1.getUserData();
-			Obstacle bd2 = (Obstacle)body2.getUserData();
+			GameObject bd1 = (GameObject)body1.getUserData();
+			GameObject bd2 = (GameObject)body2.getUserData();
 
 			if (bd1 == avatar || bd2 == avatar) {
 				//System.out.println("dfghs'");
@@ -1166,8 +1142,8 @@ public class GameController implements ContactListener, Screen {
 
 			if ((bd1 == avatar && bd2.getType() == EDIBLEWALL) || (bd1.getType() == EDIBLEWALL && bd2 == avatar)) {
 				//System.out.println("hi");
-				collidedWith = ((EdibleWall)bd2).getIndex();
-				collidedType = EDIBLEWALL;
+//				collidedWith = ((Wall)bd2).getIndex();
+//				collidedType = EDIBLEWALL;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
