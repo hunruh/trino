@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import tiktaalik.trino.GameCanvas;
+import tiktaalik.trino.Canvas;
 import tiktaalik.trino.obstacle.Obstacle;
 import tiktaalik.util.PooledList;
 
@@ -122,7 +122,7 @@ public class EnemyList implements Iterable<EnemyModel> {
      *
      * @param canvas the drawing context
      */
-    public void draw(GameCanvas canvas) {
+    public void draw(Canvas canvas) {
         // Increment the animation factor
         time += 0.05f;
 
