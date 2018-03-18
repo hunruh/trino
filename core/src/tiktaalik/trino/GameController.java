@@ -853,7 +853,7 @@ public class GameController implements ContactListener, Screen {
 		addObject(enemy);
 		addEnemy(enemy);
 		//adding the rest of the enemies; they're static right now
-		EnemyModel en1 = new EnemyModel(screenToMaze(4), screenToMaze(4), dwidth, dheight);
+		EnemyModel en1 = new EnemyModel(screenToMaze(4), screenToMaze(3), dwidth, dheight);
 		EnemyModel en2 = new EnemyModel(screenToMaze(6), screenToMaze(5), dwidth, dheight);
 		EnemyModel en3 = new EnemyModel(screenToMaze(9), screenToMaze(3), dwidth, dheight);
 		EnemyModel en4 = new EnemyModel(screenToMaze(12), screenToMaze(4), dwidth, dheight);
@@ -936,9 +936,10 @@ public class GameController implements ContactListener, Screen {
 		EdibleWall iw20 = new EdibleWall(screenToMaze(13), screenToMaze(4), dwidth, dheight, edibleWalls.size());
 		EdibleWall iw21 = new EdibleWall(screenToMaze(13), screenToMaze(5), dwidth, dheight, edibleWalls.size());
 		EdibleWall iw22 = new EdibleWall(screenToMaze(16), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw23 = new EdibleWall(screenToMaze(4), screenToMaze(4), dwidth, dheight, edibleWalls.size());
 		EdibleWall[] iw = new EdibleWall[] {iw1, iw2, iw3, iw4, iw5, iw6, iw7, iw8, iw9, iw10, iw11, iw12, iw13, iw14,
-				iw15, iw16, iw17, iw18, iw19, iw20, iw21, iw22};
-		for (int i =0; i < 22; i++) {
+				iw15, iw16, iw17, iw18, iw19, iw20, iw21, iw22, iw23};
+		for (int i =0; i < 23; i++) {
 			iw[i].setBodyType(BodyDef.BodyType.StaticBody);
 			iw[i].setDrawScale(scale);
 			iw[i].setTexture(wallTexture);
