@@ -1,5 +1,5 @@
 /*
- * WorldController.java
+ * GameController.java
  *
  * This is the most important new class in this lab.  This class serves as a combination 
  * of the CollisionController and GameplayController from the previous lab.  There is not 
@@ -39,7 +39,7 @@ import tiktaalik.trino.obstacle.*;
  *
  * A world has its own objects, assets, and input controller.  Thus this is 
  * really a mini-GameEngine in its own right.  The only thing that it does
- * not do is create a GameCanvas; that is shared with the main application.
+ * not do is create a Canvas; that is shared with the main application.
  *
  * You will notice that asset loading is not done with static methods this time.  
  * Instance asset loading makes it easier to process our game modes in a loop, which 
@@ -47,7 +47,7 @@ import tiktaalik.trino.obstacle.*;
  * This is the purpose of our AssetState variable; it ensures that multiple instances
  * place nicely with the static assets.
  */
-public class WorldController implements ContactListener, Screen {
+public class GameController implements ContactListener, Screen {
 	/** 
 	 * Tracks the asset state.  Otherwise subclasses will try to load assets 
 	 */
@@ -164,7 +164,7 @@ public class WorldController implements ContactListener, Screen {
 	private static final float DEFAULT_GRAVITY = -0.0f;
 
 	/** Reference to the game canvas */
-	protected GameCanvas canvas;
+	protected Canvas canvas;
 	/** All the objects in the world. */
 	protected PooledList<Obstacle> objects  = new PooledList<Obstacle>();
 	/** Queue for adding objects */
@@ -425,7 +425,7 @@ public class WorldController implements ContactListener, Screen {
 	 *
 	 * @return the canvas associated with this controller
 	 */
-	public GameCanvas getCanvas() {
+	public Canvas getCanvas() {
 		return canvas;
 	}
 	
@@ -437,7 +437,7 @@ public class WorldController implements ContactListener, Screen {
 	 *
 	 * @param canvas the canvas associated with this controller
 	 */
-	public void setCanvas(GameCanvas canvas) {
+	public void setCanvas(Canvas canvas) {
 		this.canvas = canvas;
 		this.scale.x = canvas.getWidth()/bounds.getWidth();
 		this.scale.y = canvas.getHeight()/bounds.getHeight();
@@ -450,7 +450,7 @@ public class WorldController implements ContactListener, Screen {
 	 * with the Box2d coordinates.  The bounds are in terms of the Box2d
 	 * world, not the screen.
 	 */
-	protected WorldController() {
+	protected GameController() {
 		this(new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT),
 				new Vector2(0, DEFAULT_GRAVITY));
 		setComplete(false);
@@ -470,7 +470,7 @@ public class WorldController implements ContactListener, Screen {
 	 * @param height	The height in Box2d coordinates
 	 * @param gravity	The downward gravity
 	 */
-	protected WorldController(float width, float height, float gravity) {
+	protected GameController(float width, float height, float gravity) {
 		this(new Rectangle(0,0,width,height), new Vector2(0,gravity));
 	}
 
@@ -484,7 +484,7 @@ public class WorldController implements ContactListener, Screen {
 	 * @param bounds	The game bounds in Box2d coordinates
 	 * @param gravity	The gravitational force on this Box2d world
 	 */
-	protected WorldController(Rectangle bounds, Vector2 gravity) {
+	protected GameController(Rectangle bounds, Vector2 gravity) {
 		assets = new Array<String>();
 		world = new World(gravity,false);
 		this.bounds = new Rectangle(bounds);
@@ -593,7 +593,7 @@ public class WorldController implements ContactListener, Screen {
 	 */
 	public boolean preUpdate(float dt) {
 		//System.out.println("in pre update");
-		InputController input = InputController.getInstance();
+		InputHandler input = InputHandler.getInstance();
 		input.readInput(bounds, scale);
 		if (listener == null) {
 			return true;
@@ -847,7 +847,7 @@ public class WorldController implements ContactListener, Screen {
 	 * The core gameplay loop of this world.
 	 *
 	 * This method contains the specific update code for this mini-game. It does
-	 * not handle collisions, as those are managed by the parent class WorldController.
+	 * not handle collisions, as those are managed by the parent class GameController.
 	 * This method is called after input is read, but before collisions are resolved.
 	 * The very last thing that it should do is apply forces to the appropriate objects.
 	 *
@@ -856,19 +856,19 @@ public class WorldController implements ContactListener, Screen {
 	public void update(float dt) {
 		//System.out.println("in update");
 		// Process actions in object model
-		if (InputController.getInstance().didTransform()) {
-			if (InputController.getInstance().didTransformDoll())
+		if (InputHandler.getInstance().didTransform()) {
+			if (InputHandler.getInstance().didTransformDoll())
 				avatar.setTransformation(DuggiModel.DOLL_FORM);
-			else if (InputController.getInstance().didTransformHerbi())
+			else if (InputHandler.getInstance().didTransformHerbi())
 				avatar.setTransformation(DuggiModel.HERBIVORE_FORM);
-			else if (InputController.getInstance().didTransformCarni())
+			else if (InputHandler.getInstance().didTransformCarni())
 				avatar.setTransformation(DuggiModel.CARNIVORE_FORM);
 		}
-		avatar.setMovement(InputController.getInstance().getHorizontal());
-		avatar.setUpDown(InputController.getInstance().getVertical());
-		//avatar.setJumping(InputController.getInstance().didPrimary());
+		avatar.setMovement(InputHandler.getInstance().getHorizontal());
+		avatar.setUpDown(InputHandler.getInstance().getVertical());
+		//avatar.setJumping(InputHandler.getInstance().didPrimary());
 		////System.out.println(avatar.getForm());
-		if (InputController.getInstance().didAction()) {
+		if (InputHandler.getInstance().didAction()) {
 			//System.out.println(collidedWith);
 			//System.out.println(objects.get(collidedWith).toString());
 			//System.out.println(objects.size());

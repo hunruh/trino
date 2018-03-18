@@ -1,5 +1,5 @@
 /*
- * GameCanvas.java
+ * Canvas.java
  *
  * To properly follow the model-view-controller separation, we should not have
  * any specific drawing code in GameMode. All of that code goes here.  As
@@ -27,11 +27,11 @@ import com.badlogic.gdx.physics.box2d.*;
 /**
  * Primary view class for the game, abstracting the basic graphics calls.
  * 
- * This version of GameCanvas only supports both rectangular and polygonal Sprite
+ * This version of Canvas only supports both rectangular and polygonal Sprite
  * drawing.  It also supports a debug mode that draws polygonal outlines.  However,
  * that mode must be done in a separate begin/end pass.
  */
-public class GameCanvas {
+public class Canvas {
 	/** Enumeration to track which pass we are in */
 	private enum DrawPass {
 		/** We are not drawing */
@@ -91,13 +91,13 @@ public class GameCanvas {
 	private TextureRegion holder;
 
 	/**
-	 * Creates a new GameCanvas determined by the application configuration.
+	 * Creates a new Canvas determined by the application configuration.
 	 * 
 	 * Width, height, and fullscreen are taken from the LWGJApplicationConfig
 	 * object used to start the application.  This constructor initializes all
 	 * of the necessary graphics objects.
 	 */
-	public GameCanvas() {
+	public Canvas() {
 		active = DrawPass.INACTIVE;
 		spriteBatch = new PolygonSpriteBatch();
 		debugRender = new ShapeRenderer();
@@ -120,7 +120,7 @@ public class GameCanvas {
      */
     public void dispose() {
 		if (active != DrawPass.INACTIVE) {
-			Gdx.app.error("GameCanvas", "Cannot dispose while drawing active", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot dispose while drawing active", new IllegalStateException());
 			return;
 		}
 		spriteBatch.dispose();
@@ -152,7 +152,7 @@ public class GameCanvas {
 	 */
 	public void setWidth(int width) {
 		if (active != DrawPass.INACTIVE) {
-			Gdx.app.error("GameCanvas", "Cannot alter property while drawing active", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot alter property while drawing active", new IllegalStateException());
 			return;
 		}
 		this.width = width;
@@ -183,7 +183,7 @@ public class GameCanvas {
 	 */
 	public void setHeight(int height) {
 		if (active != DrawPass.INACTIVE) {
-			Gdx.app.error("GameCanvas", "Cannot alter property while drawing active", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot alter property while drawing active", new IllegalStateException());
 			return;
 		}
 		this.height = height;
@@ -213,7 +213,7 @@ public class GameCanvas {
 	 */
 	public void setSize(int width, int height) {
 		if (active != DrawPass.INACTIVE) {
-			Gdx.app.error("GameCanvas", "Cannot alter property while drawing active", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot alter property while drawing active", new IllegalStateException());
 			return;
 		}
 		this.width = width;
@@ -250,7 +250,7 @@ public class GameCanvas {
 	 */	 
 	public void setFullscreen(boolean value, boolean desktop) {
 		if (active != DrawPass.INACTIVE) {
-			Gdx.app.error("GameCanvas", "Cannot alter property while drawing active", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot alter property while drawing active", new IllegalStateException());
 			return;
 		}
 		if (value) {
@@ -394,7 +394,7 @@ public class GameCanvas {
 	 */
 	public void draw(Texture image, float x, float y) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -422,7 +422,7 @@ public class GameCanvas {
 	 */
 	public void draw(Texture image, Color tint, float x, float y, float width, float height) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -452,7 +452,7 @@ public class GameCanvas {
 	 */
 	public void draw(Texture image, Color tint, float ox, float oy, float x, float y, float width, float height) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -488,7 +488,7 @@ public class GameCanvas {
 	public void draw(Texture image, Color tint, float ox, float oy, 
 					float x, float y, float angle, float sx, float sy) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -518,7 +518,7 @@ public class GameCanvas {
 	 */	
 	public void draw(Texture image, Color tint, float ox, float oy, Affine2 transform) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -547,7 +547,7 @@ public class GameCanvas {
 	 */
 	public void draw(TextureRegion region, float x, float y) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -575,7 +575,7 @@ public class GameCanvas {
 	 */
 	public void draw(TextureRegion region, Color tint, float x, float y, float width, float height) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -605,7 +605,7 @@ public class GameCanvas {
 	 */	
 	public void draw(TextureRegion region, Color tint, float ox, float oy, float x, float y, float width, float height) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -643,7 +643,7 @@ public class GameCanvas {
 	public void draw(TextureRegion region, Color tint, float ox, float oy, 
 					 float x, float y, float angle, float sx, float sy) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 
@@ -676,7 +676,7 @@ public class GameCanvas {
 	 */	
 	public void draw(TextureRegion region, Color tint, float ox, float oy, Affine2 affine) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 
@@ -709,7 +709,7 @@ public class GameCanvas {
 	 */	
 	public void draw(PolygonRegion region, float x, float y) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -743,7 +743,7 @@ public class GameCanvas {
 	 */	
 	public void draw(PolygonRegion region, Color tint, float x, float y, float width, float height) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -779,7 +779,7 @@ public class GameCanvas {
 	 */	
 	public void draw(PolygonRegion region, Color tint, float ox, float oy, float x, float y, float width, float height) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -817,7 +817,7 @@ public class GameCanvas {
 	public void draw(PolygonRegion region, Color tint, float ox, float oy, 
 					 float x, float y, float angle, float sx, float sy) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -852,7 +852,7 @@ public class GameCanvas {
 	 */	
 	public void draw(PolygonRegion region, Color tint, float ox, float oy, Affine2 affine) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 
@@ -890,7 +890,7 @@ public class GameCanvas {
      */
     public void drawText(String text, BitmapFont font, float x, float y) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		GlyphLayout layout = new GlyphLayout(font,text);
@@ -906,7 +906,7 @@ public class GameCanvas {
      */
     public void drawTextCentered(String text, BitmapFont font, float offset) {
 		if (active != DrawPass.STANDARD) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 		
@@ -984,7 +984,7 @@ public class GameCanvas {
      */
     public void drawPhysics(PolygonShape shape, Color color, float x, float y) {
 		if (active != DrawPass.DEBUG) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active beginDebug()", new IllegalStateException());
 			return;
 		}
 		
@@ -1016,7 +1016,7 @@ public class GameCanvas {
      */
     public void drawPhysics(PolygonShape shape, Color color, float x, float y, float angle) {
 		if (active != DrawPass.DEBUG) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active beginDebug()", new IllegalStateException());
 			return;
 		}
 		
@@ -1057,7 +1057,7 @@ public class GameCanvas {
      */
     public void drawPhysics(PolygonShape shape, Color color, float x, float y, float angle, float sx, float sy) {
 		if (active != DrawPass.DEBUG) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active beginDebug()", new IllegalStateException());
 			return;
 		}
 		
@@ -1099,7 +1099,7 @@ public class GameCanvas {
      */
     public void drawPhysics(CircleShape shape, Color color, float x, float y) {
 		if (active != DrawPass.DEBUG) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active beginDebug()", new IllegalStateException());
 			return;
 		}
 		
@@ -1122,7 +1122,7 @@ public class GameCanvas {
      */
     public void drawPhysics(CircleShape shape, Color color, float x, float y, float sx, float sy) {
 		if (active != DrawPass.DEBUG) {
-			Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
+			Gdx.app.error("Canvas", "Cannot draw without active beginDebug()", new IllegalStateException());
 			return;
 		}
 		

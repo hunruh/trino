@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.*;
 
-import tiktaalik.trino.*;  // For GameCanvas
+import tiktaalik.trino.*;  // For Canvas
 
 /**
  * Selection tool to move and drag physics obstacles
@@ -402,7 +402,7 @@ public class ObstacleSelector implements QueryCallback  {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void draw(GameCanvas canvas) {
+	public void draw(Canvas canvas) {
 		if (texture != null) {
 			canvas.draw(texture,Color.WHITE,origin.x,origin.y,position.x*drawScale.x,position.y*drawScale.x,0,1,1);
 		}

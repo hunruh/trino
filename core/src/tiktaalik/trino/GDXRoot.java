@@ -35,13 +35,13 @@ public class GDXRoot extends Game implements ScreenListener {
 	/** AssetManager to load game assets (textures, sounds, etc.) */
 	private AssetManager manager;
 	/** Drawing context to display graphics (VIEW CLASS) */
-	private GameCanvas canvas; 
-	/** Player mode for the asset loading screen (CONTROLLER CLASS) */
-	private LoadingMode loading;
+	private Canvas canvas;
+	/** Player mode for the asset menu screen (CONTROLLER CLASS) */
+	private MenuController menu;
 	/** Player mode for the the game proper (CONTROLLER CLASS) */
 	private int current;
 	/** The world controller */
-	private WorldController controller;
+	private GameController controller;
 	
 	/**
 	 * Creates a new game from the configuration settings.
@@ -50,7 +50,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * or assign any screen.
 	 */
 	public GDXRoot() {
-		// Start loading with the asset manager
+		// Start menu with the asset manager
 		manager = new AssetManager();
 		
 		// Add font support to the asset manager
@@ -62,20 +62,20 @@ public class GDXRoot extends Game implements ScreenListener {
 	/** 
 	 * Called when the Application is first created.
 	 * 
-	 * This is method immediately loads assets for the loading screen, and prepares
+	 * This is method immediately loads assets for the menu screen, and prepares
 	 * the asynchronous loader for all other assets.
 	 */
 	public void create() {
-		canvas  = new GameCanvas();
-		loading = new LoadingMode(canvas,manager,1);
+		canvas  = new Canvas();
+		menu = new MenuController(canvas,manager,1);
 		
 		// Initialize the three game worlds
-		controller = new WorldController();
+		controller = new GameController();
 		controller.preLoadContent(manager);
 
 		current = 0;
-		loading.setScreenListener(this);
-		setScreen(loading);
+		menu.setScreenListener(this);
+		setScreen(menu);
 	}
 
 	/** 
@@ -121,22 +121,22 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
-		if (screen == loading) {
+		if (screen == menu) {
 			controller.loadContent(manager);
 			controller.setScreenListener(this);
 			controller.setCanvas(canvas);
 			controller.reset();
 			setScreen(controller);
 			
-			loading.dispose();
-			loading = null;
-		} else if (exitCode == WorldController.EXIT_NEXT) {
+			menu.dispose();
+			menu = null;
+		} else if (exitCode == GameController.EXIT_NEXT) {
 			controller.reset();
 			setScreen(controller);
-		} else if (exitCode == WorldController.EXIT_PREV) {
+		} else if (exitCode == GameController.EXIT_PREV) {
 			controller.reset();
 			setScreen(controller);
-		} else if (exitCode == WorldController.EXIT_QUIT) {
+		} else if (exitCode == GameController.EXIT_QUIT) {
 			// We quit the main application
 			Gdx.app.exit();
 		}

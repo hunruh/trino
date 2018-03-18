@@ -1,5 +1,5 @@
 /*
- * InputController.java
+ * InputHandler.java
  *
  * This class buffers in input from the devices and converts it into its
  * semantic meaning. If your game had an option that allows the player to
@@ -25,23 +25,23 @@ import tiktaalik.util.*;
  * detected the X-Box controller on start-up.  This class allows us to hot-swap in
  * a controller via the new XBox360Controller class.
  */
-public class InputController {
+public class InputHandler {
 	// Sensitivity for moving crosshair with gameplay
 	private static final float GP_ACCELERATE = 1.0f;
 	private static final float GP_MAX_SPEED  = 10.0f;
 	private static final float GP_THRESHOLD  = 0.01f;
 
 	/** The singleton instance of the input controller */
-	private static InputController theController = null;
+	private static InputHandler theController = null;
 	
 	/** 
 	 * Return the singleton instance of the input controller
 	 *
 	 * @return the singleton instance of the input controller
 	 */
-	public static InputController getInstance() {
+	public static InputHandler getInstance() {
 		if (theController == null) {
-			theController = new InputController();
+			theController = new InputHandler();
 		}
 		return theController;
 	}
@@ -235,7 +235,7 @@ public class InputController {
 	 * The input controller attempts to connect to the X-Box controller at device 0,
 	 * if it exists.  Otherwise, it falls back to the keyboard control.
 	 */
-	public InputController() { 
+	public InputHandler() {
 		// If we have a game-pad for id, then use it.
 		xbox = new XBox360Controller(0);
 		crosshair = new Vector2();

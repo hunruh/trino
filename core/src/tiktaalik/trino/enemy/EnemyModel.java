@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import tiktaalik.trino.GameCanvas;
+import tiktaalik.trino.Canvas;
 import tiktaalik.trino.obstacle.CapsuleObstacle;
 
 public class EnemyModel extends CapsuleObstacle {
@@ -265,7 +265,7 @@ public class EnemyModel extends CapsuleObstacle {
      *
      * @param canvas Drawing context
      */
-    public void draw(GameCanvas canvas) {
+    public void draw(Canvas canvas) {
         float effect = faceRight ? 1.0f : -1.0f;
         canvas.draw(texture, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,getAngle(),effect,1.0f);
     }
@@ -277,7 +277,7 @@ public class EnemyModel extends CapsuleObstacle {
      *
      * @param canvas Drawing context
      */
-    public void drawDebug(GameCanvas canvas) {
+    public void drawDebug(Canvas canvas) {
         super.drawDebug(canvas);
         canvas.drawPhysics(sensorShape,Color.RED,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
     }

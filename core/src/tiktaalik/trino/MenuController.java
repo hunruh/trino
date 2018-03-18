@@ -1,5 +1,5 @@
 /*
- * LoadingMode.java
+ * MenuController.java
  *
  * Asset loading is a really tricky problem.  If you have a lot of sound or images,
  * it can take a long time to decompress them and load them into memory.  If you just
@@ -44,7 +44,7 @@ import tiktaalik.util.*;
  * the application.  That is why we try to have as few resources as possible for this
  * loading screen.
  */
-public class LoadingMode implements Screen, InputProcessor, ControllerListener {
+public class MenuController implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
 	private static final String BACKGROUND_FILE = "shared/trinoRoughTitle.png";
 	private static final String PROGRESS_FILE = "shared/progressbar.png";
@@ -97,8 +97,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 	/** AssetManager to be loading in the background */
 	private AssetManager manager;
-	/** Reference to GameCanvas created by the root */
-	private GameCanvas canvas;
+	/** Reference to Canvas created by the root */
+	private Canvas canvas;
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
 
@@ -162,16 +162,16 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	}
 	
 	/**
-	 * Creates a LoadingMode with the default budget, size and position.
+	 * Creates a MenuController with the default budget, size and position.
 	 *
 	 * @param manager The AssetManager to load in the background
 	 */
-	public LoadingMode(GameCanvas canvas, AssetManager manager) {
+	public MenuController(Canvas canvas, AssetManager manager) {
 		this(canvas, manager,DEFAULT_BUDGET);
 	}
 
 	/**
-	 * Creates a LoadingMode with the default size and position.
+	 * Creates a MenuController with the default size and position.
 	 *
 	 * The budget is the number of milliseconds to spend loading assets each animation
 	 * frame.  This allows you to do something other than load assets.  An animation 
@@ -181,7 +181,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param manager The AssetManager to load in the background
 	 * @param millis The loading budget in milliseconds
 	 */
-	public LoadingMode(GameCanvas canvas, AssetManager manager, int millis) {
+	public MenuController(Canvas canvas, AssetManager manager, int millis) {
 		this.manager = manager;
 		this.canvas  = canvas;
 		budget = millis;
@@ -290,7 +290,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 *
 	 * @param canvas The drawing context
 	 */	
-	private void drawProgress(GameCanvas canvas) {	
+	private void drawProgress(Canvas canvas) {
 		canvas.draw(statusBkgLeft,   Color.WHITE, centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
 		canvas.draw(statusBkgRight,  Color.WHITE, centerX+width/2-scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
 		canvas.draw(statusBkgMiddle, Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY, width-2*scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);

@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
-import tiktaalik.trino.GameCanvas;
+import tiktaalik.trino.Canvas;
 
 /**
  * Base model class to support collisions.
@@ -774,7 +774,7 @@ public abstract class SimpleObstacle extends Obstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void draw(GameCanvas canvas) {
+	public void draw(Canvas canvas) {
 		if (texture != null) {
 			canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,getAngle(),1,1);
 		}

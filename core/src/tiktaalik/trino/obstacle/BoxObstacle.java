@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.physics.box2d.*;
 
-import tiktaalik.trino.*;  // For GameCanvas
+import tiktaalik.trino.*;  // For Canvas
 
 /**
  * Box-shaped model to support collisions.
@@ -200,7 +200,7 @@ public class BoxObstacle extends SimpleObstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void drawDebug(GameCanvas canvas) {
+	public void drawDebug(Canvas canvas) {
 		canvas.drawPhysics(shape,Color.YELLOW,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
 	}
 

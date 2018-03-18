@@ -21,7 +21,7 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
-import tiktaalik.trino.*;  // For GameCanvas
+import tiktaalik.trino.*;  // For Canvas
 
 /**
  * Composite model class to support collisions.
@@ -1054,7 +1054,7 @@ public abstract class ComplexObstacle extends Obstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void draw(GameCanvas canvas) {
+	public void draw(Canvas canvas) {
 		// Delegate to components
 		for(Obstacle obj : bodies) {
 			obj.draw(canvas);
@@ -1068,7 +1068,7 @@ public abstract class ComplexObstacle extends Obstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void drawDebug(GameCanvas canvas) {
+	public void drawDebug(Canvas canvas) {
 		// Delegate to components
 		for(Obstacle obj : bodies) {
 			obj.drawDebug(canvas);
