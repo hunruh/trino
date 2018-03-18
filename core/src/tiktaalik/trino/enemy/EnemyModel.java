@@ -52,6 +52,26 @@ public class EnemyModel extends CapsuleObstacle {
     /** Counter for enemy movement */
     private int counter;
 
+    private int id;
+
+    private boolean isAlive;
+
+    public void setId(int newId){
+        this.id = newId;
+    }
+
+    public int getId(){
+        return this.id;
+    }
+
+    public void setIsAlive(boolean alive){
+        this.isAlive = alive;
+    }
+
+    public boolean getIsAlive(){
+        return this.isAlive;
+    }
+
     public int getCounter() {return counter;}
 
     /**
