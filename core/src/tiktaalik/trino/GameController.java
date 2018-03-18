@@ -19,7 +19,9 @@ package tiktaalik.trino;
 import java.util.Iterator;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -81,7 +83,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_FILE = "trino/enemy.png";
 	private static final String WALL_FILE = "trino/wall.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
-	private static final String COTTON_FILE = "trino/cotton.png";
+	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
 
 	private static final int COTTON = 0;
@@ -91,6 +93,7 @@ public class GameController implements ContactListener, Screen {
 	private static final int ENEMY = 4;
 	private static final int GOAL = 5;
 	private static final int AVATAR = 6;
+	private static final int CLONE = 7;
 
 	/** Texture assets for the general game */
 	private TextureRegion earthTile;
@@ -258,6 +261,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(WALL_FILE);
 		manager.load(EDIBLE_WALL_FILE, Texture.class);
 		assets.add(EDIBLE_WALL_FILE);
+		manager.load(COTTON_FLOWER_FILE, Texture.class);
+		assets.add(COTTON_FLOWER_FILE);
 		manager.load(ENEMY_FILE, Texture.class);
 		assets.add(ENEMY_FILE);
 
@@ -296,9 +301,8 @@ public class GameController implements ContactListener, Screen {
 		carnivoreTexture = createTexture(manager,CARNIVORE_FILE,false);
 		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
-		//System.out.println(EDIBLE_WALL_FILE);
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
-		cottonTexture = createTexture(manager, COTTON_FILE, false);
+		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
 
 		worldAssetState = AssetState.COMPLETE;
@@ -947,7 +951,7 @@ public class GameController implements ContactListener, Screen {
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
 		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight, cottonFlower.size());
-		CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight, cottonFlower.size());
+		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight, cottonFlower.size());
 		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight, cottonFlower.size());
 		CottonFlower cf4 = new CottonFlower(screenToMaze(3), screenToMaze(5), dwidth, dheight, cottonFlower.size());
 		CottonFlower cf5 = new CottonFlower(screenToMaze(3), screenToMaze(8), dwidth, dheight, cottonFlower.size());
@@ -961,9 +965,9 @@ public class GameController implements ContactListener, Screen {
 		CottonFlower cf13 = new CottonFlower(screenToMaze(16), screenToMaze(1), dwidth, dheight, cottonFlower.size());
 		CottonFlower cf14 = new CottonFlower(screenToMaze(16), screenToMaze(4), dwidth, dheight, cottonFlower.size());
 		CottonFlower cf15 = new CottonFlower(screenToMaze(16), screenToMaze(8), dwidth, dheight, cottonFlower.size());
-		CottonFlower[] cf = new CottonFlower[] {cf2, cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
+		CottonFlower[] cf = new CottonFlower[] {cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
 				cf11, cf12, cf13, cf14, cf15};
-		for (int i = 0; i < 14; i++) {
+		for (int i = 0; i < 13; i++) {
 			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
 			cf[i].setDrawScale(scale);
 			cf[i].setTexture(cottonTexture);
@@ -972,6 +976,12 @@ public class GameController implements ContactListener, Screen {
 			addCottonFlower(cf[i]);
 		}
 	}
+
+//	/** Music */
+//	Music music = Gdx.audio.newMusic(Gdx.files.internal("data/doll_bg.mp3"));
+//	music.setLooping(true);
+//	music.play();
+
 
 	/**
 	 * The core gameplay loop of this world.
@@ -998,12 +1008,27 @@ public class GameController implements ContactListener, Screen {
 		avatar.setUpDown(InputHandler.getInstance().getVertical());
 		//avatar.setJumping(InputHandler.getInstance().didPrimary());
 		////System.out.println(avatar.getForm());
+
+		boolean hasClone = false;
 		if (InputHandler.getInstance().didAction()) {
 			//System.out.println(collidedWith);
 			//System.out.println(objects.get(collidedWith).toString());
 			//System.out.println(objects.size());
 			//System.out.println(avatar.getForm());
-			if (avatar.getForm() == 1) {
+			if (avatar.getForm() == 0) {
+				if (!hasClone) {
+					float dwidth = dollTexture.getRegionWidth() / scale.x;
+					float dheight = dollTexture.getRegionHeight() / scale.y;
+					DuggiModel clone = new DuggiModel(screenToMaze(1), screenToMaze(1), dwidth, dheight);
+					clone.setTexture(dollTexture);
+					clone.setDrawScale(scale);
+					clone.setDollTexture(dollTexture);
+					clone.setType(CLONE);
+					addObject(clone);
+					hasClone = true;
+				}
+			}
+			else if (avatar.getForm() == 1) {
 				//System.out.println("collided with: " +collidedWith);
 				//System.out.println("collided type: " +collidedType);
 				if (collidedType == EDIBLEWALL) {
