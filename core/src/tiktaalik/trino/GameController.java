@@ -19,7 +19,6 @@ package tiktaalik.trino;
 import java.util.Iterator;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -27,8 +26,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
-import tiktaalik.trino.duggi.DuggiModel;
-import tiktaalik.trino.enemy.EnemyList;
+import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.enemy.EnemyModel;
 import tiktaalik.trino.resources.EdibleWall;
 import tiktaalik.util.*;
@@ -88,7 +86,7 @@ public class GameController implements ContactListener, Screen {
 	private static final int WALL = 3;
 	private static final int ENEMY = 4;
 	private static final int GOAL = 5;
-	private static final int AVATAR = 6;
+	private static final int DUGGI = 6;
 
 	/** Texture assets for the general game */
 	private TextureRegion earthTile;
@@ -167,9 +165,9 @@ public class GameController implements ContactListener, Screen {
 	/** Reference to the game canvas */
 	protected Canvas canvas;
 	/** All the objects in the world. */
-	protected PooledList<Obstacle> objects  = new PooledList<Obstacle>();
+	protected PooledList<GameObject> objects  = new PooledList<GameObject>();
 	/** Queue for adding objects */
-	private PooledList<Obstacle> addQueue = new PooledList<Obstacle>();
+	private PooledList<GameObject> addQueue = new PooledList<GameObject>();
 	private PooledList<EdibleWall> edibleWalls = new PooledList<EdibleWall>();
 	private PooledList<EnemyModel> enemies = new PooledList<EnemyModel>();
 	/** Listener that will update the player mode when we are done */
@@ -192,7 +190,7 @@ public class GameController implements ContactListener, Screen {
 	private int countdown;
 
 	/** Reference to the character avatar */
-	private DuggiModel avatar;
+	private Dinosaur avatar;
 	/** Reference to the enemy avatar */
 	private EnemyModel enemy;
 	/** Reference to the goalDoor (for collision detection) */
@@ -501,8 +499,8 @@ public class GameController implements ContactListener, Screen {
 	 * Dispose of all (non-static) resources allocated to this mode.
 	 */
 	public void dispose() {
-		for(Obstacle obj : objects) {
-			obj.deactivatePhysics(world);
+		for(GameObject g : objects) {
+			g.deactivatePhysics(world);
 		}
 		objects.clear();
 		addQueue.clear();
@@ -524,20 +522,20 @@ public class GameController implements ContactListener, Screen {
 	 *
 	 * param obj The object to add
 	 */
-	public void addQueuedObject(Obstacle obj) {
-		assert inBounds(obj) : "Object is not in bounds";
-		addQueue.add(obj);
+	public void addQueuedObject(GameObject g) {
+		assert inBounds(g) : "Object is not in bounds";
+		addQueue.add(g);
 	}
 
 	/**
 	 * Immediately adds the object to the physics world
 	 *
-	 * param obj The object to add
+	 * @param g The object to add
 	 */
-	protected void addObject(Obstacle obj) {
-		assert inBounds(obj) : "Object is not in bounds";
-		objects.add(obj);
-		obj.activatePhysics(world);
+	protected void addObject(GameObject g) {
+		assert inBounds(g) : "Object is not in bounds";
+		objects.add(g);
+		g.activatePhysics(world);
 	}
 
 	public void addEdibleWall(EdibleWall obj){
@@ -555,13 +553,13 @@ public class GameController implements ContactListener, Screen {
 	 *
 	 * This assertion is useful for debugging the physics.
 	 *
-	 * @param obj The object to check.
+	 * @param g The object to check.
 	 *
 	 * @return true if the object is in bounds.
 	 */
-	public boolean inBounds(Obstacle obj) {
-		boolean horiz = (bounds.x <= obj.getX() && obj.getX() <= bounds.x+bounds.width);
-		boolean vert  = (bounds.y <= obj.getY() && obj.getY() <= bounds.y+bounds.height);
+	public boolean inBounds(GameObject g) {
+		boolean horiz = (bounds.x <= g.getX() && g.getX() <= bounds.x+bounds.width);
+		boolean vert  = (bounds.y <= g.getY() && g.getY() <= bounds.y+bounds.height);
 		return horiz && vert;
 	}
 
@@ -573,8 +571,8 @@ public class GameController implements ContactListener, Screen {
 	public void reset() {
 		Vector2 gravity = new Vector2(world.getGravity() );
 
-		for(Obstacle obj : objects) {
-			obj.deactivatePhysics(world);
+		for(GameObject g : objects) {
+			g.deactivatePhysics(world);
 		}
 		objects.clear();
 		addQueue.clear();
@@ -656,16 +654,16 @@ public class GameController implements ContactListener, Screen {
 		// Garbage collect the deleted objects.
 		// Note how we use the linked list nodes to delete O(1) in place.
 		// This is O(n) without copying.
-		Iterator<PooledList<Obstacle>.Entry> iterator = objects.entryIterator();
+		Iterator<PooledList<GameObject>.Entry> iterator = objects.entryIterator();
 		while (iterator.hasNext()) {
-			PooledList<Obstacle>.Entry entry = iterator.next();
-			Obstacle obj = entry.getValue();
-			if (obj.isRemoved()) {
-				obj.deactivatePhysics(world);
+			PooledList<GameObject>.Entry entry = iterator.next();
+			GameObject g = entry.getValue();
+			if (g.isRemoved()) {
+				g.deactivatePhysics(world);
 				entry.remove();
 			} else {
 				// Note that update is called last!
-				obj.update(dt);
+				g.update(dt);
 			}
 		}
 	}
@@ -685,8 +683,8 @@ public class GameController implements ContactListener, Screen {
 		canvas.clear();
 		
 		canvas.begin();
-		for(Obstacle obj : objects) {
-			obj.draw(canvas);
+		for(GameObject g : objects) {
+			g.draw(canvas);
 		}
 		canvas.end();
 		
@@ -817,15 +815,11 @@ public class GameController implements ContactListener, Screen {
 		// Create dude
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
-		avatar = new DuggiModel(DUDE_POS.x, DUDE_POS.y, dwidth, dheight);
+		avatar = new Doll(DUDE_POS.x, DUDE_POS.y, dwidth);
 		avatar.setTexture(dollTexture);
 		avatar.setDrawScale(scale);
-		avatar.setDollTexture(dollTexture);
-		avatar.setHerbivoreTexture(herbivoreTexture);
-		avatar.setCarnivoreTexture(carnivoreTexture);
-		avatar.setType(AVATAR);
+		avatar.setType(DUGGI);
 		addObject(avatar);
-		//System.out.println(avatar.getType());
 
 		// Create enemy
 		dwidth = dollTexture.getRegionWidth() / scale.x;
@@ -868,27 +862,24 @@ public class GameController implements ContactListener, Screen {
 		//System.out.println("in update");
 		// Process actions in object model
 		if (InputHandler.getInstance().didTransform()) {
-			if (InputHandler.getInstance().didTransformDoll())
-				avatar.setTransformation(DuggiModel.DOLL_FORM);
-			else if (InputHandler.getInstance().didTransformHerbi())
-				avatar.setTransformation(DuggiModel.HERBIVORE_FORM);
-			else if (InputHandler.getInstance().didTransformCarni())
-				avatar.setTransformation(DuggiModel.CARNIVORE_FORM);
+			if (InputHandler.getInstance().didTransformDoll()) {
+				avatar = avatar.transformToDoll();
+				avatar.setTexture(dollTexture);
+			}
+			else if (InputHandler.getInstance().didTransformHerbi()) {
+				avatar = avatar.transformToHerbivore();
+				avatar.setTexture(herbivoreTexture);
+			}
+			else if (InputHandler.getInstance().didTransformCarni()) {
+				avatar = avatar.transformToCarnivore();
+				avatar.setTexture(carnivoreTexture);
+			}
 		}
-		avatar.setMovement(InputHandler.getInstance().getHorizontal());
+		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
 		avatar.setUpDown(InputHandler.getInstance().getVertical());
-		//avatar.setJumping(InputHandler.getInstance().didPrimary());
-		////System.out.println(avatar.getForm());
 		if (InputHandler.getInstance().didAction()) {
-			//System.out.println(collidedWith);
-			//System.out.println(objects.get(collidedWith).toString());
-			//System.out.println(objects.size());
-			//System.out.println(avatar.getForm());
-			if (avatar.getForm() == 1) {
-				//System.out.println("collided with: " +collidedWith);
-				//System.out.println("collided type: " +collidedType);
+			if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				if (collidedType == EDIBLEWALL) {
-					//System.out.println("sdga");
 					edibleWalls.get(collidedWith).deactivatePhysics(world);
 					objects.remove(edibleWalls.get(collidedWith));
 					System.out.println(edibleWalls.get(collidedWith));
@@ -1011,12 +1002,6 @@ public class GameController implements ContactListener, Screen {
 				//System.out.println(bd1.getType() == EDIBLEWALL);
 			}
 
-			// See if we have landed on the ground.
-			if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
-					(avatar.getSensorName().equals(fd1) && avatar != bd2)) {
-				sensorFixtures.add(avatar == bd1 ? fix2 : fix1); // Could have more than one ground
-			}
-
 			// Check for win condition
 			if ((bd1 == avatar   && bd2 == goalDoor) ||
 					(bd1 == goalDoor && bd2 == avatar)) {
@@ -1065,12 +1050,6 @@ public class GameController implements ContactListener, Screen {
 			collidedType = -1;
 			collidedWith = -1;
 		}
-
-		if ((avatar.getSensorName().equals(fd2) && avatar != bd1) ||
-				(avatar.getSensorName().equals(fd1) && avatar != bd2)) {
-			sensorFixtures.remove(avatar == bd1 ? fix2 : fix1);
-		}
-
 	}
 /*
 	public boolean objectTooFarX(Obstacle object){

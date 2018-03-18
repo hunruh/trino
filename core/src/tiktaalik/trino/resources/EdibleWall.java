@@ -1,9 +1,7 @@
 package tiktaalik.trino.resources;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import tiktaalik.trino.obstacle.BoxObstacle;
-import tiktaalik.trino.duggi.DuggiModel;
 
 public class EdibleWall extends BoxObstacle {
     private final int HERBIVORE = 1;

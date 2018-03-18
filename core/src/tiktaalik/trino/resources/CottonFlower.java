@@ -1,7 +1,6 @@
 package tiktaalik.trino.resources;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import tiktaalik.trino.duggi.DuggiModel;
 
 public class CottonFlower{
     private final int DOLL = 0;
