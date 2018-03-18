@@ -971,15 +971,15 @@ public class GameController implements ContactListener, Screen {
 		// Process actions in object model
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll()) {
-				avatar = avatar.transformToDoll();
+				avatar.transformToDoll();
 				avatar.setTexture(dollTexture);
 			}
 			else if (InputHandler.getInstance().didTransformHerbi()) {
-				avatar = avatar.transformToHerbivore();
+				avatar.transformToHerbivore();
 				avatar.setTexture(herbivoreTexture);
 			}
 			else if (InputHandler.getInstance().didTransformCarni()) {
-				avatar = avatar.transformToCarnivore();
+				avatar.transformToCarnivore();
 				avatar.setTexture(carnivoreTexture);
 			}
 		}
@@ -1088,6 +1088,7 @@ public class GameController implements ContactListener, Screen {
 
 
 		}
+		System.out.println(avatar.getForm());
 
 
 		// If we use sound, we must remember this.

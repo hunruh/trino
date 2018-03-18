@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
-import tiktaalik.trino.obstacle.Obstacle;
+//import tiktaalik.trino.obstacle.Obstacle;
 import tiktaalik.util.PooledList;
 
 /**
