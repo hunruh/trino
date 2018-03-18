@@ -171,6 +171,7 @@ public class WorldController implements ContactListener, Screen {
 	/** Queue for adding objects */
 	private PooledList<Obstacle> addQueue = new PooledList<Obstacle>();
 	private PooledList<EdibleWall> edibleWalls = new PooledList<EdibleWall>();
+	private PooledList<EnemyModel> enemies = new PooledList<EnemyModel>();
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
 
@@ -199,9 +200,6 @@ public class WorldController implements ContactListener, Screen {
 
 
 	// Variables for the enemy model
-
-	private EnemyList enemies;
-
 	private Vector2 cachePosition1 = new Vector2(0,0);
 	private Vector2 cachePosition2 = new Vector2(0,0);
 	private Vector2 cacheDirection = new Vector2(0,0);
@@ -547,6 +545,11 @@ public class WorldController implements ContactListener, Screen {
 		edibleWalls.add(obj);
 	}
 
+	public void addEnemy(EnemyModel obj){
+		assert inBounds(obj) : "Objects is not in bounds";
+		enemies.add(obj);
+	}
+
 	/**
 	 * Returns true if the object is in bounds.
 	 *
@@ -832,6 +835,7 @@ public class WorldController implements ContactListener, Screen {
 		enemy.setDrawScale(scale);
 		enemy.setTexture(enemyTexture);
 		addObject(enemy);
+		addEnemy(enemy);
 		//System.out.println(enemy.getType());
 
 //		enemies = new EnemyList(1,scale, enemyTexture, objects);
@@ -921,12 +925,34 @@ public class WorldController implements ContactListener, Screen {
 		else if (Math.abs(enemy.getPosition().x - ENEMY_POS.x) < 0.2f){
 
 			// Process actions for the enemy model
-			if (enemy.getCounter() % 100 == 1) {
+			if (enemy.getCounter() % 200 == 1) {
 				enemyVertical = -enemyVertical;
 			}
-			enemy.setUpDown(enemyVertical);
-			enemy.setMovement(0.0f);
-			enemy.applyForce();
+
+			if (-enemyVertical == Math.abs(enemyVertical)){
+				cachePosition1 = enemy.getPosition();
+				cachePosition2 = new Vector2(ENEMY_POS.x - 0.1f, ENEMY_POS.y);
+				cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
+						cachePosition2.x, cachePosition2.y);
+				cacheDirection = cachePosition2.sub(cachePosition1).nor();
+				cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
+						cacheDirection.y * enemySpeed * elapsed);
+
+				enemy.setPosition(enemy.getPosition().add(cacheDirection));
+			} else {
+				cachePosition1 = enemy.getPosition();
+				cachePosition2 = new Vector2(ENEMY_POS.x - 0.1f, ENEMY_POS.y + 200);
+				cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
+						cachePosition2.x, cachePosition2.y);
+				cacheDirection = cachePosition2.sub(cachePosition1).nor();
+				cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
+						cacheDirection.y * enemySpeed * elapsed);
+
+				enemy.setPosition(enemy.getPosition().add(cacheDirection));
+			}
+//			enemy.setUpDown(enemyVertical);
+//			enemy.setMovement(0.0f);
+//			enemy.applyForce();
 		}
 		else {
 
