@@ -909,17 +909,65 @@ public class GameController implements ContactListener, Screen {
 		}
 		//System.out.println(ew.getType());
 
+		/** Adding inedible walls */
+		EdibleWall iw1 = new EdibleWall(screenToMaze(2), screenToMaze(2), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw2 = new EdibleWall(screenToMaze(2), screenToMaze(3), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw3 = new EdibleWall(screenToMaze(2), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw4 = new EdibleWall(screenToMaze(2), screenToMaze(6), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw5 = new EdibleWall(screenToMaze(3), screenToMaze(6), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw6 = new EdibleWall(screenToMaze(3), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw7 = new EdibleWall(screenToMaze(4), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw8 = new EdibleWall(screenToMaze(5), screenToMaze(3), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw9 = new EdibleWall(screenToMaze(5), screenToMaze(4), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw10 = new EdibleWall(screenToMaze(5), screenToMaze(8), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw11 = new EdibleWall(screenToMaze(6), screenToMaze(8), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw12 = new EdibleWall(screenToMaze(7), screenToMaze(3), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw13 = new EdibleWall(screenToMaze(7), screenToMaze(4), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw14 = new EdibleWall(screenToMaze(8), screenToMaze(2), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw15 = new EdibleWall(screenToMaze(9), screenToMaze(4), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw16 = new EdibleWall(screenToMaze(10), screenToMaze(6), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw17 = new EdibleWall(screenToMaze(10), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw18 = new EdibleWall(screenToMaze(10), screenToMaze(8), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw19 = new EdibleWall(screenToMaze(12), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw20 = new EdibleWall(screenToMaze(13), screenToMaze(4), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw21 = new EdibleWall(screenToMaze(13), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall iw22 = new EdibleWall(screenToMaze(16), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall[] iw = new EdibleWall[] {iw1, iw2, iw3, iw4, iw5, iw6, iw7, iw8, iw9, iw10, iw11, iw12, iw13, iw14,
+				iw15, iw16, iw17, iw18, iw19, iw20, iw21, iw22};
+		for (int i =0; i < 22; i++) {
+			iw[i].setBodyType(BodyDef.BodyType.StaticBody);
+			iw[i].setDrawScale(scale);
+			iw[i].setTexture(wallTexture);
+			iw[i].setType(WALL);
+			addObject(iw[i]);
+			addEdibleWall(iw[i]);
+		}
+
 		/** Adding cotton flowers */
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
-		CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight, cottonFlower.size());
+		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight, cottonFlower.size());
 		CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight, cottonFlower.size());
-		CottonFlower[] cf = new CottonFlower[] {cf1, cf2};
-		for (int i = 0; i < 2; i++) {
+		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf4 = new CottonFlower(screenToMaze(3), screenToMaze(5), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf5 = new CottonFlower(screenToMaze(3), screenToMaze(8), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf6 = new CottonFlower(screenToMaze(4), screenToMaze(5), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf7 = new CottonFlower(screenToMaze(4), screenToMaze(6), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf8 = new CottonFlower(screenToMaze(4), screenToMaze(8), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf9 = new CottonFlower(screenToMaze(7), screenToMaze(7), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf10 = new CottonFlower(screenToMaze(11), screenToMaze(2), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf11 = new CottonFlower(screenToMaze(13), screenToMaze(6), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf12 = new CottonFlower(screenToMaze(15), screenToMaze(8), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf13 = new CottonFlower(screenToMaze(16), screenToMaze(1), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf14 = new CottonFlower(screenToMaze(16), screenToMaze(4), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf15 = new CottonFlower(screenToMaze(16), screenToMaze(8), dwidth, dheight, cottonFlower.size());
+		CottonFlower[] cf = new CottonFlower[] {cf2, cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
+				cf11, cf12, cf13, cf14, cf15};
+		for (int i = 0; i < 14; i++) {
 			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
 			cf[i].setDrawScale(scale);
 			cf[i].setTexture(cottonTexture);
-			cf[i].setType(EDIBLEWALL);
+			cf[i].setType(COTTON);
 			addObject(cf[i]);
 			addCottonFlower(cf[i]);
 		}
