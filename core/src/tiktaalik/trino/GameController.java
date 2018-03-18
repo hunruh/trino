@@ -31,6 +31,7 @@ import tiktaalik.trino.duggi.DuggiModel;
 import tiktaalik.trino.enemy.EnemyList;
 import tiktaalik.trino.enemy.EnemyModel;
 import tiktaalik.trino.resources.EdibleWall;
+import tiktaalik.trino.resources.CottonFlower;
 import tiktaalik.util.*;
 import tiktaalik.trino.obstacle.*;
 
@@ -80,6 +81,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_FILE = "trino/enemy.png";
 	private static final String WALL_FILE = "trino/wall.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
+	private static final String COTTON_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
 
 	private static final int COTTON = 0;
@@ -106,6 +108,7 @@ public class GameController implements ContactListener, Screen {
 	/* Texture assets for other world attributes */
 	private TextureRegion wallTexture;
 	private TextureRegion edibleWallTexture;
+	private TextureRegion cottonTexture;
 	private TextureRegion pathTexture;
 
 	//index of the object Duggi collided with
@@ -118,26 +121,26 @@ public class GameController implements ContactListener, Screen {
 	private static final float  BASIC_DENSITY = 0.0f;
 	private static final float  BASIC_FRICTION = 0.4f;
 	private static final float  BASIC_RESTITUTION = 0.1f;
-	private static final float[][] WALL1 = {{ 0.0f, 5.0f, 0.0f, 18.0f, 2.5f, 18.0f, 2.5f, 5.0f},
-			{ 0.0f, 0.0f, 30.0f, 0.0f, 30.0f, 2.5f, 0.0f, 2.5f},
-			{10.0f, 2.5f, 29.5f, 2.5f, 29.5f, 5.0f, 10.0f, 5.0f},
-			{29.5f, 0.0f,32.0f, 0.0f,32.0f, 11.5f,29.5f, 11.5f},
-			{29.5f, 18.0f,32.0f, 18.0f,32.0f, 14.0f,29.5f, 14.0f},
-			{10.0f, 5.0f,12.5f, 5.0f,12.5f, 14.0f,10.0f, 14.0f},
-			{7.5f,5.0f,10.0f,5.0f,10.0f, 14.0f,7.5f, 14.0f},
-			{12.5f,14.0f,15.5f,14.0f,15.5f,11.5f,12.5f,11.5f},
-			{18.0f,18.0f,25.0f,18.0f,25.0f,7.5f,18f,7.5f},
-			{ 2.5f,18.0f, 18.0f,18.0f, 18.0f,16.5f, 2.5f,16.5f},
-			{ 25.0f,18.0f, 29.5f,18.0f, 29.5f,16.5f, 25.0f,16.5f},
-	};
+//	private static final float[][] WALL1 = {{ 0.0f, 5.0f, 0.0f, 18.0f, 2.5f, 18.0f, 2.5f, 5.0f},
+//			{ 0.0f, 0.0f, 30.0f, 0.0f, 30.0f, 2.5f, 0.0f, 2.5f},
+//			{10.0f, 2.5f, 29.5f, 2.5f, 29.5f, 5.0f, 10.0f, 5.0f},
+//			{29.5f, 0.0f,32.0f, 0.0f,32.0f, 11.5f,29.5f, 11.5f},
+//			{29.5f, 18.0f,32.0f, 18.0f,32.0f, 14.0f,29.5f, 14.0f},
+//			{10.0f, 5.0f,12.5f, 5.0f,12.5f, 14.0f,10.0f, 14.0f},
+//			{7.5f,5.0f,10.0f,5.0f,10.0f, 14.0f,7.5f, 14.0f},
+//			{12.5f,14.0f,15.5f,14.0f,15.5f,11.5f,12.5f,11.5f},
+//			{18.0f,18.0f,25.0f,18.0f,25.0f,7.5f,18f,7.5f},
+//			{ 2.5f,18.0f, 18.0f,18.0f, 18.0f,16.5f, 2.5f,16.5f},
+//			{ 25.0f,18.0f, 29.5f,18.0f, 29.5f,16.5f, 25.0f,16.5f},
+//	};
 
 	// Other game objects
 	/** The goal door position */
-	private static Vector2 GOAL_POS = new Vector2(30.75f,12.75f);
+	private static Vector2 GOAL_POS = new Vector2(2.0f,15.0f);
 	/** The position of the spinning barrier */
 	private static Vector2 SPIN_POS = new Vector2(13.0f,12.5f);
 	/** The initial position of the dude */
-	private static Vector2 DUDE_POS = new Vector2(1.0f, 2.0f);
+	private static Vector2 DUDE_POS = new Vector2(1.0f, 16.0f);
 	/** The initial position of the enemy */
 	private static Vector2 ENEMY_POS = new Vector2(28.25f, 5.0f);
 
@@ -171,6 +174,7 @@ public class GameController implements ContactListener, Screen {
 	/** Queue for adding objects */
 	private PooledList<Obstacle> addQueue = new PooledList<Obstacle>();
 	private PooledList<EdibleWall> edibleWalls = new PooledList<EdibleWall>();
+	private PooledList<CottonFlower> cottonFlower = new PooledList<CottonFlower>();
 	private PooledList<EnemyModel> enemies = new PooledList<EnemyModel>();
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
@@ -252,7 +256,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_FILE);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
-
+		manager.load(EDIBLE_WALL_FILE, Texture.class);
+		assets.add(EDIBLE_WALL_FILE);
 		manager.load(ENEMY_FILE, Texture.class);
 		assets.add(ENEMY_FILE);
 
@@ -292,7 +297,8 @@ public class GameController implements ContactListener, Screen {
 		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		//System.out.println(EDIBLE_WALL_FILE);
-		edibleWallTexture = createTexture(manager, DOLL_FILE, false);
+		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
+		cottonTexture = createTexture(manager, COTTON_FILE, false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
 
 		worldAssetState = AssetState.COMPLETE;
@@ -545,6 +551,11 @@ public class GameController implements ContactListener, Screen {
 		edibleWalls.add(obj);
 	}
 
+	public void addCottonFlower (CottonFlower obj) {
+		assert inBounds(obj): "Object is not in bounds";
+		cottonFlower.add(obj);
+	}
+
 	public void addEnemy(EnemyModel obj){
 		assert inBounds(obj) : "Objects is not in bounds";
 		enemies.add(obj);
@@ -786,7 +797,7 @@ public class GameController implements ContactListener, Screen {
 		// Add level goal
 		float dwidth = goalTile.getRegionWidth() / scale.x;
 		float dheight = goalTile.getRegionHeight() / scale.y;
-		goalDoor = new BoxObstacle(GOAL_POS.x, GOAL_POS.y, dwidth, dheight);
+		goalDoor = new BoxObstacle(screenToMaze(16), screenToMaze(2), dwidth, dheight);
 		goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
 		goalDoor.setSensor(true);
 		goalDoor.setDrawScale(scale);
@@ -796,28 +807,28 @@ public class GameController implements ContactListener, Screen {
 		addObject(goalDoor);
 		//System.out.println(goalDoor.getType());
 
-		String wname = "wall";
-		for (int ii = 0; ii < WALL1.length; ii++) {
-			PolygonObstacle obj;
-			obj = new PolygonObstacle(WALL1[ii], 0, 0);
-			obj.setBodyType(BodyDef.BodyType.StaticBody);
-			obj.setDensity(BASIC_DENSITY);
-			obj.setFriction(BASIC_FRICTION);
-			obj.setRestitution(BASIC_RESTITUTION);
-			obj.setDrawScale(scale);
-			obj.setTexture(wallTexture);
-			obj.setName(wname + ii);
-			obj.setType(WALL);
-			addObject(obj);
-			//System.out.println(obj.getType());
-		}
+//		String wname = "wall";
+//		for (int ii = 0; ii < WALL1.length; ii++) {
+//			PolygonObstacle obj;
+//			obj = new PolygonObstacle(WALL1[ii], 0, 0);
+//			obj.setBodyType(BodyDef.BodyType.StaticBody);
+//			obj.setDensity(BASIC_DENSITY);
+//			obj.setFriction(BASIC_FRICTION);
+//			obj.setRestitution(BASIC_RESTITUTION);
+//			obj.setDrawScale(scale);
+//			obj.setTexture(wallTexture);
+//			obj.setName(wname + ii);
+//			obj.setType(WALL);
+//			addObject(obj);
+//			//System.out.println(obj.getType());
+//		}
 
 
 
-		// Create dude
+		// Create player character
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
-		avatar = new DuggiModel(DUDE_POS.x, DUDE_POS.y, dwidth, dheight);
+		avatar = new DuggiModel(screenToMaze(1), screenToMaze(7), dwidth, dheight);
 		avatar.setTexture(dollTexture);
 		avatar.setDrawScale(scale);
 		avatar.setDollTexture(dollTexture);
@@ -830,28 +841,88 @@ public class GameController implements ContactListener, Screen {
 		// Create enemy
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
-		enemy = new EnemyModel(ENEMY_POS.x, ENEMY_POS.y, dwidth, dheight);
+
+		enemy = new EnemyModel(screenToMaze(11), screenToMaze(6), dwidth, dheight); // the only moving enemy right now
 		enemy.setType(ENEMY);
 		enemy.setDrawScale(scale);
 		enemy.setTexture(enemyTexture);
 		addObject(enemy);
 		addEnemy(enemy);
+		//adding the rest of the enemies; they're static right now
+		EnemyModel en1 = new EnemyModel(screenToMaze(4), screenToMaze(4), dwidth, dheight);
+		EnemyModel en2 = new EnemyModel(screenToMaze(6), screenToMaze(5), dwidth, dheight);
+		EnemyModel en3 = new EnemyModel(screenToMaze(9), screenToMaze(3), dwidth, dheight);
+		EnemyModel en4 = new EnemyModel(screenToMaze(12), screenToMaze(4), dwidth, dheight);
+		EnemyModel en5 = new EnemyModel(screenToMaze(14), screenToMaze(4), dwidth, dheight);
+		EnemyModel[] en = new EnemyModel[]{en1, en2, en3, en4, en5};
+		for (int i = 0; i < 5; i++) {
+			en[i].setType(ENEMY);
+			en[i].setDrawScale(scale);
+			en[i].setTexture(enemyTexture);
+			addObject(en[i]);
+			addEnemy(en[i]);
+		}
 		//System.out.println(enemy.getType());
 
 //		enemies = new EnemyList(1,scale, enemyTexture, objects);
 //		enemy = enemies.get(0);
 
+		/** Adding edible walls */
 		dwidth = dollTexture.getRegionWidth() / scale.x;
 		dheight = dollTexture.getRegionHeight() / scale.y;
 
-		EdibleWall ew = new EdibleWall(8, 8, dwidth, dheight, edibleWalls.size());
-		ew.setBodyType(BodyDef.BodyType.StaticBody);
-		ew.setDrawScale(scale);
-		ew.setTexture(edibleWallTexture);
-		ew.setType(EDIBLEWALL);
-		addObject(ew);
-		addEdibleWall(ew);
+		EdibleWall ew1 = new EdibleWall(screenToMaze(2), screenToMaze(4), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew2 = new EdibleWall(screenToMaze(3), screenToMaze(3), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew3 = new EdibleWall(screenToMaze(3), screenToMaze(4), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew4 = new EdibleWall(screenToMaze(5), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew5 = new EdibleWall(screenToMaze(6), screenToMaze(1), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew6 = new EdibleWall(screenToMaze(6), screenToMaze(2), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew7 = new EdibleWall(screenToMaze(6), screenToMaze(3), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew8 = new EdibleWall(screenToMaze(6), screenToMaze(4), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew9 = new EdibleWall(screenToMaze(6), screenToMaze(6), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew10 = new EdibleWall(screenToMaze(6), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew11 = new EdibleWall(screenToMaze(7), screenToMaze(6), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew12 = new EdibleWall(screenToMaze(8), screenToMaze(6), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew13 = new EdibleWall(screenToMaze(8), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew14 = new EdibleWall(screenToMaze(9), screenToMaze(1), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew15 = new EdibleWall(screenToMaze(9), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew16 = new EdibleWall(screenToMaze(10), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew17 = new EdibleWall(screenToMaze(11), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew18 = new EdibleWall(screenToMaze(12), screenToMaze(2), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew19 = new EdibleWall(screenToMaze(12), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew20 = new EdibleWall(screenToMaze(13), screenToMaze(2), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew21 = new EdibleWall(screenToMaze(13), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew22 = new EdibleWall(screenToMaze(14), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew23 = new EdibleWall(screenToMaze(14), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew24 = new EdibleWall(screenToMaze(15), screenToMaze(3), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew25 = new EdibleWall(screenToMaze(15), screenToMaze(5), dwidth, dheight, edibleWalls.size());
+		EdibleWall ew26 = new EdibleWall(screenToMaze(15), screenToMaze(7), dwidth, dheight, edibleWalls.size());
+		EdibleWall[] veg = new EdibleWall[]{ew1, ew2, ew3, ew4, ew5, ew6, ew7, ew8, ew9, ew10, ew11, ew12, ew13,
+				ew14, ew15, ew16, ew17, ew18, ew19, ew20, ew21, ew22, ew23, ew24, ew25, ew26};
+		for (int i = 0; i < 26; i++) {
+			veg[i].setBodyType(BodyDef.BodyType.StaticBody);
+			veg[i].setDrawScale(scale);
+			veg[i].setTexture(edibleWallTexture);
+			veg[i].setType(EDIBLEWALL);
+			addObject(veg[i]);
+			addEdibleWall(veg[i]);
+		}
 		//System.out.println(ew.getType());
+
+		/** Adding cotton flowers */
+		dwidth = dollTexture.getRegionWidth() / scale.x;
+		dheight = dollTexture.getRegionHeight() / scale.y;
+		CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight, cottonFlower.size());
+		CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight, cottonFlower.size());
+		CottonFlower[] cf = new CottonFlower[] {cf1, cf2};
+		for (int i = 0; i < 2; i++) {
+			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
+			cf[i].setDrawScale(scale);
+			cf[i].setTexture(cottonTexture);
+			cf[i].setType(EDIBLEWALL);
+			addObject(cf[i]);
+			addCottonFlower(cf[i]);
+		}
 	}
 
 	/**
@@ -1089,6 +1160,12 @@ public class GameController implements ContactListener, Screen {
 		return (Math.abs(object.getX() - avatar.getX()) >= avatar.getWidth()/3);
 	}
 */
+
+	/** drawing on screen */
+	public int screenToMaze (float f) {
+		return (int)(1+2*(f-1));
+	}
+
 	/** Unused ContactListener method */
 	public void postSolve(Contact contact, ContactImpulse impulse) {}
 	/** Unused ContactListener method */
