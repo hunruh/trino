@@ -9,12 +9,14 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
-public class CottonFlower extends GameObject {
+public class Wall extends GameObject {
     protected PolygonShape shape; // Shape information for this box
     private Vector2 dimension; // The width and height of the box
     private Vector2 sizeCache; // A cache value for when the user wants to access the dimensions
     private Fixture geometry; // A cache value for the fixture (for resizing)
     private float[] vertices; // Cache of the polygon vertices (for resizing)
+
+    private boolean edible;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -23,8 +25,8 @@ public class CottonFlower extends GameObject {
      * @param height	The object height in physics units
      * @param edible	If the wall can be consumed by the herbivore
      */
-    public CottonFlower(float width, float height, boolean edible) {
-        this(0,0,width,height);
+    public Wall(float width, float height, boolean edible) {
+        this(0,0,width,height, edible);
     }
 
     /**
@@ -34,8 +36,9 @@ public class CottonFlower extends GameObject {
      * @param y  		Initial y position of the avatar center
      * @param width	    The object width in physics units
      * @param height	The object height in physics units
+     * @param edible	If the wall can be consumed by the herbivore
      */
-    public CottonFlower(float x, float y, float width, float height) {
+    public Wall(float x, float y, float width, float height, boolean edible) {
         super(x,y);
         dimension = new Vector2(width,height);
         sizeCache = new Vector2();
@@ -45,8 +48,10 @@ public class CottonFlower extends GameObject {
 
         // Initialize
         setBodyType(BodyDef.BodyType.StaticBody);
-        setName("cotton flower");
+        setName("wall");
         resize(width, height);
+
+        this.edible = edible;
     }
 
     /**
