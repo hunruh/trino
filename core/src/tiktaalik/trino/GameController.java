@@ -1232,7 +1232,7 @@ public class GameController implements ContactListener, Screen {
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				GameObject tmp = objectInFrontOfAvatar();
 				System.out.println("tmp: " + tmp);
-				if (tmp != null && tmp.getType() == EDIBLEWALL && isOnGrid(0.3,0.3)){
+				if (tmp != null && tmp.getType() == EDIBLEWALL && isOnGrid(0.5,0.5)){
 					tmp.deactivatePhysics(world);
 					objects.remove(tmp);
 					walls.remove(tmp);
