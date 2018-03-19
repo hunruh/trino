@@ -995,25 +995,19 @@ public class GameController implements ContactListener, Screen {
 		// Process actions in object model
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
-				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToDoll();
 				avatar.setTexture(dollTexture);
 				objects.set(1, avatar);
-				avatar.activatePhysics(world);
 			}
 			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
-				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToHerbivore();
 				avatar.setTexture(herbivoreTexture);
 				objects.set(1, avatar);
-				avatar.activatePhysics(world);
 			}
 			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
-				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToCarnivore();
 				avatar.setTexture(carnivoreTexture);
 				objects.set(1, avatar);
-				avatar.activatePhysics(world);
 			}
 		}
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
@@ -1037,7 +1031,6 @@ public class GameController implements ContactListener, Screen {
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				if (collidedWith != null) {
 					if (collidedWith.getType() == EDIBLEWALL) {
-						System.out.println("asdfA");
 						collidedWith.deactivatePhysics(world);
 						objects.remove(collidedWith);
 						walls.remove(collidedWith);
@@ -1116,7 +1109,6 @@ public class GameController implements ContactListener, Screen {
 	public void handleCollision(GameObject bd1, GameObject bd2){
 		boolean charging = false;
 		if (bd1.getType() == DUGGI) {
-			System.out.println(((Dinosaur)bd1).getForm());
 			if (((Dinosaur)bd1).getForm() == Dinosaur.CARNIVORE_FORM)
 				charging = ((Carnivore) bd1).getCharging();
 
@@ -1132,14 +1124,12 @@ public class GameController implements ContactListener, Screen {
 			else
 				collidedWith = bd2;
 
-
 			if (charging)
 				((Carnivore) bd1).stopCharge();
 		}
 		else if (bd2.getType() == DUGGI) {
-			System.out.println(((Dinosaur)bd2).getForm());
 			if (((Dinosaur)bd2).getForm() == Dinosaur.CARNIVORE_FORM)
-				System.out.println(charging);
+				charging = ((Carnivore) bd2).getCharging();
 
 			if (bd1.getType() == GOAL)
 				setComplete(true);

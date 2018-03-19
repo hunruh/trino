@@ -45,6 +45,7 @@ public class Carnivore extends Dinosaur {
     public void charge() {
         if (chargeReady) {
             charging = true;
+            chargeReady = false;
             chargeDirection = getDirection();
         }
     }
