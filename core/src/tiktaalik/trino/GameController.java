@@ -1344,10 +1344,12 @@ public class GameController implements ContactListener, Screen {
 				GameObject tmp = objectInFrontOfAvatar();
 				//System.out.println("tmp: " + tmp);
 				if (tmp != null && tmp.getType() == EDIBLEWALL && isOnGrid(0.5,0.5)){
+					eatWall.play(1.0f);
 					tmp.deactivatePhysics(world);
 					objects.remove(tmp);
 					walls.remove(tmp);
 					grid[(int)((Wall)tmp).getGridLocation().x-1][(int)((Wall)tmp).getGridLocation().y-1] = null;
+					avatar.incrementResources();
 				}
 				//System.out.println("sxdg " + directlyInFront);
 				/*
