@@ -64,6 +64,7 @@ public class AIController{
 
     private int currentOrientation;
 
+
     //#endregion
 
     /**

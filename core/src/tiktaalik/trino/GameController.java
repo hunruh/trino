@@ -98,7 +98,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARNIVORE_FILE_LEFT  = "trino/carnivore_left.png";
 	private static final String CARNIVORE_FILE_RIGHT  = "trino/carnivore_right.png";
 	private static final String CARNIVORE_FILE_BACK  = "trino/carnivore_back.png";
-	private static final String ENEMY_FILE = "trino/enemy.png";
+	private static final String ENEMY_FILE_FRONT = "trino/carnivore_front.png";
+	private static final String ENEMY_FILE_LEFT = "trino/carnivore_left.png";
+	private static final String ENEMY_FILE_RIGHT = "trino/carnivore_right.png";
+	private static final String ENEMY_FILE_BACK = "trino/carnivore_back.png";
 	private static final String WALL_FILE = "trino/wall.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
@@ -140,7 +143,10 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion carnivoreTextureBack;
 
 	/* Texture assets for enemies */
-	private TextureRegion enemyTexture;
+	private TextureRegion enemyTextureFront;
+	private TextureRegion enemyTextureLeft;
+	private TextureRegion enemyTextureRight;
+	private TextureRegion enemyTextureBack;
 
 	/* Texture assets for other world attributes */
 	private TextureRegion wallTexture;
@@ -332,8 +338,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(EDIBLE_WALL_FILE);
 		manager.load(COTTON_FLOWER_FILE, Texture.class);
 		assets.add(COTTON_FLOWER_FILE);
-		manager.load(ENEMY_FILE, Texture.class);
-		assets.add(ENEMY_FILE);
+		manager.load(ENEMY_FILE_FRONT, Texture.class);
+		assets.add(ENEMY_FILE_FRONT);
+		manager.load(ENEMY_FILE_LEFT, Texture.class);
+		assets.add(ENEMY_FILE_LEFT);
+		manager.load(ENEMY_FILE_RIGHT, Texture.class);
+		assets.add(ENEMY_FILE_RIGHT);
+		manager.load(ENEMY_FILE_BACK, Texture.class);
+		assets.add(ENEMY_FILE_BACK);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 	}
@@ -377,7 +389,10 @@ public class GameController implements ContactListener, Screen {
 		carnivoreTextureLeft = createTexture(manager,CARNIVORE_FILE_LEFT,false);
 		carnivoreTextureRight = createTexture(manager,CARNIVORE_FILE_RIGHT,false);
 		carnivoreTextureBack = createTexture(manager,CARNIVORE_FILE_BACK,false);
-		enemyTexture = createTexture(manager,ENEMY_FILE, false);
+		enemyTextureFront = createTexture(manager,ENEMY_FILE_FRONT, false);
+		enemyTextureLeft = createTexture(manager,ENEMY_FILE_LEFT, false);
+		enemyTextureRight = createTexture(manager,ENEMY_FILE_RIGHT, false);
+		enemyTextureBack = createTexture(manager,ENEMY_FILE_BACK, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
 		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
@@ -906,8 +921,8 @@ public class GameController implements ContactListener, Screen {
 		/** Adding cotton flowers */
 		dwidth = cottonTexture.getRegionWidth() / scale.x;
 		dheight = cottonTexture.getRegionHeight() / scale.y;
-		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight);
-		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight);
+		CottonFlower cf1 = new CottonFlower(1,4, screenToMaze(1), screenToMaze(4), dwidth, dheight);
+		CottonFlower cf2 = new CottonFlower(2,1, screenToMaze(2), screenToMaze(1), dwidth, dheight);
 		CottonFlower cf3 = new CottonFlower(2,8,screenToMaze(2), screenToMaze(8), dwidth, dheight);
 		CottonFlower cf4 = new CottonFlower(3,5,screenToMaze(3), screenToMaze(5), dwidth, dheight);
 		CottonFlower cf5 = new CottonFlower(3,8,screenToMaze(3), screenToMaze(8), dwidth, dheight);
@@ -921,9 +936,9 @@ public class GameController implements ContactListener, Screen {
 		CottonFlower cf13 = new CottonFlower(16,1,screenToMaze(16), screenToMaze(1), dwidth, dheight);
 		CottonFlower cf14 = new CottonFlower(16,4,screenToMaze(16), screenToMaze(4), dwidth, dheight);
 		CottonFlower cf15 = new CottonFlower(16,8,screenToMaze(16), screenToMaze(8), dwidth, dheight);
-		CottonFlower[] cf = new CottonFlower[] {cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
+		CottonFlower[] cf = new CottonFlower[] {cf1, cf2, cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
 				cf11, cf12, cf13, cf14, cf15};
-		for (int i = 0; i < 13; i++) {
+		for (int i = 0; i < 15; i++) {
 			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
 			cf[i].setDrawScale(scale);
 			cf[i].setTexture(cottonTexture);
@@ -979,7 +994,7 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 0; i < en.length; i++) {
 			en[i].setType(ENEMY);
 			en[i].setDrawScale(scale);
-			en[i].setTexture(enemyTexture);
+			en[i].setTexture(enemyTextureFront);
 			addObject(en[i]);
 			addEnemy(en[i]);
 		}
@@ -1110,12 +1125,6 @@ public class GameController implements ContactListener, Screen {
 		bgMusic.play();
 
 	}
-
-//	/** Music */
-//	Music music = Gdx.audio.newMusic(Gdx.files.internal("data/doll_bg.mp3"));
-//	music.setLooping(true);
-//	music.play();
-
 
 	/**
 	 * The core gameplay loop of this world.
