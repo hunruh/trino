@@ -1321,7 +1321,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2){
 		System.out.println(bd1.getY() - bd2.getY());
-		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.5);
+		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.65);
 	}
 
 
