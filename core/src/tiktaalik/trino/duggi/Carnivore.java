@@ -92,7 +92,7 @@ public class Carnivore extends Dinosaur {
             }
         } else if (coolingCharge) {
             chargeCooldown += dt;
-            System.out.println("Cooling charge... " + chargeCooldown);
+//            System.out.println("Cooling charge... " + chargeCooldown);
             if (chargeCooldown >= CHARGE_COOLDOWN_DURATION) {
                 coolingCharge = false;
                 chargeCooldown = 0.0f;

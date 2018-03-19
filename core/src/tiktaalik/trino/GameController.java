@@ -672,7 +672,6 @@ public class GameController implements ContactListener, Screen {
 	 * @return whether to process the update loop
 	 */
 	public boolean preUpdate(float dt) {
-		////System.out.println("in pre update");
 		InputHandler input = InputHandler.getInstance();
 		input.readInput(bounds, scale);
 		if (listener == null) {
@@ -683,18 +682,6 @@ public class GameController implements ContactListener, Screen {
 		if (input.didReset()) {
 			reset();
 		}
-		/*
-		// Now it is time to maybe switch screens.
-		if (input.didExit()) {
-			listener.exitScreen(this, EXIT_QUIT);
-			return false;
-		} else if (input.didAdvance()) {
-			listener.exitScreen(this, EXIT_NEXT);
-			return false;
-		} else if (input.didRetreat()) {
-			listener.exitScreen(this, EXIT_PREV);
-			return false;
-		*/
 
 		// reset level when colliding with enemy
 		if (countdown > 0) {
@@ -910,8 +897,7 @@ public class GameController implements ContactListener, Screen {
 		dwidth = carnivoreTextureFront.getRegionWidth() / (scale.x * 2);
 		dheight = carnivoreTextureFront.getRegionHeight() / scale.y;
 
-
-		//adding the rest of the enemies; they're static right now
+		// Adding the rest of the enemies; they're static right now
 		Enemy en1 = new Enemy(screenToMaze(4), screenToMaze(1), dwidth,0);
 		Enemy en2 = new Enemy(screenToMaze(6), screenToMaze(5), dwidth,1);
 		Enemy en3 = new Enemy(screenToMaze(9), screenToMaze(3), dwidth,2);
@@ -948,7 +934,6 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 0; i < en.length; i++) {
 			controls[i] = new AIController(i,avatar,en,pathList[i]);
 		}
-		//System.out.println("The size of the enemies pool list is " + enemies.size());
 
 
 		/** Adding edible walls */
@@ -991,7 +976,6 @@ public class GameController implements ContactListener, Screen {
 			addObject(veg[i]);
 			addWall(veg[i]);
 		}
-		////System.out.println(ew.getType());
 
 		/** Adding inedible walls */
 		Wall iw1 = new Wall(screenToMaze(2), screenToMaze(2), dwidth, dheight, false);
@@ -1033,11 +1017,7 @@ public class GameController implements ContactListener, Screen {
 		avatar.setDrawScale(scale);
 		addObject(avatar);
 
-
-		//System.out.println("head of objects: " + objects.get(0));
-		//System.out.println("tail of objects: " + objects.get(objects.size() - 1));
-
-			/** Music */
+		/** Music */
 		bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
 		bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
 		bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
@@ -1068,7 +1048,6 @@ public class GameController implements ContactListener, Screen {
 		// Process actions in object model
 		int direction = avatar.getDirection();
 		int idx = objects.size()-1;
-		////System.out.println("in update, tail is " + objects.get(idx));
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
 				avatar = avatar.transformToDoll();
@@ -1177,13 +1156,8 @@ public class GameController implements ContactListener, Screen {
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
 		avatar.setUpDown(InputHandler.getInstance().getVertical());
 
-		//System.out.println(collidedWith.size());
 		if (collidedWith.size() != 0){
-			//System.out.println("hi");
-			//System.out.println("direction " + avatar.getDirection());
-			//System.out.println(isInFrontOfAvatar(collidedWith));
 			for(GameObject c : collidedWith){
-				//System.out.println(isInFrontOfAvatar(c));
 				if (isInFrontOfAvatar(c)) {
 					handleCollision(avatar, c);
 					break;
@@ -1196,7 +1170,6 @@ public class GameController implements ContactListener, Screen {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				GameObject cotton = getCotton();
 				if (cotton != null) {
-					//System.out.println("fffuccccccccc");
 					cotton.deactivatePhysics(world);
 					objects.remove(cotton);
 					cottonFlower.remove(cotton);
@@ -1215,11 +1188,9 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
-				//System.out.println("sxdg " + directlyInFront);
 				if (directlyInFront != null) {
 					if (isInFrontOfAvatar(directlyInFront)) {
 						if (directlyInFront.getType() == EDIBLEWALL) {
-							//System.out.println("asdfA");
 							directlyInFront.deactivatePhysics(world);
 							objects.remove(directlyInFront);
 							walls.remove(directlyInFront);
@@ -1256,7 +1227,6 @@ public class GameController implements ContactListener, Screen {
 			controls[i].getMoveAlongPath();
 		}
 
-
 		// If we use sound, we must remember this.
 		SoundController.getInstance().update();
 	}
@@ -1271,7 +1241,6 @@ public class GameController implements ContactListener, Screen {
 	 * @param contact The two bodies that collided
 	 */
 	public void beginContact(Contact contact) {
-		////System.out.println("in begin contact");
 		Fixture fix1 = contact.getFixtureA();
 		Fixture fix2 = contact.getFixtureB();
 
@@ -1286,16 +1255,27 @@ public class GameController implements ContactListener, Screen {
 			GameObject bd1 = (GameObject)body1.getUserData();
 			GameObject bd2 = (GameObject)body2.getUserData();
 
-			if (bd1.getType() == DUGGI || bd2.getType() == DUGGI) {
-				////System.out.println("dfghs'");
-				////System.out.println(bd1.toString());
-				////System.out.println(bd2.toString());
-				////System.out.println(bd1.getType() == EDIBLEWALL);
+			if (bd1.getType() == DUGGI) {
+				if (bd2.getType() == GOAL) {
+					setComplete(true);
+				}
+				else {
+					if (!didExist(bd2, collidedWith))
+						collidedWith.add(bd2);
+					if (isInFrontOfAvatar(bd2))
+						directlyInFront = bd2;
+				}
+			} else if (bd2.getType() == DUGGI) {
+				if (bd1.getType() == GOAL) {
+					setComplete(true);
+				}
+				else {
+					if (!didExist(bd1, collidedWith))
+						collidedWith.add(bd1);
+					if (isInFrontOfAvatar(bd1))
+						directlyInFront = bd1;
+				}
 			}
-
-			// Check for win condition
-			handleCollision(bd1, bd2);
-			//System.out.println(collidedWith);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1311,21 +1291,20 @@ public class GameController implements ContactListener, Screen {
 			if (bd2.getType() == GOAL)
 				setComplete(true);
 			else if (bd2.getType() == ENEMY) {
+				System.out.println("Enemy collision");
 				if (charging) {
-					//System.out.println("Collided mid charge!");
+					System.out.println("Collided with enemy");
+					((Carnivore) bd1).stopCharge();
 				} else {
 					setFailure(true);
 				}
 			}
-			else if (bd2.getType() != WALL){
-				if (!didExist(bd2, collidedWith))
-					collidedWith.add(bd2);
-				if (isInFrontOfAvatar(bd2))
-					directlyInFront = bd2;
+			else if (bd2.getType() == WALL){
+				if (charging) {
+					System.out.println("Collided with wall");
+					((Carnivore) bd1).stopCharge();
+				}
 			}
-
-			if (charging)
-				((Carnivore) bd1).stopCharge();
 		}
 		else if (bd2.getType() == DUGGI) {
 			if (((Dinosaur)bd2).getForm() == Dinosaur.CARNIVORE_FORM)
@@ -1334,27 +1313,26 @@ public class GameController implements ContactListener, Screen {
 			if (bd1.getType() == GOAL)
 				setComplete(true);
 			else if (bd1.getType() == ENEMY) {
+				System.out.println("Enemy collision");
 				if (charging) {
-					//System.out.println("Collided mid charge!");
+					System.out.println("Collided with enemy");
+					((Carnivore) bd2).stopCharge();
 				} else {
 					setFailure(true);
 				}
 			}
-			else if (bd1.getType() != WALL){
-				if (!didExist(bd1, collidedWith))
-					collidedWith.add(bd1);
-				if (isInFrontOfAvatar(bd1))
-					directlyInFront = bd1;
+			else if (bd1.getType() == WALL){
+				if (charging) {
+					System.out.println("Collided with wall");
+					((Carnivore) bd2).stopCharge();
+				}
 			}
 
-			if (charging)
-				((Carnivore) bd2).stopCharge();
 		}
 	}
 
 	public boolean didExist(GameObject bd, PooledList<GameObject>list){
 		for(GameObject l : list){
-			System.out.println("in did exist, " + (bd == l));
 			if (bd == l) return true;
 		}
 		return false;
@@ -1393,7 +1371,6 @@ public class GameController implements ContactListener, Screen {
 	 * @return true if they are aligned horizontally
 	 */
 	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){
-		//System.out.println(bd1.getY() - bd2.getY());
 		return (Math.abs(bd1.getY() - bd2.getY()) <= offset);
 	}
 
@@ -1405,7 +1382,6 @@ public class GameController implements ContactListener, Screen {
 	 * @return true if they are aligned horizontally
 	 */
 	public boolean isAlignedVertically(GameObject bd1, GameObject bd2, double offset){
-		//System.out.println(bd1.getX() - bd2.getX());
 		return (Math.abs(bd1.getX() - bd2.getX()) <= offset);
 	}
 
@@ -1428,7 +1404,6 @@ public class GameController implements ContactListener, Screen {
 	 * double jumping.
 	 */
 	public void endContact(Contact contact) {
-		////System.out.println("in end contact");
 		Fixture fix1 = contact.getFixtureA();
 		Fixture fix2 = contact.getFixtureB();
 
@@ -1442,12 +1417,10 @@ public class GameController implements ContactListener, Screen {
 		Object bd2 = body2.getUserData();
 
 		if (bd1 == avatar) {
-			System.out.println("dsfhjskgfd");
 			collidedWith.remove(bd2);
 			directlyInFront = null;
 		}
 		else if (bd2 == avatar) {
-			System.out.println("dsfhjskgfd");
 			collidedWith.remove(bd1);
 			directlyInFront = null;
 
