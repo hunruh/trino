@@ -201,9 +201,7 @@ public class GameController implements ContactListener, Screen {
 	private int countdown;
 
 	private Dinosaur avatar; // Reference to the character avatar
-	private int avatarIdx; // Position of the character avatar in the objects list
-	/** Reference to the enemy avatar */
-	private Enemy enemy;
+
 	/** Reference to the goalDoor (for collision detection) */
 	private Wall goalDoor;
 
@@ -997,19 +995,25 @@ public class GameController implements ContactListener, Screen {
 		// Process actions in object model
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
+				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToDoll();
 				avatar.setTexture(dollTexture);
 				objects.set(1, avatar);
+				avatar.activatePhysics(world);
 			}
 			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
+				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToHerbivore();
 				avatar.setTexture(herbivoreTexture);
 				objects.set(1, avatar);
+				avatar.activatePhysics(world);
 			}
 			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
+				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToCarnivore();
 				avatar.setTexture(carnivoreTexture);
 				objects.set(1, avatar);
+				avatar.activatePhysics(world);
 			}
 		}
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
@@ -1111,12 +1115,14 @@ public class GameController implements ContactListener, Screen {
 
 	public void handleCollision(GameObject bd1, GameObject bd2){
 		boolean charging = false;
-		if (bd1.getType() == DUGGI){
+		if (bd1.getType() == DUGGI) {
+			System.out.println(((Dinosaur)bd1).getForm());
+			if (((Dinosaur)bd1).getForm() == Dinosaur.CARNIVORE_FORM)
+				charging = ((Carnivore) bd1).getCharging();
+
 			if (bd2.getType() == GOAL)
 				setComplete(true);
-			else if (bd2.getType() == ENEMY){
-				if (((Dinosaur)bd1).getType() == Dinosaur.CARNIVORE_FORM)
-					charging = ((Carnivore) bd1).getCharging();
+			else if (bd2.getType() == ENEMY) {
 				if (charging) {
 					System.out.println("Collided mid charge!");
 				} else {
@@ -1125,13 +1131,19 @@ public class GameController implements ContactListener, Screen {
 			}
 			else
 				collidedWith = bd2;
+
+
+			if (charging)
+				((Carnivore) bd1).stopCharge();
 		}
-		else if (bd2.getType() == DUGGI){
+		else if (bd2.getType() == DUGGI) {
+			System.out.println(((Dinosaur)bd2).getForm());
+			if (((Dinosaur)bd2).getForm() == Dinosaur.CARNIVORE_FORM)
+				System.out.println(charging);
+
 			if (bd1.getType() == GOAL)
 				setComplete(true);
 			else if (bd1.getType() == ENEMY) {
-				if (((Dinosaur)bd2).getType() == Dinosaur.CARNIVORE_FORM)
-					charging = ((Carnivore) bd2).getCharging();
 				if (charging) {
 					System.out.println("Collided mid charge!");
 				} else {
@@ -1140,6 +1152,9 @@ public class GameController implements ContactListener, Screen {
 			}
 			else
 				collidedWith = bd1;
+
+			if (charging)
+				((Carnivore) bd2).stopCharge();
 		}
 	}
 
