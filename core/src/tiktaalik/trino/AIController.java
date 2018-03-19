@@ -207,60 +207,20 @@ public class AIController{
 
         if (path[pathStep].cpy().sub(enemy.getPosition()).len() < 0.2f){
             pathStep = (pathStep + 1) % path.length;
+            enemySpeed = 0.025f;
+        } else if (path[(pathStep + 1) % path.length].cpy().sub(target.getPosition()).len() < 0.5f ){
+            pathStep = (pathStep + 1) % path.length;
+            enemySpeed = 0.05f;
 
-//            if (enemy.getX() - path[pathStep].x >=2){
-//                currentOrientation = 3;
-//            } else if (path[pathStep].x - enemy.getX() >= 2){
-//                currentOrientation = 1;
-//            }
-//            else if (enemy.getY() - path[pathStep].y >= 2){
-//                currentOrientation = 0;
-//            }
-//            else if (path[pathStep].y - enemy.getY() >= 2){
-//                currentOrientation = 2;
-//            }
+        } else if (path[(pathStep + 2) % path.length].cpy().sub(target.getPosition()).len() < 0.5f) {
+            pathStep = (pathStep + 2) % path.length;
+            enemySpeed = 0.05f;
+
         }
 
         step = path[pathStep].cpy().sub(enemy.getPosition()).nor().scl(enemySpeed);
         enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
 
-//        float VX = 0;
-//        float VY = 0;
-//
-//        if (currentOrientation == 0){
-//            VY = 0.02f;
-//            enemy.setPosition(path[pathStep].x,enemy.getY());
-//        } else if (currentOrientation == 1){
-//            VX = 0.02f;
-//            enemy.setPosition(enemy.getX(),path[pathStep].y);
-//        } else if (currentOrientation == 2){
-//            VY = -0.02f;
-//            enemy.setPosition(path[pathStep].x,enemy.getY());
-//        } else if (currentOrientation == 3){
-//            VX = -0.02f;
-//            enemy.setPosition(enemy.getX(),path[pathStep].y);
-//        }
-//        enemy.setPosition(enemy.getPosition().add(VX,VY));
 
-//        if (path[pathStep].x > enemy.getX()){
-//            VX = .10f;
-//        } else if (path[pathStep].x < enemy.getX()){
-//            VX = -.10f;
-//        } else if (path[pathStep].y > enemy.getY()){
-//            VY = .10f;
-//        } else if (path[pathStep].y < enemy.getY()){
-//            VY = -.10f;
-//        }
-
-
-//        cacheDistance = Vector2.dst(enemy.getX(), enemy.getY(),
-//                path[pathStep].x, path[pathStep].y);
-//        cacheDirection = path[pathStep].sub(enemy.getPosition()).nor();
-//        cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
-//                cacheDirection.y * enemySpeed * elapsed);
-//
-//        enemy.setPosition(enemy.getPosition().add(cacheDirection));
-
-//        enemy.setPosition(path[pathStep]);
     }
 }
