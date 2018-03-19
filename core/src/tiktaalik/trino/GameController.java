@@ -1177,13 +1177,19 @@ public class GameController implements ContactListener, Screen {
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				if (directlyInFront != null) {
-					if (directlyInFront.getType() == EDIBLEWALL) {
-						System.out.println("asdfA");
-						directlyInFront.deactivatePhysics(world);
-						objects.remove(directlyInFront);
-						walls.remove(directlyInFront);
-						collidedWith = null;
+					if (isInFrontOfAvatar(directlyInFront)) {
+						if (directlyInFront.getType() == EDIBLEWALL) {
+							System.out.println("asdfA");
+							directlyInFront.deactivatePhysics(world);
+							objects.remove(directlyInFront);
+							walls.remove(directlyInFront);
+							collidedWith = null;
+							directlyInFront = null;
+						}
+					}
+					else{
 						directlyInFront = null;
+						collidedWith = null;
 					}
 				}
 			}
