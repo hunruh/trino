@@ -204,10 +204,10 @@ public class AIController{
 //        enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
 
 //        //#region PUT YOUR CODE HERE
-        System.out.println("path: " + path);
-        System.out.println("enemy: " + enemy);
-        System.out.println("pathStep: " + pathStep);
-        System.out.println("target: " + target);
+        //System.out.println("path: " + path);
+        //System.out.println("enemy: " + enemy);
+        //System.out.println("pathStep: " + pathStep);
+        //System.out.println("target: " + target);
 
         if (path[pathStep].cpy().sub(enemy.getPosition()).len() < 0.2f){
             pathStep = (pathStep + 1) % path.length;

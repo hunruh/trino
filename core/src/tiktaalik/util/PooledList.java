@@ -392,7 +392,7 @@ public class PooledList<E> extends AbstractSequentialList<E> implements Iterable
 		if (index == 0) {
 			value = head.value;
 			head.value = element;
-		} else if (index == size) {
+		} else if (index == size - 1) {
 			value = tail.value;
 			tail.value = element;
 		} else {	

@@ -851,8 +851,6 @@ public class GameController implements ContactListener, Screen {
 		float dwidth = dollTextureRight.getRegionWidth() / (scale.x * 2);
 		float dheight = dollTextureRight.getRegionHeight() / scale.y;
 		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
-		avatar.setTexture(dollTextureRight);
-		avatar.setDrawScale(scale);
 		avatar.setType(DUGGI);
 
 		/** Adding cotton flowers */
@@ -1019,6 +1017,8 @@ public class GameController implements ContactListener, Screen {
 		}
 
 
+		avatar.setTexture(dollTextureRight);
+		avatar.setDrawScale(scale);
 		addObject(avatar);
 
 
@@ -1046,6 +1046,7 @@ public class GameController implements ContactListener, Screen {
 		// Process actions in object model
 		int direction = avatar.getDirection();
 		int idx = objects.size()-1;
+		System.out.println("in update, tail is " + objects.get(idx));
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
 				avatar = avatar.transformToDoll();
@@ -1320,7 +1321,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2){
 		System.out.println(bd1.getY() - bd2.getY());
-		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.4);
+		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.5);
 	}
 
 
@@ -1332,7 +1333,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean isAlignedVertically(GameObject bd1, GameObject bd2){
 		System.out.println(bd1.getX() - bd2.getX());
-		return (Math.abs(bd1.getX() - bd2.getX()) <= 0.4);
+		return (Math.abs(bd1.getX() - bd2.getX()) <= 0.5);
 	}
 
 	/**
