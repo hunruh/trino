@@ -82,7 +82,7 @@ public class GameController implements ContactListener, Screen {
 	/** The texture file for general assets */
 	private static String EARTH_FILE = "shared/earthtile.png";
 	private static String GOAL_FILE = "shared/goaldoor.png";
-	private static String FONT_FILE = "shared/RetroGame.ttf";
+	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
 	private static int FONT_SIZE = 64;
 
 	/** The texture files for the three dinosaurs (no animation) */
@@ -792,12 +792,12 @@ public class GameController implements ContactListener, Screen {
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
 			canvas.begin(); // DO NOT SCALE
-			canvas.drawTextCentered("VICTORY!", displayFont, 0.0f);
+			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
 			canvas.end();
 		} else if (failed) {
 			displayFont.setColor(Color.RED);
 			canvas.begin(); // DO NOT SCALE
-			canvas.drawTextCentered("FAILURE!", displayFont, 0.0f);
+			canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 			canvas.end();
 		}
 	}
