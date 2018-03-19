@@ -256,6 +256,7 @@ public class GameController implements ContactListener, Screen {
 
 	private Sound cottonPickUp;
 	private Sound eatWall;
+	private Sound collideWall;
 
 	/** Mark set to handle more sophisticated collision callbacks */
 	private ObjectSet<Fixture> sensorFixtures;
@@ -598,6 +599,7 @@ public class GameController implements ContactListener, Screen {
 
 		cottonPickUp.dispose();
 		eatWall.dispose();
+		collideWall.dispose();
 	}
 
 	/**
@@ -1067,6 +1069,7 @@ public class GameController implements ContactListener, Screen {
 			// set sound effects
 			cottonPickUp = Gdx.audio.newSound(Gdx.files.internal(POP_1_FILE));
 			eatWall = Gdx.audio.newSound(Gdx.files.internal(POP_2_FILE));
+			collideWall = Gdx.audio.newSound(Gdx.files.internal(POP_5_FILE));
 
 		} else {
 			// Pause all music
@@ -1359,12 +1362,18 @@ public class GameController implements ContactListener, Screen {
 					setFailure(true);
 				}
 			}
+			else if (bd2.getType() == WALL){
+				// play sound effect
+				collideWall.stop();
+				collideWall.play(1.0f);
+			}
 			else if (bd2.getType() != WALL){
 				if (!didExist(bd2, collidedWith))
 					collidedWith.add(bd2);
 				if (isInFrontOfAvatar(bd2))
 					directlyInFront = bd2;
 			}
+
 		}
 		else if (bd2.getType() == DUGGI){
 			//System.out.println("kill me");
@@ -1379,12 +1388,18 @@ public class GameController implements ContactListener, Screen {
 					setFailure(true);
 				}
 			}
+			else if (bd2.getType() == WALL){
+				// play sound effect
+				collideWall.stop();
+				collideWall.play(1.0f);
+			}
 			else if (bd1.getType() != WALL){
 				if (!didExist(bd1, collidedWith))
 					collidedWith.add(bd1);
 				if (isInFrontOfAvatar(bd1))
 					directlyInFront = bd1;
 			}
+
 		}
 	}
 
