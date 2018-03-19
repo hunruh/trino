@@ -546,7 +546,8 @@ public class GameController implements ContactListener, Screen {
 	protected void addObject(GameObject g) {
 		assert inBounds(g) : "Object is not in bounds";
 		objects.add(g);
-		g.activatePhysics(world);
+		if (g.getType()!= COTTON)
+			g.activatePhysics(world);
 	}
 
 	public void addWall(Wall obj){
