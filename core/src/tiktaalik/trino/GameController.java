@@ -847,14 +847,42 @@ public class GameController implements ContactListener, Screen {
 		// Create player character
 		// It is important that this is always created first, as transformations must swap the first element
 		// in the objects list
+
 		float dwidth = dollTextureRight.getRegionWidth() / (scale.x * 2);
 		float dheight = dollTextureRight.getRegionHeight() / scale.y;
 		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
 		avatar.setTexture(dollTextureRight);
 		avatar.setDrawScale(scale);
 		avatar.setType(DUGGI);
-		addObject(avatar);
 
+		/** Adding cotton flowers */
+		dwidth = cottonTexture.getRegionWidth() / scale.x;
+		dheight = cottonTexture.getRegionHeight() / scale.y;
+		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight);
+		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight);
+		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf4 = new CottonFlower(screenToMaze(3), screenToMaze(5), dwidth, dheight);
+		CottonFlower cf5 = new CottonFlower(screenToMaze(3), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf6 = new CottonFlower(screenToMaze(4), screenToMaze(5), dwidth, dheight);
+		CottonFlower cf7 = new CottonFlower(screenToMaze(4), screenToMaze(6), dwidth, dheight);
+		CottonFlower cf8 = new CottonFlower(screenToMaze(4), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf9 = new CottonFlower(screenToMaze(7), screenToMaze(7), dwidth, dheight);
+		CottonFlower cf10 = new CottonFlower(screenToMaze(11), screenToMaze(2), dwidth, dheight);
+		CottonFlower cf11 = new CottonFlower(screenToMaze(13), screenToMaze(6), dwidth, dheight);
+		CottonFlower cf12 = new CottonFlower(screenToMaze(15), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf13 = new CottonFlower(screenToMaze(16), screenToMaze(1), dwidth, dheight);
+		CottonFlower cf14 = new CottonFlower(screenToMaze(16), screenToMaze(4), dwidth, dheight);
+		CottonFlower cf15 = new CottonFlower(screenToMaze(16), screenToMaze(8), dwidth, dheight);
+		CottonFlower[] cf = new CottonFlower[] {cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
+				cf11, cf12, cf13, cf14, cf15};
+		for (int i = 0; i < 13; i++) {
+			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
+			cf[i].setDrawScale(scale);
+			cf[i].setTexture(cottonTexture);
+			cf[i].setType(COTTON);
+			addObject(cf[i]);
+			addCottonFlower(cf[i]);
+		}
 
 		// Add level goal
 		dwidth = goalTile.getRegionWidth() / scale.x;
@@ -990,34 +1018,12 @@ public class GameController implements ContactListener, Screen {
 			addWall(iw[i]);
 		}
 
-		/** Adding cotton flowers */
-		dwidth = cottonTexture.getRegionWidth() / scale.x;
-		dheight = cottonTexture.getRegionHeight() / scale.y;
-		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight);
-		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight);
-		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf4 = new CottonFlower(screenToMaze(3), screenToMaze(5), dwidth, dheight);
-		CottonFlower cf5 = new CottonFlower(screenToMaze(3), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf6 = new CottonFlower(screenToMaze(4), screenToMaze(5), dwidth, dheight);
-		CottonFlower cf7 = new CottonFlower(screenToMaze(4), screenToMaze(6), dwidth, dheight);
-		CottonFlower cf8 = new CottonFlower(screenToMaze(4), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf9 = new CottonFlower(screenToMaze(7), screenToMaze(7), dwidth, dheight);
-		CottonFlower cf10 = new CottonFlower(screenToMaze(11), screenToMaze(2), dwidth, dheight);
-		CottonFlower cf11 = new CottonFlower(screenToMaze(13), screenToMaze(6), dwidth, dheight);
-		CottonFlower cf12 = new CottonFlower(screenToMaze(15), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf13 = new CottonFlower(screenToMaze(16), screenToMaze(1), dwidth, dheight);
-		CottonFlower cf14 = new CottonFlower(screenToMaze(16), screenToMaze(4), dwidth, dheight);
-		CottonFlower cf15 = new CottonFlower(screenToMaze(16), screenToMaze(8), dwidth, dheight);
-		CottonFlower[] cf = new CottonFlower[] {cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
-				cf11, cf12, cf13, cf14, cf15};
-		for (int i = 0; i < 13; i++) {
-			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
-			cf[i].setDrawScale(scale);
-			cf[i].setTexture(cottonTexture);
-			cf[i].setType(COTTON);
-			addObject(cf[i]);
-			addCottonFlower(cf[i]);
-		}
+
+		addObject(avatar);
+
+
+		System.out.println("head of objects: " + objects.get(0));
+		System.out.println("tail of objects: " + objects.get(objects.size() - 1));
 	}
 
 //	/** Music */
@@ -1039,6 +1045,7 @@ public class GameController implements ContactListener, Screen {
 	public void update(float dt) {
 		// Process actions in object model
 		int direction = avatar.getDirection();
+		int idx = objects.size()-1;
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
 				avatar = avatar.transformToDoll();
@@ -1054,7 +1061,8 @@ public class GameController implements ContactListener, Screen {
 				else {
 					avatar.setTexture(dollTextureFront);
 				}
-				objects.set(1, avatar);
+
+				objects.set(idx, avatar);
 			}
 			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 				avatar = avatar.transformToHerbivore();
@@ -1070,7 +1078,7 @@ public class GameController implements ContactListener, Screen {
 				else {
 					avatar.setTexture(herbivoreTextureFront);
 				}
-				objects.set(1, avatar);
+				objects.set(idx, avatar);
 			}
 			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 				avatar = avatar.transformToCarnivore();
@@ -1086,7 +1094,7 @@ public class GameController implements ContactListener, Screen {
 				else {
 					avatar.setTexture(carnivoreTextureFront);
 				}
-				objects.set(1, avatar);
+				objects.set(idx, avatar);
 			}
 		}
 		if (avatar.getForm() == Dinosaur.DOLL_FORM) {
@@ -1312,7 +1320,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2){
 		System.out.println(bd1.getY() - bd2.getY());
-		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.25);
+		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.4);
 	}
 
 
@@ -1324,7 +1332,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean isAlignedVertically(GameObject bd1, GameObject bd2){
 		System.out.println(bd1.getX() - bd2.getX());
-		return (Math.abs(bd1.getX() - bd2.getX()) <= 0.25);
+		return (Math.abs(bd1.getX() - bd2.getX()) <= 0.4);
 	}
 
 	/**
