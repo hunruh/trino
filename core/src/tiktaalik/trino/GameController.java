@@ -1180,75 +1180,66 @@ public class GameController implements ContactListener, Screen {
 		int idx = objects.size()-1;
 		////System.out.println("in update, tail is " + objects.get(idx));
 		if (InputHandler.getInstance().didTransform()) {
-			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
-				avatar = avatar.transformToDoll();
+			if (avatar.canTransform()) {
+				if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
+					avatar = avatar.transformToDoll();
 
-				// Change the music
-				changeMusic(bgDoll);
-				// play sound effect
-				transformSound.pause();
-				transformSound.play(1.0f);
+					// Change the music
+					changeMusic(bgDoll);
+					// play sound effect
+					transformSound.pause();
+					transformSound.play(1.0f);
 
-				if (direction == Dinosaur.UP) {
-					avatar.setTexture(dollTextureBack);
-				}
-				else if (direction == Dinosaur.LEFT) {
-					avatar.setTexture(dollTextureLeft);
-				}
-				else if (direction == Dinosaur.RIGHT) {
-					avatar.setTexture(dollTextureRight);
-				}
-				else {
-					avatar.setTexture(dollTextureFront);
-				}
+					if (direction == Dinosaur.UP) {
+						avatar.setTexture(dollTextureBack);
+					} else if (direction == Dinosaur.LEFT) {
+						avatar.setTexture(dollTextureLeft);
+					} else if (direction == Dinosaur.RIGHT) {
+						avatar.setTexture(dollTextureRight);
+					} else {
+						avatar.setTexture(dollTextureFront);
+					}
 
-				objects.set(idx, avatar);
-			}
-			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
-				avatar = avatar.transformToHerbivore();
+					objects.set(idx, avatar);
+				} else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
+					avatar = avatar.transformToHerbivore();
 
-				// Change the music
-				changeMusic(bgHerb);
-				// play sound effect
-				transformSound.pause();
-				transformSound.play(1.0f);
+					// Change the music
+					changeMusic(bgHerb);
+					// play sound effect
+					transformSound.pause();
+					transformSound.play(1.0f);
 
-				if (direction == Dinosaur.UP) {
-					avatar.setTexture(herbivoreTextureBack);
-				}
-				else if (direction == Dinosaur.LEFT) {
-					avatar.setTexture(herbivoreTextureLeft);
-				}
-				else if (direction == Dinosaur.RIGHT) {
-					avatar.setTexture(herbivoreTextureRight);
-				}
-				else {
-					avatar.setTexture(herbivoreTextureFront);
-				}
-				objects.set(idx, avatar);
-			}
-			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
-				avatar = avatar.transformToCarnivore();
+					if (direction == Dinosaur.UP) {
+						avatar.setTexture(herbivoreTextureBack);
+					} else if (direction == Dinosaur.LEFT) {
+						avatar.setTexture(herbivoreTextureLeft);
+					} else if (direction == Dinosaur.RIGHT) {
+						avatar.setTexture(herbivoreTextureRight);
+					} else {
+						avatar.setTexture(herbivoreTextureFront);
+					}
+					objects.set(idx, avatar);
+				} else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
+					avatar = avatar.transformToCarnivore();
 
-				// Change the music
-				changeMusic(bgCarn);
-				// play sound effect
-				transformSound.pause();
-				transformSound.play(1.0f);
+					// Change the music
+					changeMusic(bgCarn);
+					// play sound effect
+					transformSound.pause();
+					transformSound.play(1.0f);
 
-				if (direction == Dinosaur.UP) {
-					avatar.setTexture(carnivoreTextureBack);
+					if (direction == Dinosaur.UP) {
+						avatar.setTexture(carnivoreTextureBack);
+					} else if (direction == Dinosaur.LEFT) {
+						avatar.setTexture(carnivoreTextureLeft);
+					} else if (direction == Dinosaur.RIGHT) {
+						avatar.setTexture(carnivoreTextureRight);
+					} else {
+						avatar.setTexture(carnivoreTextureFront);
+					}
+					objects.set(idx, avatar);
 				}
-				else if (direction == Dinosaur.LEFT) {
-					avatar.setTexture(carnivoreTextureLeft);
-				}
-				else if (direction == Dinosaur.RIGHT) {
-					avatar.setTexture(carnivoreTextureRight);
-				}
-				else {
-					avatar.setTexture(carnivoreTextureFront);
-				}
-				objects.set(idx, avatar);
 			}
 		}
 		if (avatar.getForm() == Dinosaur.DOLL_FORM) {
