@@ -72,9 +72,18 @@ public class GameController implements ContactListener, Screen {
 	private static int FONT_SIZE = 64;
 
 	/** The texture files for the three dinosaurs (no animation) */
-	private static final String DOLL_FILE  = "trino/doll.png";
-	private static final String HERBIVORE_FILE  = "trino/herbivore.png";
-	private static final String CARNIVORE_FILE  = "trino/carnivore.png";
+	private static final String DOLL_FILE_FRONT  = "trino/doll_front.png";
+	private static final String DOLL_FILE_LEFT  = "trino/doll_left.png";
+	private static final String DOLL_FILE_RIGHT  = "trino/doll_right.png";
+	private static final String DOLL_FILE_BACK  = "trino/doll_back.png";
+	private static final String HERBIVORE_FILE_FRONT  = "trino/herbivore_front.png";
+	private static final String HERBIVORE_FILE_LEFT  = "trino/herbivore_left.png";
+	private static final String HERBIVORE_FILE_RIGHT  = "trino/herbivore_right.png";
+	private static final String HERBIVORE_FILE_BACK  = "trino/herbivore_back.png";
+	private static final String CARNIVORE_FILE_FRONT  = "trino/carnivore_front.png";
+	private static final String CARNIVORE_FILE_LEFT  = "trino/carnivore_left.png";
+	private static final String CARNIVORE_FILE_RIGHT  = "trino/carnivore_right.png";
+	private static final String CARNIVORE_FILE_BACK  = "trino/carnivore_back.png";
 	private static final String ENEMY_FILE = "trino/enemy.png";
 	private static final String WALL_FILE = "trino/wall.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
@@ -97,9 +106,18 @@ public class GameController implements ContactListener, Screen {
 	private BitmapFont displayFont;
 
 	/** Texture assets for Duggi's three forms */
-	private TextureRegion dollTexture;
-	private TextureRegion herbivoreTexture;
-	private TextureRegion carnivoreTexture;
+	private TextureRegion dollTextureFront;
+	private TextureRegion dollTextureLeft;
+	private TextureRegion dollTextureRight;
+	private TextureRegion dollTextureBack;
+	private TextureRegion herbivoreTextureFront;
+	private TextureRegion herbivoreTextureLeft;
+	private TextureRegion herbivoreTextureRight;
+	private TextureRegion herbivoreTextureBack;
+	private TextureRegion carnivoreTextureFront;
+	private TextureRegion carnivoreTextureLeft;
+	private TextureRegion carnivoreTextureRight;
+	private TextureRegion carnivoreTextureBack;
 
 	/* Texture assets for enemies */
 	private TextureRegion enemyTexture;
@@ -250,12 +268,30 @@ public class GameController implements ContactListener, Screen {
 		assets.add(FONT_FILE);
 
 		// Load Trino files
-		manager.load(DOLL_FILE, Texture.class);
-		assets.add(DOLL_FILE);
-		manager.load(HERBIVORE_FILE, Texture.class);
-		assets.add(HERBIVORE_FILE);
-		manager.load(CARNIVORE_FILE, Texture.class);
-		assets.add(CARNIVORE_FILE);
+		manager.load(DOLL_FILE_FRONT, Texture.class);
+		assets.add(DOLL_FILE_FRONT);
+		manager.load(DOLL_FILE_LEFT, Texture.class);
+		assets.add(DOLL_FILE_LEFT);
+		manager.load(DOLL_FILE_RIGHT, Texture.class);
+		assets.add(DOLL_FILE_RIGHT);
+		manager.load(DOLL_FILE_BACK, Texture.class);
+		assets.add(DOLL_FILE_BACK);
+		manager.load(HERBIVORE_FILE_FRONT, Texture.class);
+		assets.add(HERBIVORE_FILE_FRONT);
+		manager.load(HERBIVORE_FILE_LEFT, Texture.class);
+		assets.add(HERBIVORE_FILE_LEFT);
+		manager.load(HERBIVORE_FILE_RIGHT, Texture.class);
+		assets.add(HERBIVORE_FILE_RIGHT);
+		manager.load(HERBIVORE_FILE_BACK, Texture.class);
+		assets.add(HERBIVORE_FILE_BACK);
+		manager.load(CARNIVORE_FILE_FRONT, Texture.class);
+		assets.add(CARNIVORE_FILE_FRONT);
+		manager.load(CARNIVORE_FILE_LEFT, Texture.class);
+		assets.add(CARNIVORE_FILE_LEFT);
+		manager.load(CARNIVORE_FILE_RIGHT, Texture.class);
+		assets.add(CARNIVORE_FILE_RIGHT);
+		manager.load(CARNIVORE_FILE_BACK, Texture.class);
+		assets.add(CARNIVORE_FILE_BACK);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
 		manager.load(EDIBLE_WALL_FILE, Texture.class);
@@ -295,9 +331,18 @@ public class GameController implements ContactListener, Screen {
 			displayFont = null;
 		}
 
-		dollTexture = createTexture(manager,DOLL_FILE,false);
-		herbivoreTexture = createTexture(manager,HERBIVORE_FILE,false);
-		carnivoreTexture = createTexture(manager,CARNIVORE_FILE,false);
+		dollTextureFront = createTexture(manager,DOLL_FILE_FRONT,false);
+		dollTextureLeft = createTexture(manager,DOLL_FILE_LEFT,false);
+		dollTextureRight = createTexture(manager,DOLL_FILE_RIGHT,false);
+		dollTextureBack = createTexture(manager,DOLL_FILE_BACK,false);
+		herbivoreTextureFront = createTexture(manager,HERBIVORE_FILE_FRONT,false);
+		herbivoreTextureLeft = createTexture(manager,HERBIVORE_FILE_LEFT,false);
+		herbivoreTextureRight = createTexture(manager,HERBIVORE_FILE_RIGHT,false);
+		herbivoreTextureBack = createTexture(manager,HERBIVORE_FILE_BACK,false);
+		carnivoreTextureFront = createTexture(manager,CARNIVORE_FILE_FRONT,false);
+		carnivoreTextureLeft = createTexture(manager,CARNIVORE_FILE_LEFT,false);
+		carnivoreTextureRight = createTexture(manager,CARNIVORE_FILE_RIGHT,false);
+		carnivoreTextureBack = createTexture(manager,CARNIVORE_FILE_BACK,false);
 		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
@@ -801,10 +846,10 @@ public class GameController implements ContactListener, Screen {
 		// Create player character
 		// It is important that this is always created first, as transformations must swap the first element
 		// in the objects list
-		float dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
-		float dheight = dollTexture.getRegionHeight() / scale.y;
+		float dwidth = dollTextureRight.getRegionWidth() / (scale.x * 2);
+		float dheight = dollTextureRight.getRegionHeight() / scale.y;
 		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
-		avatar.setTexture(dollTexture);
+		avatar.setTexture(dollTextureRight);
 		avatar.setDrawScale(scale);
 		avatar.setType(DUGGI);
 		addObject(avatar);
@@ -823,8 +868,8 @@ public class GameController implements ContactListener, Screen {
 		addObject(goalDoor);
 
 		// Create enemy
-		dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
-		dheight = dollTexture.getRegionHeight() / scale.y;
+		dwidth = carnivoreTextureFront.getRegionWidth() / (scale.x * 2);
+		dheight = carnivoreTextureFront.getRegionHeight() / scale.y;
 
 
 		//adding the rest of the enemies; they're static right now
@@ -868,8 +913,8 @@ public class GameController implements ContactListener, Screen {
 
 
 		/** Adding edible walls */
-		dwidth = dollTexture.getRegionWidth() / scale.x;
-		dheight = dollTexture.getRegionHeight() / scale.y;
+		dwidth = edibleWallTexture.getRegionWidth() / scale.x;
+		dheight = edibleWallTexture.getRegionHeight() / scale.y;
 
 		Wall ew1 = new Wall(screenToMaze(2), screenToMaze(4), dwidth, dheight, true);
 		Wall ew2 = new Wall(screenToMaze(3), screenToMaze(3), dwidth, dheight, true);
@@ -945,8 +990,8 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		/** Adding cotton flowers */
-		dwidth = dollTexture.getRegionWidth() / scale.x;
-		dheight = dollTexture.getRegionHeight() / scale.y;
+		dwidth = cottonTexture.getRegionWidth() / scale.x;
+		dheight = cottonTexture.getRegionHeight() / scale.y;
 		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight);
 		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight);
 		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight);
@@ -992,21 +1037,97 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void update(float dt) {
 		// Process actions in object model
+		int direction = avatar.getDirection();
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
 				avatar = avatar.transformToDoll();
-				avatar.setTexture(dollTexture);
+				if (direction == Dinosaur.UP) {
+					avatar.setTexture(dollTextureBack);
+				}
+				else if (direction == Dinosaur.LEFT) {
+					avatar.setTexture(dollTextureLeft);
+				}
+				else if (direction == Dinosaur.RIGHT) {
+					avatar.setTexture(dollTextureRight);
+				}
+				else {
+					avatar.setTexture(dollTextureFront);
+				}
 				objects.set(1, avatar);
 			}
 			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 				avatar = avatar.transformToHerbivore();
-				avatar.setTexture(herbivoreTexture);
+				if (direction == Dinosaur.UP) {
+					avatar.setTexture(herbivoreTextureBack);
+				}
+				else if (direction == Dinosaur.LEFT) {
+					avatar.setTexture(herbivoreTextureLeft);
+				}
+				else if (direction == Dinosaur.RIGHT) {
+					avatar.setTexture(herbivoreTextureRight);
+				}
+				else {
+					avatar.setTexture(herbivoreTextureFront);
+				}
 				objects.set(1, avatar);
 			}
 			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 				avatar = avatar.transformToCarnivore();
-				avatar.setTexture(carnivoreTexture);
+				if (direction == Dinosaur.UP) {
+					avatar.setTexture(carnivoreTextureBack);
+				}
+				else if (direction == Dinosaur.LEFT) {
+					avatar.setTexture(carnivoreTextureLeft);
+				}
+				else if (direction == Dinosaur.RIGHT) {
+					avatar.setTexture(carnivoreTextureRight);
+				}
+				else {
+					avatar.setTexture(carnivoreTextureFront);
+				}
 				objects.set(1, avatar);
+			}
+		}
+		if (avatar.getForm() == Dinosaur.DOLL_FORM) {
+			if (avatar.getDirection() == Dinosaur.UP) {
+				avatar.setTexture(dollTextureBack);
+			}
+			else if (avatar.getDirection() == Dinosaur.LEFT) {
+				avatar.setTexture(dollTextureLeft);
+			}
+			else if (avatar.getDirection() == Dinosaur.RIGHT) {
+				avatar.setTexture(dollTextureRight);
+			}
+			else if (avatar.getDirection() == Dinosaur.DOWN) {
+				avatar.setTexture(dollTextureFront);
+			}
+		}
+		else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
+			if (avatar.getDirection() == Dinosaur.UP) {
+				avatar.setTexture(herbivoreTextureBack);
+			}
+			else if (avatar.getDirection() == Dinosaur.LEFT) {
+				avatar.setTexture(herbivoreTextureLeft);
+			}
+			else if (avatar.getDirection() == Dinosaur.RIGHT) {
+				avatar.setTexture(herbivoreTextureRight);
+			}
+			else if (avatar.getDirection() == Dinosaur.DOWN) {
+				avatar.setTexture(herbivoreTextureFront);
+			}
+		}
+		else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+			if (avatar.getDirection() == Dinosaur.UP) {
+				avatar.setTexture(carnivoreTextureBack);
+			}
+			else if (avatar.getDirection() == Dinosaur.LEFT) {
+				avatar.setTexture(carnivoreTextureLeft);
+			}
+			else if (avatar.getDirection() == Dinosaur.RIGHT) {
+				avatar.setTexture(carnivoreTextureRight);
+			}
+			else if (avatar.getDirection() == Dinosaur.DOWN) {
+				avatar.setTexture(carnivoreTextureFront);
 			}
 		}
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
@@ -1025,8 +1146,8 @@ public class GameController implements ContactListener, Screen {
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				if (!hasClone) {
-					float dwidth = dollTexture.getRegionWidth() / scale.x;
-					float dheight = dollTexture.getRegionHeight() / scale.y;
+//					float dwidth = dollTexture.getRegionWidth() / scale.x;
+//					float dheight = dollTexture.getRegionHeight() / scale.y;
 //					DuggiModel clone = new DuggiModel(screenToMaze(1), screenToMaze(1), dwidth, dheight);
 //					clone.setTexture(dollTexture);
 //					clone.setDrawScale(scale);
