@@ -244,6 +244,9 @@ public class GameController implements ContactListener, Screen {
 
 	// Variables for sound effects and music
 	private Music bgMusic;
+	private Music bgDoll;
+	private Music bgHerb;
+	private Music bgCarn;
 
 
 	/** Mark set to handle more sophisticated collision callbacks */
@@ -1037,7 +1040,10 @@ public class GameController implements ContactListener, Screen {
 		//System.out.println("tail of objects: " + objects.get(objects.size() - 1));
 
 			/** Music */
-		bgMusic = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
+		bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
+		bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
+		bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
+		bgMusic = bgDoll;
 		bgMusic.setLooping(true);
 		bgMusic.setVolume(0.10f);
 		bgMusic.play();
@@ -1070,7 +1076,7 @@ public class GameController implements ContactListener, Screen {
 				avatar = avatar.transformToDoll();
 
 				// Change the music
-				changeMusic(DOLL_BG_FILE);
+				changeMusic(bgDoll);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(dollTextureBack);
@@ -1091,7 +1097,7 @@ public class GameController implements ContactListener, Screen {
 				avatar = avatar.transformToHerbivore();
 
 				// Change the music
-				changeMusic(HERBIVORE_BG_FILE);
+				changeMusic(bgHerb);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(herbivoreTextureBack);
@@ -1111,7 +1117,7 @@ public class GameController implements ContactListener, Screen {
 				avatar = avatar.transformToCarnivore();
 
 				// Change the music
-				changeMusic(CARNIVORE_BG_FILE);
+				changeMusic(bgCarn);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(carnivoreTextureBack);
@@ -1471,12 +1477,11 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	/** Change the music based on timestamp */
-	public void changeMusic(String filename){
+	public void changeMusic(Music name){
 		// Change the music
 		bgMusic.pause();
 		float seconds = bgMusic.getPosition();
-		bgMusic.dispose();
-		bgMusic = Gdx.audio.newMusic(Gdx.files.internal(filename));
+		bgMusic = name;
 		bgMusic.setLooping(true);
 		bgMusic.setVolume(0.10f);
 		bgMusic.play();
