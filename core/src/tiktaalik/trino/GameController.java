@@ -110,7 +110,7 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion pathTexture;
 
 	//index of the object Duggi collided with
-	private int collidedWith;
+	private GameObject collidedWith;
 	private int collidedType;
 
 	// GAME CONSTANTS AND VARIABLES
@@ -1010,10 +1010,11 @@ public class GameController implements ContactListener, Screen {
 				System.out.println(collidedType);
 				if (collidedType == EDIBLEWALL) {
 					System.out.println("asdfA");
-					walls.get(collidedWith).deactivatePhysics(world);
-					objects.remove(walls.get(collidedWith));
+					collidedWith.deactivatePhysics(world);
+					objects.remove(collidedWith);
+					walls.remove(collidedWith);
 					collidedType = -1;
-					collidedWith = -1;
+					collidedWith = null;
 				}
 			}
 		}
@@ -1143,9 +1144,9 @@ public class GameController implements ContactListener, Screen {
 					(bd1.getType() == EDIBLEWALL && bd2.getType() == DUGGI)) {
 				System.out.println("colllided");
 				if (bd1.getType() == EDIBLEWALL)
-					collidedWith = walls.indexOf((Wall)bd1);
+					collidedWith = bd1;
 				else
-					collidedWith = walls.indexOf((Wall)bd2);
+					collidedWith = bd2;
 				collidedType = EDIBLEWALL;
 			}
 		} catch (Exception e) {
@@ -1178,7 +1179,7 @@ public class GameController implements ContactListener, Screen {
 		if (bd1 == avatar || bd2 == avatar) {
 			System.out.println("Resetting");
 			collidedType = -1;
-			collidedWith = -1;
+			collidedWith = null;
 		}
 	}
 /*
