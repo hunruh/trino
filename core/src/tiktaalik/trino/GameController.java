@@ -1184,6 +1184,8 @@ public class GameController implements ContactListener, Screen {
 				//System.out.println("sxdg " + directlyInFront);
 				if (directlyInFront != null) {
 					if (isInFrontOfAvatar(directlyInFront)) {
+						System.out.println(directlyInFront);
+						System.out.println(isInFrontOfAvatar(directlyInFront));
 						if (directlyInFront.getType() == EDIBLEWALL) {
 							//System.out.println("asdfA");
 							directlyInFront.deactivatePhysics(world);
@@ -1353,7 +1355,7 @@ public class GameController implements ContactListener, Screen {
 	 * @return true if they are aligned horizontally
 	 */
 	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){
-		//System.out.println(bd1.getY() - bd2.getY());
+		System.out.println(bd1.getY() - bd2.getY());
 		return (Math.abs(bd1.getY() - bd2.getY()) <= offset);
 	}
 
@@ -1365,7 +1367,7 @@ public class GameController implements ContactListener, Screen {
 	 * @return true if they are aligned horizontally
 	 */
 	public boolean isAlignedVertically(GameObject bd1, GameObject bd2, double offset){
-		//System.out.println(bd1.getX() - bd2.getX());
+		System.out.println(bd1.getX() - bd2.getX());
 		return (Math.abs(bd1.getX() - bd2.getX()) <= offset);
 	}
 
