@@ -77,11 +77,12 @@ public class GameController implements ContactListener, Screen {
 	private static String POP_3_FILE = "trino/pop3.mp3";
 	private static String POP_4_FILE = "trino/pop4.mp3";
 	private static String POP_5_FILE = "trino/pop5.mp3";
+	private static String POOF_FILE = "trino/poof.mp3";
 
 	/** The texture file for general assets */
 	private static String EARTH_FILE = "shared/earthtile.png";
 	private static String GOAL_FILE = "shared/goaldoor.png";
-	private static String FONT_FILE = "shared/RetroGame.ttf";
+	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
 	private static int FONT_SIZE = 64;
 
 	/** The texture files for the three dinosaurs (no animation) */
@@ -259,6 +260,7 @@ public class GameController implements ContactListener, Screen {
 	private Sound cottonPickUp;
 	private Sound eatWall;
 	private Sound collideWall;
+	private Sound transformSound;
 
 	/** Mark set to handle more sophisticated collision callbacks */
 	private ObjectSet<Fixture> sensorFixtures;
@@ -606,6 +608,7 @@ public class GameController implements ContactListener, Screen {
 		cottonPickUp.dispose();
 		eatWall.dispose();
 		collideWall.dispose();
+		transformSound.dispose();
 	}
 
 	/**
@@ -795,12 +798,12 @@ public class GameController implements ContactListener, Screen {
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
 			canvas.begin(); // DO NOT SCALE
-			canvas.drawTextCentered("VICTORY!", displayFont, 0.0f);
+			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
 			canvas.end();
 		} else if (failed) {
 			displayFont.setColor(Color.RED);
 			canvas.begin(); // DO NOT SCALE
-			canvas.drawTextCentered("FAILURE!", displayFont, 0.0f);
+			canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 			canvas.end();
 		}
 	}
@@ -1077,6 +1080,7 @@ public class GameController implements ContactListener, Screen {
 			cottonPickUp = Gdx.audio.newSound(Gdx.files.internal(POP_1_FILE));
 			eatWall = Gdx.audio.newSound(Gdx.files.internal(POP_2_FILE));
 			collideWall = Gdx.audio.newSound(Gdx.files.internal(POP_5_FILE));
+			transformSound = Gdx.audio.newSound(Gdx.files.internal(POOF_FILE));
 
 		} else {
 			// Pause all music
@@ -1122,29 +1126,56 @@ public class GameController implements ContactListener, Screen {
 			avatar.setUpDown(InputHandler.getInstance().getVertical());
 
 		}
-		else if (avatar.getX() < screenToMaze(1)) {
-			//System.out.println("left");
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal()+ 5.0f);
-			avatar.setUpDown(InputHandler.getInstance().getVertical());
-			avatar.setDirection(Dinosaur.LEFT);
-		}
-		else if (avatar.getX() > screenToMaze(16)) {
-			//System.out.println("right");
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal()- 5.0f);
-			avatar.setUpDown(InputHandler.getInstance().getVertical());
-			avatar.setDirection(Dinosaur.RIGHT);
-		}
-		else if (avatar.getY() < screenToMaze(1)) {
-			//System.out.println("down");
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
-			avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
-			avatar.setDirection(Dinosaur.DOWN);
-		}
-		else if (avatar.getY() > screenToMaze(8)) {
-			//System.out.println("up");
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
-			avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
-			avatar.setDirection(Dinosaur.UP);
+		else {
+			if (avatar.getX() < screenToMaze(1)) {
+				//System.out.println("left");
+				avatar.setLeftRight(InputHandler.getInstance().getHorizontal()+ 5.0f);
+				if (avatar.getY() < screenToMaze(1)) {
+					//System.out.println("down");
+					avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
+					avatar.setDirection(Dinosaur.DOWN);
+				}
+				if (avatar.getY() > screenToMaze(8)) {
+					//System.out.println("up");
+					avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
+					avatar.setDirection(Dinosaur.UP);
+				}
+				else {
+					//System.out.println("else");
+					avatar.setUpDown(InputHandler.getInstance().getVertical());
+					avatar.setDirection(Dinosaur.LEFT);
+				}
+			}
+			if (avatar.getX() > screenToMaze(16)) {
+				//System.out.println("right");
+				avatar.setLeftRight(InputHandler.getInstance().getHorizontal()- 5.0f);
+				if (avatar.getY() < screenToMaze(1)) {
+					//System.out.println("down");
+					avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
+					avatar.setDirection(Dinosaur.DOWN);
+				}
+				if (avatar.getY() > screenToMaze(8)) {
+					//System.out.println("up");
+					avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
+					avatar.setDirection(Dinosaur.UP);
+				}
+				else {
+					avatar.setUpDown(InputHandler.getInstance().getVertical());
+					avatar.setDirection(Dinosaur.RIGHT);
+				}
+			}
+			if (avatar.getY() < screenToMaze(1)) {
+				avatar.setUpDown(InputHandler.getInstance().getHorizontal());
+				avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
+				avatar.setDirection(Dinosaur.DOWN);
+
+			}
+			if (avatar.getY() > screenToMaze(8)) {
+				//System.out.println("up");
+				avatar.setUpDown(InputHandler.getInstance().getHorizontal());
+				avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
+				avatar.setDirection(Dinosaur.UP);
+			}
 		}
 		int idx = objects.size()-1;
 		////System.out.println("in update, tail is " + objects.get(idx));
@@ -1154,6 +1185,9 @@ public class GameController implements ContactListener, Screen {
 
 				// Change the music
 				changeMusic(bgDoll);
+				// play sound effect
+				transformSound.pause();
+				transformSound.play(1.0f);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(dollTextureBack);
@@ -1175,6 +1209,9 @@ public class GameController implements ContactListener, Screen {
 
 				// Change the music
 				changeMusic(bgHerb);
+				// play sound effect
+				transformSound.pause();
+				transformSound.play(1.0f);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(herbivoreTextureBack);
@@ -1195,6 +1232,9 @@ public class GameController implements ContactListener, Screen {
 
 				// Change the music
 				changeMusic(bgCarn);
+				// play sound effect
+				transformSound.pause();
+				transformSound.play(1.0f);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(carnivoreTextureBack);
@@ -1402,9 +1442,11 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (bd2.getType() == WALL){
-				// play sound effect
-				collideWall.stop();
-				collideWall.play(1.0f);
+				if (isInFrontOfAvatar(bd2)){
+					// play sound effect
+					collideWall.pause();
+					collideWall.play(1.0f);
+				}
 			}
 			else if (bd2.getType() != WALL){
 				if (!didExist(bd2, collidedWith))
@@ -1428,9 +1470,11 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (bd1.getType() == WALL){
-				// play sound effect
-				collideWall.stop();
-				collideWall.play(1.0f);
+				if (isInFrontOfAvatar(bd1)) {
+					// play sound effect
+					collideWall.pause();
+					collideWall.play(1.0f);
+				}
 			}
 			else if (bd1.getType() != WALL){
 				if (!didExist(bd1, collidedWith))
