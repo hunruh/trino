@@ -11,6 +11,11 @@ public abstract class Dinosaur extends GameObject {
     public static int HERBIVORE_FORM = 1;
     public static int CARNIVORE_FORM = 2;
 
+    protected static int LEFT = 0;
+    protected static int RIGHT = 1;
+    protected static int UP = 2;
+    protected static int DOWN = 3;
+
     private final int MAX_RESOURCES = 4;
     private final int TRANSFORM_COST = 3;
 
@@ -19,8 +24,7 @@ public abstract class Dinosaur extends GameObject {
 
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
-    private boolean faceRight;
-    private boolean faceUp;
+    private int direction;
     private int resourceCnt;
 
     public Doll transformToDoll() {
@@ -49,8 +53,7 @@ public abstract class Dinosaur extends GameObject {
 
         this.leftRight = d.leftRight;
         this.upDown = d.upDown;
-        this.faceRight = d.faceRight;
-        this.faceUp = d.faceUp;
+        this.direction = d.direction;
 
         resourceCnt = 0;
     }
@@ -81,8 +84,7 @@ public abstract class Dinosaur extends GameObject {
         shape.setRadius(radius * 4/5);
 
         // Gameplay attributes
-        faceRight = true;
-        faceUp = false;
+        direction = RIGHT;
 
         resourceCnt = 0;
     }
@@ -110,13 +112,10 @@ public abstract class Dinosaur extends GameObject {
      */
     public void setLeftRight(float value) {
         leftRight = value;
-        if (leftRight < 0) {
-            faceRight = false;
-            faceUp = false;
-        } else if (leftRight > 0) {
-            faceRight = true;
-            faceUp = false;
-        }
+        if (leftRight < 0)
+            direction = LEFT;
+        else if (leftRight > 0)
+            direction = RIGHT;
     }
 
     /**
@@ -126,31 +125,14 @@ public abstract class Dinosaur extends GameObject {
      */
     public void setUpDown(float value) {
         upDown = value;
-        if (upDown < 0) {
-            faceRight = false;
-            faceUp = false;
-        } else if (upDown > 0) {
-            faceRight = false;
-            faceUp = true;
-        }
+        if (upDown < 0)
+            direction = DOWN;
+        else if (upDown > 0)
+            direction = UP;
     }
 
-    /**
-     * Returns true if this character is facing right
-     *
-     * @return true if this character is facing right
-     */
-    public boolean isFacingRight() {
-        return faceRight;
-    }
-
-    /**
-     * Returns true if this character is facing right
-     *
-     * @return true if this character is facing right
-     */
-    public boolean isFacingUp() {
-        return faceUp;
+    public int getDirection() {
+        return direction;
     }
 
     public void incrementResources() {

@@ -1,5 +1,7 @@
 package tiktaalik.trino.duggi;
 
+import com.badlogic.gdx.math.Vector2;
+
 public class Carnivore extends Dinosaur {
     private final float CHARGE_COOLDOWN_DURATION = 2.0f;
     private final float CHARGE_LOAD_DURATION = 1.0f;
@@ -7,19 +9,54 @@ public class Carnivore extends Dinosaur {
     private boolean charging, chargeReady, coolingCharge, loadingCharge;
     private float chargeCooldown, chargeLoad;
 
+    private Vector2 vectorCache;
+
     public Carnivore(Dinosaur d) {
         super(d);
+        charging = false;
+        chargeReady = false;
+        coolingCharge = false;
+        loadingCharge = false;
+        chargeCooldown = 0.0f;
+        chargeLoad = 0.0f;
+
+        vectorCache = new Vector2();
     }
 
     public int getForm() {
         return CARNIVORE_FORM;
     }
 
+    public boolean inChargeCycle() {
+        return loadingCharge || charging || coolingCharge;
+    }
+
     public void loadCharge() {
-        if (!loadingCharge && !charging && !coolingCharge) {
-            chargeLoad = 0.0f;
+        if (!loadingCharge && !charging && !coolingCharge && !chargeReady) {
             loadingCharge = true;
         }
+    }
+
+    public boolean chargeReady() {
+        return chargeReady;
+    }
+
+    public void charge() {
+        if (chargeReady)
+            charging = true;
+
+        if (getDirection() == LEFT)
+            vectorCache.set(-5.0f, 0.0f);
+        else if (getDirection() == RIGHT)
+            vectorCache.set(5.0f, 0.0f);
+        else if (getDirection() == UP)
+            vectorCache.set(0.0f, -5.0f);
+        else
+            vectorCache.set(0.0f, 5.0f);
+
+        System.out.println("CHARGE");
+
+        body.applyLinearImpulse(vectorCache,body.getLocalCenter(),true);
     }
 
     public boolean getCharging() {
@@ -27,22 +64,28 @@ public class Carnivore extends Dinosaur {
     }
 
     public void stopCharge() {
-        this.charging = false;
-        this.coolingCharge = true;
+        loadingCharge = false;
+        charging = false;
+        coolingCharge = true;
     }
 
     public void update(float dt) {
         super.update(dt);
         if (loadingCharge) {
             chargeLoad += dt;
+            System.out.println("Loading charge... " + chargeLoad);
             if (chargeLoad >= CHARGE_LOAD_DURATION) {
                 loadingCharge = false;
                 chargeReady = true;
+                chargeLoad = 0.0f;
             }
         } else if (coolingCharge) {
             chargeCooldown += dt;
-            if (chargeCooldown >= CHARGE_COOLDOWN_DURATION)
+            System.out.println("Cooling charge... " + chargeCooldown);
+            if (chargeCooldown >= CHARGE_COOLDOWN_DURATION) {
                 coolingCharge = false;
+                chargeCooldown = 0.0f;
+            }
         }
     }
 }

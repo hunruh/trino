@@ -1016,6 +1016,19 @@ public class GameController implements ContactListener, Screen {
 					collidedWith = -1;
 				}
 			}
+			else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+				if (!((Carnivore) avatar).inChargeCycle())
+					((Carnivore) avatar).loadCharge();
+			}
+		}
+
+		if (InputHandler.getInstance().didActionRelease()) {
+			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+				if (((Carnivore) avatar).chargeReady())
+					((Carnivore) avatar).charge();
+				else
+					((Carnivore) avatar).stopCharge();
+			}
 		}
 
 		avatar.applyForce();
@@ -1136,7 +1149,17 @@ public class GameController implements ContactListener, Screen {
 
 			// Check if collided with enemy
 			if ((bd1.getType() == DUGGI && bd2 == enemy) || (bd1 == enemy && bd2.getType() == DUGGI)) {
-				setFailure(true);
+				boolean charging = false;
+				if (bd1.getType() == DUGGI)
+					charging = ((Carnivore) bd1).getCharging();
+				else
+					charging = ((Carnivore) bd2).getCharging();
+
+				if (charging) {
+					System.out.println("Collided mid charge!");
+				} else {
+					setFailure(true);
+				}
 			}
 
 			if ((bd1.getType() == DUGGI && bd2.getType() == EDIBLEWALL) ||
