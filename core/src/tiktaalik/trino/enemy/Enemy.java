@@ -25,22 +25,13 @@ public class Enemy extends GameObject {
     private boolean isAlive;
 
     /**
-     * Creates a new dinosaur at the origin.
-     *
-     * @param radius	The object radius in physics units
-     */
-    public Enemy(float radius) {
-        this(0,0,radius);
-    }
-
-    /**
      * Creates a new dinosaur at the given position.
      *
      * @param x  		Initial x position of the avatar center
      * @param y  		Initial y position of the avatar center
      * @param radius	The object radius in physics units
      */
-    public Enemy(float x, float y, float radius) {
+    public Enemy(float x, float y, float radius, int id) {
         super(x,y);
         setDensity(1.0f);
         setFriction(0.0f);
@@ -52,6 +43,7 @@ public class Enemy extends GameObject {
         // Gameplay attributes
         faceRight = true;
         faceUp = false;
+        this.id = id;
         velocity = new Vector2();
         isAlive = true;
     }
