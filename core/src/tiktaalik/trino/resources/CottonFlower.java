@@ -15,6 +15,7 @@ public class CottonFlower extends GameObject {
     private Vector2 sizeCache; // A cache value for when the user wants to access the dimensions
     private Fixture geometry; // A cache value for the fixture (for resizing)
     private float[] vertices; // Cache of the polygon vertices (for resizing)
+    private Vector2 gridLocation;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -24,7 +25,7 @@ public class CottonFlower extends GameObject {
      * @param edible	If the wall can be consumed by the herbivore
      */
     public CottonFlower(float width, float height, boolean edible) {
-        this(0,0,width,height);
+        this(0,0,0,0,width,height);
     }
 
     /**
@@ -35,13 +36,14 @@ public class CottonFlower extends GameObject {
      * @param width	    The object width in physics units
      * @param height	The object height in physics units
      */
-    public CottonFlower(float x, float y, float width, float height) {
+    public CottonFlower(int gx, int gy, float x, float y, float width, float height) {
         super(x,y);
         dimension = new Vector2(width,height);
         sizeCache = new Vector2();
         shape = new PolygonShape();
         vertices = new float[8];
         geometry = null;
+        gridLocation = new Vector2(gx, gy);
 
         // Initialize
         setBodyType(BodyDef.BodyType.StaticBody);
@@ -117,6 +119,13 @@ public class CottonFlower extends GameObject {
         setDimension(sizeCache);
     }
 
+    public void setGridLocation(Vector2 location){
+        this.gridLocation = location;
+    }
+
+    public Vector2 getGridLocation(){
+        return gridLocation;
+    }
     /**
      * Reset the polygon vertices in the shape to match the dimension.
      */

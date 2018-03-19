@@ -15,6 +15,7 @@ public class Wall extends GameObject {
     private Vector2 sizeCache; // A cache value for when the user wants to access the dimensions
     private Fixture geometry; // A cache value for the fixture (for resizing)
     private float[] vertices; // Cache of the polygon vertices (for resizing)
+    private Vector2 gridLocation;
 
     private boolean edible;
 
@@ -26,7 +27,7 @@ public class Wall extends GameObject {
      * @param edible	If the wall can be consumed by the herbivore
      */
     public Wall(float width, float height, boolean edible) {
-        this(0,0,width,height, edible);
+        this(0,0,0,0,width,height, edible);
     }
 
     /**
@@ -38,7 +39,7 @@ public class Wall extends GameObject {
      * @param height	The object height in physics units
      * @param edible	If the wall can be consumed by the herbivore
      */
-    public Wall(float x, float y, float width, float height, boolean edible) {
+    public Wall(int gx, int gy, float x, float y, float width, float height, boolean edible) {
         super(x,y);
         dimension = new Vector2(width,height);
         sizeCache = new Vector2();
@@ -52,6 +53,7 @@ public class Wall extends GameObject {
         resize(width, height);
 
         this.edible = edible;
+        gridLocation = new Vector2(gx, gy);
     }
 
     /**
@@ -122,6 +124,13 @@ public class Wall extends GameObject {
         setDimension(sizeCache);
     }
 
+    public void setGridLocation(Vector2 location){
+        this.gridLocation = location;
+    }
+
+    public Vector2 getGridLocation(){
+        return gridLocation;
+    }
     /**
      * Reset the polygon vertices in the shape to match the dimension.
      */
