@@ -19,6 +19,7 @@ package tiktaalik.trino;
 import java.util.Iterator;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -65,6 +66,12 @@ public class GameController implements ContactListener, Screen {
 	private Array<String> assets;
 
 	// ASSET FILES AND VARIABLES
+
+	/** The sound file for music and effects */
+	private static String DOLL_BG_FILE = "trino/doll_bg.mp3";
+	private static String HERBIVORE_BG_FILE = "trino/herbivore_bg.mp3";
+	private static String CARNIVORE_BG_FILE = "trino/carnivore_bg.mp3";
+
 	/** The texture file for general assets */
 	private static String EARTH_FILE = "shared/earthtile.png";
 	private static String GOAL_FILE = "shared/goaldoor.png";
@@ -234,6 +241,13 @@ public class GameController implements ContactListener, Screen {
 
 	private float enemySpeed = 5;
 	private float elapsed = 0.01f;
+
+	// Variables for sound effects and music
+	private Music bgMusic;
+	private Music bgDoll;
+	private Music bgHerb;
+	private Music bgCarn;
+
 
 	/** Mark set to handle more sophisticated collision callbacks */
 	private ObjectSet<Fixture> sensorFixtures;
@@ -1024,6 +1038,16 @@ public class GameController implements ContactListener, Screen {
 
 		//System.out.println("head of objects: " + objects.get(0));
 		//System.out.println("tail of objects: " + objects.get(objects.size() - 1));
+
+			/** Music */
+		bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
+		bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
+		bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
+		bgMusic = bgDoll;
+		bgMusic.setLooping(true);
+		bgMusic.setVolume(0.10f);
+		bgMusic.play();
+
 	}
 
 //	/** Music */
@@ -1050,6 +1074,10 @@ public class GameController implements ContactListener, Screen {
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
 				avatar = avatar.transformToDoll();
+
+				// Change the music
+				changeMusic(bgDoll);
+
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(dollTextureBack);
 				}
@@ -1067,6 +1095,10 @@ public class GameController implements ContactListener, Screen {
 			}
 			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 				avatar = avatar.transformToHerbivore();
+
+				// Change the music
+				changeMusic(bgHerb);
+
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(herbivoreTextureBack);
 				}
@@ -1083,6 +1115,10 @@ public class GameController implements ContactListener, Screen {
 			}
 			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 				avatar = avatar.transformToCarnivore();
+
+				// Change the music
+				changeMusic(bgCarn);
+
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(carnivoreTextureBack);
 				}
@@ -1440,6 +1476,20 @@ public class GameController implements ContactListener, Screen {
 
 	public Vector2 screenToMazeVector(float x, float y){
 		return new Vector2(screenToMaze(x), screenToMaze(y));
+	}
+
+	/** Change the music based on timestamp */
+	public void changeMusic(Music name){
+		// Change the music
+		bgMusic.pause();
+		float seconds = bgMusic.getPosition();
+		bgMusic = name;
+		bgMusic.setLooping(true);
+		bgMusic.setVolume(0.10f);
+		bgMusic.play();
+		bgMusic.pause();
+		bgMusic.setPosition(seconds);
+		bgMusic.play();
 	}
 
 	/** Unused ContactListener method */
