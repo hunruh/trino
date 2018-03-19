@@ -90,6 +90,11 @@ public class GameController implements ContactListener, Screen {
 	private static final int DUGGI = 6;
 	private static final int CLONE = 7;
 
+	private static final int NORTH = 0;
+	private static final int SOUTH = 1;
+	private static final int EAST = 2;
+	private static final int WEST = 3;
+
 	/** Texture assets for the general game */
 	private TextureRegion earthTile;
 	private TextureRegion goalTile;
@@ -1026,14 +1031,14 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
-				System.out.println(collidedType);
-				if (collidedType == EDIBLEWALL) {
-					System.out.println("asdfA");
-					collidedWith.deactivatePhysics(world);
-					objects.remove(collidedWith);
-					walls.remove(collidedWith);
-					collidedType = -1;
-					collidedWith = null;
+				if (collidedWith != null) {
+					if (collidedWith.getType() == EDIBLEWALL) {
+						System.out.println("asdfA");
+						collidedWith.deactivatePhysics(world);
+						objects.remove(collidedWith);
+						walls.remove(collidedWith);
+						collidedWith = null;
+					}
 				}
 			}
 		}
@@ -1083,24 +1088,9 @@ public class GameController implements ContactListener, Screen {
 			}
 
 			// Check for win condition
-			if ((bd1.getType() == DUGGI && bd2 == goalDoor) || (bd1 == goalDoor && bd2.getType() == DUGGI)) {
-				setComplete(true);
-			}
+			handleCollision(bd1, bd2);
+			System.out.println(collidedWith);
 
-			// Check if collided with enemy
-			if ((bd1.getType() == DUGGI && bd2.getType() == ENEMY) || (bd1.getType() == ENEMY && bd2.getType() == DUGGI)) {
-				setFailure(true);
-			}
-
-			if ((bd1.getType() == DUGGI && bd2.getType() == EDIBLEWALL) ||
-					(bd1.getType() == EDIBLEWALL && bd2.getType() == DUGGI)) {
-				System.out.println("colllided");
-				if (bd1.getType() == EDIBLEWALL)
-					collidedWith = bd1;
-				else
-					collidedWith = bd2;
-				collidedType = EDIBLEWALL;
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1108,7 +1098,31 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	public void handleCollision(GameObject bd1, GameObject bd2){
+		if (bd1.getType() == DUGGI){
+			if (bd2.getType() == GOAL)
+				setComplete(true);
+			else if (bd2.getType() == ENEMY)
+				setFailure(true);
+			else
+				collidedWith = bd2;
+		}
+		else if (bd2.getType() == DUGGI){
+			if (bd2.getType() == GOAL)
+				setComplete(true);
+			else if (bd2.getType() == ENEMY)
+				setFailure(true);
+			else
+				collidedWith = bd1;
+		}
+	}
 
+	/**
+	 *
+	 * @param bd
+	 * @return direction the bd relative of avatar
+	 */
+	public int isDirectionOfAvatar(GameObject bd){
+		return -1;
 	}
 
 	/**
