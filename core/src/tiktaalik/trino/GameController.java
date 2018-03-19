@@ -1115,29 +1115,56 @@ public class GameController implements ContactListener, Screen {
 			avatar.setUpDown(InputHandler.getInstance().getVertical());
 
 		}
-		else if (avatar.getX() < screenToMaze(1)) {
-			//System.out.println("left");
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal()+ 5.0f);
-			avatar.setUpDown(InputHandler.getInstance().getVertical());
-			avatar.setDirection(Dinosaur.LEFT);
-		}
-		else if (avatar.getX() > screenToMaze(16)) {
-			//System.out.println("right");
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal()- 5.0f);
-			avatar.setUpDown(InputHandler.getInstance().getVertical());
-			avatar.setDirection(Dinosaur.RIGHT);
-		}
-		else if (avatar.getY() < screenToMaze(1)) {
-			//System.out.println("down");
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
-			avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
-			avatar.setDirection(Dinosaur.DOWN);
-		}
-		else if (avatar.getY() > screenToMaze(8)) {
-			//System.out.println("up");
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
-			avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
-			avatar.setDirection(Dinosaur.UP);
+		else {
+			if (avatar.getX() < screenToMaze(1)) {
+				//System.out.println("left");
+				avatar.setLeftRight(InputHandler.getInstance().getHorizontal()+ 5.0f);
+				if (avatar.getY() < screenToMaze(1)) {
+					//System.out.println("down");
+					avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
+					avatar.setDirection(Dinosaur.DOWN);
+				}
+				if (avatar.getY() > screenToMaze(8)) {
+					//System.out.println("up");
+					avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
+					avatar.setDirection(Dinosaur.UP);
+				}
+				else {
+					//System.out.println("else");
+					avatar.setUpDown(InputHandler.getInstance().getVertical());
+					avatar.setDirection(Dinosaur.LEFT);
+				}
+			}
+			if (avatar.getX() > screenToMaze(16)) {
+				//System.out.println("right");
+				avatar.setLeftRight(InputHandler.getInstance().getHorizontal()- 5.0f);
+				if (avatar.getY() < screenToMaze(1)) {
+					//System.out.println("down");
+					avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
+					avatar.setDirection(Dinosaur.DOWN);
+				}
+				if (avatar.getY() > screenToMaze(8)) {
+					//System.out.println("up");
+					avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
+					avatar.setDirection(Dinosaur.UP);
+				}
+				else {
+					avatar.setUpDown(InputHandler.getInstance().getVertical());
+					avatar.setDirection(Dinosaur.RIGHT);
+				}
+			}
+			if (avatar.getY() < screenToMaze(1)) {
+				avatar.setUpDown(InputHandler.getInstance().getHorizontal());
+				avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
+				avatar.setDirection(Dinosaur.DOWN);
+
+			}
+			if (avatar.getY() > screenToMaze(8)) {
+				//System.out.println("up");
+				avatar.setUpDown(InputHandler.getInstance().getHorizontal());
+				avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
+				avatar.setDirection(Dinosaur.UP);
+			}
 		}
 		int idx = objects.size()-1;
 		////System.out.println("in update, tail is " + objects.get(idx));
