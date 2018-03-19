@@ -1305,14 +1305,14 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean isInFrontOfAvatar(GameObject bd){
 		int direction = avatar.getDirection();
-		if (isAlignedHorizontally(avatar, bd)){
+		if (isAlignedHorizontally(avatar, bd, 0.65)){
 			if (direction == Dinosaur.LEFT)
 				return bd.getX() <= avatar.getX();
 			else if (direction == Dinosaur.RIGHT)
 				return bd.getX() >= avatar.getX();
 			else return false;
 		}
-		else if (isAlignedVertically(avatar, bd)){
+		else if (isAlignedVertically(avatar, bd, 0.5)){
 			if (direction == Dinosaur.UP) {
 				return bd.getY() >= avatar.getY();
 			}
@@ -1330,9 +1330,9 @@ public class GameController implements ContactListener, Screen {
 	 * @param bd2
 	 * @return true if they are aligned horizontally
 	 */
-	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2){
+	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){
 		System.out.println(bd1.getY() - bd2.getY());
-		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.65);
+		return (Math.abs(bd1.getY() - bd2.getY()) <= offset);
 	}
 
 
@@ -1342,13 +1342,13 @@ public class GameController implements ContactListener, Screen {
 	 * @param bd2
 	 * @return true if they are aligned horizontally
 	 */
-	public boolean isAlignedVertically(GameObject bd1, GameObject bd2){
+	public boolean isAlignedVertically(GameObject bd1, GameObject bd2, double offset){
 		System.out.println(bd1.getX() - bd2.getX());
-		return (Math.abs(bd1.getX() - bd2.getX()) <= 0.5);
+		return (Math.abs(bd1.getX() - bd2.getX()) <= offset);
 	}
 
 	public boolean isOnTop(GameObject bd1, GameObject bd2){
-		return isAlignedVertically(bd1, bd2) && isAlignedHorizontally(bd1, bd2);
+		return isAlignedVertically(bd1, bd2, 0.9) && isAlignedHorizontally(bd1, bd2, 0.9);
 	}
 
 	public GameObject getCotton(){
