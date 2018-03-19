@@ -8,13 +8,13 @@ import tiktaalik.trino.GameObject;
 
 public abstract class Dinosaur extends GameObject {
     public static final int DOLL_FORM = 0;
-    public static int HERBIVORE_FORM = 1;
-    public static int CARNIVORE_FORM = 2;
+    public static final int HERBIVORE_FORM = 1;
+    public static final int CARNIVORE_FORM = 2;
 
-    protected static int LEFT = 0;
-    protected static int RIGHT = 1;
-    protected static int UP = 2;
-    protected static int DOWN = 3;
+    public static final int LEFT = 0;
+    public static final int RIGHT = 1;
+    public static final int UP = 2;
+    public static final int DOWN = 3;
 
     private final int MAX_RESOURCES = 4;
     private final int TRANSFORM_COST = 3;
