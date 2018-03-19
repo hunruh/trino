@@ -1069,6 +1069,39 @@ public class GameController implements ContactListener, Screen {
 	public void update(float dt) {
 		// Process actions in object model
 		int direction = avatar.getDirection();
+//		System.out.println(screenToMaze(avatar.getX()));
+//		System.out.println(avatar.getX());
+//		System.out.println(screenToMaze(16));
+		if (avatar.getX() >= screenToMaze(1) && avatar.getX() <= screenToMaze(16)
+				&& avatar.getY() >= screenToMaze(1) && avatar.getY() <= screenToMaze(8)) {
+			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
+			avatar.setUpDown(InputHandler.getInstance().getVertical());
+
+		}
+		else if (avatar.getX() < screenToMaze(1)) {
+			//System.out.println("left");
+			avatar.setLeftRight(InputHandler.getInstance().getHorizontal()+ 5.0f);
+			avatar.setUpDown(InputHandler.getInstance().getVertical());
+			avatar.setDirection(Dinosaur.LEFT);
+		}
+		else if (avatar.getX() > screenToMaze(16)) {
+			//System.out.println("right");
+			avatar.setLeftRight(InputHandler.getInstance().getHorizontal()- 5.0f);
+			avatar.setUpDown(InputHandler.getInstance().getVertical());
+			avatar.setDirection(Dinosaur.RIGHT);
+		}
+		else if (avatar.getY() < screenToMaze(1)) {
+			//System.out.println("down");
+			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
+			avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
+			avatar.setDirection(Dinosaur.DOWN);
+		}
+		else if (avatar.getY() > screenToMaze(8)) {
+			//System.out.println("up");
+			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
+			avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
+			avatar.setDirection(Dinosaur.UP);
+		}
 		int idx = objects.size()-1;
 		////System.out.println("in update, tail is " + objects.get(idx));
 		if (InputHandler.getInstance().didTransform()) {
@@ -1176,8 +1209,6 @@ public class GameController implements ContactListener, Screen {
 				avatar.setTexture(carnivoreTextureFront);
 			}
 		}
-		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
-		avatar.setUpDown(InputHandler.getInstance().getVertical());
 
 		//System.out.println(collidedWith.size());
 		if (collidedWith.size() != 0){
