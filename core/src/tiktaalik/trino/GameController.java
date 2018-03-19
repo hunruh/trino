@@ -1181,6 +1181,10 @@ public class GameController implements ContactListener, Screen {
 
 	}
 
+	public void handleCollision(GameObject bd1, GameObject bd2){
+
+	}
+
 	/**
 	 * Callback method for the start of a collision
 	 *
