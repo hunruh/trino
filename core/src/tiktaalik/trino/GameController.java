@@ -589,6 +589,7 @@ public class GameController implements ContactListener, Screen {
 			g.deactivatePhysics(world);
 		}
 		objects.clear();
+		enemies.clear();
 		addQueue.clear();
 		world.dispose();
 
