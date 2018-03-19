@@ -169,6 +169,8 @@ public class GameController implements ContactListener, Screen {
 	protected Canvas canvas;
 	/** All the objects in the world. */
 	protected PooledList<GameObject> objects  = new PooledList<GameObject>();
+
+	protected AIController[] controls;
 	/** Queue for adding objects */
 	private PooledList<GameObject> addQueue = new PooledList<GameObject>();
 	private PooledList<Wall> walls = new PooledList<Wall>();
@@ -587,6 +589,7 @@ public class GameController implements ContactListener, Screen {
 			g.deactivatePhysics(world);
 		}
 		objects.clear();
+		enemies.clear();
 		addQueue.clear();
 		world.dispose();
 
@@ -821,26 +824,46 @@ public class GameController implements ContactListener, Screen {
 		dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
 		dheight = dollTexture.getRegionHeight() / scale.y;
 
-		enemy = new Enemy(screenToMaze(11), screenToMaze(6), dwidth); // the only moving enemy right now
-		enemy.setType(ENEMY);
-		enemy.setDrawScale(scale);
-		enemy.setTexture(enemyTexture);
-		addObject(enemy);
-		addEnemy(enemy);
+
 		//adding the rest of the enemies; they're static right now
-		Enemy en1 = new Enemy(screenToMaze(4), screenToMaze(3), dwidth);
-		Enemy en2 = new Enemy(screenToMaze(6), screenToMaze(5), dwidth);
-		Enemy en3 = new Enemy(screenToMaze(9), screenToMaze(3), dwidth);
-		Enemy en4 = new Enemy(screenToMaze(12), screenToMaze(4), dwidth);
-		Enemy en5 = new Enemy(screenToMaze(14), screenToMaze(4), dwidth);
-		Enemy[] en = new Enemy[]{en1, en2, en3, en4, en5};
-		for (int i = 0; i < 5; i++) {
+		Enemy en1 = new Enemy(screenToMaze(4), screenToMaze(1), dwidth,0);
+		Enemy en2 = new Enemy(screenToMaze(6), screenToMaze(5), dwidth,1);
+		Enemy en3 = new Enemy(screenToMaze(9), screenToMaze(3), dwidth,2);
+		Enemy en4 = new Enemy(screenToMaze(12), screenToMaze(4), dwidth,3);
+		Enemy en5 = new Enemy(screenToMaze(14), screenToMaze(4), dwidth,4);
+		Enemy en6 = new Enemy(screenToMaze(11), screenToMaze(6), dwidth,5);
+		Enemy[] en = new Enemy[]{en1,en2,en3,en4,en5,en6};
+
+		Vector2[] p1 = new Vector2[]{screenToMazeVector(4,1),
+				screenToMazeVector(4,2),screenToMazeVector(4,3)};
+		Vector2[] p2 = new Vector2[]{screenToMazeVector(6,5),
+				screenToMazeVector(7,5),screenToMazeVector(8,5)};
+		Vector2[] p3 = new Vector2[]{screenToMazeVector(9,3),
+				screenToMazeVector(9,2)};
+		Vector2[] p4 = new Vector2[]{screenToMazeVector(12,4),
+				screenToMazeVector(12,3)};
+		Vector2[] p5 = new Vector2[]{screenToMazeVector(14,4),
+				screenToMazeVector(14,3),screenToMazeVector(14,2), screenToMazeVector(14,1)};
+		Vector2[] p6 = new Vector2[]{screenToMazeVector(11,6),screenToMazeVector(12,6),
+				screenToMazeVector(13,6),screenToMazeVector(14,6),screenToMazeVector(15,6),
+				screenToMazeVector(16,6),screenToMazeVector(16,7),screenToMazeVector(16,8),
+				screenToMazeVector(15,8),screenToMazeVector(14,8),screenToMazeVector(13,8),
+				screenToMazeVector(12,8),screenToMazeVector(11,8),screenToMazeVector(11,7)};
+		Vector2[][] pathList = new Vector2[][]{p1,p2,p3,p4,p5,p6};
+
+		for (int i = 0; i < en.length; i++) {
 			en[i].setType(ENEMY);
 			en[i].setDrawScale(scale);
 			en[i].setTexture(enemyTexture);
 			addObject(en[i]);
 			addEnemy(en[i]);
 		}
+		controls = new AIController[enemies.size()];
+		for (int i = 0; i < en.length; i++) {
+			controls[i] = new AIController(i,avatar,en,pathList[i]);
+		}
+		System.out.println("The size of the enemies pool list is " + enemies.size());
+
 		//System.out.println(enemy.getType());
 
 //		enemies = new EnemyList(1,scale, enemyTexture, objects);
@@ -1020,78 +1043,81 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		avatar.applyForce();
+		for (int i = 0; i < enemies.size();i++){
+			controls[i].getMoveAlongPath();
+		}
 
 
 		// Enemy Movement - NEED TO MOVE TO OWN CONTROLLER
 
-		if (Vector2.dst(enemy.getPosition().x,enemy.getPosition().y,avatar.getPosition().x,avatar.getPosition().y) < 5){
-			enemyMoving = true;
-		} else {
-			enemyMoving = false;
-		}
-
-
-		if (enemyMoving){
-			cachePosition1 = enemy.getPosition();
-			cachePosition2 = avatar.getPosition();
-			cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
-					cachePosition2.x, cachePosition2.y);
-			cacheDirection = cachePosition2.sub(cachePosition1).nor();
-			cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
-					cacheDirection.y * enemySpeed * elapsed);
-
-			enemy.setPosition(enemy.getPosition().add(cacheDirection));
-
-		}
-		else if (Math.abs(enemy.getPosition().x - ENEMY_POS.x) < 0.2f){
-
-			// Process actions for the enemy model
-			if (enemy.getCounter() % 200 == 1) {
-				enemyVertical = -enemyVertical;
-			}
-
-			if (-enemyVertical == Math.abs(enemyVertical)){
-				cachePosition1 = enemy.getPosition();
-				cachePosition2 = new Vector2(ENEMY_POS.x - 0.1f, ENEMY_POS.y);
-				cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
-						cachePosition2.x, cachePosition2.y);
-				cacheDirection = cachePosition2.sub(cachePosition1).nor();
-				cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
-						cacheDirection.y * enemySpeed * elapsed);
-
-				enemy.setPosition(enemy.getPosition().add(cacheDirection));
-			} else {
-				cachePosition1 = enemy.getPosition();
-				cachePosition2 = new Vector2(ENEMY_POS.x - 0.1f, ENEMY_POS.y + 200);
-				cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
-						cachePosition2.x, cachePosition2.y);
-				cacheDirection = cachePosition2.sub(cachePosition1).nor();
-				cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
-						cacheDirection.y * enemySpeed * elapsed);
-
-				enemy.setPosition(enemy.getPosition().add(cacheDirection));
-			}
-//			enemy.setUpDown(enemyVertical);
-//			enemy.setMovement(0.0f);
-//			enemy.applyForce();
-		}
-		else {
-
-			// Enemy Movement
-
-			cachePosition1 = enemy.getPosition();
-			cachePosition2 = new Vector2(ENEMY_POS.x - 0.1f, ENEMY_POS.y);
-			cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
-					cachePosition2.x, cachePosition2.y);
-			cacheDirection = cachePosition2.sub(cachePosition1).nor();
-			cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
-					cacheDirection.y * enemySpeed * elapsed);
-
-			enemy.setPosition(enemy.getPosition().add(cacheDirection));
-
-
-
-		}
+//		if (Vector2.dst(enemy.getPosition().x,enemy.getPosition().y,avatar.getPosition().x,avatar.getPosition().y) < 5){
+//			enemyMoving = true;
+//		} else {
+//			enemyMoving = false;
+//		}
+//
+//
+//		if (enemyMoving){
+//			cachePosition1 = enemy.getPosition();
+//			cachePosition2 = avatar.getPosition();
+//			cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
+//					cachePosition2.x, cachePosition2.y);
+//			cacheDirection = cachePosition2.sub(cachePosition1).nor();
+//			cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
+//					cacheDirection.y * enemySpeed * elapsed);
+//
+//			enemy.setPosition(enemy.getPosition().add(cacheDirection));
+//
+//		}
+//		else if (Math.abs(enemy.getPosition().x - ENEMY_POS.x) < 0.2f){
+//
+//			// Process actions for the enemy model
+//			if (enemy.getCounter() % 200 == 1) {
+//				enemyVertical = -enemyVertical;
+//			}
+//
+//			if (-enemyVertical == Math.abs(enemyVertical)){
+//				cachePosition1 = enemy.getPosition();
+//				cachePosition2 = new Vector2(ENEMY_POS.x - 0.1f, ENEMY_POS.y);
+//				cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
+//						cachePosition2.x, cachePosition2.y);
+//				cacheDirection = cachePosition2.sub(cachePosition1).nor();
+//				cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
+//						cacheDirection.y * enemySpeed * elapsed);
+//
+//				enemy.setPosition(enemy.getPosition().add(cacheDirection));
+//			} else {
+//				cachePosition1 = enemy.getPosition();
+//				cachePosition2 = new Vector2(ENEMY_POS.x - 0.1f, ENEMY_POS.y + 200);
+//				cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
+//						cachePosition2.x, cachePosition2.y);
+//				cacheDirection = cachePosition2.sub(cachePosition1).nor();
+//				cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
+//						cacheDirection.y * enemySpeed * elapsed);
+//
+//				enemy.setPosition(enemy.getPosition().add(cacheDirection));
+//			}
+////			enemy.setUpDown(enemyVertical);
+////			enemy.setMovement(0.0f);
+////			enemy.applyForce();
+//		}
+//		else {
+//
+//			// Enemy Movement
+//
+//			cachePosition1 = enemy.getPosition();
+//			cachePosition2 = new Vector2(ENEMY_POS.x - 0.1f, ENEMY_POS.y);
+//			cacheDistance = Vector2.dst(cachePosition1.x, cachePosition1.y,
+//					cachePosition2.x, cachePosition2.y);
+//			cacheDirection = cachePosition2.sub(cachePosition1).nor();
+//			cacheDirection = new Vector2(cacheDirection.x * enemySpeed * elapsed,
+//					cacheDirection.y * enemySpeed * elapsed);
+//
+//			enemy.setPosition(enemy.getPosition().add(cacheDirection));
+//
+//
+//
+//		}
 
 
 		// If we use sound, we must remember this.
@@ -1203,6 +1229,10 @@ public class GameController implements ContactListener, Screen {
 	/** drawing on screen */
 	public int screenToMaze (float f) {
 		return (int)(1+2*(f-1));
+	}
+
+	public Vector2 screenToMazeVector(float x, float y){
+		return new Vector2(screenToMaze(x), screenToMaze(y));
 	}
 
 	/** Unused ContactListener method */
