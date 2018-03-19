@@ -46,6 +46,7 @@ public abstract class Dinosaur extends GameObject {
         this.masseffect = d.masseffect;
         this.drawScale = d.drawScale;
         this.body = d.body;
+        this.shape = d.shape;
         this.texture = d.texture;
         this.origin = d.origin;
         setName(d.getName());
@@ -55,7 +56,6 @@ public abstract class Dinosaur extends GameObject {
         this.upDown = d.upDown;
         this.direction = d.direction;
 
-        body.setUserData(this);
         resourceCnt = 0;
     }
 

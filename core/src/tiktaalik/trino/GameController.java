@@ -807,7 +807,6 @@ public class GameController implements ContactListener, Screen {
 		avatar.setType(DUGGI);
 		addObject(avatar);
 
-
 		// Add level goal
 		dwidth = goalTile.getRegionWidth() / scale.x;
 		dheight = goalTile.getRegionHeight() / scale.y;
@@ -992,19 +991,25 @@ public class GameController implements ContactListener, Screen {
 		// Process actions in object model
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
+				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToDoll();
 				avatar.setTexture(dollTexture);
 				objects.set(1, avatar);
+				avatar.activatePhysics(world);
 			}
 			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
+				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToHerbivore();
 				avatar.setTexture(herbivoreTexture);
 				objects.set(1, avatar);
+				avatar.activatePhysics(world);
 			}
 			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
+				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToCarnivore();
 				avatar.setTexture(carnivoreTexture);
 				objects.set(1, avatar);
+				avatar.activatePhysics(world);
 			}
 		}
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
@@ -1038,8 +1043,6 @@ public class GameController implements ContactListener, Screen {
 				if (collidedWith != null) {
 					if (collidedWith.getType() == EDIBLEWALL) {
 						collidedWith.deactivatePhysics(world);
-						objects.remove(collidedWith);
-						walls.remove(collidedWith);
 						collidedWith = null;
 						directlyInFront = null;
 					}
