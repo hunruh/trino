@@ -90,10 +90,6 @@ public class GameController implements ContactListener, Screen {
 	private static final int DUGGI = 6;
 	private static final int CLONE = 7;
 
-	private static final int NORTH = 0;
-	private static final int SOUTH = 1;
-	private static final int EAST = 2;
-	private static final int WEST = 3;
 
 	/** Texture assets for the general game */
 	private TextureRegion earthTile;
@@ -116,6 +112,7 @@ public class GameController implements ContactListener, Screen {
 
 	//index of the object Duggi collided with
 	private GameObject collidedWith;
+	private GameObject directlyInFront;
 	private int collidedType;
 
 	// GAME CONSTANTS AND VARIABLES
@@ -1015,6 +1012,15 @@ public class GameController implements ContactListener, Screen {
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
 		avatar.setUpDown(InputHandler.getInstance().getVertical());
 
+		if (collidedWith!= null){
+			System.out.println("hi");
+			System.out.println("direction " + avatar.getDirection());
+			System.out.println(isInFrontOfAvatar(collidedWith));
+			if (isInFrontOfAvatar(collidedWith)){
+				handleCollision(avatar, collidedWith);
+			}
+		}
+
 		boolean hasClone = false;
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
@@ -1031,13 +1037,14 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
-				if (collidedWith != null) {
-					if (collidedWith.getType() == EDIBLEWALL) {
+				if (directlyInFront != null) {
+					if (directlyInFront.getType() == EDIBLEWALL) {
 						System.out.println("asdfA");
-						collidedWith.deactivatePhysics(world);
-						objects.remove(collidedWith);
-						walls.remove(collidedWith);
+						directlyInFront.deactivatePhysics(world);
+						objects.remove(directlyInFront);
+						walls.remove(directlyInFront);
 						collidedWith = null;
+						directlyInFront = null;
 					}
 				}
 			}
@@ -1123,8 +1130,11 @@ public class GameController implements ContactListener, Screen {
 					setFailure(true);
 				}
 			}
-			else
-				collidedWith = bd2;
+			else {
+				if (isInFrontOfAvatar(bd2))
+					directlyInFront = bd2;
+			}
+			collidedWith = bd2;
 		}
 		else if (bd2.getType() == DUGGI){
 			if (bd1.getType() == GOAL)
@@ -1138,18 +1148,61 @@ public class GameController implements ContactListener, Screen {
 					setFailure(true);
 				}
 			}
-			else
-				collidedWith = bd1;
+			else {
+				if (isInFrontOfAvatar(bd1))
+					directlyInFront = bd1;
+			}
+			collidedWith = bd1;
 		}
 	}
 
 	/**
 	 *
 	 * @param bd
-	 * @return direction the bd relative of avatar
+	 * @return true if object is directly in front of avatar
 	 */
-	public int isDirectionOfAvatar(GameObject bd){
-		return -1;
+	public boolean isInFrontOfAvatar(GameObject bd){
+		int direction = avatar.getDirection();
+		if (isAlignedHorizontally(avatar, bd)){
+			if (direction == Dinosaur.LEFT)
+				return bd.getX() <= avatar.getX();
+			else if (direction == Dinosaur.RIGHT)
+				return bd.getX() >= avatar.getX();
+			else return false;
+		}
+		else if (isAlignedVertically(avatar, bd)){
+			if (direction == Dinosaur.UP) {
+				return bd.getY() >= avatar.getY();
+			}
+			else if (direction == Dinosaur.DOWN) {
+				return bd.getY() <= avatar.getY();
+			}
+			else return false;
+		}
+		else return false;
+	}
+
+	/**
+	 *
+	 * @param bd1
+	 * @param bd2
+	 * @return true if they are aligned horizontally
+	 */
+	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2){
+		System.out.println(bd1.getY() - bd2.getY());
+		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.25);
+	}
+
+
+	/**
+	 *
+	 * @param bd1
+	 * @param bd2
+	 * @return true if they are aligned horizontally
+	 */
+	public boolean isAlignedVertically(GameObject bd1, GameObject bd2){
+		System.out.println(bd1.getX() - bd2.getX());
+		return (Math.abs(bd1.getX() - bd2.getX()) <= 0.25);
 	}
 
 	/**
@@ -1174,8 +1227,8 @@ public class GameController implements ContactListener, Screen {
 		Object bd2 = body2.getUserData();
 
 		if (bd1 == avatar || bd2 == avatar) {
-			collidedType = -1;
 			collidedWith = null;
+			directlyInFront = null;
 		}
 	}
 /*
