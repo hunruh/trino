@@ -1155,6 +1155,13 @@ public class GameController implements ContactListener, Screen {
 		boolean hasClone = false;
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
+				GameObject cotton = getCotton();
+				if (cotton != null) {
+					System.out.println("fffuccccccccc");
+					cotton.deactivatePhysics(world);
+					objects.remove(cotton);
+					cottonFlower.remove(cotton);
+				}
 				if (!hasClone) {
 //					float dwidth = dollTexture.getRegionWidth() / scale.x;
 //					float dheight = dollTexture.getRegionHeight() / scale.y;
@@ -1165,6 +1172,7 @@ public class GameController implements ContactListener, Screen {
 //					clone.setType(CLONE);
 //					addObject(clone);
 					hasClone = true;
+
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
@@ -1285,6 +1293,9 @@ public class GameController implements ContactListener, Screen {
 			}
 			collidedWith = bd1;
 		}
+		if (collidedWith.getType() == COTTON){
+			System.out.println("=============================================");
+		}
 	}
 
 	/**
@@ -1334,6 +1345,17 @@ public class GameController implements ContactListener, Screen {
 	public boolean isAlignedVertically(GameObject bd1, GameObject bd2){
 		System.out.println(bd1.getX() - bd2.getX());
 		return (Math.abs(bd1.getX() - bd2.getX()) <= 0.5);
+	}
+
+	public boolean isOnTop(GameObject bd1, GameObject bd2){
+		return isAlignedVertically(bd1, bd2) && isAlignedHorizontally(bd1, bd2);
+	}
+
+	public GameObject getCotton(){
+		for (int i = 0; i < cottonFlower.size(); i++){
+			if (isOnTop(cottonFlower.get(i), avatar)) return cottonFlower.get(i);
+		}
+		return null;
 	}
 
 	/**
