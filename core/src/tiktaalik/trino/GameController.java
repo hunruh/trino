@@ -19,6 +19,7 @@ package tiktaalik.trino;
 import java.util.Iterator;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -65,6 +66,12 @@ public class GameController implements ContactListener, Screen {
 	private Array<String> assets;
 
 	// ASSET FILES AND VARIABLES
+
+	/** The sound file for music and effects */
+	private static String DOLL_BG_FILE = "trino/doll_bg.mp3";
+	private static String HERBIVORE_BG_FILE = "trino/herbivore_bg.mp3";
+	private static String CARNIVORE_BG_FILE = "trino/carnivore_bg.mp3";
+
 	/** The texture file for general assets */
 	private static String EARTH_FILE = "shared/earthtile.png";
 	private static String GOAL_FILE = "shared/goaldoor.png";
@@ -72,9 +79,18 @@ public class GameController implements ContactListener, Screen {
 	private static int FONT_SIZE = 64;
 
 	/** The texture files for the three dinosaurs (no animation) */
-	private static final String DOLL_FILE  = "trino/doll.png";
-	private static final String HERBIVORE_FILE  = "trino/herbivore.png";
-	private static final String CARNIVORE_FILE  = "trino/carnivore.png";
+	private static final String DOLL_FILE_FRONT  = "trino/doll_front.png";
+	private static final String DOLL_FILE_LEFT  = "trino/doll_left.png";
+	private static final String DOLL_FILE_RIGHT  = "trino/doll_right.png";
+	private static final String DOLL_FILE_BACK  = "trino/doll_back.png";
+	private static final String HERBIVORE_FILE_FRONT  = "trino/herbivore_front.png";
+	private static final String HERBIVORE_FILE_LEFT  = "trino/herbivore_left.png";
+	private static final String HERBIVORE_FILE_RIGHT  = "trino/herbivore_right.png";
+	private static final String HERBIVORE_FILE_BACK  = "trino/herbivore_back.png";
+	private static final String CARNIVORE_FILE_FRONT  = "trino/carnivore_front.png";
+	private static final String CARNIVORE_FILE_LEFT  = "trino/carnivore_left.png";
+	private static final String CARNIVORE_FILE_RIGHT  = "trino/carnivore_right.png";
+	private static final String CARNIVORE_FILE_BACK  = "trino/carnivore_back.png";
 	private static final String ENEMY_FILE = "trino/enemy.png";
 	private static final String WALL_FILE = "trino/wall.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
@@ -97,9 +113,18 @@ public class GameController implements ContactListener, Screen {
 	private BitmapFont displayFont;
 
 	/** Texture assets for Duggi's three forms */
-	private TextureRegion dollTexture;
-	private TextureRegion herbivoreTexture;
-	private TextureRegion carnivoreTexture;
+	private TextureRegion dollTextureFront;
+	private TextureRegion dollTextureLeft;
+	private TextureRegion dollTextureRight;
+	private TextureRegion dollTextureBack;
+	private TextureRegion herbivoreTextureFront;
+	private TextureRegion herbivoreTextureLeft;
+	private TextureRegion herbivoreTextureRight;
+	private TextureRegion herbivoreTextureBack;
+	private TextureRegion carnivoreTextureFront;
+	private TextureRegion carnivoreTextureLeft;
+	private TextureRegion carnivoreTextureRight;
+	private TextureRegion carnivoreTextureBack;
 
 	/* Texture assets for enemies */
 	private TextureRegion enemyTexture;
@@ -111,7 +136,7 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion pathTexture;
 
 	//index of the object Duggi collided with
-	private GameObject collidedWith;
+	private PooledList<GameObject> collidedWith = new PooledList<GameObject>();
 	private GameObject directlyInFront;
 	private int collidedType;
 
@@ -215,6 +240,13 @@ public class GameController implements ContactListener, Screen {
 	private float enemySpeed = 5;
 	private float elapsed = 0.01f;
 
+	// Variables for sound effects and music
+	private Music bgMusic;
+	private Music bgDoll;
+	private Music bgHerb;
+	private Music bgCarn;
+
+
 	/** Mark set to handle more sophisticated collision callbacks */
 	private ObjectSet<Fixture> sensorFixtures;
 
@@ -248,12 +280,30 @@ public class GameController implements ContactListener, Screen {
 		assets.add(FONT_FILE);
 
 		// Load Trino files
-		manager.load(DOLL_FILE, Texture.class);
-		assets.add(DOLL_FILE);
-		manager.load(HERBIVORE_FILE, Texture.class);
-		assets.add(HERBIVORE_FILE);
-		manager.load(CARNIVORE_FILE, Texture.class);
-		assets.add(CARNIVORE_FILE);
+		manager.load(DOLL_FILE_FRONT, Texture.class);
+		assets.add(DOLL_FILE_FRONT);
+		manager.load(DOLL_FILE_LEFT, Texture.class);
+		assets.add(DOLL_FILE_LEFT);
+		manager.load(DOLL_FILE_RIGHT, Texture.class);
+		assets.add(DOLL_FILE_RIGHT);
+		manager.load(DOLL_FILE_BACK, Texture.class);
+		assets.add(DOLL_FILE_BACK);
+		manager.load(HERBIVORE_FILE_FRONT, Texture.class);
+		assets.add(HERBIVORE_FILE_FRONT);
+		manager.load(HERBIVORE_FILE_LEFT, Texture.class);
+		assets.add(HERBIVORE_FILE_LEFT);
+		manager.load(HERBIVORE_FILE_RIGHT, Texture.class);
+		assets.add(HERBIVORE_FILE_RIGHT);
+		manager.load(HERBIVORE_FILE_BACK, Texture.class);
+		assets.add(HERBIVORE_FILE_BACK);
+		manager.load(CARNIVORE_FILE_FRONT, Texture.class);
+		assets.add(CARNIVORE_FILE_FRONT);
+		manager.load(CARNIVORE_FILE_LEFT, Texture.class);
+		assets.add(CARNIVORE_FILE_LEFT);
+		manager.load(CARNIVORE_FILE_RIGHT, Texture.class);
+		assets.add(CARNIVORE_FILE_RIGHT);
+		manager.load(CARNIVORE_FILE_BACK, Texture.class);
+		assets.add(CARNIVORE_FILE_BACK);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
 		manager.load(EDIBLE_WALL_FILE, Texture.class);
@@ -293,9 +343,18 @@ public class GameController implements ContactListener, Screen {
 			displayFont = null;
 		}
 
-		dollTexture = createTexture(manager,DOLL_FILE,false);
-		herbivoreTexture = createTexture(manager,HERBIVORE_FILE,false);
-		carnivoreTexture = createTexture(manager,CARNIVORE_FILE,false);
+		dollTextureFront = createTexture(manager,DOLL_FILE_FRONT,false);
+		dollTextureLeft = createTexture(manager,DOLL_FILE_LEFT,false);
+		dollTextureRight = createTexture(manager,DOLL_FILE_RIGHT,false);
+		dollTextureBack = createTexture(manager,DOLL_FILE_BACK,false);
+		herbivoreTextureFront = createTexture(manager,HERBIVORE_FILE_FRONT,false);
+		herbivoreTextureLeft = createTexture(manager,HERBIVORE_FILE_LEFT,false);
+		herbivoreTextureRight = createTexture(manager,HERBIVORE_FILE_RIGHT,false);
+		herbivoreTextureBack = createTexture(manager,HERBIVORE_FILE_BACK,false);
+		carnivoreTextureFront = createTexture(manager,CARNIVORE_FILE_FRONT,false);
+		carnivoreTextureLeft = createTexture(manager,CARNIVORE_FILE_LEFT,false);
+		carnivoreTextureRight = createTexture(manager,CARNIVORE_FILE_RIGHT,false);
+		carnivoreTextureBack = createTexture(manager,CARNIVORE_FILE_BACK,false);
 		enemyTexture = createTexture(manager,ENEMY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
@@ -544,7 +603,8 @@ public class GameController implements ContactListener, Screen {
 	protected void addObject(GameObject g) {
 		assert inBounds(g) : "Object is not in bounds";
 		objects.add(g);
-		g.activatePhysics(world);
+		if (g.getType()!= COTTON)
+			g.activatePhysics(world);
 	}
 
 	public void addWall(Wall obj){
@@ -612,7 +672,7 @@ public class GameController implements ContactListener, Screen {
 	 * @return whether to process the update loop
 	 */
 	public boolean preUpdate(float dt) {
-		//System.out.println("in pre update");
+		////System.out.println("in pre update");
 		InputHandler input = InputHandler.getInstance();
 		input.readInput(bounds, scale);
 		if (listener == null) {
@@ -657,7 +717,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void postUpdate(float dt) {
-		//System.out.println("in post update");
+		////System.out.println("in post update");
 		// Add any objects created by actions
 		while (!addQueue.isEmpty()) {
 			addObject(addQueue.poll());
@@ -694,7 +754,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param delta The difference from the last draw call
 	 */
 	public void draw(float delta) {
-		//System.out.println("in draw");
+		////System.out.println("in draw");
 		canvas.clear();
 		
 		canvas.begin();
@@ -799,13 +859,40 @@ public class GameController implements ContactListener, Screen {
 		// Create player character
 		// It is important that this is always created first, as transformations must swap the first element
 		// in the objects list
-		float dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
-		float dheight = dollTexture.getRegionHeight() / scale.y;
+
+		float dwidth = dollTextureRight.getRegionWidth() / (scale.x * 2);
+		float dheight = dollTextureRight.getRegionHeight() / scale.y;
 		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
-		avatar.setTexture(dollTexture);
-		avatar.setDrawScale(scale);
 		avatar.setType(DUGGI);
-		addObject(avatar);
+
+		/** Adding cotton flowers */
+		dwidth = cottonTexture.getRegionWidth() / scale.x;
+		dheight = cottonTexture.getRegionHeight() / scale.y;
+		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight);
+		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight);
+		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf4 = new CottonFlower(screenToMaze(3), screenToMaze(5), dwidth, dheight);
+		CottonFlower cf5 = new CottonFlower(screenToMaze(3), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf6 = new CottonFlower(screenToMaze(4), screenToMaze(5), dwidth, dheight);
+		CottonFlower cf7 = new CottonFlower(screenToMaze(4), screenToMaze(6), dwidth, dheight);
+		CottonFlower cf8 = new CottonFlower(screenToMaze(4), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf9 = new CottonFlower(screenToMaze(7), screenToMaze(7), dwidth, dheight);
+		CottonFlower cf10 = new CottonFlower(screenToMaze(11), screenToMaze(2), dwidth, dheight);
+		CottonFlower cf11 = new CottonFlower(screenToMaze(13), screenToMaze(6), dwidth, dheight);
+		CottonFlower cf12 = new CottonFlower(screenToMaze(15), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf13 = new CottonFlower(screenToMaze(16), screenToMaze(1), dwidth, dheight);
+		CottonFlower cf14 = new CottonFlower(screenToMaze(16), screenToMaze(4), dwidth, dheight);
+		CottonFlower cf15 = new CottonFlower(screenToMaze(16), screenToMaze(8), dwidth, dheight);
+		CottonFlower[] cf = new CottonFlower[] {cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
+				cf11, cf12, cf13, cf14, cf15};
+		for (int i = 0; i < 13; i++) {
+			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
+			cf[i].setDrawScale(scale);
+			cf[i].setTexture(cottonTexture);
+			cf[i].setType(COTTON);
+			addObject(cf[i]);
+			addCottonFlower(cf[i]);
+		}
 
 		// Add level goal
 		dwidth = goalTile.getRegionWidth() / scale.x;
@@ -820,8 +907,8 @@ public class GameController implements ContactListener, Screen {
 		addObject(goalDoor);
 
 		// Create enemy
-		dwidth = dollTexture.getRegionWidth() / (scale.x * 2);
-		dheight = dollTexture.getRegionHeight() / scale.y;
+		dwidth = carnivoreTextureFront.getRegionWidth() / (scale.x * 2);
+		dheight = carnivoreTextureFront.getRegionHeight() / scale.y;
 
 
 		//adding the rest of the enemies; they're static right now
@@ -861,12 +948,12 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 0; i < en.length; i++) {
 			controls[i] = new AIController(i,avatar,en,pathList[i]);
 		}
-		System.out.println("The size of the enemies pool list is " + enemies.size());
+		//System.out.println("The size of the enemies pool list is " + enemies.size());
 
 
 		/** Adding edible walls */
-		dwidth = dollTexture.getRegionWidth() / scale.x;
-		dheight = dollTexture.getRegionHeight() / scale.y;
+		dwidth = edibleWallTexture.getRegionWidth() / scale.x;
+		dheight = edibleWallTexture.getRegionHeight() / scale.y;
 
 		Wall ew1 = new Wall(screenToMaze(2), screenToMaze(4), dwidth, dheight, true);
 		Wall ew2 = new Wall(screenToMaze(3), screenToMaze(3), dwidth, dheight, true);
@@ -904,7 +991,7 @@ public class GameController implements ContactListener, Screen {
 			addObject(veg[i]);
 			addWall(veg[i]);
 		}
-		//System.out.println(ew.getType());
+		////System.out.println(ew.getType());
 
 		/** Adding inedible walls */
 		Wall iw1 = new Wall(screenToMaze(2), screenToMaze(2), dwidth, dheight, false);
@@ -941,34 +1028,24 @@ public class GameController implements ContactListener, Screen {
 			addWall(iw[i]);
 		}
 
-		/** Adding cotton flowers */
-		dwidth = dollTexture.getRegionWidth() / scale.x;
-		dheight = dollTexture.getRegionHeight() / scale.y;
-		//CottonFlower cf1 = new CottonFlower(screenToMaze(1), screenToMaze(4), dwidth, dheight);
-		//CottonFlower cf2 = new CottonFlower(screenToMaze(2), screenToMaze(1), dwidth, dheight);
-		CottonFlower cf3 = new CottonFlower(screenToMaze(2), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf4 = new CottonFlower(screenToMaze(3), screenToMaze(5), dwidth, dheight);
-		CottonFlower cf5 = new CottonFlower(screenToMaze(3), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf6 = new CottonFlower(screenToMaze(4), screenToMaze(5), dwidth, dheight);
-		CottonFlower cf7 = new CottonFlower(screenToMaze(4), screenToMaze(6), dwidth, dheight);
-		CottonFlower cf8 = new CottonFlower(screenToMaze(4), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf9 = new CottonFlower(screenToMaze(7), screenToMaze(7), dwidth, dheight);
-		CottonFlower cf10 = new CottonFlower(screenToMaze(11), screenToMaze(2), dwidth, dheight);
-		CottonFlower cf11 = new CottonFlower(screenToMaze(13), screenToMaze(6), dwidth, dheight);
-		CottonFlower cf12 = new CottonFlower(screenToMaze(15), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf13 = new CottonFlower(screenToMaze(16), screenToMaze(1), dwidth, dheight);
-		CottonFlower cf14 = new CottonFlower(screenToMaze(16), screenToMaze(4), dwidth, dheight);
-		CottonFlower cf15 = new CottonFlower(screenToMaze(16), screenToMaze(8), dwidth, dheight);
-		CottonFlower[] cf = new CottonFlower[] {cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
-				cf11, cf12, cf13, cf14, cf15};
-		for (int i = 0; i < 13; i++) {
-			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
-			cf[i].setDrawScale(scale);
-			cf[i].setTexture(cottonTexture);
-			cf[i].setType(COTTON);
-			addObject(cf[i]);
-			addCottonFlower(cf[i]);
-		}
+
+		avatar.setTexture(dollTextureRight);
+		avatar.setDrawScale(scale);
+		addObject(avatar);
+
+
+		//System.out.println("head of objects: " + objects.get(0));
+		//System.out.println("tail of objects: " + objects.get(objects.size() - 1));
+
+			/** Music */
+		bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
+		bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
+		bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
+		bgMusic = bgDoll;
+		bgMusic.setLooping(true);
+		bgMusic.setVolume(0.10f);
+		bgMusic.play();
+
 	}
 
 //	/** Music */
@@ -989,47 +1066,144 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void update(float dt) {
 		// Process actions in object model
+		int direction = avatar.getDirection();
+		int idx = objects.size()-1;
+		////System.out.println("in update, tail is " + objects.get(idx));
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
-				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToDoll();
-				avatar.setTexture(dollTexture);
-				objects.set(1, avatar);
-				avatar.activatePhysics(world);
+
+				// Change the music
+				changeMusic(bgDoll);
+
+				if (direction == Dinosaur.UP) {
+					avatar.setTexture(dollTextureBack);
+				}
+				else if (direction == Dinosaur.LEFT) {
+					avatar.setTexture(dollTextureLeft);
+				}
+				else if (direction == Dinosaur.RIGHT) {
+					avatar.setTexture(dollTextureRight);
+				}
+				else {
+					avatar.setTexture(dollTextureFront);
+				}
+
+				objects.set(idx, avatar);
 			}
 			else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
-				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToHerbivore();
-				avatar.setTexture(herbivoreTexture);
-				objects.set(1, avatar);
-				avatar.activatePhysics(world);
+
+				// Change the music
+				changeMusic(bgHerb);
+
+				if (direction == Dinosaur.UP) {
+					avatar.setTexture(herbivoreTextureBack);
+				}
+				else if (direction == Dinosaur.LEFT) {
+					avatar.setTexture(herbivoreTextureLeft);
+				}
+				else if (direction == Dinosaur.RIGHT) {
+					avatar.setTexture(herbivoreTextureRight);
+				}
+				else {
+					avatar.setTexture(herbivoreTextureFront);
+				}
+				objects.set(idx, avatar);
 			}
 			else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
-				avatar.deactivatePhysics(world);
 				avatar = avatar.transformToCarnivore();
-				avatar.setTexture(carnivoreTexture);
-				objects.set(1, avatar);
-				avatar.activatePhysics(world);
+
+				// Change the music
+				changeMusic(bgCarn);
+
+				if (direction == Dinosaur.UP) {
+					avatar.setTexture(carnivoreTextureBack);
+				}
+				else if (direction == Dinosaur.LEFT) {
+					avatar.setTexture(carnivoreTextureLeft);
+				}
+				else if (direction == Dinosaur.RIGHT) {
+					avatar.setTexture(carnivoreTextureRight);
+				}
+				else {
+					avatar.setTexture(carnivoreTextureFront);
+				}
+				objects.set(idx, avatar);
+			}
+		}
+		if (avatar.getForm() == Dinosaur.DOLL_FORM) {
+			if (avatar.getDirection() == Dinosaur.UP) {
+				avatar.setTexture(dollTextureBack);
+			}
+			else if (avatar.getDirection() == Dinosaur.LEFT) {
+				avatar.setTexture(dollTextureLeft);
+			}
+			else if (avatar.getDirection() == Dinosaur.RIGHT) {
+				avatar.setTexture(dollTextureRight);
+			}
+			else if (avatar.getDirection() == Dinosaur.DOWN) {
+				avatar.setTexture(dollTextureFront);
+			}
+		}
+		else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
+			if (avatar.getDirection() == Dinosaur.UP) {
+				avatar.setTexture(herbivoreTextureBack);
+			}
+			else if (avatar.getDirection() == Dinosaur.LEFT) {
+				avatar.setTexture(herbivoreTextureLeft);
+			}
+			else if (avatar.getDirection() == Dinosaur.RIGHT) {
+				avatar.setTexture(herbivoreTextureRight);
+			}
+			else if (avatar.getDirection() == Dinosaur.DOWN) {
+				avatar.setTexture(herbivoreTextureFront);
+			}
+		}
+		else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+			if (avatar.getDirection() == Dinosaur.UP) {
+				avatar.setTexture(carnivoreTextureBack);
+			}
+			else if (avatar.getDirection() == Dinosaur.LEFT) {
+				avatar.setTexture(carnivoreTextureLeft);
+			}
+			else if (avatar.getDirection() == Dinosaur.RIGHT) {
+				avatar.setTexture(carnivoreTextureRight);
+			}
+			else if (avatar.getDirection() == Dinosaur.DOWN) {
+				avatar.setTexture(carnivoreTextureFront);
 			}
 		}
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
 		avatar.setUpDown(InputHandler.getInstance().getVertical());
 
-		if (collidedWith!= null){
-			System.out.println("hi");
-			System.out.println("direction " + avatar.getDirection());
-			System.out.println(isInFrontOfAvatar(collidedWith));
-			if (isInFrontOfAvatar(collidedWith)){
-				handleCollision(avatar, collidedWith);
+		//System.out.println(collidedWith.size());
+		if (collidedWith.size() != 0){
+			//System.out.println("hi");
+			//System.out.println("direction " + avatar.getDirection());
+			//System.out.println(isInFrontOfAvatar(collidedWith));
+			for(GameObject c : collidedWith){
+				//System.out.println(isInFrontOfAvatar(c));
+				if (isInFrontOfAvatar(c)) {
+					handleCollision(avatar, c);
+					break;
+				}
 			}
 		}
 
 		boolean hasClone = false;
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
+				GameObject cotton = getCotton();
+				if (cotton != null) {
+					//System.out.println("fffuccccccccc");
+					cotton.deactivatePhysics(world);
+					objects.remove(cotton);
+					cottonFlower.remove(cotton);
+				}
 				if (!hasClone) {
-					float dwidth = dollTexture.getRegionWidth() / scale.x;
-					float dheight = dollTexture.getRegionHeight() / scale.y;
+//					float dwidth = dollTexture.getRegionWidth() / scale.x;
+//					float dheight = dollTexture.getRegionHeight() / scale.y;
 //					DuggiModel clone = new DuggiModel(screenToMaze(1), screenToMaze(1), dwidth, dheight);
 //					clone.setTexture(dollTexture);
 //					clone.setDrawScale(scale);
@@ -1037,15 +1211,27 @@ public class GameController implements ContactListener, Screen {
 //					clone.setType(CLONE);
 //					addObject(clone);
 					hasClone = true;
+
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
-				if (collidedWith != null) {
-					if (collidedWith.getType() == EDIBLEWALL) {
-						collidedWith.deactivatePhysics(world);
-						collidedWith = null;
-						directlyInFront = null;
+				//System.out.println("sxdg " + directlyInFront);
+				if (directlyInFront != null) {
+					if (isInFrontOfAvatar(directlyInFront)) {
+						if (directlyInFront.getType() == EDIBLEWALL) {
+							//System.out.println("asdfA");
+							directlyInFront.deactivatePhysics(world);
+							objects.remove(directlyInFront);
+							walls.remove(directlyInFront);
+							collidedWith.remove(directlyInFront);
+							directlyInFront = null;
+						}
 					}
+					else{
+						directlyInFront = null;
+						//collidedWith = new PooledList<GameObject>();
+					}
+					System.out.println("collidedwith length " + collidedWith.size());
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
@@ -1085,7 +1271,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param contact The two bodies that collided
 	 */
 	public void beginContact(Contact contact) {
-		//System.out.println("in begin contact");
+		////System.out.println("in begin contact");
 		Fixture fix1 = contact.getFixtureA();
 		Fixture fix2 = contact.getFixtureB();
 
@@ -1101,15 +1287,15 @@ public class GameController implements ContactListener, Screen {
 			GameObject bd2 = (GameObject)body2.getUserData();
 
 			if (bd1.getType() == DUGGI || bd2.getType() == DUGGI) {
-				//System.out.println("dfghs'");
-				//System.out.println(bd1.toString());
-				//System.out.println(bd2.toString());
-				//System.out.println(bd1.getType() == EDIBLEWALL);
+				////System.out.println("dfghs'");
+				////System.out.println(bd1.toString());
+				////System.out.println(bd2.toString());
+				////System.out.println(bd1.getType() == EDIBLEWALL);
 			}
 
 			// Check for win condition
 			handleCollision(bd1, bd2);
-			System.out.println(collidedWith);
+			//System.out.println(collidedWith);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1126,16 +1312,18 @@ public class GameController implements ContactListener, Screen {
 				setComplete(true);
 			else if (bd2.getType() == ENEMY) {
 				if (charging) {
-					System.out.println("Collided mid charge!");
+					//System.out.println("Collided mid charge!");
 				} else {
 					setFailure(true);
 				}
 			}
-			else {
+			else if (bd2.getType() != WALL){
+				if (!didExist(bd2, collidedWith))
+					collidedWith.add(bd2);
 				if (isInFrontOfAvatar(bd2))
 					directlyInFront = bd2;
 			}
-			collidedWith = bd2;
+
 			if (charging)
 				((Carnivore) bd1).stopCharge();
 		}
@@ -1147,19 +1335,29 @@ public class GameController implements ContactListener, Screen {
 				setComplete(true);
 			else if (bd1.getType() == ENEMY) {
 				if (charging) {
-					System.out.println("Collided mid charge!");
+					//System.out.println("Collided mid charge!");
 				} else {
 					setFailure(true);
 				}
 			}
-			else {
+			else if (bd1.getType() != WALL){
+				if (!didExist(bd1, collidedWith))
+					collidedWith.add(bd1);
 				if (isInFrontOfAvatar(bd1))
 					directlyInFront = bd1;
 			}
-			collidedWith = bd1;
+
 			if (charging)
 				((Carnivore) bd2).stopCharge();
 		}
+	}
+
+	public boolean didExist(GameObject bd, PooledList<GameObject>list){
+		for(GameObject l : list){
+			System.out.println("in did exist, " + (bd == l));
+			if (bd == l) return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1169,14 +1367,14 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean isInFrontOfAvatar(GameObject bd){
 		int direction = avatar.getDirection();
-		if (isAlignedHorizontally(avatar, bd)){
+		if (isAlignedHorizontally(avatar, bd, 0.7)){
 			if (direction == Dinosaur.LEFT)
 				return bd.getX() <= avatar.getX();
 			else if (direction == Dinosaur.RIGHT)
 				return bd.getX() >= avatar.getX();
 			else return false;
 		}
-		else if (isAlignedVertically(avatar, bd)){
+		else if (isAlignedVertically(avatar, bd, 0.7)){
 			if (direction == Dinosaur.UP) {
 				return bd.getY() >= avatar.getY();
 			}
@@ -1194,9 +1392,9 @@ public class GameController implements ContactListener, Screen {
 	 * @param bd2
 	 * @return true if they are aligned horizontally
 	 */
-	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2){
-		System.out.println(bd1.getY() - bd2.getY());
-		return (Math.abs(bd1.getY() - bd2.getY()) <= 0.25);
+	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){
+		//System.out.println(bd1.getY() - bd2.getY());
+		return (Math.abs(bd1.getY() - bd2.getY()) <= offset);
 	}
 
 
@@ -1206,9 +1404,20 @@ public class GameController implements ContactListener, Screen {
 	 * @param bd2
 	 * @return true if they are aligned horizontally
 	 */
-	public boolean isAlignedVertically(GameObject bd1, GameObject bd2){
-		System.out.println(bd1.getX() - bd2.getX());
-		return (Math.abs(bd1.getX() - bd2.getX()) <= 0.25);
+	public boolean isAlignedVertically(GameObject bd1, GameObject bd2, double offset){
+		//System.out.println(bd1.getX() - bd2.getX());
+		return (Math.abs(bd1.getX() - bd2.getX()) <= offset);
+	}
+
+	public boolean isOnTop(GameObject bd1, GameObject bd2){
+		return isAlignedVertically(bd1, bd2, 0.9) && isAlignedHorizontally(bd1, bd2, 0.9);
+	}
+
+	public GameObject getCotton(){
+		for (int i = 0; i < cottonFlower.size(); i++){
+			if (isOnTop(cottonFlower.get(i), avatar)) return cottonFlower.get(i);
+		}
+		return null;
 	}
 
 	/**
@@ -1219,7 +1428,7 @@ public class GameController implements ContactListener, Screen {
 	 * double jumping.
 	 */
 	public void endContact(Contact contact) {
-		//System.out.println("in end contact");
+		////System.out.println("in end contact");
 		Fixture fix1 = contact.getFixtureA();
 		Fixture fix2 = contact.getFixtureB();
 
@@ -1232,25 +1441,32 @@ public class GameController implements ContactListener, Screen {
 		Object bd1 = body1.getUserData();
 		Object bd2 = body2.getUserData();
 
-		if (bd1 == avatar || bd2 == avatar) {
-			collidedWith = null;
+		if (bd1 == avatar) {
+			System.out.println("dsfhjskgfd");
+			collidedWith.remove(bd2);
 			directlyInFront = null;
+		}
+		else if (bd2 == avatar) {
+			System.out.println("dsfhjskgfd");
+			collidedWith.remove(bd1);
+			directlyInFront = null;
+
 		}
 	}
 /*
 	public boolean objectTooFarX(Obstacle object){
-		//System.out.println("in objectTooFarX, dx,width");
-		//System.out.println(Math.abs(object.getX() - avatar.getX()));
-		//System.out.println(avatar.getWidth());
-		//System.out.println(avatar.getHeight());
+		////System.out.println("in objectTooFarX, dx,width");
+		////System.out.println(Math.abs(object.getX() - avatar.getX()));
+		////System.out.println(avatar.getWidth());
+		////System.out.println(avatar.getHeight());
 		return (Math.abs(object.getX() - avatar.getX()) >= avatar.getWidth()/3);
 	}
 	public boolean objectTooFarY(Obstacle object){
-		//System.out.println("in objectTooFar, dy, height");
-		//System.out.println(Math.abs(object.getX() - avatar.getX()));
-		//System.out.println(Math.abs(object.getY() - avatar.getY()));
-		//System.out.println(avatar.getWidth());
-		//System.out.println(avatar.getHeight());
+		////System.out.println("in objectTooFar, dy, height");
+		////System.out.println(Math.abs(object.getX() - avatar.getX()));
+		////System.out.println(Math.abs(object.getY() - avatar.getY()));
+		////System.out.println(avatar.getWidth());
+		////System.out.println(avatar.getHeight());
 		return (Math.abs(object.getX() - avatar.getX()) >= avatar.getWidth()/3);
 	}
 */
@@ -1262,6 +1478,20 @@ public class GameController implements ContactListener, Screen {
 
 	public Vector2 screenToMazeVector(float x, float y){
 		return new Vector2(screenToMaze(x), screenToMaze(y));
+	}
+
+	/** Change the music based on timestamp */
+	public void changeMusic(Music name){
+		// Change the music
+		bgMusic.pause();
+		float seconds = bgMusic.getPosition();
+		bgMusic = name;
+		bgMusic.setLooping(true);
+		bgMusic.setVolume(0.10f);
+		bgMusic.play();
+		bgMusic.pause();
+		bgMusic.setPosition(seconds);
+		bgMusic.play();
 	}
 
 	/** Unused ContactListener method */
