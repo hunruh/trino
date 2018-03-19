@@ -129,7 +129,7 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion pathTexture;
 
 	//index of the object Duggi collided with
-	private GameObject collidedWith;
+	private PooledList<GameObject> collidedWith = new PooledList<GameObject>();
 	private GameObject directlyInFront;
 	private int collidedType;
 
@@ -660,7 +660,7 @@ public class GameController implements ContactListener, Screen {
 	 * @return whether to process the update loop
 	 */
 	public boolean preUpdate(float dt) {
-		//System.out.println("in pre update");
+		////System.out.println("in pre update");
 		InputHandler input = InputHandler.getInstance();
 		input.readInput(bounds, scale);
 		if (listener == null) {
@@ -705,7 +705,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void postUpdate(float dt) {
-		//System.out.println("in post update");
+		////System.out.println("in post update");
 		// Add any objects created by actions
 		while (!addQueue.isEmpty()) {
 			addObject(addQueue.poll());
@@ -742,7 +742,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param delta The difference from the last draw call
 	 */
 	public void draw(float delta) {
-		//System.out.println("in draw");
+		////System.out.println("in draw");
 		canvas.clear();
 		
 		canvas.begin();
@@ -936,7 +936,7 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 0; i < en.length; i++) {
 			controls[i] = new AIController(i,avatar,en,pathList[i]);
 		}
-		System.out.println("The size of the enemies pool list is " + enemies.size());
+		//System.out.println("The size of the enemies pool list is " + enemies.size());
 
 
 		/** Adding edible walls */
@@ -979,7 +979,7 @@ public class GameController implements ContactListener, Screen {
 			addObject(veg[i]);
 			addWall(veg[i]);
 		}
-		//System.out.println(ew.getType());
+		////System.out.println(ew.getType());
 
 		/** Adding inedible walls */
 		Wall iw1 = new Wall(screenToMaze(2), screenToMaze(2), dwidth, dheight, false);
@@ -1022,8 +1022,8 @@ public class GameController implements ContactListener, Screen {
 		addObject(avatar);
 
 
-		System.out.println("head of objects: " + objects.get(0));
-		System.out.println("tail of objects: " + objects.get(objects.size() - 1));
+		//System.out.println("head of objects: " + objects.get(0));
+		//System.out.println("tail of objects: " + objects.get(objects.size() - 1));
 	}
 
 //	/** Music */
@@ -1046,7 +1046,7 @@ public class GameController implements ContactListener, Screen {
 		// Process actions in object model
 		int direction = avatar.getDirection();
 		int idx = objects.size()-1;
-		System.out.println("in update, tail is " + objects.get(idx));
+		////System.out.println("in update, tail is " + objects.get(idx));
 		if (InputHandler.getInstance().didTransform()) {
 			if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
 				avatar = avatar.transformToDoll();
@@ -1143,12 +1143,17 @@ public class GameController implements ContactListener, Screen {
 		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
 		avatar.setUpDown(InputHandler.getInstance().getVertical());
 
-		if (collidedWith!= null){
-			System.out.println("hi");
-			System.out.println("direction " + avatar.getDirection());
-			System.out.println(isInFrontOfAvatar(collidedWith));
-			if (isInFrontOfAvatar(collidedWith)){
-				handleCollision(avatar, collidedWith);
+		//System.out.println(collidedWith.size());
+		if (collidedWith.size() != 0){
+			//System.out.println("hi");
+			//System.out.println("direction " + avatar.getDirection());
+			//System.out.println(isInFrontOfAvatar(collidedWith));
+			for(GameObject c : collidedWith){
+				//System.out.println(isInFrontOfAvatar(c));
+				if (isInFrontOfAvatar(c)) {
+					handleCollision(avatar, c);
+					break;
+				}
 			}
 		}
 
@@ -1157,7 +1162,7 @@ public class GameController implements ContactListener, Screen {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				GameObject cotton = getCotton();
 				if (cotton != null) {
-					System.out.println("fffuccccccccc");
+					//System.out.println("fffuccccccccc");
 					cotton.deactivatePhysics(world);
 					objects.remove(cotton);
 					cottonFlower.remove(cotton);
@@ -1176,21 +1181,23 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
+				//System.out.println("sxdg " + directlyInFront);
 				if (directlyInFront != null) {
 					if (isInFrontOfAvatar(directlyInFront)) {
 						if (directlyInFront.getType() == EDIBLEWALL) {
-							System.out.println("asdfA");
+							//System.out.println("asdfA");
 							directlyInFront.deactivatePhysics(world);
 							objects.remove(directlyInFront);
 							walls.remove(directlyInFront);
-							collidedWith = null;
+							collidedWith.remove(directlyInFront);
 							directlyInFront = null;
 						}
 					}
 					else{
 						directlyInFront = null;
-						collidedWith = null;
+						//collidedWith = new PooledList<GameObject>();
 					}
+					System.out.println("collidedwith length " + collidedWith.size());
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
@@ -1230,7 +1237,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param contact The two bodies that collided
 	 */
 	public void beginContact(Contact contact) {
-		//System.out.println("in begin contact");
+		////System.out.println("in begin contact");
 		Fixture fix1 = contact.getFixtureA();
 		Fixture fix2 = contact.getFixtureB();
 
@@ -1246,15 +1253,15 @@ public class GameController implements ContactListener, Screen {
 			GameObject bd2 = (GameObject)body2.getUserData();
 
 			if (bd1.getType() == DUGGI || bd2.getType() == DUGGI) {
-				//System.out.println("dfghs'");
-				//System.out.println(bd1.toString());
-				//System.out.println(bd2.toString());
-				//System.out.println(bd1.getType() == EDIBLEWALL);
+				////System.out.println("dfghs'");
+				////System.out.println(bd1.toString());
+				////System.out.println(bd2.toString());
+				////System.out.println(bd1.getType() == EDIBLEWALL);
 			}
 
 			// Check for win condition
 			handleCollision(bd1, bd2);
-			System.out.println(collidedWith);
+			//System.out.println(collidedWith);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1264,44 +1271,53 @@ public class GameController implements ContactListener, Screen {
 	public void handleCollision(GameObject bd1, GameObject bd2){
 		boolean charging = false;
 		if (bd1.getType() == DUGGI){
+			//System.out.println("f");
 			if (bd2.getType() == GOAL)
 				setComplete(true);
 			else if (bd2.getType() == ENEMY){
 				if (((Dinosaur)bd1).getType() == Dinosaur.CARNIVORE_FORM)
 					charging = ((Carnivore) bd1).getCharging();
 				if (charging) {
-					System.out.println("Collided mid charge!");
+					//System.out.println("Collided mid charge!");
 				} else {
 					setFailure(true);
 				}
 			}
-			else {
+			else if (bd2.getType() != WALL){
+				if (!didExist(bd2, collidedWith))
+					collidedWith.add(bd2);
 				if (isInFrontOfAvatar(bd2))
 					directlyInFront = bd2;
 			}
-			collidedWith = bd2;
 		}
 		else if (bd2.getType() == DUGGI){
+			//System.out.println("kill me");
 			if (bd1.getType() == GOAL)
 				setComplete(true);
 			else if (bd1.getType() == ENEMY) {
 				if (((Dinosaur)bd2).getType() == Dinosaur.CARNIVORE_FORM)
 					charging = ((Carnivore) bd2).getCharging();
 				if (charging) {
-					System.out.println("Collided mid charge!");
+					//System.out.println("Collided mid charge!");
 				} else {
 					setFailure(true);
 				}
 			}
-			else {
+			else if (bd1.getType() != WALL){
+				if (!didExist(bd1, collidedWith))
+					collidedWith.add(bd1);
 				if (isInFrontOfAvatar(bd1))
 					directlyInFront = bd1;
 			}
-			collidedWith = bd1;
 		}
-		if (collidedWith.getType() == COTTON){
-			System.out.println("=============================================");
+	}
+
+	public boolean didExist(GameObject bd, PooledList<GameObject>list){
+		for(GameObject l : list){
+			System.out.println("in did exist, " + (bd == l));
+			if (bd == l) return true;
 		}
+		return false;
 	}
 
 	/**
@@ -1311,14 +1327,14 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean isInFrontOfAvatar(GameObject bd){
 		int direction = avatar.getDirection();
-		if (isAlignedHorizontally(avatar, bd, 0.65)){
+		if (isAlignedHorizontally(avatar, bd, 0.7)){
 			if (direction == Dinosaur.LEFT)
 				return bd.getX() <= avatar.getX();
 			else if (direction == Dinosaur.RIGHT)
 				return bd.getX() >= avatar.getX();
 			else return false;
 		}
-		else if (isAlignedVertically(avatar, bd, 0.5)){
+		else if (isAlignedVertically(avatar, bd, 0.7)){
 			if (direction == Dinosaur.UP) {
 				return bd.getY() >= avatar.getY();
 			}
@@ -1337,7 +1353,7 @@ public class GameController implements ContactListener, Screen {
 	 * @return true if they are aligned horizontally
 	 */
 	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){
-		System.out.println(bd1.getY() - bd2.getY());
+		//System.out.println(bd1.getY() - bd2.getY());
 		return (Math.abs(bd1.getY() - bd2.getY()) <= offset);
 	}
 
@@ -1349,7 +1365,7 @@ public class GameController implements ContactListener, Screen {
 	 * @return true if they are aligned horizontally
 	 */
 	public boolean isAlignedVertically(GameObject bd1, GameObject bd2, double offset){
-		System.out.println(bd1.getX() - bd2.getX());
+		//System.out.println(bd1.getX() - bd2.getX());
 		return (Math.abs(bd1.getX() - bd2.getX()) <= offset);
 	}
 
@@ -1372,7 +1388,7 @@ public class GameController implements ContactListener, Screen {
 	 * double jumping.
 	 */
 	public void endContact(Contact contact) {
-		//System.out.println("in end contact");
+		////System.out.println("in end contact");
 		Fixture fix1 = contact.getFixtureA();
 		Fixture fix2 = contact.getFixtureB();
 
@@ -1385,25 +1401,32 @@ public class GameController implements ContactListener, Screen {
 		Object bd1 = body1.getUserData();
 		Object bd2 = body2.getUserData();
 
-		if (bd1 == avatar || bd2 == avatar) {
-			collidedWith = null;
+		if (bd1 == avatar) {
+			System.out.println("dsfhjskgfd");
+			collidedWith.remove(bd2);
 			directlyInFront = null;
+		}
+		else if (bd2 == avatar) {
+			System.out.println("dsfhjskgfd");
+			collidedWith.remove(bd1);
+			directlyInFront = null;
+
 		}
 	}
 /*
 	public boolean objectTooFarX(Obstacle object){
-		//System.out.println("in objectTooFarX, dx,width");
-		//System.out.println(Math.abs(object.getX() - avatar.getX()));
-		//System.out.println(avatar.getWidth());
-		//System.out.println(avatar.getHeight());
+		////System.out.println("in objectTooFarX, dx,width");
+		////System.out.println(Math.abs(object.getX() - avatar.getX()));
+		////System.out.println(avatar.getWidth());
+		////System.out.println(avatar.getHeight());
 		return (Math.abs(object.getX() - avatar.getX()) >= avatar.getWidth()/3);
 	}
 	public boolean objectTooFarY(Obstacle object){
-		//System.out.println("in objectTooFar, dy, height");
-		//System.out.println(Math.abs(object.getX() - avatar.getX()));
-		//System.out.println(Math.abs(object.getY() - avatar.getY()));
-		//System.out.println(avatar.getWidth());
-		//System.out.println(avatar.getHeight());
+		////System.out.println("in objectTooFar, dy, height");
+		////System.out.println(Math.abs(object.getX() - avatar.getX()));
+		////System.out.println(Math.abs(object.getY() - avatar.getY()));
+		////System.out.println(avatar.getWidth());
+		////System.out.println(avatar.getHeight());
 		return (Math.abs(object.getX() - avatar.getX()) >= avatar.getWidth()/3);
 	}
 */
