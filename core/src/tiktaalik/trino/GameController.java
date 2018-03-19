@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -71,6 +72,11 @@ public class GameController implements ContactListener, Screen {
 	private static String DOLL_BG_FILE = "trino/doll_bg.mp3";
 	private static String HERBIVORE_BG_FILE = "trino/herbivore_bg.mp3";
 	private static String CARNIVORE_BG_FILE = "trino/carnivore_bg.mp3";
+	private static String POP_1_FILE = "trino/pop1.mp3";
+	private static String POP_2_FILE = "trino/pop2.mp3";
+	private static String POP_3_FILE = "trino/pop3.mp3";
+	private static String POP_4_FILE = "trino/pop4.mp3";
+	private static String POP_5_FILE = "trino/pop5.mp3";
 
 	/** The texture file for general assets */
 	private static String EARTH_FILE = "shared/earthtile.png";
@@ -248,6 +254,8 @@ public class GameController implements ContactListener, Screen {
 	private Music bgHerb;
 	private Music bgCarn;
 
+	private Sound cottonPickUp;
+	private Sound eatWall;
 
 	/** Mark set to handle more sophisticated collision callbacks */
 	private ObjectSet<Fixture> sensorFixtures;
@@ -581,6 +589,15 @@ public class GameController implements ContactListener, Screen {
 		scale  = null;
 		world  = null;
 		canvas = null;
+
+		// dispose music and sound assets
+		bgMusic.dispose();
+		bgDoll.dispose();
+		bgHerb.dispose();
+		bgCarn.dispose();
+
+		cottonPickUp.dispose();
+		eatWall.dispose();
 	}
 
 	/**
@@ -659,6 +676,7 @@ public class GameController implements ContactListener, Screen {
 		world.setContactListener(this);
 		setComplete(false);
 		setFailure(false);
+
 		populateLevel();
 	}
 	
@@ -1039,13 +1057,29 @@ public class GameController implements ContactListener, Screen {
 		//System.out.println("head of objects: " + objects.get(0));
 		//System.out.println("tail of objects: " + objects.get(objects.size() - 1));
 
-			/** Music */
-		bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
-		bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
-		bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
+		/** Music */
+
+		if (bgMusic == null){
+			bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
+			bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
+			bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
+
+			// set sound effects
+			cottonPickUp = Gdx.audio.newSound(Gdx.files.internal(POP_1_FILE));
+			eatWall = Gdx.audio.newSound(Gdx.files.internal(POP_2_FILE));
+
+		} else {
+			// Pause all music
+			bgMusic.pause();
+			bgDoll.pause();
+			bgHerb.pause();
+			bgCarn.pause();
+		}
+
 		bgMusic = bgDoll;
 		bgMusic.setLooping(true);
 		bgMusic.setVolume(0.10f);
+		bgMusic.setPosition(0);
 		bgMusic.play();
 
 	}
@@ -1198,6 +1232,9 @@ public class GameController implements ContactListener, Screen {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				GameObject cotton = getCotton();
 				if (cotton != null) {
+					// Play sound
+					cottonPickUp.play(1.0f);
+
 					//System.out.println("fffuccccccccc");
 					cotton.deactivatePhysics(world);
 					objects.remove(cotton);
@@ -1221,6 +1258,9 @@ public class GameController implements ContactListener, Screen {
 				if (directlyInFront != null) {
 					if (isInFrontOfAvatar(directlyInFront)) {
 						if (directlyInFront.getType() == EDIBLEWALL) {
+							// Play sound
+							eatWall.play(1.0f);
+
 							//System.out.println("asdfA");
 							directlyInFront.deactivatePhysics(world);
 							objects.remove(directlyInFront);
