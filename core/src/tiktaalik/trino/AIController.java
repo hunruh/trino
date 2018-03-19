@@ -207,11 +207,14 @@ public class AIController{
 
         if (path[pathStep].cpy().sub(enemy.getPosition()).len() < 0.2f){
             pathStep = (pathStep + 1) % path.length;
+            enemySpeed = 0.025f;
         } else if (path[(pathStep + 1) % path.length].cpy().sub(target.getPosition()).len() < 0.2f ){
             pathStep = (pathStep + 1) % path.length;
+            enemySpeed = 0.05f;
 
         } else if (path[(pathStep + 2) % path.length].cpy().sub(target.getPosition()).len() < 0.2f) {
             pathStep = (pathStep + 2) % path.length;
+            enemySpeed = 0.05f;
 
         }
 
