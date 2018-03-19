@@ -78,7 +78,7 @@ public abstract class Dinosaur extends GameObject {
         setName("duggi");
 
         shape = new CircleShape();
-        shape.setRadius(radius);
+        shape.setRadius(radius * 4/5);
 
         // Gameplay attributes
         faceRight = true;

@@ -1141,7 +1141,6 @@ public class GameController implements ContactListener, Screen {
 
 			if ((bd1.getType() == DUGGI && bd2.getType() == EDIBLEWALL) ||
 					(bd1.getType() == EDIBLEWALL && bd2.getType() == DUGGI)) {
-				System.out.println("colllided");
 				if (bd1.getType() == EDIBLEWALL)
 					collidedWith = walls.indexOf((Wall)bd1);
 				else
@@ -1176,7 +1175,6 @@ public class GameController implements ContactListener, Screen {
 		Object bd2 = body2.getUserData();
 
 		if (bd1 == avatar || bd2 == avatar) {
-			System.out.println("Resetting");
 			collidedType = -1;
 			collidedWith = -1;
 		}
