@@ -141,6 +141,8 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion cottonTexture;
 	private TextureRegion pathTexture;
 
+	private HUDController hud;
+
 	//index of the object Duggi collided with
 	private PooledList<GameObject> collidedWith = new PooledList<GameObject>();
 	private GameObject directlyInFront;
@@ -272,6 +274,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param manager Reference to global asset manager.
 	 */
 	public void preLoadContent(AssetManager manager) {
+		hud.preLoadContent(manager);
 		if (worldAssetState != AssetState.EMPTY) {
 			return;
 		}
@@ -323,7 +326,6 @@ public class GameController implements ContactListener, Screen {
 		assets.add(COTTON_FLOWER_FILE);
 		manager.load(ENEMY_FILE, Texture.class);
 		assets.add(ENEMY_FILE);
-
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 	}
@@ -339,6 +341,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param manager Reference to global asset manager.
 	 */
 	public void loadContent(AssetManager manager) {
+		hud.loadContent(manager);
 		if (worldAssetState != AssetState.LOADING) {
 			return;
 		}
@@ -431,6 +434,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param manager Reference to global asset manager.
 	 */
 	public void unloadContent(AssetManager manager) {
+		hud.unloadContent(manager);
     	for(String s : assets) {
     		if (manager.isLoaded(s)) {
     			manager.unload(s);
@@ -517,6 +521,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param canvas the canvas associated with this controller
 	 */
 	public void setCanvas(Canvas canvas) {
+		hud.setCanvas(canvas);
 		this.canvas = canvas;
 		this.scale.x = canvas.getWidth()/bounds.getWidth();
 		this.scale.y = canvas.getHeight()/bounds.getHeight();
@@ -572,6 +577,7 @@ public class GameController implements ContactListener, Screen {
 		failed = false;
 		active = false;
 		countdown = -1;
+		hud = new HUDController();
 	}
 	
 	/**
@@ -827,6 +833,7 @@ public class GameController implements ContactListener, Screen {
 				postUpdate(delta);
 			}
 			draw(delta);
+			hud.draw();
 		}
 	}
 
@@ -1268,11 +1275,10 @@ public class GameController implements ContactListener, Screen {
 				if (cotton != null) {
 					// Play sound
 					cottonPickUp.play(1.0f);
-
-					//System.out.println("fffuccccccccc");
 					cotton.deactivatePhysics(world);
 					objects.remove(cotton);
 					cottonFlower.remove(cotton);
+					avatar.incrementResources();
 				}
 				if (!hasClone) {
 //					float dwidth = dollTexture.getRegionWidth() / scale.x;
@@ -1301,6 +1307,7 @@ public class GameController implements ContactListener, Screen {
 							walls.remove(directlyInFront);
 							collidedWith.remove(directlyInFront);
 							directlyInFront = null;
+							avatar.incrementResources();
 						}
 					}
 					else{
@@ -1335,6 +1342,7 @@ public class GameController implements ContactListener, Screen {
 
 		// If we use sound, we must remember this.
 		SoundController.getInstance().update();
+		hud.update(avatar.getResources(), avatar.getForm());
 	}
 
 	/**
