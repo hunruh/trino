@@ -1231,7 +1231,7 @@ public class GameController implements ContactListener, Screen {
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				GameObject tmp = objectInFrontOfAvatar();
-				System.out.println("tmp: " + tmp);
+				//System.out.println("tmp: " + tmp);
 				if (tmp != null && tmp.getType() == EDIBLEWALL && isOnGrid(0.5,0.5)){
 					tmp.deactivatePhysics(world);
 					objects.remove(tmp);
@@ -1437,24 +1437,19 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	public GameObject objectInFrontOfAvatar(){
-		for (int i = 0; i < GRID_MAX_X; i++){
-			for (int j = 0; j < GRID_MAX_Y; j++){
-				System.out.println((i+1) + ", " + (j+1) + ": " + grid[i][j]);
-			}
-		}
 		int direction = avatar.getDirection();
-		System.out.println("avatar: " + avatarGrid());
+		//System.out.println("avatar: " + avatarGrid());
 		if (direction == Dinosaur.UP){
 			if ((int)avatarGrid().y == GRID_MAX_Y) return null;
 			else{
-				System.out.println("up: " + grid[(int)avatarGrid().x-1][(int)avatarGrid().y]);
+				//System.out.println("up: " + grid[(int)avatarGrid().x-1][(int)avatarGrid().y]);
 				return grid[(int)avatarGrid().x-1][(int)avatarGrid().y];
 			}
 		}
 		else if (direction == Dinosaur.DOWN){
 			if ((int)avatarGrid().y == 1) return null;
 			else{
-				System.out.println("down: " + grid[(int)avatarGrid().x-1][(int)avatarGrid().y-2]);
+				//System.out.println("down: " + grid[(int)avatarGrid().x-1][(int)avatarGrid().y-2]);
 				System.out.println(grid[7][6]);
 				return grid[(int)avatarGrid().x-1][(int)avatarGrid().y-2];
 			}
@@ -1462,14 +1457,14 @@ public class GameController implements ContactListener, Screen {
 		else if (direction == Dinosaur.LEFT){
 			if ((int)avatarGrid().x == 1) return null;
 			else{
-				System.out.println("left: " + grid[(int)avatarGrid().x-2][(int)avatarGrid().y-1]);
+				//System.out.println("left: " + grid[(int)avatarGrid().x-2][(int)avatarGrid().y-1]);
 				return grid[(int)avatarGrid().x-2][(int)avatarGrid().y-1];
 			}
 		}
 		else if (direction == Dinosaur.RIGHT){
 			if ((int)avatarGrid().x == GRID_MAX_X) return null;
 			else{
-				System.out.println("right: " + grid[(int)avatarGrid().x][(int)avatarGrid().y-1]);
+				//System.out.println("right: " + grid[(int)avatarGrid().x][(int)avatarGrid().y-1]);
 				return grid[(int)avatarGrid().x][(int)avatarGrid().y-1];
 			}
 		}
