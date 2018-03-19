@@ -1419,7 +1419,7 @@ public class GameController implements ContactListener, Screen {
 					setFailure(true);
 				}
 			}
-			else if (bd2.getType() == WALL){
+			else if (bd1.getType() == WALL){
 				// play sound effect
 				collideWall.stop();
 				collideWall.play(1.0f);
