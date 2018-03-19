@@ -77,6 +77,7 @@ public class GameController implements ContactListener, Screen {
 	private static String POP_3_FILE = "trino/pop3.mp3";
 	private static String POP_4_FILE = "trino/pop4.mp3";
 	private static String POP_5_FILE = "trino/pop5.mp3";
+	private static String POOF_FILE = "trino/poof.mp3";
 
 	/** The texture file for general assets */
 	private static String EARTH_FILE = "shared/earthtile.png";
@@ -257,6 +258,7 @@ public class GameController implements ContactListener, Screen {
 	private Sound cottonPickUp;
 	private Sound eatWall;
 	private Sound collideWall;
+	private Sound transformSound;
 
 	/** Mark set to handle more sophisticated collision callbacks */
 	private ObjectSet<Fixture> sensorFixtures;
@@ -600,6 +602,7 @@ public class GameController implements ContactListener, Screen {
 		cottonPickUp.dispose();
 		eatWall.dispose();
 		collideWall.dispose();
+		transformSound.dispose();
 	}
 
 	/**
@@ -1070,6 +1073,7 @@ public class GameController implements ContactListener, Screen {
 			cottonPickUp = Gdx.audio.newSound(Gdx.files.internal(POP_1_FILE));
 			eatWall = Gdx.audio.newSound(Gdx.files.internal(POP_2_FILE));
 			collideWall = Gdx.audio.newSound(Gdx.files.internal(POP_5_FILE));
+			transformSound = Gdx.audio.newSound(Gdx.files.internal(POOF_FILE));
 
 		} else {
 			// Pause all music
@@ -1147,6 +1151,9 @@ public class GameController implements ContactListener, Screen {
 
 				// Change the music
 				changeMusic(bgDoll);
+				// play sound effect
+				transformSound.pause();
+				transformSound.play(1.0f);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(dollTextureBack);
@@ -1168,6 +1175,9 @@ public class GameController implements ContactListener, Screen {
 
 				// Change the music
 				changeMusic(bgHerb);
+				// play sound effect
+				transformSound.pause();
+				transformSound.play(1.0f);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(herbivoreTextureBack);
@@ -1188,6 +1198,9 @@ public class GameController implements ContactListener, Screen {
 
 				// Change the music
 				changeMusic(bgCarn);
+				// play sound effect
+				transformSound.pause();
+				transformSound.play(1.0f);
 
 				if (direction == Dinosaur.UP) {
 					avatar.setTexture(carnivoreTextureBack);
