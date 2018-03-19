@@ -1394,9 +1394,11 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (bd2.getType() == WALL){
-				// play sound effect
-				collideWall.stop();
-				collideWall.play(1.0f);
+				if (isInFrontOfAvatar(bd2)){
+					// play sound effect
+					collideWall.pause();
+					collideWall.play(1.0f);
+				}
 			}
 			else if (bd2.getType() != WALL){
 				if (!didExist(bd2, collidedWith))
@@ -1420,9 +1422,11 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (bd1.getType() == WALL){
-				// play sound effect
-				collideWall.stop();
-				collideWall.play(1.0f);
+				if (isInFrontOfAvatar(bd1)) {
+					// play sound effect
+					collideWall.pause();
+					collideWall.play(1.0f);
+				}
 			}
 			else if (bd1.getType() != WALL){
 				if (!didExist(bd1, collidedWith))
