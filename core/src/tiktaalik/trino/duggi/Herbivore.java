@@ -8,4 +8,8 @@ public class Herbivore extends Dinosaur {
     public int getForm() {
         return HERBIVORE_FORM;
     }
+
+    public void performAction() {
+
+    }
 }

@@ -496,7 +496,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	/** 
 	 * Called when a key is typed (UNSUPPORTED)
 	 *
-	 * @param keycode the key typed
+	 * @param character the key typed
 	 * @return whether to hand the event to other listeners. 
 	 */
 	public boolean keyTyped(char character) { 

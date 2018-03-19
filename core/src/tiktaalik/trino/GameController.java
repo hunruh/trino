@@ -1041,6 +1041,19 @@ public class GameController implements ContactListener, Screen {
 					}
 				}
 			}
+			else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+				if (!((Carnivore) avatar).inChargeCycle())
+					((Carnivore) avatar).loadCharge();
+			}
+		}
+
+		if (InputHandler.getInstance().didActionRelease()) {
+			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+				if (((Carnivore) avatar).chargeReady())
+					((Carnivore) avatar).charge();
+				else
+					((Carnivore) avatar).stopCharge();
+			}
 		}
 
 		avatar.applyForce();
@@ -1090,7 +1103,6 @@ public class GameController implements ContactListener, Screen {
 			// Check for win condition
 			handleCollision(bd1, bd2);
 			System.out.println(collidedWith);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1098,19 +1110,34 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	public void handleCollision(GameObject bd1, GameObject bd2){
+		boolean charging = false;
 		if (bd1.getType() == DUGGI){
 			if (bd2.getType() == GOAL)
 				setComplete(true);
-			else if (bd2.getType() == ENEMY)
-				setFailure(true);
+			else if (bd2.getType() == ENEMY){
+				if (((Dinosaur)bd1).getType() == Dinosaur.CARNIVORE_FORM)
+					charging = ((Carnivore) bd1).getCharging();
+				if (charging) {
+					System.out.println("Collided mid charge!");
+				} else {
+					setFailure(true);
+				}
+			}
 			else
 				collidedWith = bd2;
 		}
 		else if (bd2.getType() == DUGGI){
-			if (bd2.getType() == GOAL)
+			if (bd1.getType() == GOAL)
 				setComplete(true);
-			else if (bd2.getType() == ENEMY)
-				setFailure(true);
+			else if (bd1.getType() == ENEMY) {
+				if (((Dinosaur)bd2).getType() == Dinosaur.CARNIVORE_FORM)
+					charging = ((Carnivore) bd2).getCharging();
+				if (charging) {
+					System.out.println("Collided mid charge!");
+				} else {
+					setFailure(true);
+				}
+			}
 			else
 				collidedWith = bd1;
 		}
@@ -1147,7 +1174,6 @@ public class GameController implements ContactListener, Screen {
 		Object bd2 = body2.getUserData();
 
 		if (bd1 == avatar || bd2 == avatar) {
-			System.out.println("Resetting");
 			collidedType = -1;
 			collidedWith = null;
 		}

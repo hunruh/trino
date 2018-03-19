@@ -38,7 +38,7 @@ public class Enemy extends GameObject {
         setName("enemy");
 
         shape = new CircleShape();
-        shape.setRadius(radius);
+        shape.setRadius(radius * 4/5);
 
         // Gameplay attributes
         faceRight = true;

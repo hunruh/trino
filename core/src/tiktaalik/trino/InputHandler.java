@@ -50,12 +50,6 @@ public class InputHandler {
 	/** Whether the reset button was pressed. */
 	private boolean resetPressed;
 	private boolean resetPrevious;
-	/** Whether the button to advanced worlds was pressed. */
-	private boolean nextPressed;
-	private boolean nextPrevious;
-	/** Whether the button to step back worlds was pressed. */
-	private boolean prevPressed;
-	private boolean prevPrevious;
 	/** Whether the primary action button was pressed. */
 	private boolean primePressed;
 	private boolean primePrevious;
@@ -77,7 +71,8 @@ public class InputHandler {
 	private boolean herbiFormPrevious;
 	private boolean carniFormPressed;
 	private boolean carniFormPrevious;
-	private boolean eatPressed;
+	private boolean actionPressed;
+	private boolean actionPrevious;
 	
 	/** How much did we move horizontally? */
 	private float horizontal;
@@ -174,24 +169,6 @@ public class InputHandler {
 	public boolean didReset() {
 		return resetPressed && !resetPrevious;
 	}
-
-	/**
-	 * Returns true if the player wants to go to the next level.
-	 *
-	 * @return true if the player wants to go to the next level.
-	 */
-	/*public boolean didAdvance() {
-		return nextPressed && !nextPrevious;
-	}*/
-	
-	/**
-	 * Returns true if the player wants to go to the previous level.
-	 *
-	 * @return true if the player wants to go to the previous level.
-	 */
-	/*public boolean didRetreat() {
-		return prevPressed && !prevPrevious;
-	}*/
 	
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.
@@ -227,7 +204,13 @@ public class InputHandler {
 		return didTransformDoll() || didTransformHerbi() || didTransformCarni();
 	}
 
-	public boolean didAction(){ return eatPressed;}
+	public boolean didAction() {
+		return actionPressed;
+	}
+
+	public boolean didActionRelease() {
+		return !actionPressed && actionPrevious;
+	}
 	
 	/**
 	 * Creates a new input controller
@@ -260,59 +243,11 @@ public class InputHandler {
 		resetPrevious  = resetPressed;
 		debugPrevious  = debugPressed;
 		exitPrevious = exitPressed;
-		nextPrevious = nextPressed;
-		prevPrevious = prevPressed;
-		
-		// Check to see if a GamePad is connected
-		/*
-		if (xbox.isConnected()) {
-			readGamepad(bounds, scale);
-			readKeyboard(bounds, scale, true); // Read as a back-up
-		} else {*/
-			readKeyboard(bounds, scale, false);/*
-		}
-		*/
+		actionPrevious = actionPressed;
+
+		readKeyboard(bounds, scale, false);
 	}
 
-	/**
-	 * Reads input from an X-Box controller connected to this computer.
-	 *
-	 * The method provides both the input bounds and the drawing scale.  It needs
-	 * the drawing scale to convert screen coordinates to world coordinates.  The
-	 * bounds are for the crosshair.  They cannot go outside of this zone.
-	 *
-	 * @param bounds The input bounds for the crosshair.  
-	 * @param scale  The drawing scale
-	 */
-	/*
-	private void readGamepad(Rectangle bounds, Vector2 scale) {
-		resetPressed = xbox.getStart();
-		exitPressed  = xbox.getBack();
-		nextPressed  = xbox.getRB();
-		prevPressed  = xbox.getLB();
-		primePressed = xbox.getA();
-		debugPressed  = xbox.getY();
-
-		// Increase animation frame, but only if trying to move
-		horizontal = xbox.getLeftX();
-		vertical   = xbox.getLeftY();
-		secondPressed = xbox.getRightTrigger() > 0.6f;
-		
-		// Move the crosshairs with the right stick.
-		tertiaryPressed = xbox.getA();
-		crosscache.set(xbox.getLeftX(), xbox.getLeftY());
-		if (crosscache.len2() > GP_THRESHOLD) {
-			momentum += GP_ACCELERATE;
-			momentum = Math.min(momentum, GP_MAX_SPEED);
-			crosscache.scl(momentum);
-			crosscache.scl(1/scale.x,1/scale.y);
-			crosshair.add(crosscache);
-		} else {
-			momentum = 0;
-		}
-		clampPosition(bounds);
-	}
-*/
 	/**
 	 * Reads input from the keyboard.
 	 *
@@ -323,26 +258,13 @@ public class InputHandler {
 	 * @param secondary true if the keyboard should give priority to a gamepad
 	 */
 	private void readKeyboard(Rectangle bounds, Vector2 scale, boolean secondary) {
-		// Give priority to gamepad results
-		/*
-		resetPressed = (secondary && resetPressed) || (Gdx.input.isKeyPressed(Input.Keys.R));
-		debugPressed = (secondary && debugPressed) || (Gdx.input.isKeyPressed(Input.Keys.D));
-		primePressed = (secondary && primePressed) || (Gdx.input.isKeyPressed(Input.Keys.UP));
-		secondPressed = (secondary && secondPressed) || (Gdx.input.isKeyPressed(Input.Keys.SPACE));
-		prevPressed = (secondary && prevPressed) || (Gdx.input.isKeyPressed(Input.Keys.P));
-		nextPressed = (secondary && nextPressed) || (Gdx.input.isKeyPressed(Input.Keys.N));
-		exitPressed  = (secondary && exitPressed) || (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
-		*/
-
 		resetPressed = Gdx.input.isKeyPressed(Input.Keys.R);
 		dollFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_1) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1);
 		herbiFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
 		carniFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_3) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3);
-		eatPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
+		actionPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
 		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
-		//prevPressed = (Gdx.input.isKeyPressed(Input.Keys.P));
-		//nextPressed = (Gdx.input.isKeyPressed(Input.Keys.N));
 
 		exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
 		// Directional controls
