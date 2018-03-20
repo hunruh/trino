@@ -30,6 +30,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.enemy.Enemy;
+import tiktaalik.trino.environment.Switch;
 import tiktaalik.trino.resources.Wall;
 import tiktaalik.trino.resources.CottonFlower;
 import tiktaalik.util.*;
@@ -106,6 +107,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
+	private static final String SWITCH_FILE = "trino/buttonRough.png";
 
 	private static final int COTTON = 0;
 	private static final int EDIBLEWALL = 1;
@@ -115,6 +117,7 @@ public class GameController implements ContactListener, Screen {
 	private static final int GOAL = 5;
 	private static final int DUGGI = 6;
 	private static final int CLONE = 7;
+	private static final int SWITCH = 8;
 
 	private static int GRIDSIZE = 80;
 	private static int GRID_MAX_X = 16;
@@ -153,6 +156,7 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion edibleWallTexture;
 	private TextureRegion cottonTexture;
 	private TextureRegion pathTexture;
+	private TextureRegion switchTexture;
 
 	private HUDController hud;
 
@@ -348,6 +352,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_FILE_BACK);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
+		manager.load(SWITCH_FILE, Texture.class);
+		assets.add(SWITCH_FILE);
 	}
 
 	/**
@@ -397,6 +403,8 @@ public class GameController implements ContactListener, Screen {
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
 		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
+		switchTexture = createTexture(manager, SWITCH_FILE, false);
+
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -654,8 +662,9 @@ public class GameController implements ContactListener, Screen {
 	protected void addObject(GameObject g) {
 		assert inBounds(g) : "Object is not in bounds";
 		objects.add(g);
-		if (g.getType()!= COTTON)
+		if (g.getType()!= COTTON && g.getType()!= SWITCH) {
 			g.activatePhysics(world);
+		}
 	}
 
 	public void addWall(Wall obj){
@@ -948,6 +957,17 @@ public class GameController implements ContactListener, Screen {
 			grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
 		}
 
+		dwidth = switchTexture.getRegionWidth() / scale.x;
+		dheight = switchTexture.getRegionHeight() / scale.y;
+		// Switch texture
+		Switch s = new Switch(16,6,screenToMaze(16),screenToMaze(6),dwidth,dheight);
+		s.setBodyType(BodyDef.BodyType.StaticBody);
+		s.setDrawScale(scale);
+		s.setTexture(switchTexture);
+		s.setType(SWITCH);
+		addObject(s);
+		grid[(int)s.getGridLocation().x-1][(int)s.getGridLocation().y-1] = s;
+
 		// Add level goal
 		dwidth = goalTile.getRegionWidth() / scale.x;
 		dheight = goalTile.getRegionHeight() / scale.y;
@@ -1088,10 +1108,12 @@ public class GameController implements ContactListener, Screen {
 			grid[(int)iw[i].getGridLocation().x-1][(int)iw[i].getGridLocation().y-1] = iw[i];
 		}
 
-
 		avatar.setTexture(dollTextureRight);
 		avatar.setDrawScale(scale);
 		addObject(avatar);
+
+
+
 
 
 		//System.out.println("head of objects: " + objects.get(0));
