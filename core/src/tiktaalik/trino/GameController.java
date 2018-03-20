@@ -259,6 +259,8 @@ public class GameController implements ContactListener, Screen {
 	private Vector2 cloneLocation;
 	private boolean removeClone = false;
 
+	private Vector2 switchLocation = new Vector2(16, 6);
+
 	// Variables for the enemy model
 	private Vector2 cachePosition1 = new Vector2(0,0);
 	private Vector2 cachePosition2 = new Vector2(0,0);
@@ -1330,26 +1332,27 @@ public class GameController implements ContactListener, Screen {
 					float dwidth = dollTextureFront.getRegionWidth() / scale.x;
 					float dheight = dollTextureFront.getRegionHeight() / scale.y;
 					removeClone = false;
+					GameObject goal = grid[(int)switchLocation.x-1][(int)switchLocation.y-1];
 					if (direction == Dinosaur.UP) {
-						if (location.y != GRID_MAX_Y && objectInFrontOfAvatar()== null){
+						if (location.y != GRID_MAX_Y && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal) ){
 							clone = new Doll(screenToMaze(location.x), screenToMaze(location.y+1), dwidth);
 							cloneLocation = new Vector2(location.x, location.y+1);
 						}
 					}
 					else if (direction == Dinosaur.DOWN) {
-						if (location.y != 1 && objectInFrontOfAvatar()== null){
+						if (location.y != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
 							clone = new Doll(screenToMaze(location.x), screenToMaze(location.y - 1), dwidth);
 							cloneLocation = new Vector2(location.x, location.y-1);
 						}
 					}
 					else if (direction == Dinosaur.LEFT) {
-						if (location.x != 1 && objectInFrontOfAvatar()== null){
+						if (location.x != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
 							clone = new Doll(screenToMaze(location.x - 1), screenToMaze(location.y), dwidth);
 							cloneLocation = new Vector2(location.x-1, location.y);
 						}
 					}
 					else if (direction == Dinosaur.RIGHT) {
-						if (location.x != GRID_MAX_X && objectInFrontOfAvatar()== null){
+						if (location.x != GRID_MAX_X && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
 							clone = new Doll(screenToMaze(location.x+1), screenToMaze(location.y), dwidth);
 							cloneLocation = new Vector2(location.x+1, location.y);
 						}
@@ -1456,7 +1459,7 @@ public class GameController implements ContactListener, Screen {
 		else
 			removeClone = false;
 		if (bd1.getType() == DUGGI){
-			//System.out.println("f");
+			System.out.println("f");
 			if (bd2.getType() == GOAL) {
 				if (canExit) {
 					setComplete(true);
@@ -1482,12 +1485,15 @@ public class GameController implements ContactListener, Screen {
 
 		}
 		else if (bd2.getType() == DUGGI){
-			////("kill me");
-			if (bd1.getType() == GOAL)
+			System.out.println("kill me");
+			System.out.println(bd1.getType());
+			if (bd1.getType() == GOAL) {
 				if (canExit) {
 					setComplete(true);
 				}
+			}
 			else if (bd1.getType() == ENEMY) {
+				System.out.println("pls");
 				if (((Dinosaur)bd2).getType() == Dinosaur.CARNIVORE_FORM)
 					charging = ((Carnivore) bd2).getCharging();
 				if (charging) {
