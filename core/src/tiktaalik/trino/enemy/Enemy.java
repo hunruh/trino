@@ -23,6 +23,12 @@ public class Enemy extends GameObject {
     private Vector2 velocity;
     private Vector2 tmp;
     private boolean isAlive;
+    private int direction;
+
+    public static final int LEFT = 0;
+    public static final int RIGHT = 1;
+    public static final int UP = 2;
+    public static final int DOWN = 3;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -75,6 +81,25 @@ public class Enemy extends GameObject {
     }
 
     public int getCounter() {return counter;}
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(float value) {
+        if (value == 0) {
+            direction = LEFT;
+        }
+        else if (value == 1) {
+            direction = RIGHT;
+        }
+        else if (value == 2) {
+            direction = UP;
+        }
+        else if (value == 3) {
+            direction = DOWN;
+        }
+    }
 
     /**
      * Returns left/right movement of this character.
