@@ -1373,9 +1373,6 @@ public class GameController implements ContactListener, Screen {
 					cottonFlower.remove(cotton);
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
-				} else if (cotton != null && cotton.getType() == SWITCH){
-					System.out.println("On top of button");
-					canExit = true;
 				}
 				else if  (clone == null && avatar.getResources() >= 1) {
 					Vector2 location = avatarGrid();
@@ -1484,28 +1481,6 @@ public class GameController implements ContactListener, Screen {
 			// Check for win condition
 			handleCollision(bd1, bd2);
 
-			if (bd1.getType() == DUGGI) {
-				if (bd2.getType() == GOAL) {
-					setComplete(true);
-				}
-				else {
-					if (!didExist(bd2, collidedWith))
-						collidedWith.add(bd2);
-					if (isInFrontOfAvatar(bd2))
-						directlyInFront = bd2;
-				}
-			} else if (bd2.getType() == DUGGI) {
-				if (bd1.getType() == GOAL) {
-					setComplete(true);
-				}
-				else {
-					if (!didExist(bd1, collidedWith))
-						collidedWith.add(bd1);
-					if (isInFrontOfAvatar(bd1))
-						directlyInFront = bd1;
-				}
-			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1550,12 +1525,7 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 		else if (bd2.getType() == DUGGI){
-			if (bd1.getType() == GOAL)
-				if (canExit) {
-					setComplete(true);
-				}
-			System.out.println("kill me");
-			System.out.println(bd1.getType());
+
 			if (bd1.getType() == GOAL) {
 				if (canExit) {
 					setComplete(true);
