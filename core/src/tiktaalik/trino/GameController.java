@@ -30,6 +30,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.enemy.Enemy;
+import tiktaalik.trino.environment.Switch;
 import tiktaalik.trino.resources.Wall;
 import tiktaalik.trino.resources.CottonFlower;
 import tiktaalik.util.*;
@@ -81,7 +82,8 @@ public class GameController implements ContactListener, Screen {
 
 	/** The texture file for general assets */
 	private static String EARTH_FILE = "shared/earthtile.png";
-	private static String GOAL_FILE = "shared/goaldoor.png";
+	private static String GOAL_FILE = "trino/openExitPlaceHolder.png";
+	private static String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
 	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
 	private static int FONT_SIZE = 64;
 
@@ -106,6 +108,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
+	private static final String SWITCH_FILE = "trino/buttonRough.png";
 
 	private static final int COTTON = 0;
 	private static final int EDIBLEWALL = 1;
@@ -115,6 +118,7 @@ public class GameController implements ContactListener, Screen {
 	private static final int GOAL = 5;
 	private static final int DUGGI = 6;
 	private static final int CLONE = 7;
+	private static final int SWITCH = 8;
 
 	private static int GRIDSIZE = 80;
 	private static int GRID_MAX_X = 16;
@@ -126,6 +130,7 @@ public class GameController implements ContactListener, Screen {
 	/** Texture assets for the general game */
 	private TextureRegion earthTile;
 	private TextureRegion goalTile;
+	private TextureRegion goalClosedTile;
 	private BitmapFont displayFont;
 
 	/** Texture assets for Duggi's three forms */
@@ -153,6 +158,7 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion edibleWallTexture;
 	private TextureRegion cottonTexture;
 	private TextureRegion pathTexture;
+	private TextureRegion switchTexture;
 
 	private HUDController hud;
 
@@ -240,6 +246,8 @@ public class GameController implements ContactListener, Screen {
 	private boolean complete;
 	/** Whether we have failed at this world (and need a reset) */
 	private boolean failed;
+	/** Whether Duggi can exit through the goalDoor */
+	private boolean canExit;
 	/** Countdown active for winning or losing */
 	private int countdown;
 
@@ -303,6 +311,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(EARTH_FILE);
 		manager.load(GOAL_FILE,Texture.class);
 		assets.add(GOAL_FILE);
+		manager.load(GOAL_CLOSED_FILE,Texture.class);
+		assets.add(GOAL_CLOSED_FILE);
 		
 		// Load the font
 		FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
@@ -352,6 +362,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_FILE_BACK);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
+		manager.load(SWITCH_FILE, Texture.class);
+		assets.add(SWITCH_FILE);
 	}
 
 	/**
@@ -373,6 +385,7 @@ public class GameController implements ContactListener, Screen {
 		// Allocate the tiles
 		earthTile = createTexture(manager,EARTH_FILE,true);
 		goalTile  = createTexture(manager,GOAL_FILE,true);
+		goalClosedTile =  createTexture(manager,GOAL_CLOSED_FILE, true);
 		
 		// Allocate the font
 		if (manager.isLoaded(FONT_FILE)) {
@@ -401,6 +414,8 @@ public class GameController implements ContactListener, Screen {
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
 		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
+		switchTexture = createTexture(manager, SWITCH_FILE, false);
+
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -568,6 +583,9 @@ public class GameController implements ContactListener, Screen {
 		setFailure(false);
 		world.setContactListener(this);
 		sensorFixtures = new ObjectSet<Fixture>();
+
+		// set canExit to false
+		canExit = false;
 	}
 
 	/**
@@ -658,8 +676,9 @@ public class GameController implements ContactListener, Screen {
 	protected void addObject(GameObject g) {
 		assert inBounds(g) : "Object is not in bounds";
 		objects.add(g);
-		if (g.getType()!= COTTON)
+		if (g.getType()!= COTTON && g.getType()!= SWITCH) {
 			g.activatePhysics(world);
+		}
 	}
 
 	public void addWall(Wall obj){
@@ -940,6 +959,17 @@ public class GameController implements ContactListener, Screen {
 			grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
 		}
 
+		dwidth = switchTexture.getRegionWidth() / scale.x;
+		dheight = switchTexture.getRegionHeight() / scale.y;
+		// Switch texture
+		Switch s = new Switch(16,6,screenToMaze(16),screenToMaze(6),dwidth,dheight);
+		s.setBodyType(BodyDef.BodyType.StaticBody);
+		s.setDrawScale(scale);
+		s.setTexture(switchTexture);
+		s.setType(SWITCH);
+		addObject(s);
+		grid[(int)s.getGridLocation().x-1][(int)s.getGridLocation().y-1] = s;
+
 		// Add level goal
 		dwidth = goalTile.getRegionWidth() / scale.x;
 		dheight = goalTile.getRegionHeight() / scale.y;
@@ -947,7 +977,7 @@ public class GameController implements ContactListener, Screen {
 		goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
 		goalDoor.setSensor(true);
 		goalDoor.setDrawScale(scale);
-		goalDoor.setTexture(goalTile);
+		goalDoor.setTexture(goalClosedTile);
 		goalDoor.setName("exit");
 		goalDoor.setType(GOAL);
 		addObject(goalDoor);
@@ -1074,12 +1104,10 @@ public class GameController implements ContactListener, Screen {
 			grid[(int)iw[i].getGridLocation().x-1][(int)iw[i].getGridLocation().y-1] = iw[i];
 		}
 
-
 		avatar.setTexture(dollTextureRight);
 		avatar.setDrawScale(scale);
 		addObject(avatar);
 		avatarIdx = objects.size()-1;
-
 
 		/** Music */
 
@@ -1288,10 +1316,20 @@ public class GameController implements ContactListener, Screen {
 				cloneLocation = null;
 				removeClone = false;
 		}
+
+		// Check if Duggi or Clone is on top of button
+		if (cloneLocation != null && cloneLocation.equals(new Vector2(16,6))){
+			canExit = true;
+			goalDoor.setTexture(goalTile);
+		} else {
+			canExit = false;
+			goalDoor.setTexture(goalClosedTile);
+		}
+
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				GameObject cotton= grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
-				if (cotton != null) {
+				if (cotton != null && cotton.getType() == COTTON) {
 					// Play sound
 					cottonPickUp.play(1.0f);
 					cotton.deactivatePhysics(world);
@@ -1300,6 +1338,9 @@ public class GameController implements ContactListener, Screen {
 					cottonFlower.remove(cotton);
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
+				} else if (cotton != null && cotton.getType() == SWITCH){
+					System.out.println("On top of button");
+					canExit = true;
 				}
 				else if  (clone == null && avatar.getResources() >= 1) {
 					Vector2 location = avatarGrid();
@@ -1433,8 +1474,13 @@ public class GameController implements ContactListener, Screen {
 		else
 			removeClone = false;
 		if (bd1.getType() == DUGGI){
-			if (bd2.getType() == GOAL)
-				setComplete(true);
+			//System.out.println("f");
+			if (bd2.getType() == GOAL) {
+				if (canExit) {
+					setComplete(true);
+				}
+			}
+
 			else if (bd2.getType() == ENEMY){
 				if (((Dinosaur)bd1).getType() == Dinosaur.CARNIVORE_FORM)
 					charging = ((Carnivore) bd1).getCharging();
@@ -1451,11 +1497,14 @@ public class GameController implements ContactListener, Screen {
 					collideWall.play(1.0f);
 				}
 			}
+
 		}
 		else if (bd2.getType() == DUGGI){
 			////("kill me");
 			if (bd1.getType() == GOAL)
-				setComplete(true);
+				if (canExit) {
+					setComplete(true);
+				}
 			else if (bd1.getType() == ENEMY) {
 				if (((Dinosaur)bd2).getType() == Dinosaur.CARNIVORE_FORM)
 					charging = ((Carnivore) bd2).getCharging();
