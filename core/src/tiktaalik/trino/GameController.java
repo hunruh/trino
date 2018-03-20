@@ -1348,7 +1348,7 @@ public class GameController implements ContactListener, Screen {
 		boolean hasClone = false;
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
-				GameObject cotton = getCotton();
+				GameObject cotton= grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
 				if (cotton != null) {
 					// Play sound
 					cottonPickUp.play(1.0f);
