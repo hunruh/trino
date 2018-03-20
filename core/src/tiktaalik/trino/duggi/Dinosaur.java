@@ -136,6 +136,21 @@ public abstract class Dinosaur extends GameObject {
         return direction;
     }
 
+    public void setDirection(float value) {
+        if (value == 0) {
+            direction = LEFT;
+        }
+        else if (value == 1) {
+            direction = RIGHT;
+        }
+        else if (value == 2) {
+            direction = UP;
+        }
+        else if (value == 3) {
+            direction = DOWN;
+        }
+    }
+
     public void incrementResources() {
         if (resourceCnt < MAX_RESOURCES) {
             resourceCnt += 1;
