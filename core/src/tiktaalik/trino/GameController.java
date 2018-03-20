@@ -140,6 +140,12 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion goalClosedTile;
 	private BitmapFont displayFont;
 
+	private final short CATEGORY_PLAYER = 0x0001;  // 0000000000000001 in binary
+	private final short CATEGORY_ENEMY = 0x0002;
+	private final short CATEGORY_CLONE = 0x0003;
+
+
+
 	/** Texture assets for Duggi's three forms */
 	private TextureRegion dollTextureFront;
 	private TextureRegion dollTextureLeft;
@@ -1346,6 +1352,11 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 
+		if (clone != null) {
+			if (isOverLap(clone, avatar) || isInFrontOfAvatar(clone)) clone.deactivatePhysics(world);
+			else clone.activatePhysics(world);
+		}
+
 		if (removeClone == true){
 			clone.deactivatePhysics(world);
 			objects.remove(clone);
@@ -1753,6 +1764,9 @@ public class GameController implements ContactListener, Screen {
 		float gridx = screenToMaze(avatarGrid().x);
 		float gridy = screenToMaze(avatarGrid().y);
 		return (Math.abs(avatar.getX() - gridx) <= x) && (Math.abs(avatar.getY() - gridy) <= y);
+	}
+	public boolean isOverLap(GameObject bd1, GameObject bd2){
+		return isAlignedVertically(bd1, bd2, 2.5) && isAlignedHorizontally(bd1, bd2, 2.5);
 	}
 
 	/**
