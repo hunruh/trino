@@ -1000,6 +1000,7 @@ public class GameController implements ContactListener, Screen {
 			grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
 		}
 
+
 		// Switch
 		dwidth = switchTexture.getRegionWidth() / scale.x;
 		dheight = switchTexture.getRegionHeight() / scale.y;
@@ -1128,10 +1129,13 @@ public class GameController implements ContactListener, Screen {
 				screenToMazeVector(12,8),screenToMazeVector(11,8),screenToMazeVector(11,7)};
 		Vector2[][] pathList = new Vector2[][]{p1,p2,p3,p4,p5,p6};
 
-		for (int i = 0; i < en.length; i++) {
+		int[] dirList = new int[]{Dinosaur.DOWN, Dinosaur.RIGHT, Dinosaur.DOWN, Dinosaur.DOWN, Dinosaur.DOWN, Dinosaur.RIGHT};
+
+		for (int i = 0; i < 6; i++) {
 			en[i].setType(ENEMY);
 			en[i].setDrawScale(scale);
-			en[i].setTexture(enemyTextureFront);
+			en[i].setTexture(carnivoreTextureBack);
+			en[i].setDirection(Dinosaur.UP);
 			addObject(en[i]);
 			addEnemy(en[i]);
 		}
@@ -1139,6 +1143,7 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 0; i < en.length; i++) {
 			controls[i] = new AIController(i,avatar,en,pathList[i]);
 		}
+
 
 		/** Music */
 
@@ -1166,9 +1171,7 @@ public class GameController implements ContactListener, Screen {
 		bgMusic.setVolume(0.10f);
 		bgMusic.setPosition(0);
 		bgMusic.play();
-
 	}
-
 	/**
 	 * The core gameplay loop of this world.
 	 *
@@ -1181,6 +1184,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void update(float dt) {
 		// Process actions in object model
+
 		int direction = avatar.getDirection();
 
 		if (avatar.getX() >= screenToMaze(1) && avatar.getX() <= screenToMaze(16)
@@ -1439,6 +1443,7 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+
 				if (!((Carnivore) avatar).inChargeCycle())
 					((Carnivore) avatar).loadCharge();
 			}
@@ -1454,9 +1459,70 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		avatar.applyForce();
-
 		// AI movement
+
 		for (int i = 0; i < enemies.size();i++){
+			if (enemies.get(1).getPosition().y + 0.2 > screenToMaze(3)) {
+				enemies.get(1).setTexture(carnivoreTextureFront);
+				enemies.get(1).setDirection(Dinosaur.DOWN);
+			}
+			else if (enemies.get(1).getPosition().y - 0.2 < screenToMaze(1)) {
+				enemies.get(1).setTexture(carnivoreTextureBack);
+				enemies.get(1).setDirection(Dinosaur.UP);
+			}
+
+			if (enemies.get(2).getPosition().x +0.2 > screenToMaze(8)) {
+				enemies.get(2).setTexture(carnivoreTextureLeft);
+				enemies.get(2).setDirection(Dinosaur.LEFT);
+			}
+			else if ((enemies.get(2).getPosition().x -0.2 < screenToMaze(6))) {
+				enemies.get(2).setTexture(carnivoreTextureRight);
+				enemies.get(2).setDirection(Dinosaur.RIGHT);
+			}
+
+			if (enemies.get(3).getPosition().y +0.2 > screenToMaze(3)) {
+				enemies.get(3).setTexture(carnivoreTextureFront);
+				enemies.get(3).setDirection(Dinosaur.DOWN);
+			}
+			else if ((enemies.get(3).getPosition().y -0.2 < screenToMaze(2))) {
+				enemies.get(3).setTexture(carnivoreTextureBack);
+				enemies.get(3).setDirection(Dinosaur.UP);
+			}
+
+			if (enemies.get(4).getPosition().y +0.2 > screenToMaze(4)) {
+				enemies.get(4).setTexture(carnivoreTextureFront);
+				enemies.get(4).setDirection(Dinosaur.DOWN);
+			}
+			else if ((enemies.get(4).getPosition().y -0.2 < screenToMaze(3))) {
+				enemies.get(4).setTexture(carnivoreTextureBack);
+				enemies.get(4).setDirection(Dinosaur.UP);
+			}
+			if (enemies.get(5).getPosition().y +0.2 > screenToMaze(8)) {
+				enemies.get(5).setTexture(carnivoreTextureLeft);
+				enemies.get(5).setDirection(Dinosaur.LEFT);
+			}
+			else if ((enemies.get(5).getPosition().y -0.2 < screenToMaze(6))) {
+				enemies.get(5).setTexture(carnivoreTextureRight);
+				enemies.get(5).setDirection(Dinosaur.RIGHT);
+			}
+
+			else if (enemies.get(5).getPosition().x +0.2 > screenToMaze(16)) {
+				enemies.get(5).setTexture(carnivoreTextureBack);
+				enemies.get(5).setDirection(Dinosaur.UP);
+			}
+			else if ((enemies.get(5).getPosition().x -0.2 < screenToMaze(11))) {
+				enemies.get(5).setTexture(carnivoreTextureFront);
+				enemies.get(5).setDirection(Dinosaur.DOWN);
+			}
+			if (enemies.get(6).getPosition().y +0.2 > screenToMaze(4)) {
+				enemies.get(6).setTexture(carnivoreTextureFront);
+				enemies.get(6).setDirection(Dinosaur.DOWN);
+			}
+			else if ((enemies.get(6).getPosition().y -0.2 < screenToMaze(1))) {
+				enemies.get(6).setTexture(carnivoreTextureBack);
+				enemies.get(6).setDirection(Dinosaur.UP);
+			}
+
 			controls[i].getMoveAlongPath();
 		}
 
@@ -1500,6 +1566,7 @@ public class GameController implements ContactListener, Screen {
 
 	public void handleCollision(GameObject bd1, GameObject bd2){
 		boolean charging = false;
+
 		if (bd1.getType() == CLONE){
 			if (bd2.getType() == ENEMY){
 				removeClone = true;
@@ -1509,7 +1576,6 @@ public class GameController implements ContactListener, Screen {
 			if (bd1.getType() == ENEMY){
 				removeClone = true;
 			}
-
 		}
 		else
 			removeClone = false;
