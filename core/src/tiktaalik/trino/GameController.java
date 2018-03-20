@@ -836,9 +836,9 @@ public class GameController implements ContactListener, Screen {
 		Collections.sort(drawObjects, new Comparator<GameObject>() {
 			@Override
 			public int compare(GameObject g1, GameObject g2) {
-				if (g1.getType() == COTTON)
+				if (g1.getType() == COTTON || g1.getType() == SWITCH)
 					return -1;
-				if (g2.getType() == COTTON)
+				if (g2.getType() == COTTON || g2.getType() == SWITCH)
 					return 1;
 				return (int)(g2.getY() - g1.getY());
 			}
@@ -983,7 +983,7 @@ public class GameController implements ContactListener, Screen {
 			grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
 		}
 
-		// Switch 
+		// Switch
 		dwidth = switchTexture.getRegionWidth() / scale.x;
 		dheight = switchTexture.getRegionHeight() / scale.y;
 		// Switch texture
