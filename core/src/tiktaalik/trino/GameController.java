@@ -191,7 +191,7 @@ public class GameController implements ContactListener, Screen {
 	/** Exit code for jumping back to previous level */
 	public static final int EXIT_PREV = 2;
 	/** How many frames after winning/losing do we continue? */
-	private static final int EXIT_COUNT = 120;
+	private static final int EXIT_COUNT = 60;
 
 	/** The amount of time for a physics engine step. */
 	private static final float WORLD_STEP = 1/60.0f;
