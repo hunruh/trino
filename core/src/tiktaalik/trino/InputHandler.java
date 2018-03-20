@@ -205,7 +205,7 @@ public class InputHandler {
 	}
 
 	public boolean didAction() {
-		return actionPressed;
+		return actionPressed && !actionPrevious;
 	}
 
 	public boolean didActionRelease() {
