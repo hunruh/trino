@@ -244,6 +244,8 @@ public class GameController implements ContactListener, Screen {
 	private boolean complete;
 	/** Whether we have failed at this world (and need a reset) */
 	private boolean failed;
+	/** Whether Duggi can exit through the goalDoor */
+	private boolean canExit;
 	/** Countdown active for winning or losing */
 	private int countdown;
 
@@ -572,6 +574,9 @@ public class GameController implements ContactListener, Screen {
 		setFailure(false);
 		world.setContactListener(this);
 		sensorFixtures = new ObjectSet<Fixture>();
+
+		// set canExit to false
+		canExit = false;
 	}
 
 	/**
@@ -1349,7 +1354,7 @@ public class GameController implements ContactListener, Screen {
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				GameObject cotton= grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
-				if (cotton != null) {
+				if (cotton != null && cotton.getType() == COTTON) {
 					// Play sound
 					cottonPickUp.play(1.0f);
 					cotton.deactivatePhysics(world);
@@ -1357,6 +1362,9 @@ public class GameController implements ContactListener, Screen {
 					cottonFlower.remove(cotton);
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
+				} else if (cotton != null && cotton.getType() == SWITCH){
+					System.out.println("On top of button");
+					canExit = true;
 				}
 				if (!hasClone) {
 //					float dwidth = dollTexture.getRegionWidth() / scale.x;
@@ -1486,8 +1494,11 @@ public class GameController implements ContactListener, Screen {
 		boolean charging = false;
 		if (bd1.getType() == DUGGI){
 			//System.out.println("f");
-			if (bd2.getType() == GOAL)
-				setComplete(true);
+			if (bd2.getType() == GOAL) {
+				if (canExit) {
+					setComplete(true);
+				}
+			}
 			else if (bd2.getType() == ENEMY){
 				if (((Dinosaur)bd1).getType() == Dinosaur.CARNIVORE_FORM)
 					charging = ((Carnivore) bd1).getCharging();
@@ -1504,6 +1515,7 @@ public class GameController implements ContactListener, Screen {
 					collideWall.play(1.0f);
 				}
 			}
+
 			}/*
 >>>>>>> GridSnap
 			else if (bd2.getType() != WALL){
@@ -1519,7 +1531,9 @@ public class GameController implements ContactListener, Screen {
 		else if (bd2.getType() == DUGGI){
 			//System.out.println("kill me");
 			if (bd1.getType() == GOAL)
-				setComplete(true);
+				if (canExit) {
+					setComplete(true);
+				}
 			else if (bd1.getType() == ENEMY) {
 				if (((Dinosaur)bd2).getType() == Dinosaur.CARNIVORE_FORM)
 					charging = ((Carnivore) bd2).getCharging();
