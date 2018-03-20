@@ -839,9 +839,9 @@ public class GameController implements ContactListener, Screen {
 		Collections.sort(drawObjects, new Comparator<GameObject>() {
 			@Override
 			public int compare(GameObject g1, GameObject g2) {
-				if (g1.getType() == COTTON)
+				if (g1.getType() == COTTON || g1.getType() == SWITCH)
 					return -1;
-				if (g2.getType() == COTTON)
+				if (g2.getType() == COTTON || g2.getType() == SWITCH)
 					return 1;
 				return (int)(g2.getY() - g1.getY());
 			}
@@ -988,6 +988,18 @@ public class GameController implements ContactListener, Screen {
 			addCottonFlower(cf[i]);
 			grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
 		}
+
+		// Switch
+		dwidth = switchTexture.getRegionWidth() / scale.x;
+		dheight = switchTexture.getRegionHeight() / scale.y;
+		// Switch texture
+		Switch s = new Switch(16,6,screenToMaze(16),screenToMaze(6),dwidth,dheight);
+		s.setBodyType(BodyDef.BodyType.StaticBody);
+		s.setDrawScale(scale);
+		s.setTexture(switchTexture);
+		s.setType(SWITCH);
+		addObject(s);
+		grid[(int)s.getGridLocation().x-1][(int)s.getGridLocation().y-1] = s;
 
 		/** Adding inedible walls */
 		Wall iw1 = new Wall(2,2,screenToMaze(2), screenToMaze(2), dwidth, dheight, false);
