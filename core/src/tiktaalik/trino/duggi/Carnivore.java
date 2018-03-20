@@ -8,6 +8,7 @@ public class Carnivore extends Dinosaur {
 
     private boolean charging, chargeReady, coolingCharge, loadingCharge;
     private float chargeCooldown, chargeLoad;
+    private int chargeDirection;
 
     private Vector2 vectorCache;
 
@@ -42,21 +43,30 @@ public class Carnivore extends Dinosaur {
     }
 
     public void charge() {
-        if (chargeReady)
+        if (chargeReady) {
             charging = true;
+            chargeReady = false;
+            chargeDirection = getDirection();
+        }
+    }
 
-        if (getDirection() == LEFT)
-            vectorCache.set(-5.0f, 0.0f);
-        else if (getDirection() == RIGHT)
-            vectorCache.set(5.0f, 0.0f);
-        else if (getDirection() == UP)
-            vectorCache.set(0.0f, -5.0f);
-        else
-            vectorCache.set(0.0f, 5.0f);
+    public void applyForce() {
+        if (!isActive()) {
+            return;
+        }
 
-        System.out.println("CHARGE");
-
-        body.applyLinearImpulse(vectorCache,body.getLocalCenter(),true);
+        if (!charging)
+            body.setLinearVelocity(getLeftRight(),getUpDown());
+        else {
+            if (chargeDirection == LEFT)
+                body.setLinearVelocity(-15.0f, 0.0f);
+            else if (chargeDirection == RIGHT)
+                body.setLinearVelocity(15.0f, 0.0f);
+            else if (chargeDirection == UP)
+                body.setLinearVelocity(0.0f, 15.0f);
+            else
+                body.setLinearVelocity(0.0f, -15.0f);
+        }
     }
 
     public boolean getCharging() {
@@ -67,6 +77,7 @@ public class Carnivore extends Dinosaur {
         loadingCharge = false;
         charging = false;
         coolingCharge = true;
+        System.out.println("Stop the madness");
     }
 
     public void update(float dt) {
@@ -81,7 +92,7 @@ public class Carnivore extends Dinosaur {
             }
         } else if (coolingCharge) {
             chargeCooldown += dt;
-            System.out.println("Cooling charge... " + chargeCooldown);
+//            System.out.println("Cooling charge... " + chargeCooldown);
             if (chargeCooldown >= CHARGE_COOLDOWN_DURATION) {
                 coolingCharge = false;
                 chargeCooldown = 0.0f;

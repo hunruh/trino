@@ -40,20 +40,21 @@ public abstract class Dinosaur extends GameObject {
     }
 
     protected Dinosaur(Dinosaur d) {
-        this.bodyinfo = d.bodyinfo;
-        this.fixture = d.fixture;
-        this.massdata = d.massdata;
-        this.masseffect = d.masseffect;
-        this.drawScale = d.drawScale;
-        this.body = d.body;
-        this.texture = d.texture;
-        this.origin = d.origin;
+        bodyinfo = d.bodyinfo;
+        fixture = d.fixture;
+        massdata = d.massdata;
+        masseffect = d.masseffect;
+        drawScale = d.drawScale;
+        body = d.body;
+        shape = d.shape;
+        texture = d.texture;
+        origin = d.origin;
         setName(d.getName());
         setType(d.getType());
 
-        this.leftRight = d.leftRight;
-        this.upDown = d.upDown;
-        this.direction = d.direction;
+        leftRight = d.leftRight;
+        upDown = d.upDown;
+        direction = d.direction;
 
         resourceCnt = 0;
     }

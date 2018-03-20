@@ -56,6 +56,10 @@ public class Wall extends GameObject {
         gridLocation = new Vector2(gx, gy);
     }
 
+    public boolean getEdible() {
+        return edible;
+    }
+
     /**
      * Returns the dimensions of this box
      *

@@ -46,7 +46,7 @@ import tiktaalik.util.*;
  */
 public class MenuController implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
-	private static final String BACKGROUND_FILE = "shared/trinoRoughTitle.png";
+	private static final String BACKGROUND_FILE = "trino/menu.png";
 	private static final String PROGRESS_FILE = "shared/progressbar.png";
 	private static final String PLAY_BTN_FILE = "shared/play.png";
 	
@@ -275,8 +275,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 			drawProgress(canvas);
 		} else {
 			Color tint = (pressState == 1 ? Color.GRAY: new Color(0x4DC068ff));
-			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2, 
-						centerX, centerY - playButton.getHeight()/4, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2,
+						centerX, centerY - playButton.getHeight()/3, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
 		}
 		canvas.end();
 	}
