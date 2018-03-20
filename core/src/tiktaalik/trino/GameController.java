@@ -1474,7 +1474,6 @@ public class GameController implements ContactListener, Screen {
 		else
 			removeClone = false;
 		if (bd1.getType() == DUGGI){
-			//System.out.println("f");
 			if (bd2.getType() == GOAL) {
 				if (canExit) {
 					setComplete(true);
@@ -1500,12 +1499,21 @@ public class GameController implements ContactListener, Screen {
 
 		}
 		else if (bd2.getType() == DUGGI){
+
 			////("kill me");
 			if (bd1.getType() == GOAL)
 				if (canExit) {
 					setComplete(true);
 				}
+			System.out.println("kill me");
+			System.out.println(bd1.getType());
+			if (bd1.getType() == GOAL) {
+				if (canExit) {
+					setComplete(true);
+				}
+			}
 			else if (bd1.getType() == ENEMY) {
+				System.out.println("pls");
 				if (((Dinosaur)bd2).getType() == Dinosaur.CARNIVORE_FORM)
 					charging = ((Carnivore) bd2).getCharging();
 				if (charging) {
