@@ -253,6 +253,8 @@ public class GameController implements ContactListener, Screen {
 	private Vector2 cloneLocation;
 	private boolean removeClone = false;
 
+	private Vector2 switchLocation = new Vector2(16, 6);
+
 	// Variables for the enemy model
 	private Vector2 cachePosition1 = new Vector2(0,0);
 	private Vector2 cachePosition2 = new Vector2(0,0);
@@ -1304,26 +1306,27 @@ public class GameController implements ContactListener, Screen {
 					float dwidth = dollTextureFront.getRegionWidth() / scale.x;
 					float dheight = dollTextureFront.getRegionHeight() / scale.y;
 					removeClone = false;
+					GameObject goal = grid[(int)switchLocation.x-1][(int)switchLocation.y-1];
 					if (direction == Dinosaur.UP) {
-						if (location.y != GRID_MAX_Y && objectInFrontOfAvatar()== null){
+						if (location.y != GRID_MAX_Y && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal) ){
 							clone = new Doll(screenToMaze(location.x), screenToMaze(location.y+1), dwidth);
 							cloneLocation = new Vector2(location.x, location.y+1);
 						}
 					}
 					else if (direction == Dinosaur.DOWN) {
-						if (location.y != 1 && objectInFrontOfAvatar()== null){
+						if (location.y != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
 							clone = new Doll(screenToMaze(location.x), screenToMaze(location.y - 1), dwidth);
 							cloneLocation = new Vector2(location.x, location.y-1);
 						}
 					}
 					else if (direction == Dinosaur.LEFT) {
-						if (location.x != 1 && objectInFrontOfAvatar()== null){
+						if (location.x != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
 							clone = new Doll(screenToMaze(location.x - 1), screenToMaze(location.y), dwidth);
 							cloneLocation = new Vector2(location.x-1, location.y);
 						}
 					}
 					else if (direction == Dinosaur.RIGHT) {
-						if (location.x != GRID_MAX_X && objectInFrontOfAvatar()== null){
+						if (location.x != GRID_MAX_X && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
 							clone = new Doll(screenToMaze(location.x+1), screenToMaze(location.y), dwidth);
 							cloneLocation = new Vector2(location.x+1, location.y);
 						}
