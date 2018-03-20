@@ -764,7 +764,7 @@ public class GameController implements ContactListener, Screen {
 		if (countdown > 0) {
 			countdown--;
 		} else if (countdown == 0) {
-			if (failed) {
+			if (failed || complete) {
 				reset();
 			}
 		}
