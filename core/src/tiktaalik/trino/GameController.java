@@ -260,7 +260,6 @@ public class GameController implements ContactListener, Screen {
 	private int countdown;
 
 	private Dinosaur avatar; // Reference to the character avatar
-	private int avatarIdx; // Position of the character avatar in the objects list
 
 	/** Reference to the goalDoor (for collision detection) */
 	private Wall goalDoor;
@@ -832,7 +831,11 @@ public class GameController implements ContactListener, Screen {
 		canvas.clear();
 		
 		canvas.begin();
-		drawObjects = objects;
+		while (drawObjects.size() < objects.size()) {
+			drawObjects.add(avatar);
+		}
+
+		Collections.copy(drawObjects, objects);
 		Collections.sort(drawObjects, new Comparator<GameObject>() {
 			@Override
 			public int compare(GameObject g1, GameObject g2) {
@@ -952,6 +955,9 @@ public class GameController implements ContactListener, Screen {
 		float dheight = dollTextureRight.getRegionHeight() / scale.y;
 		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
 		avatar.setType(DUGGI);
+		avatar.setTexture(dollTextureRight);
+		avatar.setDrawScale(scale);
+		addObject(avatar);
 
 		/** Adding cotton flowers */
 		dwidth = cottonTexture.getRegionWidth() / scale.x;
@@ -1111,11 +1117,6 @@ public class GameController implements ContactListener, Screen {
 			controls[i] = new AIController(i,avatar,en,pathList[i]);
 		}
 
-		avatar.setTexture(dollTextureRight);
-		avatar.setDrawScale(scale);
-		addObject(avatar);
-		avatarIdx = objects.size()-1;
-
 		/** Music */
 
 		if (bgMusic == null){
@@ -1233,7 +1234,7 @@ public class GameController implements ContactListener, Screen {
 						avatar.setTexture(dollTextureFront);
 					}
 
-					objects.set(idx, avatar);
+					objects.set(1, avatar);
 				} else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 					avatar = avatar.transformToHerbivore();
 
@@ -1252,7 +1253,7 @@ public class GameController implements ContactListener, Screen {
 					} else {
 						avatar.setTexture(herbivoreTextureFront);
 					}
-					objects.set(idx, avatar);
+					objects.set(1, avatar);
 				} else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 					avatar = avatar.transformToCarnivore();
 
@@ -1271,7 +1272,7 @@ public class GameController implements ContactListener, Screen {
 					} else {
 						avatar.setTexture(carnivoreTextureFront);
 					}
-					objects.set(idx, avatar);
+					objects.set(1, avatar);
 				}
 			}
 		}
@@ -1357,7 +1358,6 @@ public class GameController implements ContactListener, Screen {
 
 					cotton.deactivatePhysics(world);
 					objects.remove(cotton);
-					avatarIdx--;
 					cottonFlower.remove(cotton);
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
@@ -1413,7 +1413,6 @@ public class GameController implements ContactListener, Screen {
 					eatWall.play(1.0f);
 					tmp.deactivatePhysics(world);
 					objects.remove(tmp);
-					avatarIdx--;
 					walls.remove(tmp);
 					grid[(int)((Wall)tmp).getGridLocation().x-1][(int)((Wall)tmp).getGridLocation().y-1] = null;
 					avatar.incrementResources();
