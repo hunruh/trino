@@ -249,6 +249,7 @@ public class GameController implements ContactListener, Screen {
 	private Enemy enemy;
 	/** Reference to the goalDoor (for collision detection) */
 	private Wall goalDoor;
+	private Dinosaur clone;
 
 
 	// Variables for the enemy model
@@ -1092,6 +1093,7 @@ public class GameController implements ContactListener, Screen {
 		avatar.setTexture(dollTextureRight);
 		avatar.setDrawScale(scale);
 		addObject(avatar);
+		avatarIdx = objects.size()-1;
 
 
 		//System.out.println("head of objects: " + objects.get(0));
@@ -1332,20 +1334,39 @@ public class GameController implements ContactListener, Screen {
 					cottonPickUp.play(1.0f);
 					cotton.deactivatePhysics(world);
 					objects.remove(cotton);
+					avatarIdx--;
 					cottonFlower.remove(cotton);
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
 				}
-				if (!hasClone) {
-//					float dwidth = dollTexture.getRegionWidth() / scale.x;
-//					float dheight = dollTexture.getRegionHeight() / scale.y;
-//					DuggiModel clone = new DuggiModel(screenToMaze(1), screenToMaze(1), dwidth, dheight);
-//					clone.setTexture(dollTexture);
-//					clone.setDrawScale(scale);
-//					clone.setDollTexture(dollTexture);
-//					clone.setType(CLONE);
-//					addObject(clone);
-					hasClone = true;
+				else if  (clone == null && avatar.getResources() >= 1) {
+					Vector2 location = avatarGrid();
+					float dwidth = dollTextureFront.getRegionWidth() / scale.x;
+					float dheight = dollTextureFront.getRegionHeight() / scale.y;
+					if (direction == Dinosaur.UP) {
+						if (location.y != 1)
+							clone = new Doll(screenToMaze(location.x - 1), screenToMaze(location.y - 2), dwidth);
+					}
+					else if (direction == Dinosaur.DOWN) {
+						if (location.y != GRID_MAX_Y)
+							clone = new Doll(screenToMaze(location.x - 1), screenToMaze(location.y), dwidth);
+					}
+					else if (direction == Dinosaur.LEFT) {
+						if (location.x != 1)
+							clone = new Doll(screenToMaze(location.x - 2), screenToMaze(location.y - 1), dwidth);
+					}
+					else if (direction == Dinosaur.RIGHT) {
+						if (location.x != GRID_MAX_X)
+							clone = new Doll(screenToMaze(location.x), screenToMaze(location.y - 1), dwidth);
+					}
+					if (clone != null) {
+						clone.setTexture(dollTextureFront);
+						clone.setDrawScale(scale);
+						clone.setTexture(dollTextureFront);
+						clone.setType(CLONE);
+						addObject(clone);
+						avatar.decrementResources();
+					}
 
 				}
 			}
@@ -1356,6 +1377,7 @@ public class GameController implements ContactListener, Screen {
 					eatWall.play(1.0f);
 					tmp.deactivatePhysics(world);
 					objects.remove(tmp);
+					avatarIdx--;
 					walls.remove(tmp);
 					grid[(int)((Wall)tmp).getGridLocation().x-1][(int)((Wall)tmp).getGridLocation().y-1] = null;
 					avatar.incrementResources();

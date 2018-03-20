@@ -156,6 +156,11 @@ public abstract class Dinosaur extends GameObject {
         }
     }
 
+    public void decrementResources(){
+        if (resourceCnt > 0)
+            resourceCnt -= 1;
+    }
+
     public int getResources() {
         return resourceCnt;
     }
