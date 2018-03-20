@@ -831,9 +831,10 @@ public class GameController implements ContactListener, Screen {
 		canvas.clear();
 		
 		canvas.begin();
-		while (drawObjects.size() < objects.size()) {
+		while (drawObjects.size() < objects.size())
 			drawObjects.add(avatar);
-		}
+		while (drawObjects.size() > objects.size())
+			drawObjects.pop();
 
 		Collections.copy(drawObjects, objects);
 		Collections.sort(drawObjects, new Comparator<GameObject>() {
