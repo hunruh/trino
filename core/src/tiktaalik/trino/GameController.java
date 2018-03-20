@@ -1351,11 +1351,7 @@ public class GameController implements ContactListener, Screen {
 				avatar.setTexture(carnivoreTextureFront);
 			}
 		}
-
-		if (clone != null) {
-			if (isOverLap(clone, avatar) || isInFrontOfAvatar(clone)) clone.deactivatePhysics(world);
-			else clone.activatePhysics(world);
-		}
+;
 
 		if (removeClone == true){
 			clone.deactivatePhysics(world);
