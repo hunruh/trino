@@ -2,6 +2,7 @@ package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
@@ -9,20 +10,20 @@ import tiktaalik.trino.GameObject;
 import tiktaalik.trino.InputController;
 
 public class Enemy extends GameObject {
-    private static final float MOVE_SPEED = 6.5f;
+    private final float STUN_DURATION = 4.0f;
 
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
+    private float stunCooldown;
     private boolean faceRight;
     private boolean faceUp;
+    private boolean stunned;
     private int counter; // Counter for enemy movement
     private int id;
     private Vector2 velocity;
-    private Vector2 tmp;
-    private boolean isAlive;
     private int direction;
 
     public static final int LEFT = 0;
@@ -50,34 +51,21 @@ public class Enemy extends GameObject {
         faceRight = true;
         faceUp = false;
         this.id = id;
-        velocity = new Vector2();
-        isAlive = true;
+        stunned = false;
     }
 
     public void setId(int newId){
         this.id = newId;
     }
 
-    public int getId(){
-        return this.id;
+    public void setStunned(){
+        stunned = true;
+        setLinearDamping(11);
+        stunCooldown = 0;
     }
 
-    public float getVX(){return velocity.x;}
-
-    public void setVX(float value) {velocity.x = value;};
-
-    public float getVY(){return velocity.y;}
-
-    public void setVY(float value){velocity.y = value;}
-
-    public Vector2 getVelocity(){return velocity;}
-
-    public void setAlive(boolean alive){
-        this.isAlive = alive;
-    }
-
-    public boolean isAlive(){
-        return this.isAlive;
+    public boolean getStunned(){
+        return stunned;
     }
 
     public int getCounter() {return counter;}
@@ -168,17 +156,6 @@ public class Enemy extends GameObject {
     }
 
     /**
-     * Applies the force to the body of the dinosaur
-     */
-    public void applyForce() {
-        if (!isActive()) {
-            return;
-        }
-
-        body.setLinearVelocity(getLeftRight(),getUpDown());
-    }
-
-    /**
      * Create new fixtures for this body, defining the shape
      */
     protected void createFixtures() {
@@ -212,35 +189,17 @@ public class Enemy extends GameObject {
     public void update(float dt) {
         super.update(dt);
         counter++;
-    }
+        if (stunned) {
+            if (getLinearVelocity().len2() < 5)
+                setBodyType(BodyDef.BodyType.StaticBody);
 
-    public void updateMovement(int action){
-
-        // Determine how we are moving
-        boolean movingLeft = (action & InputController.CONTROL_MOVE_LEFT) != 0;
-        boolean movingRight = (action & InputController.CONTROL_MOVE_RIGHT) != 0;
-        boolean movingUp = (action & InputController.CONTROL_MOVE_UP) != 0;
-        boolean movingDown = (action & InputController.CONTROL_MOVE_DOWN) != 0;
-
-        // Process Movement command
-        if (movingLeft) {
-            velocity.x = -MOVE_SPEED;
-            velocity.y = 0;
-        } else if (movingRight) {
-            velocity.x = MOVE_SPEED;
-            velocity.y = 0;
-        } else if (movingUp) {
-            velocity.y = -MOVE_SPEED;
-            velocity.x = 0;
-        } else if (movingDown) {
-            velocity.y = MOVE_SPEED;
-            velocity.x = 0;
+            stunCooldown += dt;
+            if (stunCooldown > STUN_DURATION) {
+                setBodyType(BodyDef.BodyType.DynamicBody);
+                setLinearDamping(0);
+                stunned = false;
+            }
         }
-
-        // Update position (Will probably move when we have collision controller
-        tmp.set(this.getX(),this.getY());
-        tmp.add(this.getVX(), this.getVY());
-        this.setPosition(tmp);
     }
 
     /**

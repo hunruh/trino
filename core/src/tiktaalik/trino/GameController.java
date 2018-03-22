@@ -169,8 +169,6 @@ public class GameController implements ContactListener, Screen {
 
 	private HUDController hud;
 
-	//index of the object Duggi collided with
-	private PooledList<GameObject> collidedWith = new PooledList<GameObject>();
 	private GameObject directlyInFront;
 	private int collidedType;
 
@@ -232,8 +230,8 @@ public class GameController implements ContactListener, Screen {
 	protected PooledList<GameObject> objects  = new PooledList<GameObject>();
 	protected PooledList<GameObject> drawObjects  = new PooledList<GameObject>();
 
-	protected AIController[] controls;
 	/** Queue for adding objects */
+	protected PooledList<AIController> controls = new PooledList<AIController>();
 	private PooledList<GameObject> addQueue = new PooledList<GameObject>();
 	private PooledList<Wall> walls = new PooledList<Wall>();
 	private PooledList<CottonFlower> cottonFlower = new PooledList<CottonFlower>();
@@ -736,6 +734,7 @@ public class GameController implements ContactListener, Screen {
 		}
 		objects.clear();
 		enemies.clear();
+		controls.clear();
 		addQueue.clear();
 		world.dispose();
 		clone = null;
@@ -1139,10 +1138,9 @@ public class GameController implements ContactListener, Screen {
 			addObject(en[i]);
 			addEnemy(en[i]);
 		}
-		controls = new AIController[enemies.size()];
-		for (int i = 0; i < en.length; i++) {
-			controls[i] = new AIController(i,avatar,en,pathList[i]);
-		}
+
+		for (int i = 0; i < en.length; i++)
+			controls.add(new AIController(i,avatar,en,pathList[i]));
 
 
 		/** Music */
@@ -1347,7 +1345,7 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging() &&
-				avatar.getLinearVelocity().len2() == 0)
+				avatar.getLinearVelocity().len2() < 5)
 			((Carnivore) avatar).stopCharge();
 
 		if (removeClone == true){
@@ -1365,16 +1363,6 @@ public class GameController implements ContactListener, Screen {
 		} else {
 			canExit = false;
 			goalDoor.setTexture(goalClosedTile);
-		}
-		if (collidedWith.size() != 0) {
-			for(GameObject c : collidedWith) {
-				if (isInFrontOfAvatar(c)) {
-					handleCollision(avatar, c);
-					break;
-				}
-			}
-
-			collidedWith.clear();
 		}
 
 		if (InputHandler.getInstance().didAction()) {
@@ -1444,8 +1432,24 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+				boolean ate = false;
 
-				if (!((Carnivore) avatar).inChargeCycle())
+				for (int i = 0; i < enemies.size(); i++) {
+					Enemy tmp = enemies.get(i);
+					if (tmp.getStunned() && isInFrontOfAvatar(tmp)
+							&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
+						eatWall.play(1.0f);
+						tmp.deactivatePhysics(world);
+						objects.remove(tmp);
+						enemies.remove(tmp);
+						controls.remove(controls.get(i));
+						avatar.incrementResources();
+						ate = true;
+						break;
+					}
+				}
+
+				if (!ate && !((Carnivore) avatar).inChargeCycle())
 					((Carnivore) avatar).loadCharge();
 			}
 		}
@@ -1524,7 +1528,7 @@ public class GameController implements ContactListener, Screen {
 				enemies.get(6).setDirection(Dinosaur.UP);
 			}
 
-			controls[i].getMoveAlongPath();
+			controls.get(i).getMoveAlongPath();
 		}
 
 		// If we use sound, we must remember this.
@@ -1565,34 +1569,29 @@ public class GameController implements ContactListener, Screen {
 
 	}
 
-	public void handleCollision(GameObject bd1, GameObject bd2){
-		boolean charging = false;
-
+	public void handleCollision(GameObject bd1, GameObject bd2) {
 		if (bd1.getType() == CLONE){
-			if (bd2.getType() == ENEMY){
+			if (bd2.getType() == ENEMY)
 				removeClone = true;
-			}
 		}
 		else if (bd2.getType() == CLONE){
-			if (bd1.getType() == ENEMY){
+			if (bd1.getType() == ENEMY)
 				removeClone = true;
-			}
 		}
 		else
 			removeClone = false;
-		if (bd1.getType() == DUGGI){
-			if (((Dinosaur)bd1).getForm() == Dinosaur.CARNIVORE_FORM)
-				charging = ((Carnivore) bd1).getCharging();
 
+		if (bd1.getType() == DUGGI){
 			if (bd2.getType() == GOAL) {
 				if (canExit) {
 					setComplete(true);
 				}
 			}
 			else if (bd2.getType() == ENEMY){
-				if (!charging) {
+				if (((Dinosaur)bd1).getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) bd1).getCharging())
+					((Enemy) bd2).setStunned();
+				else if (!((Enemy) bd2).getStunned())
 					setFailure(true);
-				}
 			}
 			else if (bd2.getType() == WALL){
 				if (isInFrontOfAvatar(bd2)){
@@ -1603,18 +1602,15 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 		else if (bd2.getType() == DUGGI){
-			if (((Dinosaur)bd2).getForm() == Dinosaur.CARNIVORE_FORM)
-				charging = ((Carnivore) bd2).getCharging();
-
 			if (bd1.getType() == GOAL) {
-				if (canExit) {
+				if (canExit)
 					setComplete(true);
-				}
 			}
 			else if (bd1.getType() == ENEMY) {
-				if (!charging) {
+				if (((Dinosaur)bd2).getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) bd2).getCharging())
+					((Enemy) bd1).setStunned();
+				else if (!((Enemy) bd1).getStunned())
 					setFailure(true);
-				}
 			}
 			else if (bd1.getType() == WALL){
 				if (isInFrontOfAvatar(bd1)) {
@@ -1778,15 +1774,10 @@ public class GameController implements ContactListener, Screen {
 		Object bd1 = body1.getUserData();
 		Object bd2 = body2.getUserData();
 
-		if (bd1 == avatar) {
-			collidedWith.remove(bd2);
+		if (bd1 == avatar)
 			directlyInFront = null;
-		}
-		else if (bd2 == avatar) {
-			collidedWith.remove(bd1);
+		else if (bd2 == avatar)
 			directlyInFront = null;
-
-		}
 	}
 
 	/** drawing on screen */
