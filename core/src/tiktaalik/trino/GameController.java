@@ -1168,7 +1168,7 @@ public class GameController implements ContactListener, Screen {
 
 		bgMusic = bgDoll;
 		bgMusic.setLooping(true);
-		bgMusic.setVolume(0.10f);
+		bgMusic.setVolume(0.00f);
 		bgMusic.setPosition(0);
 		bgMusic.play();
 	}
@@ -1239,7 +1239,7 @@ public class GameController implements ContactListener, Screen {
 				avatar.setDirection(Dinosaur.UP);
 			}
 		}
-		int idx = objects.size()-1;
+
 		if (InputHandler.getInstance().didTransform()) {
 			if (avatar.canTransform()) {
 				if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
@@ -1346,6 +1346,10 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 
+		if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging() &&
+				avatar.getLinearVelocity().len2() == 0)
+			((Carnivore) avatar).stopCharge();
+
 		if (removeClone == true){
 			clone.deactivatePhysics(world);
 			objects.remove(clone);
@@ -1364,9 +1368,6 @@ public class GameController implements ContactListener, Screen {
 		}
 		if (collidedWith.size() != 0) {
 			for(GameObject c : collidedWith) {
-				if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging())
-					((Carnivore) avatar).stopCharge();
-
 				if (isInFrontOfAvatar(c)) {
 					handleCollision(avatar, c);
 					break;
@@ -1602,6 +1603,8 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 		else if (bd2.getType() == DUGGI){
+			if (((Dinosaur)bd2).getForm() == Dinosaur.CARNIVORE_FORM)
+				charging = ((Carnivore) bd2).getCharging();
 
 			if (bd1.getType() == GOAL) {
 				if (canExit) {
@@ -1804,7 +1807,7 @@ public class GameController implements ContactListener, Screen {
 		float seconds = bgMusic.getPosition();
 		bgMusic = name;
 		bgMusic.setLooping(true);
-		bgMusic.setVolume(0.10f);
+		bgMusic.setVolume(0.00f);
 		bgMusic.play();
 		bgMusic.pause();
 		bgMusic.setPosition(seconds);

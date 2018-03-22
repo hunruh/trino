@@ -57,6 +57,7 @@ public abstract class Dinosaur extends GameObject {
         direction = d.direction;
 
         resourceCnt = 0;
+        body.setUserData(this);
     }
 
     /**
