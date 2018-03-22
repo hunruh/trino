@@ -1,6 +1,7 @@
-package tiktaalik.trino;
+package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.math.Vector2;
+import tiktaalik.trino.GameObject;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.util.PooledList;
 
@@ -12,7 +13,7 @@ import java.util.*;
  * REMEMBER: As an implementation of InputController you will have access to
  * the control code constants in that interface.  You will want to use them.
  */
-public class AIController{
+public class AIController {
     /**
      * Enumeration to encode the finite state machine.
      */

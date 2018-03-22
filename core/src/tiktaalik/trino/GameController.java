@@ -1,22 +1,5 @@
-/*
- * GameController.java
- *
- * This is the most important new class in this lab.  This class serves as a combination 
- * of the CollisionController and GameplayController from the previous lab.  There is not 
- * much to do for collisions; Box2d takes care of all of that for us.  This controller 
- * invokes Box2d and then performs any after the fact modifications to the data 
- * (e.g. gameplay).
- *
- * If you study this class, and the contents of the edu.cornell.cs3152.physics.obstacles
- * package, you should be able to understand how the Physics engine works.
- *
- * Author: Walker M. White
- * Based on original PhysicsDemo Lab by Don Holden, 2007
- * LibGDX version, 2/6/2015
- */
 package tiktaalik.trino;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -32,47 +15,29 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.*;
+import tiktaalik.trino.enemy.AIController;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.Switch;
-import tiktaalik.trino.resources.Wall;
-import tiktaalik.trino.resources.CottonFlower;
+import tiktaalik.trino.environment.Wall;
+import tiktaalik.trino.environment.CottonFlower;
 import tiktaalik.util.*;
 
 /**
- * Base class for a world-specific controller.
- *
- *
- * A world has its own objects, assets, and input controller.  Thus this is 
- * really a mini-GameEngine in its own right.  The only thing that it does
- * not do is create a Canvas; that is shared with the main application.
- *
- * You will notice that asset loading is not done with static methods this time.  
- * Instance asset loading makes it easier to process our game modes in a loop, which 
- * is much more scalable. However, we still want the assets themselves to be static.
- * This is the purpose of our AssetState variable; it ensures that multiple instances
- * place nicely with the static assets.
+ * Base class for the game controller.
  */
 public class GameController implements ContactListener, Screen {
-	/** 
-	 * Tracks the asset state.  Otherwise subclasses will try to load assets 
-	 */
+	// Tracks the asset state.  Otherwise subclasses will try to load assets
 	protected enum AssetState {
-		/** No assets loaded */
 		EMPTY,
-		/** Still loading assets */
 		LOADING,
-		/** Assets are complete */
 		COMPLETE
 	}
 
-	/** Track asset loading from all instances and subclasses */
-	private AssetState worldAssetState = AssetState.EMPTY;
-	/** Track all loaded assets (for unloading purposes) */
-	private Array<String> assets;
-
 	// ASSET FILES AND VARIABLES
+	private AssetState worldAssetState = AssetState.EMPTY; // Track asset loading from all instances and subclasses
+	private Array<String> assets; // Track all loaded assets (for unloading purposes)
 
-	/** The sound file for music and effects */
+	// Sound files
 	private static String DOLL_BG_FILE = "trino/doll_bg.mp3";
 	private static String HERBIVORE_BG_FILE = "trino/herbivore_bg.mp3";
 	private static String CARNIVORE_BG_FILE = "trino/carnivore_bg.mp3";
@@ -83,16 +48,16 @@ public class GameController implements ContactListener, Screen {
 	private static String POP_5_FILE = "trino/pop5.mp3";
 	private static String POOF_FILE = "trino/poof.mp3";
 
-	/** The texture file for general assets */
+	// Sounds files
+	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
+	private static int FONT_SIZE = 64;
+
+	// Texture files
 	private static String BACKGROUND_FILE = "trino/background.png";
 	private static String OVERLAY_FILE = "trino/overlay.png";
 	private static String EARTH_FILE = "shared/earthtile.png";
 	private static String GOAL_FILE = "trino/openExitPlaceHolder.png";
 	private static String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
-	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
-	private static int FONT_SIZE = 64;
-
-	/** The texture files for the three dinosaurs (no animation) */
 	private static final String DOLL_FILE_FRONT  = "trino/doll_front.png";
 	private static final String DOLL_FILE_LEFT  = "trino/doll_left.png";
 	private static final String DOLL_FILE_RIGHT  = "trino/doll_right.png";
@@ -115,32 +80,13 @@ public class GameController implements ContactListener, Screen {
 	private static final String PATH_FILE = "trino/path.png";
 	private static final String SWITCH_FILE = "trino/buttonRough.png";
 
-	private static final int COTTON = 0;
-	private static final int EDIBLEWALL = 1;
-	private static final int STUNNEDENEMY = 2;
-	private static final int WALL = 3;
-	private static final int ENEMY = 4;
-	private static final int GOAL = 5;
-	private static final int DUGGI = 6;
-	private static final int CLONE = 7;
-	private static final int SWITCH = 8;
-
-	private static int GRIDSIZE = 80;
-	private static int GRID_MAX_X = 16;
-	private static int GRID_MAX_Y = 8;
-
-	private GameObject[][] grid = new GameObject[GRID_MAX_X][GRID_MAX_Y];
-
-
-	/** Texture assets for the general game */
+	// Texture assets variables
+	private BitmapFont displayFont;
 	private TextureRegion background;
 	private TextureRegion overlay;
 	private TextureRegion earthTile;
 	private TextureRegion goalTile;
 	private TextureRegion goalClosedTile;
-	private BitmapFont displayFont;
-
-	/** Texture assets for Duggi's three forms */
 	private TextureRegion dollTextureFront;
 	private TextureRegion dollTextureLeft;
 	private TextureRegion dollTextureRight;
@@ -153,133 +99,17 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion carnivoreTextureLeft;
 	private TextureRegion carnivoreTextureRight;
 	private TextureRegion carnivoreTextureBack;
-
-	/* Texture assets for enemies */
 	private TextureRegion enemyTextureFront;
 	private TextureRegion enemyTextureLeft;
 	private TextureRegion enemyTextureRight;
 	private TextureRegion enemyTextureBack;
-
-	/* Texture assets for other world attributes */
 	private TextureRegion wallTexture;
 	private TextureRegion edibleWallTexture;
 	private TextureRegion cottonTexture;
 	private TextureRegion pathTexture;
 	private TextureRegion switchTexture;
 
-	private HUDController hud;
-
-	private GameObject directlyInFront;
-	private int collidedType;
-
-	// GAME CONSTANTS AND VARIABLES
-	/** Constants for initialization */
-	private float enemyVertical = 10.0f;
-	private static final float  BASIC_DENSITY = 0.0f;
-	private static final float  BASIC_FRICTION = 0.4f;
-	private static final float  BASIC_RESTITUTION = 0.1f;
-//	private static final float[][] WALL1 = {{ 0.0f, 5.0f, 0.0f, 18.0f, 2.5f, 18.0f, 2.5f, 5.0f},
-//			{ 0.0f, 0.0f, 30.0f, 0.0f, 30.0f, 2.5f, 0.0f, 2.5f},
-//			{10.0f, 2.5f, 29.5f, 2.5f, 29.5f, 5.0f, 10.0f, 5.0f},
-//			{29.5f, 0.0f,32.0f, 0.0f,32.0f, 11.5f,29.5f, 11.5f},
-//			{29.5f, 18.0f,32.0f, 18.0f,32.0f, 14.0f,29.5f, 14.0f},
-//			{10.0f, 5.0f,12.5f, 5.0f,12.5f, 14.0f,10.0f, 14.0f},
-//			{7.5f,5.0f,10.0f,5.0f,10.0f, 14.0f,7.5f, 14.0f},
-//			{12.5f,14.0f,15.5f,14.0f,15.5f,11.5f,12.5f,11.5f},
-//			{18.0f,18.0f,25.0f,18.0f,25.0f,7.5f,18f,7.5f},
-//			{ 2.5f,18.0f, 18.0f,18.0f, 18.0f,16.5f, 2.5f,16.5f},
-//			{ 25.0f,18.0f, 29.5f,18.0f, 29.5f,16.5f, 25.0f,16.5f},
-//	};
-
-	// Other game objects
-	/** The goal door position */
-	private static Vector2 GOAL_POS = new Vector2(2.0f,15.0f);
-	/** The position of the spinning barrier */
-	private static Vector2 SPIN_POS = new Vector2(13.0f,12.5f);
-	/** The initial position of the dude */
-	private static Vector2 DUDE_POS = new Vector2(1.0f, 16.0f);
-	/** The initial position of the enemy */
-	private static Vector2 ENEMY_POS = new Vector2(28.25f, 5.0f);
-
-	/** Exit code for quitting the game */
-	public static final int EXIT_QUIT = 0;
-	/** Exit code for advancing to next level */
-	public static final int EXIT_NEXT = 1;
-	/** Exit code for jumping back to previous level */
-	public static final int EXIT_PREV = 2;
-	/** How many frames after winning/losing do we continue? */
-	private static final int EXIT_COUNT = 60;
-
-	/** The amount of time for a physics engine step. */
-	private static final float WORLD_STEP = 1/60.0f;
-	/** Number of velocity iterations for the constrain solvers */
-	private static final int WORLD_VELOC = 6;
-	/** Number of position iterations for the constrain solvers */
-	private static final int WORLD_POSIT = 2;
-
-	/** Width of the game world in Box2d units */
-	private static final float DEFAULT_WIDTH  = 32.0f;
-	/** Height of the game world in Box2d units */
-	private static final float DEFAULT_HEIGHT = 18.0f;
-	/** The default value of gravity (going down) */
-	private static final float DEFAULT_GRAVITY = -0.0f;
-
-	/** Reference to the game canvas */
-	protected Canvas canvas;
-	/** All the objects in the world. */
-	protected PooledList<GameObject> objects  = new PooledList<GameObject>();
-	protected PooledList<GameObject> drawObjects  = new PooledList<GameObject>();
-
-	/** Queue for adding objects */
-	protected PooledList<AIController> controls = new PooledList<AIController>();
-	private PooledList<GameObject> addQueue = new PooledList<GameObject>();
-	private PooledList<Wall> walls = new PooledList<Wall>();
-	private PooledList<CottonFlower> cottonFlower = new PooledList<CottonFlower>();
-	private PooledList<Enemy> enemies = new PooledList<Enemy>();
-	/** Listener that will update the player mode when we are done */
-	private ScreenListener listener;
-
-	/** The Box2D world */
-	private World world;
-	/** The boundary of the world */
-	private Rectangle bounds;
-	/** The world scale */
-	private Vector2 scale;
-
-	/** Whether or not this is an active controller */
-	private boolean active;
-	/** Whether we have completed this level */
-	private boolean complete;
-	/** Whether we have failed at this world (and need a reset) */
-	private boolean failed;
-	/** Whether Duggi can exit through the goalDoor */
-	private boolean canExit;
-	/** Countdown active for winning or losing */
-	private int countdown;
-
-	private Dinosaur avatar; // Reference to the character avatar
-
-	/** Reference to the goalDoor (for collision detection) */
-	private Wall goalDoor;
-	private Dinosaur clone;
-	private Vector2 cloneLocation;
-	private boolean removeClone = false;
-
-	private Vector2 switchLocation = new Vector2(16, 6);
-
-	// Variables for the enemy model
-	private Vector2 cachePosition1 = new Vector2(0,0);
-	private Vector2 cachePosition2 = new Vector2(0,0);
-	private Vector2 cacheDirection = new Vector2(0,0);
-	private float cacheDistance = 0;
-	private boolean enemyMoving = false;
-	private boolean goBackToStart = false;
-	private boolean goToEnd = true;
-
-	private float enemySpeed = 5;
-	private float elapsed = 0.01f;
-
-	// Variables for sound effects and music
+	// Music and sound effect variables
 	private Music bgMusic;
 	private Music bgDoll;
 	private Music bgHerb;
@@ -290,8 +120,63 @@ public class GameController implements ContactListener, Screen {
 	private Sound collideWall;
 	private Sound transformSound;
 
-	/** Mark set to handle more sophisticated collision callbacks */
-	private ObjectSet<Fixture> sensorFixtures;
+	// GAME CONSTANTS
+	private static final int EXIT_COUNT = 60; // How many frames after winning/losing do we continue?
+	public static final int EXIT_QUIT = 0; // Exit code for quitting the game
+	public static final int EXIT_NEXT = 1; // Exit code for advancing to next level
+	public static final int EXIT_PREV = 2; // Exit code for jumping back to previous level
+
+	private static final float WORLD_STEP = 1/60.0f; // The amount of time for a physics engine step
+	private static final int WORLD_VELOC = 6; // Number of velocity iterations for the constrain solvers
+	private static final int WORLD_POSIT = 2; // Number of position iterations for the constrain solvers
+
+	private static final float DEFAULT_WIDTH  = 32.0f; // Width of the game world in Box2d units
+	private static final float DEFAULT_HEIGHT = 18.0f; // Height of the game world in Box2d units
+	private static final float DEFAULT_GRAVITY = -0.0f; // The default value of gravity (going down)
+
+	private static final int COTTON = 0;
+	private static final int EDIBLEWALL = 1;
+	private static final int WALL = 2;
+	private static final int ENEMY = 3;
+	private static final int GOAL = 4;
+	private static final int DUGGI = 5;
+	private static final int CLONE = 6;
+	private static final int SWITCH = 7;
+
+	private static int GRID_MAX_X = 16;
+	private static int GRID_MAX_Y = 8;
+
+	// GAME VARIABLES
+	private HUDController hud;
+	private ScreenListener listener; // Listener that will update the player mode when we are done
+
+	protected Canvas canvas;
+	protected PooledList<GameObject> objects  = new PooledList<GameObject>(); // All the objects in the world
+	protected PooledList<GameObject> drawObjects  = new PooledList<GameObject>(); // Sortable list of objects for draw
+
+	private PooledList<GameObject> addQueue = new PooledList<GameObject>(); // Queue for adding objects
+	private PooledList<Wall> walls = new PooledList<Wall>();
+	private PooledList<CottonFlower> cottonFlower = new PooledList<CottonFlower>();
+	private PooledList<Enemy> enemies = new PooledList<Enemy>();
+	private PooledList<AIController> controls = new PooledList<AIController>();
+
+	private GameObject[][] grid = new GameObject[GRID_MAX_X][GRID_MAX_Y];
+	private World world;
+	private Rectangle bounds; // The boundary of the world
+	private Vector2 scale; // The world scale
+
+	private boolean active; // Whether or not this is an active controller
+	private boolean complete; // Whether we have completed this level
+	private boolean failed; // Whether we have failed at this world (and need a reset)
+	private boolean canExit; // Whether Duggi can exit through the goalDoor
+	private int countdown; // Countdown active for winning or losing
+
+	private Dinosaur avatar; // Reference to Duggi
+	private Dinosaur clone;
+	private Vector2 cloneLocation;
+	private boolean removeClone = false;
+	private Wall goalDoor;
+	private Vector2 switchLocation = new Vector2(16, 6);
 
 	/**
 	 * Preloads the assets for this controller.
@@ -305,12 +190,18 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void preLoadContent(AssetManager manager) {
 		hud.preLoadContent(manager);
-		if (worldAssetState != AssetState.EMPTY) {
+		if (worldAssetState != AssetState.EMPTY)
 			return;
-		}
 		
 		worldAssetState = AssetState.LOADING;
-		// Load the shared tiles.
+		// Load the font
+		FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		size2Params.fontFileName = FONT_FILE;
+		size2Params.fontParameters.size = FONT_SIZE;
+		manager.load(FONT_FILE, BitmapFont.class, size2Params);
+		assets.add(FONT_FILE);
+
+		// Load textures
 		manager.load(BACKGROUND_FILE,Texture.class);
 		assets.add(BACKGROUND_FILE);
 		manager.load(OVERLAY_FILE,Texture.class);
@@ -321,15 +212,6 @@ public class GameController implements ContactListener, Screen {
 		assets.add(GOAL_FILE);
 		manager.load(GOAL_CLOSED_FILE,Texture.class);
 		assets.add(GOAL_CLOSED_FILE);
-		
-		// Load the font
-		FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-		size2Params.fontFileName = FONT_FILE;
-		size2Params.fontParameters.size = FONT_SIZE;
-		manager.load(FONT_FILE, BitmapFont.class, size2Params);
-		assets.add(FONT_FILE);
-
-		// Load Trino files
 		manager.load(DOLL_FILE_FRONT, Texture.class);
 		assets.add(DOLL_FILE_FRONT);
 		manager.load(DOLL_FILE_LEFT, Texture.class);
@@ -386,24 +268,21 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void loadContent(AssetManager manager) {
 		hud.loadContent(manager);
-		if (worldAssetState != AssetState.LOADING) {
+		if (worldAssetState != AssetState.LOADING)
 			return;
-		}
 		
-		// Allocate the tiles
+		// Allocate the font
+		if (manager.isLoaded(FONT_FILE))
+			displayFont = manager.get(FONT_FILE,BitmapFont.class);
+		else
+			displayFont = null;
+
+		// Allocate the textures
 		background = createTexture(manager,BACKGROUND_FILE,true);
 		overlay = createTexture(manager,OVERLAY_FILE,true);
 		earthTile = createTexture(manager,EARTH_FILE,true);
 		goalTile  = createTexture(manager,GOAL_FILE,true);
 		goalClosedTile =  createTexture(manager,GOAL_CLOSED_FILE, true);
-		
-		// Allocate the font
-		if (manager.isLoaded(FONT_FILE)) {
-			displayFont = manager.get(FONT_FILE,BitmapFont.class);
-		} else {
-			displayFont = null;
-		}
-
 		dollTextureFront = createTexture(manager,DOLL_FILE_FRONT,false);
 		dollTextureLeft = createTexture(manager,DOLL_FILE_LEFT,false);
 		dollTextureRight = createTexture(manager,DOLL_FILE_RIGHT,false);
@@ -425,7 +304,6 @@ public class GameController implements ContactListener, Screen {
 		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
 		pathTexture = createTexture(manager,PATH_FILE,false);
 		switchTexture = createTexture(manager, SWITCH_FILE, false);
-
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -495,17 +373,6 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	/**
-	 * Returns true if the level is completed.
-	 *
-	 * If true, the level will advance after a countdown
-	 *
-	 * @return true if the level is completed.
-	 */
-	public boolean isComplete( ) {
-		return complete;
-	}
-
-	/**
 	 * Sets whether the level is completed.
 	 *
 	 * If true, the level will advance after a countdown
@@ -520,17 +387,6 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	/**
-	 * Returns true if the level is failed.
-	 *
-	 * If true, the level will reset after a countdown
-	 *
-	 * @return true if the level is failed.
-	 */
-	public boolean isFailure( ) {
-		return failed;
-	}
-
-	/**
 	 * Sets whether the level is failed.
 	 *
 	 * If true, the level will reset after a countdown
@@ -542,15 +398,6 @@ public class GameController implements ContactListener, Screen {
 			countdown = EXIT_COUNT;
 		}
 		failed = value;
-	}
-	
-	/**
-	 * Returns true if this is the active screen
-	 *
-	 * @return true if this is the active screen
-	 */
-	public boolean isActive( ) {
-		return active;
 	}
 
 	/**
@@ -592,25 +439,8 @@ public class GameController implements ContactListener, Screen {
 		setComplete(false);
 		setFailure(false);
 		world.setContactListener(this);
-		sensorFixtures = new ObjectSet<Fixture>();
 
-		// set canExit to false
 		canExit = false;
-	}
-
-	/**
-	 * Creates a new game world
-	 *
-	 * The game world is scaled so that the screen coordinates do not agree
-	 * with the Box2d coordinates.  The bounds are in terms of the Box2d
-	 * world, not the screen.
-	 *
-	 * @param width  	The width in Box2d coordinates
-	 * @param height	The height in Box2d coordinates
-	 * @param gravity	The downward gravity
-	 */
-	protected GameController(float width, float height, float gravity) {
-		this(new Rectangle(0,0,width,height), new Vector2(0,gravity));
 	}
 
 	/**
@@ -639,9 +469,8 @@ public class GameController implements ContactListener, Screen {
 	 * Dispose of all (non-static) resources allocated to this mode.
 	 */
 	public void dispose() {
-		for(GameObject g : objects) {
+		for(GameObject g : objects)
 			g.deactivatePhysics(world);
-		}
 		objects.clear();
 		addQueue.clear();
 		world.dispose();
@@ -652,12 +481,11 @@ public class GameController implements ContactListener, Screen {
 		world  = null;
 		canvas = null;
 
-		// dispose music and sound assets
+		// Dispose music and sound assets
 		bgMusic.dispose();
 		bgDoll.dispose();
 		bgHerb.dispose();
 		bgCarn.dispose();
-
 		cottonPickUp.dispose();
 		eatWall.dispose();
 		collideWall.dispose();
@@ -729,9 +557,8 @@ public class GameController implements ContactListener, Screen {
 	public void reset() {
 		Vector2 gravity = new Vector2(world.getGravity() );
 
-		for(GameObject g : objects) {
+		for(GameObject g : objects)
 			g.deactivatePhysics(world);
-		}
 		objects.clear();
 		enemies.clear();
 		controls.clear();
@@ -766,11 +593,11 @@ public class GameController implements ContactListener, Screen {
 			return true;
 		}
 		
-		// Handle resets*/
-		if (input.didReset()) {
+		// Handle resets
+		if (input.didReset())
 			reset();
-		}
-		// reset level when colliding with enemy
+
+		// Reset level when colliding with enemy
 		if (countdown > 0) {
 			countdown--;
 		} else if (countdown == 0) {
@@ -778,15 +605,12 @@ public class GameController implements ContactListener, Screen {
 				reset();
 			}
 		}
+
 		return true;
 	}
 	
 	/**
 	 * Processes physics
-	 *
-	 * Once the update phase is over, but before we draw, we are ready to handle
-	 * physics.  The primary method is the step() method in world.  This implementation
-	 * works for all applications and should not need to be overwritten.
 	 *
 	 * @param dt Number of seconds since last animation frame
 	 */
@@ -800,8 +624,6 @@ public class GameController implements ContactListener, Screen {
 		world.step(WORLD_STEP,WORLD_VELOC,WORLD_POSIT);
 
 		// Garbage collect the deleted objects.
-		// Note how we use the linked list nodes to delete O(1) in place.
-		// This is O(n) without copying.
 		Iterator<PooledList<GameObject>.Entry> iterator = objects.entryIterator();
 		while (iterator.hasNext()) {
 			PooledList<GameObject>.Entry entry = iterator.next();
@@ -810,7 +632,6 @@ public class GameController implements ContactListener, Screen {
 				g.deactivatePhysics(world);
 				entry.remove();
 			} else {
-				// Note that update is called last!
 				g.update(dt);
 			}
 		}
@@ -860,7 +681,7 @@ public class GameController implements ContactListener, Screen {
 		for(GameObject g : drawObjects) {
 			g.draw(canvas);
 		}
-//		canvas.draw(overlay,0.0f,0.0f);
+		canvas.draw(overlay,0.0f,0.0f);
 		canvas.end();
 		
 		// Final message
@@ -876,19 +697,6 @@ public class GameController implements ContactListener, Screen {
 			canvas.end();
 		}
 	}
-	
-	/**
-	 * Called when the Screen is resized. 
-	 *
-	 * This can happen at any point during a non-paused state but will never happen 
-	 * before a call to show().
-	 *
-	 * @param width  The new width in pixels
-	 * @param height The new height in pixels
-	 */
-	public void resize(int width, int height) {
-		// IGNORE FOR NOW
-	}
 
 	/**
 	 * Called when the Screen should render itself.
@@ -901,38 +709,18 @@ public class GameController implements ContactListener, Screen {
 	public void render(float delta) {
 		if (active) {
 			if (preUpdate(delta)) {
-				update(delta); // This is the one that must be defined.
+				update(delta);
 				postUpdate(delta);
 			}
 			draw(delta);
 			hud.draw();
 		}
 	}
-
-	/**
-	 * Called when the Screen is paused.
-	 * 
-	 * This is usually when it's not active or visible on screen. An Application is 
-	 * also paused before it is destroyed.
-	 */
-	public void pause() {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 * Called when the Screen is resumed from a paused state.
-	 *
-	 * This is usually when it regains focus.
-	 */
-	public void resume() {
-		// TODO Auto-generated method stub
-	}
 	
 	/**
 	 * Called when this screen becomes the current screen for a Game.
 	 */
 	public void show() {
-		// Useless if called in outside animation loop
 		active = true;
 	}
 
@@ -940,7 +728,6 @@ public class GameController implements ContactListener, Screen {
 	 * Called when this screen is no longer the current screen for a Game.
 	 */
 	public void hide() {
-		// Useless if called in outside animation loop
 		active = false;
 	}
 
@@ -1144,7 +931,6 @@ public class GameController implements ContactListener, Screen {
 
 
 		/** Music */
-
 		if (bgMusic == null){
 			bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
 			bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
@@ -1166,23 +952,17 @@ public class GameController implements ContactListener, Screen {
 
 		bgMusic = bgDoll;
 		bgMusic.setLooping(true);
-		bgMusic.setVolume(0.00f);
+		bgMusic.setVolume(0.10f);
 		bgMusic.setPosition(0);
 		bgMusic.play();
 	}
+
 	/**
 	 * The core gameplay loop of this world.
-	 *
-	 * This method contains the specific update code for this mini-game. It does
-	 * not handle collisions, as those are managed by the parent class GameController.
-	 * This method is called after input is read, but before collisions are resolved.
-	 * The very last thing that it should do is apply forces to the appropriate objects.
 	 *
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
-		// Process actions in object model
-
 		int direction = avatar.getDirection();
 
 		if (avatar.getX() >= screenToMaze(1) && avatar.getX() <= screenToMaze(16)
@@ -1552,17 +1332,10 @@ public class GameController implements ContactListener, Screen {
 		Body body1 = fix1.getBody();
 		Body body2 = fix2.getBody();
 
-
-		Object fd1 = fix1.getUserData();
-		Object fd2 = fix2.getUserData();
-
 		try {
 			GameObject bd1 = (GameObject)body1.getUserData();
 			GameObject bd2 = (GameObject)body2.getUserData();
-
-			// Check for win condition
 			handleCollision(bd1, bd2);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1622,18 +1395,6 @@ public class GameController implements ContactListener, Screen {
 		}
 	}
 
-	public boolean didExist(GameObject bd, PooledList<GameObject>list){
-		for(GameObject l : list){
-			if (bd == l) return true;
-		}
-		return false;
-	}
-
-	/**
-	 *
-	 * @param bd
-	 * @return true if object is directly in front of avatar
-	 */
 	public boolean isInFrontOfAvatar(GameObject bd){
 		int direction = avatar.getDirection();
 		Vector2 location = avatarGrid();
@@ -1683,65 +1444,45 @@ public class GameController implements ContactListener, Screen {
 		return false;
 	}
 
-	public GameObject objectInFrontOfAvatar(){
+	public GameObject objectInFrontOfAvatar() {
 		int direction = avatar.getDirection();
 		if (direction == Dinosaur.UP){
-			if ((int)avatarGrid().y == GRID_MAX_Y) return null;
-			else{
+			if ((int)avatarGrid().y == GRID_MAX_Y)
+				return null;
+			else
 				return grid[(int)avatarGrid().x-1][(int)avatarGrid().y];
-			}
 		}
-		else if (direction == Dinosaur.DOWN){
-			if ((int)avatarGrid().y == 1) return null;
-			else{
+		else if (direction == Dinosaur.DOWN) {
+			if ((int)avatarGrid().y == 1)
+				return null;
+			else
 				return grid[(int)avatarGrid().x-1][(int)avatarGrid().y-2];
-			}
 		}
-		else if (direction == Dinosaur.LEFT){
-			if ((int)avatarGrid().x == 1) return null;
-			else{
+		else if (direction == Dinosaur.LEFT) {
+			if ((int)avatarGrid().x == 1)
+				return null;
+			else
 				return grid[(int)avatarGrid().x-2][(int)avatarGrid().y-1];
-			}
 		}
-		else if (direction == Dinosaur.RIGHT){
-			if ((int)avatarGrid().x == GRID_MAX_X) return null;
-			else{
+		else if (direction == Dinosaur.RIGHT) {
+			if ((int)avatarGrid().x == GRID_MAX_X)
+				return null;
+			else
 				return grid[(int)avatarGrid().x][(int)avatarGrid().y-1];
-			}
 		}
 		return null;
 	}
 
-	/**
-	 *
-	 * @param bd1
-	 * @param bd2
-	 * @return true if they are aligned horizontally
-	 */
 	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){
 		return (Math.abs(bd1.getY() - bd2.getY()) <= offset);
 	}
 
-
-	/**
-	 *
-	 * @param bd1
-	 * @param bd2
-	 * @return true if they are aligned horizontally
-	 */
 	public boolean isAlignedVertically(GameObject bd1, GameObject bd2, double offset){
 		return (Math.abs(bd1.getX() - bd2.getX()) <= offset);
 	}
 
 	public boolean isOnTop(GameObject bd1, GameObject bd2){
 		return isAlignedVertically(bd1, bd2, 0.9) && isAlignedHorizontally(bd1, bd2, 0.9);
-	}
-
-	public GameObject getCotton(){
-		for (int i = 0; i < cottonFlower.size(); i++){
-			if (isOnTop(cottonFlower.get(i), avatar)) return cottonFlower.get(i);
-		}
-		return null;
 	}
 
 	public Vector2 avatarGrid(){
@@ -1754,32 +1495,6 @@ public class GameController implements ContactListener, Screen {
 		return (Math.abs(avatar.getX() - gridx) <= x) && (Math.abs(avatar.getY() - gridy) <= y);
 	}
 
-	/**
-	 * Callback method for the start of a collision
-	 *
-	 * This method is called when two objects cease to touch.  The main use of this method
-	 * is to determine when the characer is NOT on the ground.  This is how we prevent
-	 * double jumping.
-	 */
-	public void endContact(Contact contact) {
-		Fixture fix1 = contact.getFixtureA();
-		Fixture fix2 = contact.getFixtureB();
-
-		Body body1 = fix1.getBody();
-		Body body2 = fix2.getBody();
-
-		Object fd1 = fix1.getUserData();
-		Object fd2 = fix2.getUserData();
-
-		Object bd1 = body1.getUserData();
-		Object bd2 = body2.getUserData();
-
-		if (bd1 == avatar)
-			directlyInFront = null;
-		else if (bd2 == avatar)
-			directlyInFront = null;
-	}
-
 	/** drawing on screen */
 	public int screenToMaze (float f) {
 		return (int)(1+2*(f-1));
@@ -1789,8 +1504,6 @@ public class GameController implements ContactListener, Screen {
 		return new Vector2(screenToMaze(x), screenToMaze(y));
 	}
 
-
-
 	/** Change the music based on timestamp */
 	public void changeMusic(Music name){
 		// Change the music
@@ -1798,13 +1511,22 @@ public class GameController implements ContactListener, Screen {
 		float seconds = bgMusic.getPosition();
 		bgMusic = name;
 		bgMusic.setLooping(true);
-		bgMusic.setVolume(0.00f);
+		bgMusic.setVolume(0.10f);
 		bgMusic.play();
 		bgMusic.pause();
 		bgMusic.setPosition(seconds);
 		bgMusic.play();
 	}
 
+	/** Unused Screen method */
+	public void resize(int width, int height) {}
+	/** Unused Screen method */
+	public void pause() {}
+	/** Unused Screen method */
+	public void resume() {}
+
+	/** Unused ContactListener method */
+	public void endContact(Contact contact) {}
 	/** Unused ContactListener method */
 	public void postSolve(Contact contact, ContactImpulse impulse) {}
 	/** Unused ContactListener method */
