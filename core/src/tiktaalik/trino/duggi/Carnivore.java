@@ -3,7 +3,7 @@ package tiktaalik.trino.duggi;
 import com.badlogic.gdx.math.Vector2;
 
 public class Carnivore extends Dinosaur {
-    private final float CHARGE_COOLDOWN_DURATION = 2.0f;
+    private final float CHARGE_COOLDOWN_DURATION = 0.5f;
     private final float CHARGE_LOAD_DURATION = 1.0f;
 
     private boolean charging, chargeReady, coolingCharge, loadingCharge;

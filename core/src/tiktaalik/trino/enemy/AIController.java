@@ -1,6 +1,7 @@
-package tiktaalik.trino;
+package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.math.Vector2;
+import tiktaalik.trino.GameObject;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.util.PooledList;
 
@@ -12,7 +13,7 @@ import java.util.*;
  * REMEMBER: As an implementation of InputController you will have access to
  * the control code constants in that interface.  You will want to use them.
  */
-public class AIController{
+public class AIController {
     /**
      * Enumeration to encode the finite state machine.
      */
@@ -36,7 +37,6 @@ public class AIController{
     // Instance Attributes
     /** The ship being controlled by this AIController */
     private Enemy enemy;
-    private Enemy[] enemies;
     /** The ship's current state in the FSM */
     private FSMState state;
     /** The target ship (to chase or attack). */
@@ -75,7 +75,6 @@ public class AIController{
      */
     public AIController(int id, GameObject duggi,Enemy[] enemies, Vector2[] p) {
         this.enemy = enemies[id];
-        this.enemies = enemies;
         //System.out.println("the enemy id is called for AI controller " + id);
         //System.out.println("the first vector for path is " + p[0]);
 
@@ -195,20 +194,8 @@ public class AIController{
      * @return a movement direction that moves towards a goal tile.
      */
     public void getMoveAlongPath() {
-//          System.out.println("getMoveAlongPath called for " + enemy.getId());
-
-//        if (path[pathStep].cpy().sub(enemy.getPosition()).len() < 0.2f){
-//            pathStep = (pathStep + 1) % path.length;
-//        }
-//
-//        step = path[pathStep].cpy().sub(enemy.getPosition()).nor().scl(enemySpeed);
-//        enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
-
-//        //#region PUT YOUR CODE HERE
-        //System.out.println("path: " + path);
-        //System.out.println("enemy: " + enemy);
-        //System.out.println("pathStep: " + pathStep);
-        //System.out.println("target: " + target);
+        if (enemy.getStunned())
+            return;
 
         if (path[pathStep].cpy().sub(enemy.getPosition()).len() < 0.2f){
             pathStep = (pathStep + 1) % path.length;
@@ -225,7 +212,5 @@ public class AIController{
 
         step = path[pathStep].cpy().sub(enemy.getPosition()).nor().scl(enemySpeed);
         enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
-
-
     }
 }
