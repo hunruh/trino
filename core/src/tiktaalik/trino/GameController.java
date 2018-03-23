@@ -137,19 +137,20 @@ public class GameController implements ContactListener, Screen {
 	private static final float DEFAULT_HEIGHT = 18.0f; // Height of the game world in Box2d units
 	private static final float DEFAULT_GRAVITY = -0.0f; // The default value of gravity (going down)
 
-	private static final int COTTON = 0;
-	private static final int EDIBLEWALL = 1;
-	private static final int WALL = 2;
-	private static final int ENEMY = 3;
-	private static final int GOAL = 4;
-	private static final int DUGGI = 5;
-	private static final int CLONE = 6;
-	private static final int SWITCH = 7;
+	protected static final int COTTON = 0;
+	protected static final int EDIBLEWALL = 1;
+	protected static final int WALL = 2;
+	protected static final int ENEMY = 3;
+	protected static final int GOAL = 4;
+	protected static final int DUGGI = 5;
+	protected static final int CLONE = 6;
+	protected static final int SWITCH = 7;
 
 	private static int GRID_MAX_X = 16;
 	private static int GRID_MAX_Y = 8;
 
 	// GAME VARIABLES
+	private CollisionHandler collisionHandler;
 	private HUDController hud;
 	private ScreenListener listener; // Listener that will update the player mode when we are done
 
@@ -175,9 +176,7 @@ public class GameController implements ContactListener, Screen {
 	private int countdown; // Countdown active for winning or losing
 
 	private Dinosaur avatar; // Reference to Duggi
-	private Dinosaur clone;
-	private Vector2 cloneLocation;
-	private boolean removeClone = false;
+	private Clone clone;
 	private Wall goalDoor;
 	private Vector2 switchLocation = new Vector2(16, 6);
 
@@ -465,6 +464,7 @@ public class GameController implements ContactListener, Screen {
 		failed = false;
 		active = false;
 		countdown = -1;
+		collisionHandler = new CollisionHandler();
 		hud = new HUDController();
 	}
 	
@@ -567,8 +567,6 @@ public class GameController implements ContactListener, Screen {
 		controls.clear();
 		addQueue.clear();
 		world.dispose();
-		clone = null;
-		cloneLocation = null;
 
 		world = new World(gravity,false);
 		world.setContactListener(this);
@@ -592,9 +590,8 @@ public class GameController implements ContactListener, Screen {
 	public boolean preUpdate(float dt) {
 		InputHandler input = InputHandler.getInstance();
 		input.readInput(bounds, scale);
-		if (listener == null) {
+		if (listener == null)
 			return true;
-		}
 		
 		// Handle resets
 		if (input.didReset())
@@ -619,9 +616,8 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void postUpdate(float dt) {
 		// Add any objects created by actions
-		while (!addQueue.isEmpty()) {
+		while (!addQueue.isEmpty())
 			addObject(addQueue.poll());
-		}
 		
 		// Turn the physics engine crank.
 		world.step(WORLD_STEP,WORLD_VELOC,WORLD_POSIT);
@@ -681,9 +677,8 @@ public class GameController implements ContactListener, Screen {
 			}
 		});
 		canvas.draw(background,0.0f,0.0f);
-		for(GameObject g : drawObjects) {
+		for(GameObject g : drawObjects)
 			g.draw(canvas);
-		}
 		canvas.draw(overlay,0.0f,0.0f);
 		canvas.end();
 		
@@ -755,9 +750,15 @@ public class GameController implements ContactListener, Screen {
 		float dheight = dollTextureRight.getRegionHeight() / scale.y;
 		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
 		avatar.setType(DUGGI);
-		avatar.setTexture(dollTextureRight);
+		avatar.setTextureSet(dollTextureLeft, dollTextureRight, dollTextureBack, dollTextureFront);
 		avatar.setDrawScale(scale);
 		addObject(avatar);
+
+		clone = new Clone(dwidth);
+		clone.setTexture(dollTextureFront);
+		clone.setDrawScale(scale);
+		clone.setType(CLONE);
+		clone.setAlive(false);
 
 		/** Adding cotton flowers */
 		dwidth = cottonTexture.getRegionWidth() / scale.x;
@@ -1025,123 +1026,49 @@ public class GameController implements ContactListener, Screen {
 			if (avatar.canTransform()) {
 				if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
 					avatar = avatar.transformToDoll();
+					avatar.setTextureSet(dollTextureLeft, dollTextureRight, dollTextureBack, dollTextureFront);
+					objects.set(1, avatar);
 
 					// Change the music
 					changeMusic(bgDoll);
-					// play sound effect
 					transformSound.pause();
 					transformSound.play(1.0f);
-
-					if (direction == Dinosaur.UP) {
-						avatar.setTexture(dollTextureBack);
-					} else if (direction == Dinosaur.LEFT) {
-						avatar.setTexture(dollTextureLeft);
-					} else if (direction == Dinosaur.RIGHT) {
-						avatar.setTexture(dollTextureRight);
-					} else {
-						avatar.setTexture(dollTextureFront);
-					}
-
-					objects.set(1, avatar);
 				} else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 					avatar = avatar.transformToHerbivore();
+					avatar.setTextureSet(herbivoreTextureLeft, herbivoreTextureRight, herbivoreTextureBack,
+							herbivoreTextureFront);
+					objects.set(1, avatar);
 
 					// Change the music
 					changeMusic(bgHerb);
-					// play sound effect
 					transformSound.pause();
 					transformSound.play(1.0f);
-
-					if (direction == Dinosaur.UP) {
-						avatar.setTexture(herbivoreTextureBack);
-					} else if (direction == Dinosaur.LEFT) {
-						avatar.setTexture(herbivoreTextureLeft);
-					} else if (direction == Dinosaur.RIGHT) {
-						avatar.setTexture(herbivoreTextureRight);
-					} else {
-						avatar.setTexture(herbivoreTextureFront);
-					}
-					objects.set(1, avatar);
 				} else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 					avatar = avatar.transformToCarnivore();
+					avatar.setTextureSet(carnivoreTextureLeft, carnivoreTextureRight, carnivoreTextureBack,
+							carnivoreTextureFront);
+					objects.set(1, avatar);
 
 					// Change the music
 					changeMusic(bgCarn);
-					// play sound effect
 					transformSound.pause();
 					transformSound.play(1.0f);
-
-					if (direction == Dinosaur.UP) {
-						avatar.setTexture(carnivoreTextureBack);
-					} else if (direction == Dinosaur.LEFT) {
-						avatar.setTexture(carnivoreTextureLeft);
-					} else if (direction == Dinosaur.RIGHT) {
-						avatar.setTexture(carnivoreTextureRight);
-					} else {
-						avatar.setTexture(carnivoreTextureFront);
-					}
-					objects.set(1, avatar);
 				}
 			}
 		}
-		if (avatar.getForm() == Dinosaur.DOLL_FORM) {
-			if (avatar.getDirection() == Dinosaur.UP) {
-				avatar.setTexture(dollTextureBack);
-			}
-			else if (avatar.getDirection() == Dinosaur.LEFT) {
-				avatar.setTexture(dollTextureLeft);
-			}
-			else if (avatar.getDirection() == Dinosaur.RIGHT) {
-				avatar.setTexture(dollTextureRight);
-			}
-			else if (avatar.getDirection() == Dinosaur.DOWN) {
-				avatar.setTexture(dollTextureFront);
-			}
-		}
-		else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
-			if (avatar.getDirection() == Dinosaur.UP) {
-				avatar.setTexture(herbivoreTextureBack);
-			}
-			else if (avatar.getDirection() == Dinosaur.LEFT) {
-				avatar.setTexture(herbivoreTextureLeft);
-			}
-			else if (avatar.getDirection() == Dinosaur.RIGHT) {
-				avatar.setTexture(herbivoreTextureRight);
-			}
-			else if (avatar.getDirection() == Dinosaur.DOWN) {
-				avatar.setTexture(herbivoreTextureFront);
-			}
-		}
-		else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
-			if (avatar.getDirection() == Dinosaur.UP) {
-				avatar.setTexture(carnivoreTextureBack);
-			}
-			else if (avatar.getDirection() == Dinosaur.LEFT) {
-				avatar.setTexture(carnivoreTextureLeft);
-			}
-			else if (avatar.getDirection() == Dinosaur.RIGHT) {
-				avatar.setTexture(carnivoreTextureRight);
-			}
-			else if (avatar.getDirection() == Dinosaur.DOWN) {
-				avatar.setTexture(carnivoreTextureFront);
-			}
-		}
-;
 
 		if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging() &&
 				avatar.getLinearVelocity().len2() < 5)
 			((Carnivore) avatar).stopCharge();
 
-		if (removeClone == true){
+		if (!clone.getAlive()) {
 			clone.deactivatePhysics(world);
 			objects.remove(clone);
-			clone = null;
-			cloneLocation = null;
-			removeClone = false;
+			clone.setAlive(false);
 		}
 
 		// Check if Duggi or Clone is on top of button
-		if (cloneLocation != null && cloneLocation.equals(new Vector2(16,6))){
+		if (clone.getGridLocation() != null && clone.getGridLocation().equals(new Vector2(16,6))) {
 			canExit = true;
 			goalDoor.setTexture(goalTile);
 		} else {
@@ -1162,44 +1089,39 @@ public class GameController implements ContactListener, Screen {
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
 				}
-				else if  (clone == null && avatar.getResources() >= 1) {
+				else if (!clone.getAlive() && avatar.getResources() >= 1) {
 					Vector2 location = avatarGrid();
-					float dwidth = dollTextureFront.getRegionWidth() / scale.x;
-					float dheight = dollTextureFront.getRegionHeight() / scale.y;
-					removeClone = false;
 					GameObject goal = grid[(int)switchLocation.x-1][(int)switchLocation.y-1];
 					if (direction == Dinosaur.UP) {
-						if (location.y != GRID_MAX_Y && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal) ){
-							clone = new Doll(screenToMaze(location.x), screenToMaze(location.y+1), dwidth);
-							cloneLocation = new Vector2(location.x, location.y+1);
+						if (location.y != GRID_MAX_Y && (objectInFrontOfAvatar()== null || objectInFrontOfAvatar() == goal) ) {
+							clone.setLocation(screenToMaze(location.x), screenToMaze(location.y+1));
+							clone.setGridLocation(location.x, location.y+1);
+							clone.setAlive(true);
 						}
 					}
 					else if (direction == Dinosaur.DOWN) {
-						if (location.y != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
-							clone = new Doll(screenToMaze(location.x), screenToMaze(location.y - 1), dwidth);
-							cloneLocation = new Vector2(location.x, location.y-1);
+						if (location.y != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)) {
+							clone.setLocation(screenToMaze(location.x), screenToMaze(location.y-1));
+							clone.setGridLocation(location.x, location.y-1);
+							clone.setAlive(true);
 						}
 					}
 					else if (direction == Dinosaur.LEFT) {
 						if (location.x != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
-							clone = new Doll(screenToMaze(location.x - 1), screenToMaze(location.y), dwidth);
-							cloneLocation = new Vector2(location.x-1, location.y);
+							clone.setLocation(screenToMaze(location.x-1), screenToMaze(location.y));
+							clone.setGridLocation(location.x-1, location.y);
+							clone.setAlive(true);
 						}
 					}
 					else if (direction == Dinosaur.RIGHT) {
 						if (location.x != GRID_MAX_X && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
-							clone = new Doll(screenToMaze(location.x+1), screenToMaze(location.y), dwidth);
-							cloneLocation = new Vector2(location.x+1, location.y);
+							clone.setLocation(screenToMaze(location.x+1), screenToMaze(location.y));
+							clone.setGridLocation(location.x+1, location.y);
+							clone.setAlive(true);
 						}
 					}
-					if (clone != null) {
-						clone.setTexture(dollTextureFront);
-						clone.setDrawScale(scale);
-						clone.setTexture(dollTextureFront);
-						clone.setType(CLONE);
-						clone.setBodyType(BodyDef.BodyType.StaticBody);
+					if (clone.getAlive()) {
 						addObject(clone);
-
 						avatar.decrementResources();
 					}
 				}
@@ -1323,10 +1245,6 @@ public class GameController implements ContactListener, Screen {
 	/**
 	 * Callback method for the start of a collision
 	 *
-	 * This method is called when we first get a collision between two objects.  We use
-	 * this method to test if it is the "right" kind of collision.  In particular, we
-	 * use it to test if we made it to the win door.
-	 *
 	 * @param contact The two bodies that collided
 	 */
 	public void beginContact(Contact contact) {
@@ -1339,64 +1257,11 @@ public class GameController implements ContactListener, Screen {
 		try {
 			GameObject bd1 = (GameObject)body1.getUserData();
 			GameObject bd2 = (GameObject)body2.getUserData();
-			handleCollision(bd1, bd2);
+			collisionHandler.processCollision(bd1, bd2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-	}
-
-	public void handleCollision(GameObject bd1, GameObject bd2) {
-		if (bd1.getType() == CLONE){
-			if (bd2.getType() == ENEMY)
-				removeClone = true;
-		}
-		else if (bd2.getType() == CLONE){
-			if (bd1.getType() == ENEMY)
-				removeClone = true;
-		}
-		else
-			removeClone = false;
-
-		if (bd1.getType() == DUGGI){
-			if (bd2.getType() == GOAL) {
-				if (canExit) {
-					setComplete(true);
-				}
-			}
-			else if (bd2.getType() == ENEMY){
-				if (((Dinosaur)bd1).getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) bd1).getCharging())
-					((Enemy) bd2).setStunned();
-				else if (!((Enemy) bd2).getStunned())
-					setFailure(true);
-			}
-			else if (bd2.getType() == WALL){
-				if (isInFrontOfAvatar(bd2)){
-					// play sound effect
-					collideWall.pause();
-					collideWall.play(1.0f);
-				}
-			}
-		}
-		else if (bd2.getType() == DUGGI){
-			if (bd1.getType() == GOAL) {
-				if (canExit)
-					setComplete(true);
-			}
-			else if (bd1.getType() == ENEMY) {
-				if (((Dinosaur)bd2).getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) bd2).getCharging())
-					((Enemy) bd1).setStunned();
-				else if (!((Enemy) bd1).getStunned())
-					setFailure(true);
-			}
-			else if (bd1.getType() == WALL){
-				if (isInFrontOfAvatar(bd1)) {
-					// play sound effect
-					collideWall.pause();
-					collideWall.play(1.0f);
-				}
-			}
-		}
 	}
 
 	public boolean isInFrontOfAvatar(GameObject bd){
@@ -1498,6 +1363,7 @@ public class GameController implements ContactListener, Screen {
 		float gridy = screenToMaze(avatarGrid().y);
 		return (Math.abs(avatar.getX() - gridx) <= x) && (Math.abs(avatar.getY() - gridy) <= y);
 	}
+
 	public boolean isOverLap(GameObject bd1, GameObject bd2){
 		return isAlignedVertically(bd1, bd2, 2.5) && isAlignedHorizontally(bd1, bd2, 2.5);
 	}

@@ -1,6 +1,7 @@
 package tiktaalik.trino.duggi;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
@@ -18,6 +19,8 @@ public abstract class Dinosaur extends GameObject {
 
     private final int MAX_RESOURCES = 4;
     private final int TRANSFORM_COST = 3;
+
+    private TextureRegion[] textureSet;
 
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
@@ -87,8 +90,15 @@ public abstract class Dinosaur extends GameObject {
 
         // Gameplay attributes
         direction = RIGHT;
-
+        textureSet = new TextureRegion[4];
         resourceCnt = 0;
+    }
+
+    public void setTextureSet(TextureRegion left, TextureRegion right, TextureRegion up, TextureRegion down) {
+        textureSet[LEFT] = left;
+        textureSet[RIGHT] = right;
+        textureSet[UP] = up;
+        textureSet[DOWN] = down;
     }
 
     /**
@@ -215,6 +225,7 @@ public abstract class Dinosaur extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
+        setTexture(textureSet[direction]);
     }
 
     /**
