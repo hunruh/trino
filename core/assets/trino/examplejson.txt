@@ -1,0 +1,28 @@
+{"Levels": [
+	{
+		"ID": 1,
+		"Panning": "no",
+		"Night": "no",
+		"GameObjects":{
+			"Goal": {"x": 5.0, "y": 5.0},
+			"Switch": {"x": 6.0, "y": 2.0},
+			"Player": {"x":1.0, "y":1.0, "Orientation": "right"},
+			"Enemy": [
+				{"x":3.0, "y":1.0, "Orientation": "right", "Type": "carnivore"},
+				{"x":1.0, "y":4.0, "Orientation": "right", "Type": "herbivore"}
+			],
+			"Resources": [
+				{"x": 5.0, "y": 4.0, "Type": "cotton"},
+				{"x": 2.0, "y": 3.0, "Type": "edibleWall"}
+			],
+			"Walls": [
+				{"x": 5.0, "y": 5.0},
+				{"x": 4.0, "y": 5.0},
+				{"x": 3.0, "y": 5.0}
+			],
+			"Rivers": [
+				{"x": 9.0, "y": 5.0}
+			]
+		}
+	}
+]}

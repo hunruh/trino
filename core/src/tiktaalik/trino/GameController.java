@@ -20,6 +20,7 @@ import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.Switch;
 import tiktaalik.trino.environment.Wall;
 import tiktaalik.trino.environment.CottonFlower;
+import tiktaalik.trino.level_editor.LevelParser;
 import tiktaalik.util.*;
 
 /**
@@ -750,6 +751,14 @@ public class GameController implements ContactListener, Screen {
 		// Create player character
 		// It is important that this is always created first, as transformations must swap the first element
 		// in the objects list
+
+		LevelParser parser = new LevelParser();
+		try{
+		parser.parse("trino/examplejson.txt");
+		} catch(Exception e){
+			System.out.println(e);
+		}
+
 
 		float dwidth = dollTextureRight.getRegionWidth() / (scale.x * 2);
 		float dheight = dollTextureRight.getRegionHeight() / scale.y;
