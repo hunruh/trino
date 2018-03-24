@@ -47,46 +47,31 @@ import tiktaalik.util.*;
 public class MenuController implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
 	private static final String BACKGROUND_FILE = "trino/menu.png";
-	private static final String PROGRESS_FILE = "shared/progressbar.png";
+	private static final String PROGRESS_FILE_ONE = "trino/load1.png";
+	private static final String PROGRESS_FILE_TWO = "trino/load2.png";
+	private static final String PROGRESS_FILE_THREE = "trino/load3.png";
 	private static final String PLAY_BTN_FILE = "shared/play.png";
 	
 	/** Background texture for start-up */
 	private Texture background;
 	/** Play button to display when done */
 	private Texture playButton;
-	/** Texture atlas to support a progress bar */
-	private Texture statusBar;
-	
-	// statusBar is a "texture atlas." Break it up into parts.
-	/** Left cap to the status background (grey region) */
-	private TextureRegion statusBkgLeft;
-	/** Middle portion of the status background (grey region) */
-	private TextureRegion statusBkgMiddle;
-	/** Right cap to the status background (grey region) */
-	private TextureRegion statusBkgRight;
-	/** Left cap to the status forground (colored region) */
-	private TextureRegion statusFrgLeft;
-	/** Middle portion of the status forground (colored region) */
-	private TextureRegion statusFrgMiddle;
-	/** Right cap to the status forground (colored region) */
-	private TextureRegion statusFrgRight;	
+	/** Texture for loading */
+	private Texture statusOne;
+	private Texture statusTwo;
+	private Texture statusThree;
+
 
 	/** Default budget for asset loader (do nothing but load 60 fps) */
 	private static int DEFAULT_BUDGET = 15;
 	/** Standard window size (for scaling) */
-	private static int STANDARD_WIDTH  = 800;
+	private static int STANDARD_WIDTH  = 1280;
 	/** Standard window height (for scaling) */
-	private static int STANDARD_HEIGHT = 700;
+	private static int STANDARD_HEIGHT = 720;
 	/** Ratio of the bar width to the screen */
 	private static float BAR_WIDTH_RATIO  = 0.66f;
 	/** Ration of the bar height to the screen */
-	private static float BAR_HEIGHT_RATIO = 0.25f;	
-	/** Height of the progress bar */
-	private static int PROGRESS_HEIGHT = 30;
-	/** Width of the rounded cap on left or right */
-	private static int PROGRESS_CAP    = 15;
-	/** Width of the middle portion in texture atlas */
-	private static int PROGRESS_MIDDLE = 200;
+	private static float BAR_HEIGHT_RATIO = 0.25f;
 	/** Amount to scale the play button */
 	private static float BUTTON_SCALE  = 0.60f;
 	
@@ -102,7 +87,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
 
-	/** The width of the progress bar */	
+	/** The width of the progress bar */
 	private int width;
 	/** The y-coordinate of the center of the progress bar */
 	private int centerY;
@@ -191,23 +176,26 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 		// Load the next two images immediately.
 		playButton = null;
-		background = new Texture(BACKGROUND_FILE);
-		statusBar  = new Texture(PROGRESS_FILE);
+		//background = new Texture(BACKGROUND_FILE);
+		background = null;
+		statusOne  = new Texture(PROGRESS_FILE_ONE);
+		statusTwo  = new Texture(PROGRESS_FILE_TWO);
+		statusThree  = new Texture(PROGRESS_FILE_THREE);
 		
 		// No progress so far.		
 		progress   = 0;
 		pressState = 0;
 		active = false;
 
-		// Break up the status bar texture into regions
-		statusBkgLeft   = new TextureRegion(statusBar,0,0,PROGRESS_CAP,PROGRESS_HEIGHT);
-		statusBkgRight  = new TextureRegion(statusBar,statusBar.getWidth()-PROGRESS_CAP,0,PROGRESS_CAP,PROGRESS_HEIGHT);
-		statusBkgMiddle = new TextureRegion(statusBar,PROGRESS_CAP,0,PROGRESS_MIDDLE,PROGRESS_HEIGHT);
+//		// Break up the status bar texture into regions
+//		statusBkgLeft   = new TextureRegion(statusOne,0,0,PROGRESS_CAP,PROGRESS_HEIGHT);
+//		statusBkgRight  = new TextureRegion(statusTwo,statusBar.getWidth()-PROGRESS_CAP,0,PROGRESS_CAP,PROGRESS_HEIGHT);
+//		statusBkgMiddle = new TextureRegion(statusThree,PROGRESS_CAP,0,PROGRESS_MIDDLE,PROGRESS_HEIGHT);
 
-		int offset = statusBar.getHeight()-PROGRESS_HEIGHT;
-		statusFrgLeft   = new TextureRegion(statusBar,0,offset,PROGRESS_CAP,PROGRESS_HEIGHT);
-		statusFrgRight  = new TextureRegion(statusBar,statusBar.getWidth()-PROGRESS_CAP,offset,PROGRESS_CAP,PROGRESS_HEIGHT);
-		statusFrgMiddle = new TextureRegion(statusBar,PROGRESS_CAP,offset,PROGRESS_MIDDLE,PROGRESS_HEIGHT);
+//		int offset = statusThree.getHeight()-PROGRESS_HEIGHT;
+//		statusTop   = new TextureRegion(statusOne,statusOne.getWidth()-PROGRESS_CAP,offset,PROGRESS_CAP,PROGRESS_HEIGHT);
+//		statusLeft  = new TextureRegion(statusTwo,statusTwo.getWidth()-PROGRESS_CAP,offset,PROGRESS_CAP,PROGRESS_HEIGHT);
+//		statusRight = new TextureRegion(statusThree,statusThree.getWidth()-PROGRESS_CAP,offset,PROGRESS_CAP,PROGRESS_HEIGHT);
 
 		startButton = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
 		Gdx.input.setInputProcessor(this);
@@ -222,18 +210,15 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * Called when this screen should release all resources.
 	 */
 	public void dispose() {
-		 statusBkgLeft = null;
-		 statusBkgRight = null;
-		 statusBkgMiddle = null;
-
-		 statusFrgLeft = null;
-		 statusFrgRight = null;
-		 statusFrgMiddle = null;
 
 		 background.dispose();
-		 statusBar.dispose();
+		 statusOne.dispose();
+		 statusTwo.dispose();
+		 statusThree.dispose();
 		 background = null;
-		 statusBar  = null;
+		 statusOne  = null;
+		 statusTwo = null;
+		 statusThree = null;
 		 if (playButton != null) {
 			 playButton.dispose();
 			 playButton = null;
@@ -255,6 +240,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 			this.progress = manager.getProgress();
 			if (progress >= 1.0f) {
 				this.progress = 1.0f;
+				background = new Texture(BACKGROUND_FILE);
 				playButton = new Texture(PLAY_BTN_FILE);
 				playButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			}
@@ -270,10 +256,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 */
 	private void draw() {
 		canvas.begin();
-		canvas.draw(background, 0,0);
 		if (playButton == null) {
 			drawProgress(canvas);
 		} else {
+			canvas.draw(background, 0,0);
 			Color tint = (pressState == 1 ? Color.GRAY: new Color(0x4DC068ff));
 			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2,
 						centerX, centerY - playButton.getHeight()/3, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
@@ -291,18 +277,15 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @param canvas The drawing context
 	 */	
 	private void drawProgress(Canvas canvas) {
-		canvas.draw(statusBkgLeft,   Color.WHITE, centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		canvas.draw(statusBkgRight,  Color.WHITE, centerX+width/2-scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		canvas.draw(statusBkgMiddle, Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY, width-2*scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-
-		canvas.draw(statusFrgLeft,   Color.WHITE, centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		if (progress > 0) {
-			float span = progress*(width-2*scale*PROGRESS_CAP)/2.0f;
-			canvas.draw(statusFrgRight,  Color.WHITE, centerX-width/2+scale*PROGRESS_CAP+span, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-			canvas.draw(statusFrgMiddle, Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY, span, scale*PROGRESS_HEIGHT);
-		} else {
-			canvas.draw(statusFrgRight,  Color.WHITE, centerX-width/2+scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		}
+		if (progress < 0.2f) {
+				canvas.draw(statusOne, 0,0);
+			}
+			else if (progress >= 0.2f && progress < 0.6f) {
+				//float span = progress*(width-2*scale*PROGRESS_CAP)/2.0f;
+				canvas.draw(statusTwo,  0, 0);
+			} else if (progress >= 0.6f) {
+				canvas.draw(statusThree, 0, 0);
+			}
 	}
 
 	// ADDITIONAL SCREEN METHODS

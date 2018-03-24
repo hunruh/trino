@@ -1,6 +1,7 @@
 package tiktaalik.trino.duggi;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
@@ -19,9 +20,12 @@ public abstract class Dinosaur extends GameObject {
     private final int MAX_RESOURCES = 4;
     private final int TRANSFORM_COST = 3;
 
+    private TextureRegion[] textureSet;
+
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
+    private boolean canExit;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
     private int direction;
@@ -52,10 +56,12 @@ public abstract class Dinosaur extends GameObject {
         setName(d.getName());
         setType(d.getType());
 
+        canExit = d.canExit;
         leftRight = d.leftRight;
         upDown = d.upDown;
         direction = d.direction;
 
+        textureSet = new TextureRegion[4];
         resourceCnt = 0;
         body.setUserData(this);
     }
@@ -87,8 +93,16 @@ public abstract class Dinosaur extends GameObject {
 
         // Gameplay attributes
         direction = RIGHT;
-
+        textureSet = new TextureRegion[4];
         resourceCnt = 0;
+        canExit = false;
+    }
+
+    public void setTextureSet(TextureRegion left, TextureRegion right, TextureRegion up, TextureRegion down) {
+        textureSet[LEFT] = left;
+        textureSet[RIGHT] = right;
+        textureSet[UP] = up;
+        textureSet[DOWN] = down;
     }
 
     /**
@@ -131,6 +145,14 @@ public abstract class Dinosaur extends GameObject {
             direction = DOWN;
         else if (upDown > 0)
             direction = UP;
+    }
+
+    public boolean canExit() {
+        return canExit;
+    }
+
+    public void setCanExit(boolean canExit) {
+        this.canExit = canExit;
     }
 
     public int getDirection() {
@@ -215,6 +237,7 @@ public abstract class Dinosaur extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
+        setTexture(textureSet[direction]);
     }
 
     /**

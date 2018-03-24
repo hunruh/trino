@@ -16,8 +16,6 @@ package tiktaalik.trino;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.*;
 
-import tiktaalik.util.*;
-
 /**
  * Class for reading player input. 
  *
@@ -84,9 +82,6 @@ public class InputHandler {
 	private Vector2 crosscache;
 	/** For the gamepad crosshair control */
 	private float momentum;
-	
-	/** An X-Box controller (if it is connected) */
-	XBox360Controller xbox;
 	
 	/**
 	 * Returns the amount of sideways movement. 
@@ -220,22 +215,14 @@ public class InputHandler {
 	 */
 	public InputHandler() {
 		// If we have a game-pad for id, then use it.
-		xbox = new XBox360Controller(0);
 		crosshair = new Vector2();
 		crosscache = new Vector2();
 	}
 
 	/**
 	 * Reads the input for the player and converts the result into game logic.
-	 *
-	 * The method provides both the input bounds and the drawing scale.  It needs
-	 * the drawing scale to convert screen coordinates to world coordinates.  The
-	 * bounds are for the crosshair.  They cannot go outside of this zone.
-	 *
-	 * @param bounds The input bounds for the crosshair.  
-	 * @param scale  The drawing scale
 	 */
-	public void readInput(Rectangle bounds, Vector2 scale) {
+	public void readInput() {
 		// Copy state from last animation frame
 		// Helps us ignore buttons that are held down
 		primePrevious  = primePressed;
@@ -245,19 +232,13 @@ public class InputHandler {
 		exitPrevious = exitPressed;
 		actionPrevious = actionPressed;
 
-		readKeyboard(bounds, scale, false);
+		readKeyboard();
 	}
 
 	/**
 	 * Reads input from the keyboard.
-	 *
-	 * This controller reads from the keyboard regardless of whether or not an X-Box
-	 * controller is connected.  However, if a controller is connected, this method
-	 * gives priority to the X-Box controller.
-	 *
-	 * @param secondary true if the keyboard should give priority to a gamepad
 	 */
-	private void readKeyboard(Rectangle bounds, Vector2 scale, boolean secondary) {
+	private void readKeyboard() {
 		resetPressed = Gdx.input.isKeyPressed(Input.Keys.R);
 		dollFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_1) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1);
 		herbiFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
