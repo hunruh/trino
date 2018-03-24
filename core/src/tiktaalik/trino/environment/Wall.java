@@ -18,6 +18,7 @@ public class Wall extends GameObject {
     private Vector2 gridLocation;
 
     private boolean edible;
+    private boolean lowered;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -59,6 +60,9 @@ public class Wall extends GameObject {
     public boolean getEdible() {
         return edible;
     }
+
+    public boolean getLowered() { return lowered; }
+    public void setLowered(boolean lowered) { this.lowered = lowered; }
 
     /**
      * Returns the dimensions of this box

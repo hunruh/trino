@@ -151,6 +151,7 @@ public class GameController implements ContactListener, Screen {
 
 	private Dinosaur avatar; // Reference to Duggi
 	private Clone clone;
+	private boolean removeClone = false;
 	private Wall goalDoor;
 	private Vector2 switchLocation = new Vector2(16, 6);
 
@@ -460,6 +461,7 @@ public class GameController implements ContactListener, Screen {
 	protected void addObject(GameObject g) {
 		assert inBounds(g) : "Object is not in bounds";
 		objects.add(g);
+
 		if (g.getType()!= COTTON && g.getType()!= SWITCH) {
 			g.activatePhysics(world);
 		}
@@ -520,6 +522,7 @@ public class GameController implements ContactListener, Screen {
 
 		setComplete(false);
 		setFailure(false);
+		clone = null;
 
 		populateLevel();
 	}
@@ -702,11 +705,7 @@ public class GameController implements ContactListener, Screen {
 		avatar.setDrawScale(scale);
 		addObject(avatar);
 
-		clone = new Clone(dwidth);
-		clone.setTexture(dollTextureFront);
-		clone.setDrawScale(scale);
-		clone.setType(CLONE);
-		clone.setAlive(false);
+
 
 		/** Adding cotton flowers */
 		dwidth = cottonTexture.getRegionWidth() / scale.x;
@@ -978,22 +977,22 @@ public class GameController implements ContactListener, Screen {
 		if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging() &&
 				avatar.getLinearVelocity().len2() < 5)
 			((Carnivore) avatar).stopCharge();
-
-		if (!clone.getAlive()) {
+		if (clone != null &&(removeClone || clone.getRemoved())) {
 			clone.deactivatePhysics(world);
 			objects.remove(clone);
-			clone.setAlive(false);
+			removeClone = false;
+			clone.setRemoved(false);
+			clone = null;
 		}
 
 		// Check if Duggi or Clone is on top of button
-		if (clone.getGridLocation() != null && clone.getGridLocation().equals(new Vector2(16,6))) {
+		if (clone != null && clone.getGridLocation() != null && clone.getGridLocation().equals(new Vector2(16,6))) {
 			avatar.setCanExit(true);
 			goalDoor.setTexture(goalTile);
 		} else {
 			avatar.setCanExit(false);
 			goalDoor.setTexture(goalClosedTile);
 		}
-
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				GameObject cotton= grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
@@ -1005,41 +1004,49 @@ public class GameController implements ContactListener, Screen {
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
 				}
-				else if (!clone.getAlive() && avatar.getResources() >= 1) {
+
+				else if (clone == null && avatar.getResources() >= 1) {
 					Vector2 location = avatarGrid();
 					GameObject goal = grid[(int)switchLocation.x-1][(int)switchLocation.y-1];
+					float dwidth = dollTextureFront.getRegionWidth() / scale.x;
+					removeClone = false;
 					if (direction == Dinosaur.UP) {
 						if (location.y != GRID_MAX_Y && (objectInFrontOfAvatar()== null || objectInFrontOfAvatar() == goal) ) {
-							clone.setLocation(screenToMaze(location.x), screenToMaze(location.y+1));
+							clone = new Clone(screenToMaze(location.x), screenToMaze(location.y+1), dwidth);
 							clone.setGridLocation(location.x, location.y+1);
-							clone.setAlive(true);
 						}
 					}
 					else if (direction == Dinosaur.DOWN) {
 						if (location.y != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)) {
-							clone.setLocation(screenToMaze(location.x), screenToMaze(location.y-1));
+							clone = new Clone(screenToMaze(location.x), screenToMaze(location.y-1), dwidth);
 							clone.setGridLocation(location.x, location.y-1);
-							clone.setAlive(true);
 						}
 					}
 					else if (direction == Dinosaur.LEFT) {
 						if (location.x != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
-							clone.setLocation(screenToMaze(location.x-1), screenToMaze(location.y));
+							clone = new Clone(screenToMaze(location.x-1), screenToMaze(location.y), dwidth);
 							clone.setGridLocation(location.x-1, location.y);
-							clone.setAlive(true);
 						}
 					}
 					else if (direction == Dinosaur.RIGHT) {
 						if (location.x != GRID_MAX_X && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
-							clone.setLocation(screenToMaze(location.x+1), screenToMaze(location.y));
+							clone = new Clone(screenToMaze(location.x+1), screenToMaze(location.y), dwidth);
 							clone.setGridLocation(location.x+1, location.y);
-							clone.setAlive(true);
 						}
 					}
-					if (clone.getAlive()) {
+
+					if (clone != null) {
+						clone.setTexture(dollTextureFront);
+						clone.setDrawScale(scale);
+						clone.setType(CLONE);
+						clone.setBodyType(BodyDef.BodyType.StaticBody);
 						addObject(clone);
 						avatar.decrementResources();
 					}
+
+
+				} else if (clone != null) {
+					removeClone = true;
 				}
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {

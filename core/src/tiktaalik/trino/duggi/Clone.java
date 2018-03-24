@@ -13,6 +13,7 @@ public class Clone extends GameObject {
     private Fixture geometry; // A cache value for thefixture (for resizing)
 
     private boolean alive;
+    private boolean removed = false;
     private Vector2 gridLocation;
 
     public Clone(float radius) {
@@ -38,6 +39,10 @@ public class Clone extends GameObject {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
+
+    public boolean getRemoved() { return removed; }
+
+    public void setRemoved(boolean removed) { this.removed = removed; }
 
     public void update(float dt) {
         super.update(dt);
