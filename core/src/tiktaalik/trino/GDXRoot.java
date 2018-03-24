@@ -1,17 +1,4 @@
-/*
- * GDXRoot.java
- *
- * This is the primary class file for running the game.  It is the "static main" of
- * LibGDX.  In the first lab, we extended ApplicationAdapter.  In previous lab
- * we extended Game.  This is because of a weird graphical artifact that we do not
- * understand.  Transparencies (in 3D only) is failing when we use ApplicationAdapter. 
- * There must be some undocumented OpenGL code in setScreen.
- *
- * Author: Walker M. White
- * Based on original PhysicsDemo Lab by Don Holden, 2007
- * LibGDX version, 2/6/2015
- */
- package tiktaalik.trino;
+package tiktaalik.trino;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
@@ -23,37 +10,17 @@ import com.badlogic.gdx.assets.loaders.resolvers.*;
 import tiktaalik.util.*;
 
 /**
- * Root class for a LibGDX.  
- * 
- * This class is technically not the ROOT CLASS. Each platform has another class above
- * this (e.g. PC games use DesktopLauncher) which serves as the true root.  However, 
- * those classes are unique to each platform, while this class is the same across all 
- * plaforms. In addition, this functions as the root class all intents and purposes, 
- * and you would draw it as a root class in an architecture specification.  
+ * Root class for a LibGDX.
  */
 public class GDXRoot extends Game implements ScreenListener {
-	/** AssetManager to load game assets (textures, sounds, etc.) */
-	private AssetManager manager;
-	/** Drawing context to display graphics (VIEW CLASS) */
-	private Canvas canvas;
-	/** Player mode for the asset menu screen (CONTROLLER CLASS) */
-	private MenuController menu;
-	/** Player mode for the the game proper (CONTROLLER CLASS) */
-	private int current;
-	/** The world controller */
-	private GameController controller;
-	
-	/**
-	 * Creates a new game from the configuration settings.
-	 *
-	 * This method configures the asset manager, but does not load any assets
-	 * or assign any screen.
-	 */
+	private AssetManager manager; // AssetManager to load game assets
+	private Canvas canvas; // Drawing context to display graphics
+	private MenuController menu; // Player mode for the asset menu screen
+	private GameController controller; // The game controller
+
 	public GDXRoot() {
-		// Start menu with the asset manager
 		manager = new AssetManager();
-		
-		// Add font support to the asset manager
+
 		FileHandleResolver resolver = new InternalFileHandleResolver();
 		manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
@@ -61,19 +28,17 @@ public class GDXRoot extends Game implements ScreenListener {
 
 	/** 
 	 * Called when the Application is first created.
-	 * 
+	 *
 	 * This is method immediately loads assets for the menu screen, and prepares
 	 * the asynchronous loader for all other assets.
 	 */
 	public void create() {
 		canvas  = new Canvas();
 		menu = new MenuController(canvas,manager,1);
-		
-		// Initialize the three game worlds
+
 		controller = new GameController();
 		controller.preLoadContent(manager);
 
-		current = 0;
 		menu.setScreenListener(this);
 		setScreen(menu);
 	}
@@ -99,10 +64,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	}
 	
 	/**
-	 * Called when the Application is resized. 
-	 *
-	 * This can happen at any point during a non-paused state but will never happen 
-	 * before a call to create().
+	 * Called when the Application is resized.
 	 *
 	 * @param width  The new width in pixels
 	 * @param height The new height in pixels
@@ -137,7 +99,6 @@ public class GDXRoot extends Game implements ScreenListener {
 			controller.reset();
 			setScreen(controller);
 		} else if (exitCode == GameController.EXIT_QUIT) {
-			// We quit the main application
 			Gdx.app.exit();
 		}
 	}

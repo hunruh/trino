@@ -20,9 +20,6 @@ public class Enemy extends GameObject {
     private boolean faceRight;
     private boolean faceUp;
     private boolean stunned;
-    private int counter; // Counter for enemy movement
-    private int id;
-    private Vector2 velocity;
     private int direction;
 
     public static final int LEFT = 0;
@@ -49,12 +46,7 @@ public class Enemy extends GameObject {
         // Gameplay attributes
         faceRight = true;
         faceUp = false;
-        this.id = id;
         stunned = false;
-    }
-
-    public void setId(int newId){
-        this.id = newId;
     }
 
     public void setStunned(){
@@ -66,8 +58,6 @@ public class Enemy extends GameObject {
     public boolean getStunned(){
         return stunned;
     }
-
-    public int getCounter() {return counter;}
 
     public int getDirection() {
         return direction;
@@ -187,7 +177,6 @@ public class Enemy extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
-        counter++;
         if (stunned) {
             if (getLinearVelocity().len2() < 5)
                 setBodyType(BodyDef.BodyType.StaticBody);
