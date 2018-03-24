@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
-import tiktaalik.trino.InputController;
 
 public class Enemy extends GameObject {
     private final float STUN_DURATION = 4.0f;

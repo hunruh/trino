@@ -5,8 +5,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -36,17 +34,6 @@ public class GameController implements ContactListener, Screen {
 	// ASSET FILES AND VARIABLES
 	private AssetState worldAssetState = AssetState.EMPTY; // Track asset loading from all instances and subclasses
 	private Array<String> assets; // Track all loaded assets (for unloading purposes)
-
-	// Sound files
-	private static String DOLL_BG_FILE = "trino/doll_bg.mp3";
-	private static String HERBIVORE_BG_FILE = "trino/herbivore_bg.mp3";
-	private static String CARNIVORE_BG_FILE = "trino/carnivore_bg.mp3";
-	private static String POP_1_FILE = "trino/pop1.mp3";
-	private static String POP_2_FILE = "trino/pop2.mp3";
-	private static String POP_3_FILE = "trino/pop3.mp3";
-	private static String POP_4_FILE = "trino/pop4.mp3";
-	private static String POP_5_FILE = "trino/pop5.mp3";
-	private static String POOF_FILE = "trino/poof.mp3";
 
 	// Sounds files
 	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
@@ -88,8 +75,7 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion goalTile;
 	private TextureRegion goalClosedTile;
 
-
-	/** Texture assets for Duggi's three forms */
+	// Texture assets for Duggi's three forms
 	private TextureRegion dollTextureFront;
 	private TextureRegion dollTextureLeft;
 	private TextureRegion dollTextureRight;
@@ -111,17 +97,6 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion cottonTexture;
 	private TextureRegion pathTexture;
 	private TextureRegion switchTexture;
-
-	// Music and sound effect variables
-	private Music bgMusic;
-	private Music bgDoll;
-	private Music bgHerb;
-	private Music bgCarn;
-
-	private Sound cottonPickUp;
-	private Sound eatWall;
-	private Sound collideWall;
-	private Sound transformSound;
 
 	// GAME CONSTANTS
 	private static final int EXIT_COUNT = 60; // How many frames after winning/losing do we continue?
@@ -172,7 +147,6 @@ public class GameController implements ContactListener, Screen {
 	private boolean active; // Whether or not this is an active controller
 	private boolean complete; // Whether we have completed this level
 	private boolean failed; // Whether we have failed at this world (and need a reset)
-	private boolean canExit; // Whether Duggi can exit through the goalDoor
 	private int countdown; // Countdown active for winning or losing
 
 	private Dinosaur avatar; // Reference to Duggi
@@ -183,11 +157,6 @@ public class GameController implements ContactListener, Screen {
 	/**
 	 * Preloads the assets for this controller.
 	 *
-	 * To make the game modes more for-loop friendly, we opted for nonstatic loaders
-	 * this time.  However, we still want the assets themselves to be static.  So
-	 * we have an AssetState that determines the current loading state.  If the
-	 * assets are already loaded, this method will do nothing.
-	 * 
 	 * @param manager Reference to global asset manager.
 	 */
 	public void preLoadContent(AssetManager manager) {
@@ -441,8 +410,6 @@ public class GameController implements ContactListener, Screen {
 		setComplete(false);
 		setFailure(false);
 		world.setContactListener(this);
-
-		canExit = false;
 	}
 
 	/**
@@ -464,7 +431,7 @@ public class GameController implements ContactListener, Screen {
 		failed = false;
 		active = false;
 		countdown = -1;
-		collisionHandler = new CollisionHandler();
+		collisionHandler = new CollisionHandler(this);
 		hud = new HUDController();
 	}
 	
@@ -483,30 +450,6 @@ public class GameController implements ContactListener, Screen {
 		scale  = null;
 		world  = null;
 		canvas = null;
-
-		// Dispose music and sound assets
-		bgMusic.dispose();
-		bgDoll.dispose();
-		bgHerb.dispose();
-		bgCarn.dispose();
-		cottonPickUp.dispose();
-		eatWall.dispose();
-		collideWall.dispose();
-		transformSound.dispose();
-	}
-
-	/**
-	 *
-	 * Adds a physics object in to the insertion queue.
-	 *
-	 * Objects on the queue are added just before collision processing.  We do this to 
-	 * control object creation.
-	 *
-	 * param obj The object to add
-	 */
-	public void addQueuedObject(GameObject g) {
-		assert inBounds(g) : "Object is not in bounds";
-		addQueue.add(g);
 	}
 
 	/**
@@ -570,6 +513,11 @@ public class GameController implements ContactListener, Screen {
 
 		world = new World(gravity,false);
 		world.setContactListener(this);
+
+		SoundController.getInstance().dispose();
+		SoundController.getInstance().init();
+		SoundController.getInstance().playBackground(Dinosaur.DOLL_FORM);
+
 		setComplete(false);
 		setFailure(false);
 
@@ -589,7 +537,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public boolean preUpdate(float dt) {
 		InputHandler input = InputHandler.getInstance();
-		input.readInput(bounds, scale);
+		input.readInput();
 		if (listener == null)
 			return true;
 		
@@ -932,33 +880,6 @@ public class GameController implements ContactListener, Screen {
 
 		for (int i = 0; i < en.length; i++)
 			controls.add(new AIController(i,avatar,en,pathList[i]));
-
-
-		/** Music */
-		if (bgMusic == null){
-			bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
-			bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
-			bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
-
-			// set sound effects
-			cottonPickUp = Gdx.audio.newSound(Gdx.files.internal(POP_1_FILE));
-			eatWall = Gdx.audio.newSound(Gdx.files.internal(POP_2_FILE));
-			collideWall = Gdx.audio.newSound(Gdx.files.internal(POP_5_FILE));
-			transformSound = Gdx.audio.newSound(Gdx.files.internal(POOF_FILE));
-
-		} else {
-			// Pause all music
-			bgMusic.pause();
-			bgDoll.pause();
-			bgHerb.pause();
-			bgCarn.pause();
-		}
-
-		bgMusic = bgDoll;
-		bgMusic.setLooping(true);
-		bgMusic.setVolume(0.10f);
-		bgMusic.setPosition(0);
-		bgMusic.play();
 	}
 
 	/**
@@ -1024,35 +945,32 @@ public class GameController implements ContactListener, Screen {
 
 		if (InputHandler.getInstance().didTransform()) {
 			if (avatar.canTransform()) {
-				if (InputHandler.getInstance().didTransformDoll() && avatar.getForm() != Dinosaur.DOLL_FORM) {
+				if (InputHandler.getInstance().didTransformDoll() &&
+						avatar.getForm() != Dinosaur.DOLL_FORM) {
 					avatar = avatar.transformToDoll();
 					avatar.setTextureSet(dollTextureLeft, dollTextureRight, dollTextureBack, dollTextureFront);
 					objects.set(1, avatar);
 
-					// Change the music
-					changeMusic(bgDoll);
-					transformSound.pause();
-					transformSound.play(1.0f);
-				} else if (InputHandler.getInstance().didTransformHerbi() && avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
+					SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
+					SoundController.getInstance().playTransform();
+				} else if (InputHandler.getInstance().didTransformHerbi() &&
+						avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 					avatar = avatar.transformToHerbivore();
 					avatar.setTextureSet(herbivoreTextureLeft, herbivoreTextureRight, herbivoreTextureBack,
 							herbivoreTextureFront);
 					objects.set(1, avatar);
 
-					// Change the music
-					changeMusic(bgHerb);
-					transformSound.pause();
-					transformSound.play(1.0f);
-				} else if (InputHandler.getInstance().didTransformCarni() && avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
+					SoundController.getInstance().changeBackground(Dinosaur.HERBIVORE_FORM);
+					SoundController.getInstance().playTransform();
+				} else if (InputHandler.getInstance().didTransformCarni() &&
+						avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 					avatar = avatar.transformToCarnivore();
 					avatar.setTextureSet(carnivoreTextureLeft, carnivoreTextureRight, carnivoreTextureBack,
 							carnivoreTextureFront);
 					objects.set(1, avatar);
 
-					// Change the music
-					changeMusic(bgCarn);
-					transformSound.pause();
-					transformSound.play(1.0f);
+					SoundController.getInstance().changeBackground(Dinosaur.CARNIVORE_FORM);
+					SoundController.getInstance().playTransform();
 				}
 			}
 		}
@@ -1069,10 +987,10 @@ public class GameController implements ContactListener, Screen {
 
 		// Check if Duggi or Clone is on top of button
 		if (clone.getGridLocation() != null && clone.getGridLocation().equals(new Vector2(16,6))) {
-			canExit = true;
+			avatar.setCanExit(true);
 			goalDoor.setTexture(goalTile);
 		} else {
-			canExit = false;
+			avatar.setCanExit(false);
 			goalDoor.setTexture(goalClosedTile);
 		}
 
@@ -1080,9 +998,7 @@ public class GameController implements ContactListener, Screen {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				GameObject cotton= grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
 				if (cotton != null && cotton.getType() == COTTON) {
-					// Play sound
-					cottonPickUp.play(1.0f);
-
+					SoundController.getInstance().playCottonPickup();
 					cotton.deactivatePhysics(world);
 					objects.remove(cotton);
 					cottonFlower.remove(cotton);
@@ -1129,7 +1045,7 @@ public class GameController implements ContactListener, Screen {
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				GameObject tmp = objectInFrontOfAvatar();
 				if (tmp != null && tmp.getType() == EDIBLEWALL && isOnGrid(0.5,0.5)){
-					eatWall.play(1.0f);
+					SoundController.getInstance().playEat();
 					tmp.deactivatePhysics(world);
 					objects.remove(tmp);
 					walls.remove(tmp);
@@ -1144,7 +1060,7 @@ public class GameController implements ContactListener, Screen {
 					Enemy tmp = enemies.get(i);
 					if (tmp.getStunned() && isInFrontOfAvatar(tmp)
 							&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
-						eatWall.play(1.0f);
+						SoundController.getInstance().playEat();
 						tmp.deactivatePhysics(world);
 						objects.remove(tmp);
 						enemies.remove(tmp);
@@ -1237,8 +1153,6 @@ public class GameController implements ContactListener, Screen {
 			controls.get(i).getMoveAlongPath();
 		}
 
-		// If we use sound, we must remember this.
-		SoundController.getInstance().update();
 		hud.update(avatar.getResources(), avatar.getForm());
 	}
 
@@ -1375,20 +1289,6 @@ public class GameController implements ContactListener, Screen {
 
 	public Vector2 screenToMazeVector(float x, float y){
 		return new Vector2(screenToMaze(x), screenToMaze(y));
-	}
-
-	/** Change the music based on timestamp */
-	public void changeMusic(Music name){
-		// Change the music
-		bgMusic.pause();
-		float seconds = bgMusic.getPosition();
-		bgMusic = name;
-		bgMusic.setLooping(true);
-		bgMusic.setVolume(0.10f);
-		bgMusic.play();
-		bgMusic.pause();
-		bgMusic.setPosition(seconds);
-		bgMusic.play();
 	}
 
 	/** Unused Screen method */

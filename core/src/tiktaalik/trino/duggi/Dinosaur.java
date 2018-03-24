@@ -25,6 +25,7 @@ public abstract class Dinosaur extends GameObject {
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
+    private boolean canExit;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
     private int direction;
@@ -55,10 +56,12 @@ public abstract class Dinosaur extends GameObject {
         setName(d.getName());
         setType(d.getType());
 
+        canExit = d.canExit;
         leftRight = d.leftRight;
         upDown = d.upDown;
         direction = d.direction;
 
+        textureSet = new TextureRegion[4];
         resourceCnt = 0;
         body.setUserData(this);
     }
@@ -92,6 +95,7 @@ public abstract class Dinosaur extends GameObject {
         direction = RIGHT;
         textureSet = new TextureRegion[4];
         resourceCnt = 0;
+        canExit = false;
     }
 
     public void setTextureSet(TextureRegion left, TextureRegion right, TextureRegion up, TextureRegion down) {
@@ -141,6 +145,14 @@ public abstract class Dinosaur extends GameObject {
             direction = DOWN;
         else if (upDown > 0)
             direction = UP;
+    }
+
+    public boolean canExit() {
+        return canExit;
+    }
+
+    public void setCanExit(boolean canExit) {
+        this.canExit = canExit;
     }
 
     public int getDirection() {
