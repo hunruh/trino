@@ -244,7 +244,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 		// Play button is a circle.
 		float radius = BUTTON_SCALE*scale*playButton.getWidth()/2.0f;
-		float dist = (screenX-centerX)*(screenX-centerX)+(screenY-centerY)*(screenY-centerY);
+		float dist = (screenX-centerX)*(screenX-centerX)+(screenY-centerY+playButton.getHeight()/3)*(screenY-centerY+playButton.getHeight()/3);
 		if (dist < radius*radius) {
 			pressState = 1;
 		}
