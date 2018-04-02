@@ -42,7 +42,6 @@ public class GameController implements ContactListener, Screen {
 	// Texture files
 	private static String BACKGROUND_FILE = "trino/background.png";
 	private static String OVERLAY_FILE = "trino/overlay.png";
-	private static String EARTH_FILE = "shared/earthtile.png";
 	private static String GOAL_FILE = "trino/openExitPlaceHolder.png";
 	private static String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
 	private static final String DOLL_FILE_FRONT  = "trino/doll_front.png";
@@ -71,7 +70,6 @@ public class GameController implements ContactListener, Screen {
 	private BitmapFont displayFont;
 	private TextureRegion background;
 	private TextureRegion overlay;
-	private TextureRegion earthTile;
 	private TextureRegion goalTile;
 	private TextureRegion goalClosedTile;
 
@@ -95,7 +93,6 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion wallTexture;
 	private TextureRegion edibleWallTexture;
 	private TextureRegion cottonTexture;
-	private TextureRegion pathTexture;
 	private TextureRegion switchTexture;
 
 	// GAME CONSTANTS
@@ -178,8 +175,6 @@ public class GameController implements ContactListener, Screen {
 		assets.add(BACKGROUND_FILE);
 		manager.load(OVERLAY_FILE,Texture.class);
 		assets.add(OVERLAY_FILE);
-		manager.load(EARTH_FILE,Texture.class);
-		assets.add(EARTH_FILE);
 		manager.load(GOAL_FILE,Texture.class);
 		assets.add(GOAL_FILE);
 		manager.load(GOAL_CLOSED_FILE,Texture.class);
@@ -252,7 +247,6 @@ public class GameController implements ContactListener, Screen {
 		// Allocate the textures
 		background = createTexture(manager,BACKGROUND_FILE,true);
 		overlay = createTexture(manager,OVERLAY_FILE,true);
-		earthTile = createTexture(manager,EARTH_FILE,true);
 		goalTile  = createTexture(manager,GOAL_FILE,true);
 		goalClosedTile =  createTexture(manager,GOAL_CLOSED_FILE, true);
 		dollTextureFront = createTexture(manager,DOLL_FILE_FRONT,false);
@@ -274,7 +268,6 @@ public class GameController implements ContactListener, Screen {
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
 		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
-		pathTexture = createTexture(manager,PATH_FILE,false);
 		switchTexture = createTexture(manager, SWITCH_FILE, false);
 
 		worldAssetState = AssetState.COMPLETE;
@@ -330,52 +323,42 @@ public class GameController implements ContactListener, Screen {
 	/** 
 	 * Unloads the assets for this game.
 	 * 
-	 * This method erases the static variables.  It also deletes the associated textures 
-	 * from the asset manager. If no assets are loaded, this method does nothing.
-	 * 
 	 * @param manager Reference to global asset manager.
 	 */
 	public void unloadContent(AssetManager manager) {
 		hud.unloadContent(manager);
     	for(String s : assets) {
-    		if (manager.isLoaded(s)) {
+    		if (manager.isLoaded(s))
     			manager.unload(s);
-    		}
     	}
 	}
 
 	/**
 	 * Sets whether the level is completed.
 	 *
-	 * If true, the level will advance after a countdown
-	 *
 	 * @param value whether the level is completed.
 	 */
 	public void setComplete(boolean value) {
-		if (value) {
+		if (value)
 			countdown = EXIT_COUNT;
-		}
+
 		complete = value;
 	}
 
 	/**
 	 * Sets whether the level is failed.
 	 *
-	 * If true, the level will reset after a countdown
-	 *
 	 * @param value whether the level is failed.
 	 */
 	public void setFailure(boolean value) {
-		if (value) {
+			if (value)
 			countdown = EXIT_COUNT;
-		}
+
 		failed = value;
 	}
 
 	/**
 	 * Returns the canvas associated with this controller
-	 *
-	 * The canvas is shared across all controllers
 	 *
 	 * @return the canvas associated with this controller
 	 */
@@ -386,9 +369,6 @@ public class GameController implements ContactListener, Screen {
 	/**
 	 * Sets the canvas associated with this controller
 	 *
-	 * The canvas is shared across all controllers.  Setting this value will compute
-	 * the drawing scale from the canvas size.
-	 *
 	 * @param canvas the canvas associated with this controller
 	 */
 	public void setCanvas(Canvas canvas) {
@@ -397,13 +377,9 @@ public class GameController implements ContactListener, Screen {
 		this.scale.x = canvas.getWidth()/bounds.getWidth();
 		this.scale.y = canvas.getHeight()/bounds.getHeight();
 	}
-	
+
 	/**
 	 * Creates a new game world with the default values.
-	 *
-	 * The game world is scaled so that the screen coordinates do not agree
-	 * with the Box2d coordinates.  The bounds are in terms of the Box2d
-	 * world, not the screen.
 	 */
 	protected GameController() {
 		this(new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT),
@@ -415,10 +391,6 @@ public class GameController implements ContactListener, Screen {
 
 	/**
 	 * Creates a new game world
-	 *
-	 * The game world is scaled so that the screen coordinates do not agree
-	 * with the Box2d coordinates.  The bounds are in terms of the Box2d
-	 * world, not the screen.
 	 *
 	 * @param bounds	The game bounds in Box2d coordinates
 	 * @param gravity	The gravitational force on this Box2d world
@@ -484,8 +456,6 @@ public class GameController implements ContactListener, Screen {
 
 	/**
 	 * Returns true if the object is in bounds.
-	 *
-	 * This assertion is useful for debugging the physics.
 	 *
 	 * @param g The object to check.
 	 *
@@ -588,12 +558,7 @@ public class GameController implements ContactListener, Screen {
 	}
 	
 	/**
-	 * Draw the physics objects to the canvas
-	 *
-	 * For simple worlds, this method is enough by itself.  It will need
-	 * to be overriden if the world needs fancy backgrounds or the like.
-	 *
-	 * The method draws all objects in the order that they were added.
+	 * Draw everything to the canvas
 	 *
 	 * @param delta The difference from the last draw call
 	 */
