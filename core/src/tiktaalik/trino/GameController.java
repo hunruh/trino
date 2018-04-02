@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
@@ -18,6 +19,9 @@ import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.Switch;
 import tiktaalik.trino.environment.Wall;
 import tiktaalik.trino.environment.CottonFlower;
+import tiktaalik.trino.lights.ConeSource;
+import tiktaalik.trino.lights.LightSource;
+import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.*;
 
 /**
@@ -152,6 +156,24 @@ public class GameController implements ContactListener, Screen {
 	private Wall goalDoor;
 	private Vector2 switchLocation = new Vector2(16, 6);
 
+	/** The camera defining the RayHandler view; scale is in physics coordinates */
+	protected OrthographicCamera raycamera;
+	/** The rayhandler for storing lights, and drawing them (SIGH) */
+	protected RayHandler rayhandler;
+	/** All of the active lights that we loaded from the JSON file */
+	private Array<LightSource> lights = new Array<LightSource>();
+	/** The current light source being used.  If -1, there are no shadows */
+	private int activeLight;
+
+	private LightSource duggiLight;
+
+	/** The reader to process JSON files */
+	private JsonReader jsonReader;
+	/** The JSON asset directory */
+	private JsonValue  assetDirectory;
+	/** The JSON defining the level model */
+	private JsonValue  levelFormat;
+
 	/**
 	 * Preloads the assets for this controller.
 	 *
@@ -221,6 +243,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
 		assets.add(SWITCH_FILE);
+
+		jsonReader = new JsonReader();
 	}
 
 	/**
@@ -384,6 +408,8 @@ public class GameController implements ContactListener, Screen {
 	protected GameController() {
 		this(new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT),
 				new Vector2(0, DEFAULT_GRAVITY));
+
+		jsonReader = new JsonReader();
 		setComplete(false);
 		setFailure(false);
 		world.setContactListener(this);
@@ -412,6 +438,16 @@ public class GameController implements ContactListener, Screen {
 	 * Dispose of all (non-static) resources allocated to this mode.
 	 */
 	public void dispose() {
+		for(LightSource light : lights) {
+			light.remove();
+		}
+		lights.clear();
+
+		if (rayhandler != null) {
+			rayhandler.dispose();
+			rayhandler = null;
+		}
+
 		for(GameObject g : objects)
 			g.deactivatePhysics(world);
 		objects.clear();
@@ -494,6 +530,8 @@ public class GameController implements ContactListener, Screen {
 		setFailure(false);
 		clone = null;
 
+		// Reload the json each time
+		levelFormat = jsonReader.parse(Gdx.files.internal("jsons/level.json"));
 		populateLevel();
 	}
 	
@@ -517,6 +555,17 @@ public class GameController implements ContactListener, Screen {
 		// Handle resets
 		if (input.didReset())
 			reset();
+
+		// Handle nightmode
+		if (input.didNight())
+			if (duggiLight.isActive()){
+				duggiLight.setActive(false);
+				rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
+			} else {
+				duggiLight.setActive(true);
+				rayhandler.setAmbientLight(0.25f,0.25f,0.25f,0.25f);
+			}
+
 
 		// Reset level when colliding with enemy
 		if (countdown > 0) {
@@ -597,6 +646,11 @@ public class GameController implements ContactListener, Screen {
 			g.draw(canvas);
 		canvas.draw(overlay,0.0f,0.0f);
 		canvas.end();
+
+		// Now draw the shadows
+		if (rayhandler != null && activeLight != -1) {
+			rayhandler.render();
+		}
 		
 		// Final message
 		if (complete && !failed) {
@@ -658,6 +712,17 @@ public class GameController implements ContactListener, Screen {
 	 * Lays out the game geography.
 	 */
 	private void populateLevel() {
+		// Create the lighting if appropriate
+		if (levelFormat.has("lighting")) {
+			initLighting(levelFormat.get("lighting"));
+		}
+		rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
+
+		duggiLight = new PointSource(rayhandler, 512, Color.WHITE, 7, 0, 0);
+		duggiLight.setColor(1.0f,1.0f,1.0f,1.0f);
+		duggiLight.setSoft(true);
+		duggiLight.setActive(false);
+
 		// Create player character
 		// It is important that this is always created first, as transformations must swap the first element
 		// in the objects list
@@ -669,7 +734,7 @@ public class GameController implements ContactListener, Screen {
 		avatar.setTextureSet(dollTextureLeft, dollTextureRight, dollTextureBack, dollTextureFront);
 		avatar.setDrawScale(scale);
 		addObject(avatar);
-
+		duggiLight.attachToBody(avatar.getBody(), duggiLight.getX(), duggiLight.getY(), duggiLight.getDirection());
 
 
 		/** Adding cotton flowers */
@@ -852,6 +917,10 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
+		if (rayhandler != null) {
+			rayhandler.update();
+		}
+
 		int direction = avatar.getDirection();
 
 		if (avatar.getX() >= screenToMaze(1) && avatar.getX() <= screenToMaze(16)
@@ -1261,6 +1330,33 @@ public class GameController implements ContactListener, Screen {
 
 	public Vector2 screenToMazeVector(float x, float y){
 		return new Vector2(screenToMaze(x), screenToMaze(y));
+	}
+
+
+	/**
+	 * Creates the ambient lighting for the level
+	 *
+	 * This is the amount of lighting that the level has without any light sources.
+	 * However, if activeLight is -1, this will be ignored and the level will be
+	 * completely visible.
+	 *
+	 * @param  light	the JSON tree defining the light
+	 */
+	private void initLighting(JsonValue light) {
+		raycamera = new OrthographicCamera(bounds.width,bounds.height);
+		raycamera.position.set(bounds.width/2.0f, bounds.height/2.0f, 0);
+		raycamera.update();
+
+		RayHandler.setGammaCorrection(light.getBoolean("gamma"));
+		RayHandler.useDiffuseLight(light.getBoolean("diffuse"));
+		rayhandler = new RayHandler(world, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
+		rayhandler.setCombinedMatrix(raycamera);
+
+		float[] color = light.get("color").asFloatArray();
+		rayhandler.setAmbientLight(color[0], color[0], color[0], color[0]);
+		int blur = light.getInt("blur");
+		rayhandler.setBlur(blur > 0);
+		rayhandler.setBlurNum(blur);
 	}
 
 	/** Unused Screen method */

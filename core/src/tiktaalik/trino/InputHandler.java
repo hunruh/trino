@@ -48,6 +48,11 @@ public class InputHandler {
 	/** Whether the reset button was pressed. */
 	private boolean resetPressed;
 	private boolean resetPrevious;
+
+	/** Night mode (FOR TESTING PURPOSES ONLY) */
+	private boolean nightPressed;
+	private boolean nightPrevious;
+
 	/** Whether the primary action button was pressed. */
 	private boolean primePressed;
 	private boolean primePrevious;
@@ -164,6 +169,15 @@ public class InputHandler {
 	public boolean didReset() {
 		return resetPressed && !resetPrevious;
 	}
+
+	/**
+	 * Returns true if the night button was pressed.
+	 *
+	 * @return true if the night button was pressed.
+	 */
+	public boolean didNight() {
+		return nightPressed && !nightPrevious;
+	}
 	
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.
@@ -228,6 +242,7 @@ public class InputHandler {
 		primePrevious  = primePressed;
 		secondPrevious = secondPressed;
 		resetPrevious  = resetPressed;
+		nightPrevious = nightPressed;
 		debugPrevious  = debugPressed;
 		exitPrevious = exitPressed;
 		actionPrevious = actionPressed;
@@ -240,6 +255,7 @@ public class InputHandler {
 	 */
 	private void readKeyboard() {
 		resetPressed = Gdx.input.isKeyPressed(Input.Keys.R);
+		nightPressed = Gdx.input.isKeyPressed(Input.Keys.N);
 		dollFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_1) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1);
 		herbiFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
 		carniFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_3) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3);
