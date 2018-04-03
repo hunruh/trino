@@ -1011,6 +1011,10 @@ public class GameController implements ContactListener, Screen {
 				0);
 		canvas.getCamera().update();
 
+		raycamera.position.set(avatar.getX(), avatar.getY(),0);
+		raycamera.update();
+		rayhandler.setCombinedMatrix(raycamera);
+
 		int random = MathUtils.random(4);
 
 //		for(FireFly f: fireFlies){
