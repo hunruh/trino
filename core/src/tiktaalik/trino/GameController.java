@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.enemy.AIController;
 import tiktaalik.trino.enemy.Enemy;
+import tiktaalik.trino.environment.FireFly;
 import tiktaalik.trino.environment.Switch;
 import tiktaalik.trino.environment.Wall;
 import tiktaalik.trino.environment.CottonFlower;
@@ -64,6 +65,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_FILE_LEFT = "trino/enemy_trex_left.png";
 	private static final String ENEMY_FILE_RIGHT = "trino/enemy_trex_right.png";
 	private static final String ENEMY_FILE_BACK = "trino/enemy_trex_back.png";
+	private static final String FIREFLY_FILE = "trino/enemy.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
@@ -94,6 +96,7 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion enemyTextureLeft;
 	private TextureRegion enemyTextureRight;
 	private TextureRegion enemyTextureBack;
+	private TextureRegion fireFlyTexture;
 	private TextureRegion wallTexture;
 	private TextureRegion edibleWallTexture;
 	private TextureRegion cottonTexture;
@@ -121,6 +124,7 @@ public class GameController implements ContactListener, Screen {
 	protected static final int DUGGI = 5;
 	protected static final int CLONE = 6;
 	protected static final int SWITCH = 7;
+	protected static final int FIREFLY = 8;
 
 	private static int GRID_MAX_X = 16;
 	private static int GRID_MAX_Y = 8;
@@ -139,6 +143,7 @@ public class GameController implements ContactListener, Screen {
 	private PooledList<CottonFlower> cottonFlower = new PooledList<CottonFlower>();
 	private PooledList<Enemy> enemies = new PooledList<Enemy>();
 	private PooledList<AIController> controls = new PooledList<AIController>();
+	private PooledList<FireFly> fireFlies = new PooledList<FireFly>();
 
 	private GameObject[][] grid = new GameObject[GRID_MAX_X][GRID_MAX_Y];
 	private World world;
@@ -239,6 +244,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_FILE_RIGHT);
 		manager.load(ENEMY_FILE_BACK, Texture.class);
 		assets.add(ENEMY_FILE_BACK);
+		manager.load(FIREFLY_FILE, Texture.class);
+		assets.add(FIREFLY_FILE);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
@@ -289,6 +296,7 @@ public class GameController implements ContactListener, Screen {
 		enemyTextureLeft = createTexture(manager,ENEMY_FILE_LEFT, false);
 		enemyTextureRight = createTexture(manager,ENEMY_FILE_RIGHT, false);
 		enemyTextureBack = createTexture(manager,ENEMY_FILE_BACK, false);
+		fireFlyTexture = createTexture(manager, FIREFLY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
 		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
@@ -490,6 +498,11 @@ public class GameController implements ContactListener, Screen {
 		enemies.add(obj);
 	}
 
+	public void addFireFly(FireFly obj){
+		assert inBounds(obj) : "Objects is no in bounds";
+		fireFlies.add(obj);
+	}
+
 	/**
 	 * Returns true if the object is in bounds.
 	 *
@@ -515,6 +528,7 @@ public class GameController implements ContactListener, Screen {
 			g.deactivatePhysics(world);
 		objects.clear();
 		enemies.clear();
+		fireFlies.clear();
 		controls.clear();
 		addQueue.clear();
 		world.dispose();
@@ -909,6 +923,23 @@ public class GameController implements ContactListener, Screen {
 
 		for (int i = 0; i < en.length; i++)
 			controls.add(new AIController(i,avatar,en,pathList[i]));
+
+
+		PointSource fireLight = new PointSource(rayhandler, 512, Color.WHITE, 3, 0, 0);
+		fireLight.setColor(1.0f,1.0f,1.0f,1.0f);
+		fireLight.setSoft(true);
+		fireLight.setActive(true);
+
+		dwidth = fireFlyTexture.getRegionWidth() / (scale.x * 2);
+		dheight = fireFlyTexture.getRegionHeight() / scale.y;
+		FireFly ff = new FireFly(screenToMaze(1), screenToMaze(5), dwidth,0);
+		ff.setType(FIREFLY);
+		ff.setTexture(fireFlyTexture);
+		ff.setDrawScale(scale);
+		addObject(ff);
+		addFireFly(ff);
+		fireLight.attachToBody(ff.getBody(), fireLight.getX(), fireLight.getY(), fireLight.getDirection());
+
 	}
 
 	/**
@@ -920,6 +951,18 @@ public class GameController implements ContactListener, Screen {
 		if (rayhandler != null) {
 			rayhandler.update();
 		}
+
+		int random = MathUtils.random(4);
+
+		for(FireFly f: fireFlies){
+			Vector2 sample = new Vector2(screenToMaze(14),screenToMaze(5));
+//			Vector2 randomLocation = new Vector2(screenToMaze(MathUtils.random(1,17)),screenToMaze(MathUtils.random(1,9)));
+			random = MathUtils.random(4);
+			Vector2 step = sample.cpy().sub(f.getPosition()).nor().scl(.025f);
+			f.setPosition(f.getX() + step.x, f.getY() + step.y);
+		}
+
+
 
 		int direction = avatar.getDirection();
 
