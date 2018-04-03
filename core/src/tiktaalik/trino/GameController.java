@@ -655,10 +655,10 @@ public class GameController implements ContactListener, Screen {
 				return (int)(g2.getY() - g1.getY());
 			}
 		});
-		canvas.draw(background,0.0f,0.0f);
+		canvas.draw(background,0,0);
 		for(GameObject g : drawObjects)
 			g.draw(canvas);
-		canvas.draw(overlay,0.0f,0.0f);
+		canvas.draw(overlay,0,0);
 		canvas.end();
 
 		// Now draw the shadows
@@ -979,20 +979,20 @@ public class GameController implements ContactListener, Screen {
 			controls.add(new AIController(i,avatar,en,pathList[i]));
 
 
-		PointSource fireLight = new PointSource(rayhandler, 512, Color.WHITE, 3, 0, 0);
-		fireLight.setColor(1.0f,1.0f,1.0f,1.0f);
-		fireLight.setSoft(true);
-		fireLight.setActive(true);
-
-		dwidth = fireFlyTexture.getRegionWidth() / (scale.x * 2);
-		dheight = fireFlyTexture.getRegionHeight() / scale.y;
-		FireFly ff = new FireFly(screenToMaze(1), screenToMaze(5), dwidth,0);
-		ff.setType(FIREFLY);
-		ff.setTexture(fireFlyTexture);
-		ff.setDrawScale(scale);
-		addObject(ff);
-		addFireFly(ff);
-		fireLight.attachToBody(ff.getBody(), fireLight.getX(), fireLight.getY(), fireLight.getDirection());
+//		PointSource fireLight = new PointSource(rayhandler, 512, Color.WHITE, 3, 0, 0);
+//		fireLight.setColor(1.0f,1.0f,1.0f,1.0f);
+//		fireLight.setSoft(true);
+//		fireLight.setActive(true);
+//
+//		dwidth = fireFlyTexture.getRegionWidth() / (scale.x * 2);
+//		dheight = fireFlyTexture.getRegionHeight() / scale.y;
+//		FireFly ff = new FireFly(screenToMaze(1), screenToMaze(5), dwidth,0);
+//		ff.setType(FIREFLY);
+//		ff.setTexture(fireFlyTexture);
+//		ff.setDrawScale(scale);
+//		addObject(ff);
+//		addFireFly(ff);
+//		fireLight.attachToBody(ff.getBody(), fireLight.getX(), fireLight.getY(), fireLight.getDirection());
 
 	}
 
@@ -1006,15 +1006,20 @@ public class GameController implements ContactListener, Screen {
 			rayhandler.update();
 		}
 
+		// Camera Follow
+		canvas.getCamera().position.set((avatar.getX()/bounds.width) * 1280, (avatar.getY()/bounds.height) * 720,
+				0);
+		canvas.getCamera().update();
+
 		int random = MathUtils.random(4);
 
-		for(FireFly f: fireFlies){
-			Vector2 sample = new Vector2(screenToMaze(14),screenToMaze(5));
-//			Vector2 randomLocation = new Vector2(screenToMaze(MathUtils.random(1,17)),screenToMaze(MathUtils.random(1,9)));
-			random = MathUtils.random(4);
-			Vector2 step = sample.cpy().sub(f.getPosition()).nor().scl(.025f);
-			f.setPosition(f.getX() + step.x, f.getY() + step.y);
-		}
+//		for(FireFly f: fireFlies){
+//			Vector2 sample = new Vector2(screenToMaze(14),screenToMaze(5));
+////			Vector2 randomLocation = new Vector2(screenToMaze(MathUtils.random(1,17)),screenToMaze(MathUtils.random(1,9)));
+//			random = MathUtils.random(4);
+//			Vector2 step = sample.cpy().sub(f.getPosition()).nor().scl(.025f);
+//			f.setPosition(f.getX() + step.x, f.getY() + step.y);
+//		}
 
 
 

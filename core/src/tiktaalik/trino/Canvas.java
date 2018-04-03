@@ -155,6 +155,18 @@ public class Canvas {
 		resize();
 
 	}
+
+	public OrthographicCamera getCamera(){
+		return camera;
+	}
+
+	public PolygonSpriteBatch getBatch(){
+		return spriteBatch;
+	}
+
+	public ShapeRenderer getDebugRender(){
+		return debugRender;
+	}
 	
 	/**
 	 * Returns whether this canvas is currently fullscreen.
@@ -182,7 +194,7 @@ public class Canvas {
 			Gdx.graphics.setWindowedMode(width, height);
 		}
 	}
-	
+
 	/**
 	 * Resets the SpriteBatch camera when this canvas is resized.
 	 */
