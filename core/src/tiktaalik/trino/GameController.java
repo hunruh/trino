@@ -656,6 +656,7 @@ public class GameController implements ContactListener, Screen {
 			}
 		});
 		canvas.draw(background,0,0);
+		canvas.draw(background,1270,0);
 		for(GameObject g : drawObjects)
 			g.draw(canvas);
 		canvas.draw(overlay,0,0);
@@ -1029,58 +1030,14 @@ public class GameController implements ContactListener, Screen {
 
 		int direction = avatar.getDirection();
 
-		if (avatar.getX() >= screenToMaze(1) && avatar.getX() <= screenToMaze(16)
-				&& avatar.getY() >= screenToMaze(1) && avatar.getY() <= screenToMaze(8)) {
 			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
 			avatar.setUpDown(InputHandler.getInstance().getVertical());
 
-		}
-		else {
-			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging())
-				((Carnivore) avatar).stopCharge();
 
-			if (avatar.getX() < screenToMaze(1)) {
-				avatar.setLeftRight(InputHandler.getInstance().getHorizontal()+ 5.0f);
-				if (avatar.getY() < screenToMaze(1)) {
-					avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
-					avatar.setDirection(Dinosaur.DOWN);
-				}
-				if (avatar.getY() > screenToMaze(8)) {
-					avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
-					avatar.setDirection(Dinosaur.UP);
-				}
-				else {
-					avatar.setUpDown(InputHandler.getInstance().getVertical());
-					avatar.setDirection(Dinosaur.LEFT);
-				}
-			}
-			if (avatar.getX() > screenToMaze(16)) {
-				avatar.setLeftRight(InputHandler.getInstance().getHorizontal()- 5.0f);
-				if (avatar.getY() < screenToMaze(1)) {
-					avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
-					avatar.setDirection(Dinosaur.DOWN);
-				}
-				if (avatar.getY() > screenToMaze(8)) {
-					avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
-					avatar.setDirection(Dinosaur.UP);
-				}
-				else {
-					avatar.setUpDown(InputHandler.getInstance().getVertical());
-					avatar.setDirection(Dinosaur.RIGHT);
-				}
-			}
-			if (avatar.getY() < screenToMaze(1)) {
-				avatar.setUpDown(InputHandler.getInstance().getHorizontal());
-				avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
-				avatar.setDirection(Dinosaur.DOWN);
-
-			}
-			if (avatar.getY() > screenToMaze(8)) {
-				avatar.setUpDown(InputHandler.getInstance().getHorizontal());
-				avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
-				avatar.setDirection(Dinosaur.UP);
-			}
-		}
+////		else {
+////			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging())
+////				((Carnivore) avatar).stopCharge();
+////		}
 
 		if (InputHandler.getInstance().didTransform()) {
 			if (avatar.canTransform()) {
