@@ -1013,22 +1013,26 @@ public class GameController implements ContactListener, Screen {
 
 		if ((avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth < halfWidth){
 			canvas.getCamera().position.x = halfWidth;
+			raycamera.position.x = bounds.width/2;
 		} else if ((avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth > 2560 - halfWidth){
 			canvas.getCamera().position.x = 2560 - halfWidth;
+			raycamera.position.x = bounds.width*2 - bounds.width/2;
 		} else {
 			canvas.getCamera().position.x = (avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth;
+			raycamera.position.x = avatar.getX();
 		}
 
 		if ((avatar.getY()/bounds.height)*canvas.getCamera().viewportHeight < halfHeight){
 			canvas.getCamera().position.y = halfHeight;
+			raycamera.position.y = bounds.height/2;
 		} else if ((avatar.getY()/bounds.height)*canvas.getCamera().viewportHeight > 720 - halfHeight){
 			canvas.getCamera().position.y = 720 - halfHeight;
+			raycamera.position.y = bounds.height - bounds.height/2;
 		} else {
-			canvas.getCamera().position.y = (avatar.getY()/bounds.height)*canvas.getCamera().viewportHeight;
+			canvas.getCamera().position.y = (avatar.getY() / bounds.height) * canvas.getCamera().viewportHeight;
+			raycamera.position.y = avatar.getY();
 		}
 		canvas.getCamera().update();
-
-		raycamera.position.set(avatar.getX(), avatar.getY(),0);
 		raycamera.update();
 		rayhandler.setCombinedMatrix(raycamera);
 
