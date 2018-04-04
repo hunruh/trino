@@ -1008,8 +1008,24 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		// Camera Follow
-		canvas.getCamera().position.set((avatar.getX()/bounds.width) * 1280, (avatar.getY()/bounds.height) * 720,
-				0);
+		float halfWidth = canvas.getCamera().viewportWidth / 2;
+		float halfHeight = canvas.getCamera().viewportHeight / 2;
+
+		if ((avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth < halfWidth){
+			canvas.getCamera().position.x = halfWidth;
+		} else if ((avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth > 2560 - halfWidth){
+			canvas.getCamera().position.x = 2560 - halfWidth;
+		} else {
+			canvas.getCamera().position.x = (avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth;
+		}
+
+		if ((avatar.getY()/bounds.height)*canvas.getCamera().viewportHeight < halfHeight){
+			canvas.getCamera().position.y = halfHeight;
+		} else if ((avatar.getY()/bounds.height)*canvas.getCamera().viewportHeight > 720 - halfHeight){
+			canvas.getCamera().position.y = 720 - halfHeight;
+		} else {
+			canvas.getCamera().position.y = (avatar.getY()/bounds.height)*canvas.getCamera().viewportHeight;
+		}
 		canvas.getCamera().update();
 
 		raycamera.position.set(avatar.getX(), avatar.getY(),0);
