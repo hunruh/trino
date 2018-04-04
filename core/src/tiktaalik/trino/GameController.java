@@ -115,6 +115,8 @@ public class GameController implements ContactListener, Screen {
 	private static final float DEFAULT_WIDTH  = 32.0f; // Width of the game world in Box2d units
 	private static final float DEFAULT_HEIGHT = 18.0f; // Height of the game world in Box2d units
 	private static final float DEFAULT_GRAVITY = -0.0f; // The default value of gravity (going down)
+	private static final float CAMERA_WIDTH = 32.0f;
+	private static final float CAMERA_HEIGHT = 18.0f;
 
 	protected static final int COTTON = 0;
 	protected static final int EDIBLEWALL = 1;
@@ -148,6 +150,7 @@ public class GameController implements ContactListener, Screen {
 	private GameObject[][] grid = new GameObject[GRID_MAX_X][GRID_MAX_Y];
 	private World world;
 	private Rectangle bounds; // The boundary of the world
+	private Rectangle cameraBounds;
 	private Vector2 scale; // The world scale
 
 	private boolean active; // Whether or not this is an active controller
@@ -417,6 +420,7 @@ public class GameController implements ContactListener, Screen {
 		this(new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT),
 				new Vector2(0, DEFAULT_GRAVITY));
 
+		cameraBounds = new Rectangle(0,0, CAMERA_WIDTH,CAMERA_HEIGHT);
 		jsonReader = new JsonReader();
 		setComplete(false);
 		setFailure(false);
@@ -1011,25 +1015,25 @@ public class GameController implements ContactListener, Screen {
 		float halfWidth = canvas.getCamera().viewportWidth / 2;
 		float halfHeight = canvas.getCamera().viewportHeight / 2;
 
-		if ((avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth < halfWidth){
+		if ((avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth < halfWidth){
 			canvas.getCamera().position.x = halfWidth;
-			raycamera.position.x = bounds.width/2;
-		} else if ((avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth > 2560 - halfWidth){
+			raycamera.position.x = cameraBounds.width/2;
+		} else if ((avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth > 2560 - halfWidth){
 			canvas.getCamera().position.x = 2560 - halfWidth;
-			raycamera.position.x = bounds.width*2 - bounds.width/2;
+			raycamera.position.x = cameraBounds.width*2 - cameraBounds.width/2;
 		} else {
-			canvas.getCamera().position.x = (avatar.getX()/bounds.width)*canvas.getCamera().viewportWidth;
+			canvas.getCamera().position.x = (avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth;
 			raycamera.position.x = avatar.getX();
 		}
 
-		if ((avatar.getY()/bounds.height)*canvas.getCamera().viewportHeight < halfHeight){
+		if ((avatar.getY()/cameraBounds.height)*canvas.getCamera().viewportHeight < halfHeight){
 			canvas.getCamera().position.y = halfHeight;
-			raycamera.position.y = bounds.height/2;
-		} else if ((avatar.getY()/bounds.height)*canvas.getCamera().viewportHeight > 720 - halfHeight){
+			raycamera.position.y = cameraBounds.height/2;
+		} else if ((avatar.getY()/cameraBounds.height)*canvas.getCamera().viewportHeight > 720 - halfHeight){
 			canvas.getCamera().position.y = 720 - halfHeight;
-			raycamera.position.y = bounds.height - bounds.height/2;
+			raycamera.position.y = cameraBounds.height - cameraBounds.height/2;
 		} else {
-			canvas.getCamera().position.y = (avatar.getY() / bounds.height) * canvas.getCamera().viewportHeight;
+			canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
 			raycamera.position.y = avatar.getY();
 		}
 		canvas.getCamera().update();
@@ -1426,8 +1430,8 @@ public class GameController implements ContactListener, Screen {
 	 * @param  light	the JSON tree defining the light
 	 */
 	private void initLighting(JsonValue light) {
-		raycamera = new OrthographicCamera(bounds.width,bounds.height);
-		raycamera.position.set(bounds.width/2.0f, bounds.height/2.0f, 0);
+		raycamera = new OrthographicCamera(cameraBounds.width,cameraBounds.height);
+		raycamera.position.set(cameraBounds.width/2.0f, cameraBounds.height/2.0f, 0);
 		raycamera.update();
 
 		RayHandler.setGammaCorrection(light.getBoolean("gamma"));
