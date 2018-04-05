@@ -450,9 +450,8 @@ public class GameController implements ContactListener, Screen {
 	 * Dispose of all (non-static) resources allocated to this mode.
 	 */
 	public void dispose() {
-		for(LightSource light : lights) {
+		for(LightSource light : lights)
 			light.remove();
-		}
 		lights.clear();
 
 		if (rayhandler != null) {
@@ -581,7 +580,7 @@ public class GameController implements ContactListener, Screen {
 				rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
 			} else {
 				duggiLight.setActive(true);
-				rayhandler.setAmbientLight(0.25f,0.25f,0.25f,0.25f);
+				rayhandler.setAmbientLight(0.05f,0.05f,0.05f,0.05f);
 			}
 
 
@@ -740,9 +739,9 @@ public class GameController implements ContactListener, Screen {
 		}
 		rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
 
-		duggiLight = new PointSource(rayhandler, 512, Color.WHITE, 7, 0, 0);
-		duggiLight.setColor(1.0f,1.0f,1.0f,1.0f);
-		duggiLight.setSoft(true);
+		duggiLight = new PointSource(rayhandler, 256, Color.WHITE, 8, 0, 0.4f);
+		duggiLight.setColor(0.85f,0.85f,0.95f,0.85f);
+		duggiLight.setXray(true);
 		duggiLight.setActive(false);
 
 		// Create player character
@@ -1443,9 +1442,6 @@ public class GameController implements ContactListener, Screen {
 
 		float[] color = light.get("color").asFloatArray();
 		rayhandler.setAmbientLight(color[0], color[0], color[0], color[0]);
-		int blur = light.getInt("blur");
-		rayhandler.setBlur(blur > 0);
-		rayhandler.setBlurNum(blur);
 	}
 
 	/** Unused Screen method */
