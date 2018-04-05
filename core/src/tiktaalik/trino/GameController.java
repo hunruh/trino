@@ -663,23 +663,26 @@ public class GameController implements ContactListener, Screen {
 		canvas.draw(background,1270,0);
 		for(GameObject g : drawObjects)
 			g.draw(canvas);
-		canvas.draw(overlay,0,0);
 		canvas.end();
 
 		// Now draw the shadows
 		if (rayhandler != null && activeLight != -1) {
 			rayhandler.render();
 		}
+
+		canvas.beginOverlay();
+		canvas.draw(overlay,0,0);
+		canvas.end();
 		
 		// Final message
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
-			canvas.begin(); // DO NOT SCALE
+			canvas.beginOverlay(); // DO NOT SCALE
 			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
 			canvas.end();
 		} else if (failed) {
 			displayFont.setColor(Color.RED);
-			canvas.begin(); // DO NOT SCALE
+			canvas.beginOverlay(); // DO NOT SCALE
 			canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 			canvas.end();
 		}

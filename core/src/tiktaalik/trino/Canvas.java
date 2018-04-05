@@ -37,6 +37,7 @@ public class Canvas {
 	private Matrix4 global; // Affine cache for all sprites this drawing pass
 	private Vector2 vertex;
 	private TextureRegion holder; // Cache object to handle raw textures
+	private Matrix4 cameraMatrix;
 
 	/**
 	 * Creates a new Canvas determined by the application configuration.
@@ -57,6 +58,11 @@ public class Canvas {
 		local  = new Affine2();
 		global = new Matrix4();
 		vertex = new Vector2();
+
+		cameraMatrix = new Matrix4();
+		cameraMatrix.idt();
+		cameraMatrix.scl(1.0f, 1.0f,1.0f);
+		cameraMatrix.mulLeft(camera.combined);
 	}
 		
     /**
@@ -291,6 +297,12 @@ public class Canvas {
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
     }
+
+    public void beginOverlay() {
+    	spriteBatch.setProjectionMatrix(cameraMatrix);
+		spriteBatch.begin();
+		active = DrawPass.STANDARD;
+	}
 
 	/**
 	 * Ends a drawing sequence, flushing textures to the graphics card.
