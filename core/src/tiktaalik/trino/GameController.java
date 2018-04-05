@@ -128,7 +128,7 @@ public class GameController implements ContactListener, Screen {
 	protected static final int SWITCH = 7;
 	protected static final int FIREFLY = 8;
 
-	private static int GRID_MAX_X = 16;
+	private static int GRID_MAX_X = 32;
 	private static int GRID_MAX_Y = 8;
 
 	// GAME VARIABLES
@@ -779,7 +779,7 @@ public class GameController implements ContactListener, Screen {
 			cf[i].setType(COTTON);
 			addObject(cf[i]);
 			addCottonFlower(cf[i]);
-			//grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
+			grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
 		}
 
 
@@ -793,7 +793,7 @@ public class GameController implements ContactListener, Screen {
 		s.setTexture(switchTexture);
 		s.setType(SWITCH);
 		addObject(s);
-		//grid[(int)s.getGridLocation().x-1][(int)s.getGridLocation().y-1] = s;
+		grid[(int)s.getGridLocation().x-1][(int)s.getGridLocation().y-1] = s;
 
 		/** Adding inedible walls */
 		Wall iw1 = new Wall(1,1,screenToMaze(1), screenToMaze(1), dwidth, dheight, false);
@@ -886,7 +886,7 @@ public class GameController implements ContactListener, Screen {
 			}
 			addObject(iw[i]);
 			addWall(iw[i]);
-			//grid[(int)iw[i].getGridLocation().x-1][(int)iw[i].getGridLocation().y-1] = iw[i];
+			grid[(int)iw[i].getGridLocation().x-1][(int)iw[i].getGridLocation().y-1] = iw[i];
 		}
 
 		// Add level goal
@@ -1018,10 +1018,10 @@ public class GameController implements ContactListener, Screen {
 		float halfWidth = canvas.getCamera().viewportWidth / 2;
 		float halfHeight = canvas.getCamera().viewportHeight / 2;
 
-		if ((avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth < halfWidth){
+		if ((avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth < halfWidth) {
 			canvas.getCamera().position.x = halfWidth;
 			raycamera.position.x = cameraBounds.width/2;
-		} else if ((avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth > 2560 - halfWidth){
+		} else if ((avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth > 2560 - halfWidth) {
 			canvas.getCamera().position.x = 2560 - halfWidth;
 			raycamera.position.x = cameraBounds.width*2 - cameraBounds.width/2;
 		} else {
@@ -1029,10 +1029,10 @@ public class GameController implements ContactListener, Screen {
 			raycamera.position.x = avatar.getX();
 		}
 
-		if ((avatar.getY()/cameraBounds.height)*canvas.getCamera().viewportHeight < halfHeight){
+		if ((avatar.getY()/cameraBounds.height)*canvas.getCamera().viewportHeight < halfHeight) {
 			canvas.getCamera().position.y = halfHeight;
 			raycamera.position.y = cameraBounds.height/2;
-		} else if ((avatar.getY()/cameraBounds.height)*canvas.getCamera().viewportHeight > 720 - halfHeight){
+		} else if ((avatar.getY()/cameraBounds.height)*canvas.getCamera().viewportHeight > 720 - halfHeight) {
 			canvas.getCamera().position.y = 720 - halfHeight;
 			raycamera.position.y = cameraBounds.height - cameraBounds.height/2;
 		} else {
@@ -1119,7 +1119,7 @@ public class GameController implements ContactListener, Screen {
 		}
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
-				GameObject cotton= grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
+				GameObject cotton = grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
 				if (cotton != null && cotton.getType() == COTTON) {
 					SoundController.getInstance().playCottonPickup();
 					cotton.deactivatePhysics(world);
@@ -1128,7 +1128,6 @@ public class GameController implements ContactListener, Screen {
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
 				}
-
 				else if (clone == null && avatar.getResources() >= 1) {
 					Vector2 location = avatarGrid();
 					GameObject goal = grid[(int)switchLocation.x-1][(int)switchLocation.y-1];
@@ -1141,19 +1140,19 @@ public class GameController implements ContactListener, Screen {
 						}
 					}
 					else if (direction == Dinosaur.DOWN) {
-						if (location.y != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)) {
+						if (location.y != 1 && (objectInFrontOfAvatar()== null || objectInFrontOfAvatar() == goal)) {
 							clone = new Clone(screenToMaze(location.x), screenToMaze(location.y-1), dwidth);
 							clone.setGridLocation(location.x, location.y-1);
 						}
 					}
 					else if (direction == Dinosaur.LEFT) {
-						if (location.x != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
+						if (location.x != 1 && (objectInFrontOfAvatar()== null || objectInFrontOfAvatar() == goal)){
 							clone = new Clone(screenToMaze(location.x-1), screenToMaze(location.y), dwidth);
 							clone.setGridLocation(location.x-1, location.y);
 						}
 					}
 					else if (direction == Dinosaur.RIGHT) {
-						if (location.x != GRID_MAX_X && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
+						if (location.x != GRID_MAX_X && (objectInFrontOfAvatar()== null || objectInFrontOfAvatar() == goal)){
 							clone = new Clone(screenToMaze(location.x+1), screenToMaze(location.y), dwidth);
 							clone.setGridLocation(location.x+1, location.y);
 						}
