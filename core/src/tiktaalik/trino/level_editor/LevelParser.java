@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import tiktaalik.trino.duggi.Dinosaur;
+import tiktaalik.util.PooledList;
 
 import java.io.*;
 
@@ -45,14 +46,21 @@ public class LevelParser {
         else return -1;
     }
 
-    public int[][] getResourceList(int level, int type){
-        JSONArray enemy = (JSONArray)((JSONObject)(levels.get(level))).get("Enemy");
-        int[][] tmp = new int[enemy.size()][3];
-        for (int i = 0; i < enemy.size(); i++){
-            JSONObject e = (JSONObject)(enemy.get(i));
-
+    public PooledList<Vector2> getCottonList(int level){
+        System.out.println("in getcottonlist");
+        System.out.println(levels.get(level));
+        JSONArray resources = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Resources");
+        System.out.println(resources.size());
+        PooledList<Vector2> tmp = new PooledList<Vector2>();
+        for (int i = 0; i < resources.size(); i++){
+            JSONObject r = (JSONObject)(resources.get(i));
+            //System.out.println(r.get("Type"));
+            if ((String)r.get("Type") == "cotton"){
+                //System.out.println("bruh");
+                tmp.add(new Vector2((Integer)(r.get("x")),(Integer)(r.get("y"))));
+            }
         }
-        return null;
+        return tmp;
 
     }
 

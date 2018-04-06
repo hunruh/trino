@@ -165,7 +165,7 @@ public class GameController implements ContactListener, Screen {
 		hud.preLoadContent(manager);
 		if (worldAssetState != AssetState.EMPTY)
 			return;
-		
+
 		worldAssetState = AssetState.LOADING;
 		// Load the font
 		FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
@@ -236,14 +236,14 @@ public class GameController implements ContactListener, Screen {
 	 * this time.  However, we still want the assets themselves to be static.  So
 	 * we have an AssetState that determines the current loading state.  If the
 	 * assets are already loaded, this method will do nothing.
-	 * 
+	 *
 	 * @param manager Reference to global asset manager.
 	 */
 	public void loadContent(AssetManager manager) {
 		hud.loadContent(manager);
 		if (worldAssetState != AssetState.LOADING)
 			return;
-		
+
 		// Allocate the font
 		if (manager.isLoaded(FONT_FILE))
 			displayFont = manager.get(FONT_FILE,BitmapFont.class);
@@ -304,7 +304,7 @@ public class GameController implements ContactListener, Screen {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns a newly loaded filmstrip for the given file.
 	 *
@@ -327,22 +327,22 @@ public class GameController implements ContactListener, Screen {
 		}
 		return null;
 	}
-	
-	/** 
+
+	/**
 	 * Unloads the assets for this game.
-	 * 
-	 * This method erases the static variables.  It also deletes the associated textures 
+	 *
+	 * This method erases the static variables.  It also deletes the associated textures
 	 * from the asset manager. If no assets are loaded, this method does nothing.
-	 * 
+	 *
 	 * @param manager Reference to global asset manager.
 	 */
 	public void unloadContent(AssetManager manager) {
 		hud.unloadContent(manager);
-    	for(String s : assets) {
-    		if (manager.isLoaded(s)) {
-    			manager.unload(s);
-    		}
-    	}
+		for(String s : assets) {
+			if (manager.isLoaded(s)) {
+				manager.unload(s);
+			}
+		}
 	}
 
 	/**
@@ -383,7 +383,7 @@ public class GameController implements ContactListener, Screen {
 	public Canvas getCanvas() {
 		return canvas;
 	}
-	
+
 	/**
 	 * Sets the canvas associated with this controller
 	 *
@@ -398,7 +398,7 @@ public class GameController implements ContactListener, Screen {
 		this.scale.x = canvas.getWidth()/bounds.getWidth();
 		this.scale.y = canvas.getHeight()/bounds.getHeight();
 	}
-	
+
 	/**
 	 * Creates a new game world with the default values.
 	 *
@@ -436,7 +436,7 @@ public class GameController implements ContactListener, Screen {
 		collisionHandler = new CollisionHandler(this);
 		hud = new HUDController();
 	}
-	
+
 	/**
 	 * Dispose of all (non-static) resources allocated to this mode.
 	 */
@@ -527,7 +527,7 @@ public class GameController implements ContactListener, Screen {
 
 		populateLevel();
 	}
-	
+
 	/**
 	 * Returns whether to process the update loop
 	 *
@@ -536,7 +536,7 @@ public class GameController implements ContactListener, Screen {
 	 * normally.
 	 *
 	 * @param dt Number of seconds since last animation frame
-	 * 
+	 *
 	 * @return whether to process the update loop
 	 */
 	public boolean preUpdate(float dt) {
@@ -544,7 +544,7 @@ public class GameController implements ContactListener, Screen {
 		input.readInput();
 		if (listener == null)
 			return true;
-		
+
 		// Handle resets
 		if (input.didReset())
 			reset();
@@ -560,7 +560,7 @@ public class GameController implements ContactListener, Screen {
 
 		return true;
 	}
-	
+
 	/**
 	 * Processes physics
 	 *
@@ -570,7 +570,7 @@ public class GameController implements ContactListener, Screen {
 		// Add any objects created by actions
 		while (!addQueue.isEmpty())
 			addObject(addQueue.poll());
-		
+
 		// Turn the physics engine crank.
 		world.step(WORLD_STEP,WORLD_VELOC,WORLD_POSIT);
 
@@ -587,7 +587,7 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 	}
-	
+
 	/**
 	 * Draw the physics objects to the canvas
 	 *
@@ -600,7 +600,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void draw(float delta) {
 		canvas.clear();
-		
+
 		canvas.begin();
 		while (drawObjects.size() < objects.size())
 			drawObjects.add(null);
@@ -633,7 +633,7 @@ public class GameController implements ContactListener, Screen {
 			g.draw(canvas);
 		canvas.draw(overlay,0.0f,0.0f);
 		canvas.end();
-		
+
 		// Final message
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
@@ -666,7 +666,7 @@ public class GameController implements ContactListener, Screen {
 			hud.draw();
 		}
 	}
-	
+
 	/**
 	 * Called when this screen becomes the current screen for a Game.
 	 */
@@ -700,7 +700,9 @@ public class GameController implements ContactListener, Screen {
 
 		LevelParser parser = new LevelParser();
 		try{
-		parser.parse("trino/examplejson.txt");
+			parser.parse("trino/examplejson.txt");
+			parser.getCottonList(0);
+
 		} catch(Exception e){
 			System.out.println(e);
 		}
