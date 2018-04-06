@@ -708,12 +708,12 @@ public class GameController implements ContactListener, Screen {
 		// Final message
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
-			canvas.beginOverlay(); // DO NOT SCALE
+			canvas.beginOverlay();
 			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
 			canvas.end();
 		} else if (failed) {
 			displayFont.setColor(Color.RED);
-			canvas.beginOverlay(); // DO NOT SCALE
+			canvas.beginOverlay();
 			canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 			canvas.end();
 		}

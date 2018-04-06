@@ -5,8 +5,14 @@ import tiktaalik.trino.GameObject;
 import tiktaalik.trino.duggi.Dinosaur;
 
 public class AIController {
+    protected enum state {
+        EMPTY,
+        LOADING,
+        COMPLETE
+    }
+
     private Enemy enemy; // The ship being controlled by this AIController
-    private GameObject target; // The target ship (to chase or attack)
+    private GameObject target; // The target dinosaur
 
     private Vector2[] path;
     private int pathStep;
@@ -17,18 +23,12 @@ public class AIController {
     public AIController(int id, GameObject duggi, Enemy[] enemies, Vector2[] p) {
         this.enemy = enemies[id];
 
-        // Select an initial target
         target = duggi;
         pathStep = 1;
         path = p;
         step = new Vector2();
     }
 
-    /**
-     * Returns a movement direction that moves towards a goal tile.
-     *
-     * @return a movement direction that moves towards a goal tile.
-     */
     public void getMoveAlongPath() {
         if (enemy.getStunned())
             return;
