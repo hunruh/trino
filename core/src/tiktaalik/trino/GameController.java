@@ -170,6 +170,12 @@ public class GameController implements ContactListener, Screen {
 	private Array<LightSource> lights = new Array<LightSource>();
 	/** The current light source being used.  If -1, there are no shadows */
 	private int activeLight;
+	/** The list of firefly light sources */
+	private LightSource[] ffLights;
+	private float currentDst = 2;
+	private float change = 0.01f;
+
+	private int ticks;
 
 	private LightSource duggiLight;
 
@@ -992,19 +998,21 @@ public class GameController implements ContactListener, Screen {
 		FireFly ff4 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
 		FireFly ff5 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
 		FireFly[] ff = new FireFly[]{ff1,ff2,ff3,ff4,ff5};
+		ffLights = new LightSource[ff.length];
 
-		for (FireFly f:ff){
+		for (int i = 0; i < ff.length; i++){
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
 			fireLight.setColor(0.85f,0.85f,0.95f,0.85f);
 			fireLight.setXray(true);
 			fireLight.setActive(true);
+			ffLights[i] = fireLight;
 
-			f.setType(FIREFLY);
-			f.setTexture(fireFlyTexture);
-			f.setDrawScale(scale);
-			addObject(f);
-			addFireFly(f);
-			fireLight.attachToBody(f.getBody(), fireLight.getX(), fireLight.getY(), fireLight.getDirection());
+			ff[i].setType(FIREFLY);
+			ff[i].setTexture(fireFlyTexture);
+			ff[i].setDrawScale(scale);
+			addObject(ff[i]);
+			addFireFly(ff[i]);
+			fireLight.attachToBody(ff[i].getBody(), fireLight.getX(), fireLight.getY(), fireLight.getDirection());
 		}
 
 		for (int i = 0; i < ff.length; i++)
@@ -1018,6 +1026,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
+		ticks++;
 		if (rayhandler != null) {
 			rayhandler.update();
 		}
@@ -1055,6 +1064,17 @@ public class GameController implements ContactListener, Screen {
 		for(FireFlyAIController ffAI:fControls){
 			ffAI.getMoveAlongPath();
 		}
+
+		if (currentDst >= 2){
+			change = -change;
+		} else if (currentDst <= 0.5){
+			change = -change;
+		}
+
+		for(LightSource ffLight:ffLights){
+			ffLight.setDistance(currentDst +change);
+		}
+		currentDst+=change;
 
 		int direction = avatar.getDirection();
 
