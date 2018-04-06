@@ -672,11 +672,6 @@ public class GameController implements ContactListener, Screen {
 		Collections.sort(drawObjects, new Comparator<GameObject>() {
 			@Override
 			public int compare(GameObject g1, GameObject g2) {
-//				if (g1.getType() == GOAL)
-//					return -1;
-//				if (g2.getType() == GOAL)
-//					return 1;
-
 				if (g1.getType() == SWITCH)
 					return -1;
 				if (g2.getType() == SWITCH)
