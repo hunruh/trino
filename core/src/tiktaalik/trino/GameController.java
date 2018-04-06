@@ -994,7 +994,7 @@ public class GameController implements ContactListener, Screen {
 		FireFly[] ff = new FireFly[]{ff1,ff2,ff3,ff4,ff5};
 
 		for (FireFly f:ff){
-			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0.4f);
+			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
 			fireLight.setColor(0.85f,0.85f,0.95f,0.85f);
 			fireLight.setXray(true);
 			fireLight.setActive(true);
