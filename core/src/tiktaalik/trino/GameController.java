@@ -68,6 +68,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
 	private static final String SWITCH_FILE = "trino/buttonRough.png";
+	private static final String RIVER_FILE = "trino/river.png";
+	private static final String BOULDER_FILE = "trino/boulder.png";
 
 	// Texture assets variables
 	private BitmapFont displayFont;
@@ -98,6 +100,8 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion edibleWallTexture;
 	private TextureRegion cottonTexture;
 	private TextureRegion switchTexture;
+	private TextureRegion riverTexture;
+	private TextureRegion boulderTexture;
 
 	// GAME CONSTANTS
 	private static final int EXIT_COUNT = 60; // How many frames after winning/losing do we continue?
@@ -124,6 +128,8 @@ public class GameController implements ContactListener, Screen {
 	protected static final int CLONE = 6;
 	protected static final int SWITCH = 7;
 	protected static final int FIREFLY = 8;
+	protected static final int RIVER = 9;
+	protected static final int BOULDER = 10;
 
 	private static int GRID_MAX_X = 32;
 	private static int GRID_MAX_Y = 8;
@@ -140,6 +146,8 @@ public class GameController implements ContactListener, Screen {
 	private PooledList<GameObject> addQueue = new PooledList<GameObject>(); // Queue for adding objects
 	private PooledList<Wall> walls = new PooledList<Wall>();
 	private PooledList<CottonFlower> cottonFlower = new PooledList<CottonFlower>();
+	private PooledList<River> rivers = new PooledList<River>();
+	private PooledList<Boulder> boulders = new PooledList<Boulder>();
 	private PooledList<Enemy> enemies = new PooledList<Enemy>();
 	private PooledList<AIController> controls = new PooledList<AIController>();
 	private PooledList<FireFly> fireFlies = new PooledList<FireFly>();
@@ -160,7 +168,7 @@ public class GameController implements ContactListener, Screen {
 	private Clone clone;
 	private boolean removeClone = false;
 	private Wall goalDoor;
-	private Vector2 switchLocation = new Vector2(16, 6);
+	private Vector2 switchLocation = new Vector2(28, 1);
 
 	/** The camera defining the RayHandler view; scale is in physics coordinates */
 	protected OrthographicCamera raycamera;
@@ -179,6 +187,9 @@ public class GameController implements ContactListener, Screen {
 	private JsonValue  assetDirectory;
 	/** The JSON defining the level model */
 	private JsonValue  levelFormat;
+
+	/** Time since the start of the level */
+	private int timeElapsed;
 
 	/**
 	 * Preloads the assets for this controller.
@@ -251,6 +262,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
 		assets.add(SWITCH_FILE);
+		manager.load(RIVER_FILE, Texture.class);
+		assets.add(RIVER_FILE);
+		manager.load(BOULDER_FILE, Texture.class);
+		assets.add(BOULDER_FILE);
 
 		jsonReader = new JsonReader();
 	}
@@ -302,6 +317,8 @@ public class GameController implements ContactListener, Screen {
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
 		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
 		switchTexture = createTexture(manager, SWITCH_FILE, false);
+		riverTexture = createTexture(manager, RIVER_FILE, false);
+		boulderTexture = createTexture(manager, BOULDER_FILE, false);
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -500,8 +517,18 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	public void addFireFly(FireFly obj){
-		assert inBounds(obj) : "Objects is no in bounds";
+		assert inBounds(obj) : "Objects is not in bounds";
 		fireFlies.add(obj);
+	}
+
+	public void addRiver(River obj) {
+		assert inBounds(obj) : "Objects is not in bounds";
+		rivers.add(obj);
+	}
+
+	public void addBoulder(Boulder obj) {
+		assert inBounds(obj) : "Objects is not in bounds";
+		boulders.add(obj);
 	}
 
 	/**
@@ -763,7 +790,7 @@ public class GameController implements ContactListener, Screen {
 		CottonFlower cf2 = new CottonFlower(10,4, screenToMaze(10), screenToMaze(4), dwidth, dheight);
 		CottonFlower cf3 = new CottonFlower(12,7,screenToMaze(12), screenToMaze(7), dwidth, dheight);
 		CottonFlower cf4 = new CottonFlower(15,1,screenToMaze(15), screenToMaze(1), dwidth, dheight);
-		CottonFlower cf5 = new CottonFlower(17,1,screenToMaze(18), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf5 = new CottonFlower(18,8,screenToMaze(18), screenToMaze(8), dwidth, dheight);
 		CottonFlower cf6 = new CottonFlower(25,8,screenToMaze(25), screenToMaze(8), dwidth, dheight);
 		CottonFlower cf7 = new CottonFlower(29,4,screenToMaze(29), screenToMaze(4), dwidth, dheight);
 		CottonFlower cf8 = new CottonFlower(32,3,screenToMaze(32), screenToMaze(3), dwidth, dheight);
@@ -778,6 +805,62 @@ public class GameController implements ContactListener, Screen {
 			addCottonFlower(cf[i]);
 			grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
 		}
+
+		// Adding river
+		dwidth = riverTexture.getRegionWidth() / scale.x;
+		dheight = cottonTexture.getRegionHeight() / scale.y;
+		River r1 = new River(4,3,screenToMaze(4),screenToMaze(3),dwidth,dheight, false);
+		River r2 = new River(4,4,screenToMaze(4),screenToMaze(4),dwidth,dheight, false);
+		River r3 = new River(4,5,screenToMaze(4),screenToMaze(5),dwidth,dheight, false);
+		River r4 = new River(4,6,screenToMaze(4),screenToMaze(6),dwidth,dheight, false);
+		River r5 = new River(4,7,screenToMaze(4),screenToMaze(7),dwidth,dheight, false);
+		River r6 = new River(5,3,screenToMaze(5),screenToMaze(3),dwidth,dheight, false);
+		River r7 = new River(5,4,screenToMaze(5),screenToMaze(4),dwidth,dheight, false);
+		River r8 = new River(5,5,screenToMaze(5),screenToMaze(5),dwidth,dheight, false);
+		River r9 = new River(5,6,screenToMaze(5),screenToMaze(6),dwidth,dheight, false);
+		River r10 = new River(5,7,screenToMaze(5),screenToMaze(7),dwidth,dheight, false);
+		River r11 = new River(12,5,screenToMaze(12),screenToMaze(5),dwidth,dheight, false);
+		River r12 = new River(13,5,screenToMaze(13),screenToMaze(5),dwidth,dheight, false);
+		River r13 = new River(14,5,screenToMaze(14),screenToMaze(5),dwidth,dheight, false);
+		River r14 = new River(15,5,screenToMaze(15),screenToMaze(5),dwidth,dheight, false);
+		River r15 = new River(16,5,screenToMaze(16),screenToMaze(5),dwidth,dheight, false);
+		River r16 = new River(19,2,screenToMaze(19),screenToMaze(2),dwidth,dheight, false);
+		River r17 = new River(20,2,screenToMaze(20),screenToMaze(2),dwidth,dheight, false);
+		River r18 = new River(21,2,screenToMaze(21),screenToMaze(2),dwidth,dheight, false);
+		River r19 = new River(22,2,screenToMaze(22),screenToMaze(2),dwidth,dheight, false);
+		River r20 = new River(23,2,screenToMaze(23),screenToMaze(2),dwidth,dheight, false);
+		River r21 = new River(24,2,screenToMaze(24),screenToMaze(2),dwidth,dheight, false);
+		River[] riv = new River[] {r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15,r16,r17,r18,r19,r20,r21};
+		for (int i = 0; i < 21; i++) {
+			riv[i].setBodyType(BodyDef.BodyType.StaticBody);
+			riv[i].setDrawScale(scale);
+			riv[i].setTexture(riverTexture);
+			riv[i].setType(RIVER);
+			addObject(riv[i]);
+			addRiver(riv[i]);
+			grid[(int)riv[i].getGridLocation().x-1][(int)riv[i].getGridLocation().y-1] = riv[i];
+		}
+
+		dwidth = boulderTexture.getRegionWidth() / scale.x;
+		dheight = boulderTexture.getRegionHeight() / scale.y;
+		Boulder b1 = new Boulder(7,1,screenToMaze(7),screenToMaze(1),dwidth,dheight, false);
+		Boulder b2 = new Boulder(7,2,screenToMaze(7),screenToMaze(2),dwidth,dheight, false);
+		Boulder b3 = new Boulder(8,3,screenToMaze(8),screenToMaze(3),dwidth,dheight, false);
+		Boulder b4 = new Boulder(24,1,screenToMaze(24),screenToMaze(1),dwidth,dheight, false);
+		Boulder b5 = new Boulder(26,6,screenToMaze(26),screenToMaze(6),dwidth,dheight, false);
+		Boulder b6 = new Boulder(26,7,screenToMaze(26),screenToMaze(7),dwidth,dheight, false);
+		Boulder b7 = new Boulder(26,8,screenToMaze(26),screenToMaze(8),dwidth,dheight, false);
+		Boulder[] b = new Boulder[] {b1,b2,b3,b4,b5,b6,b7};
+		for (int i = 0; i < 7; i++) {
+			b[i].setBodyType(BodyDef.BodyType.StaticBody);
+			b[i].setDrawScale(scale);
+			b[i].setTexture(boulderTexture);
+			b[i].setType(BOULDER);
+			addObject(b[i]);
+			addBoulder(b[i]);
+			grid[(int)b[i].getGridLocation().x-1][(int)b[i].getGridLocation().y-1] = b[i];
+		}
+
 
 
 		// Switch
@@ -952,7 +1035,7 @@ public class GameController implements ContactListener, Screen {
 		Vector2[] p11 = new Vector2[]{screenToMazeVector(22,3),screenToMazeVector(21,3),
 				screenToMazeVector(20,3),screenToMazeVector(19,3),screenToMazeVector(18,3),
 				screenToMazeVector(17,3)};
-		Vector2[] p12 = new Vector2[]{screenToMazeVector(23,8),screenToMazeVector(24,8)};
+		Vector2[] p12 = new Vector2[]{screenToMazeVector(23,8),screenToMazeVector(24,8),screenToMazeVector(25,8)};
 		Vector2[] p13 = new Vector2[]{screenToMazeVector(27,4),screenToMazeVector(27,3),
 				screenToMazeVector(27,2),screenToMazeVector(27,1)};
 		Vector2[] p14 = new Vector2[]{screenToMazeVector(28,7),screenToMazeVector(28,6),
@@ -1102,6 +1185,7 @@ public class GameController implements ContactListener, Screen {
 		if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging() &&
 				avatar.getLinearVelocity().len2() < 5)
 			((Carnivore) avatar).stopCharge();
+
 		if (clone != null &&(removeClone || clone.getRemoved())) {
 			clone.deactivatePhysics(world);
 			objects.remove(clone);

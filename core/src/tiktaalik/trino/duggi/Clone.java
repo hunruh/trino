@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
@@ -15,6 +16,9 @@ public class Clone extends GameObject {
     private boolean alive;
     private boolean removed = false;
     private Vector2 gridLocation;
+
+    private final float totalTime = 60.0f;
+    private float timeElapsed;
 
     public Clone(float radius) {
         this(0, 0, radius);
@@ -44,8 +48,19 @@ public class Clone extends GameObject {
 
     public void setRemoved(boolean removed) { this.removed = removed; }
 
+    /**
+     * Updates the object's physics state (NOT GAME LOGIC).
+     *
+     * @param dt Number of seconds since last animation frame
+     */
     public void update(float dt) {
         super.update(dt);
+
+        timeElapsed += dt;
+        if (timeElapsed > totalTime) {
+            alive = false;
+            removed = true;
+        }
     }
 
     public Vector2 getGridLocation() {
@@ -79,6 +94,9 @@ public class Clone extends GameObject {
         // Create the fixture
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
+        Filter filter = geometry.getFilterData();
+        filter.categoryBits = 0x0004;
+        geometry.setFilterData(filter);
         markDirty(false);
     }
 
