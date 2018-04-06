@@ -170,6 +170,8 @@ public class GameController implements ContactListener, Screen {
 	private Wall goalDoor;
 	private Vector2 switchLocation = new Vector2(28, 1);
 
+	private Vector2 enemyPosCache;
+
 	/** The camera defining the RayHandler view; scale is in physics coordinates */
 	protected OrthographicCamera raycamera;
 	/** The rayhandler for storing lights, and drawing them (SIGH) */
@@ -465,6 +467,7 @@ public class GameController implements ContactListener, Screen {
 		countdown = -1;
 		collisionHandler = new CollisionHandler(this);
 		hud = new HUDController();
+		enemyPosCache = new Vector2();
 	}
 	
 	/**
@@ -1071,7 +1074,7 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		for (int i = 0; i < en.length; i++)
-			controls.add(new AIController(i,avatar,en,pathList[i]));
+			controls.add(new AIController(i,avatar,en,pathList[i], AIController.FLIP));
 
 
 		dwidth = fireFlyTexture.getRegionWidth() / (scale.x * 2);
@@ -1325,7 +1328,7 @@ public class GameController implements ContactListener, Screen {
 
 		// AI movement
 		for (int i = 0; i < enemies.size();i++)
-			controls.get(i).getMoveAlongPath();
+			controls.get(i).step(objectInFrontOfEnemy(enemies.get(i)));
 
 		hud.update(avatar.getResources(), avatar.getForm());
 	}
@@ -1403,7 +1406,7 @@ public class GameController implements ContactListener, Screen {
 
 	public GameObject objectInFrontOfAvatar() {
 		int direction = avatar.getDirection();
-		if (direction == Dinosaur.UP){
+		if (direction == Dinosaur.UP) {
 			if ((int)avatarGrid().y == GRID_MAX_Y)
 				return null;
 			else
@@ -1428,6 +1431,35 @@ public class GameController implements ContactListener, Screen {
 				return grid[(int)avatarGrid().x][(int)avatarGrid().y-1];
 		}
 		return null;
+	}
+
+	public boolean objectInFrontOfEnemy(Enemy e) {
+		int direction = e.getDirection();
+		enemyPosCache.set(Math.round((e.getX()-1)/2+1), Math.round((e.getY()-1)/2+1));
+		if (direction == Dinosaur.UP) {
+			if ((int)enemyPosCache.y == GRID_MAX_Y)
+				return true;
+			else
+				return grid[(int)enemyPosCache.x-1][(int)enemyPosCache.y] != null;
+		}
+		else if (direction == Dinosaur.DOWN) {
+			if ((int)enemyPosCache.y == 1)
+				return true;
+			else
+				return grid[(int)enemyPosCache.x-1][(int)enemyPosCache.y-2] != null;
+		}
+		else if (direction == Dinosaur.LEFT) {
+			if ((int)enemyPosCache.x == 1)
+				return true;
+			else
+				return grid[(int)enemyPosCache.x-2][(int)enemyPosCache.y-1] != null;
+		}
+		else {
+			if ((int)enemyPosCache.x == GRID_MAX_X)
+				return true;
+			else
+				return grid[(int)enemyPosCache.x][(int)enemyPosCache.y-1] != null;
+		}
 	}
 
 	public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){

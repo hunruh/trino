@@ -74,82 +74,13 @@ public class Enemy extends GameObject {
     public void setDirection(float value) {
         if (value == 0) {
             direction = Dinosaur.LEFT;
-        }
-        else if (value == 1) {
+        } else if (value == 1) {
             direction = Dinosaur.RIGHT;
-        }
-        else if (value == 2) {
+        } else if (value == 2) {
             direction = Dinosaur.UP;
-        }
-        else if (value == 3) {
+        } else if (value == 3) {
             direction = Dinosaur.DOWN;
         }
-    }
-
-    /**
-     * Returns left/right movement of this character.
-     *
-     * @return left/right movement of this character.
-     */
-    public float getLeftRight() {
-        return leftRight;
-    }
-
-    /**
-     * Returns up/down movement of this character.
-     *
-     * @return up/down movement of this character.
-     */
-    public float getUpDown() {return upDown;}
-
-    /**
-     * Sets left/right movement of this character.
-     *
-     * @param value left/right movement of this character.
-     */
-    public void setLeftRight(float value) {
-        leftRight = value;
-        if (leftRight < 0) {
-            faceRight = false;
-            faceUp = false;
-        } else if (leftRight > 0) {
-            faceRight = true;
-            faceUp = false;
-        }
-    }
-
-    /**
-     * Sets up/down movement of this character.
-     *
-     * @param value up/down movement of this character.
-     */
-    public void setUpDown(float value) {
-        upDown = value;
-        if (upDown < 0) {
-            faceRight = false;
-            faceUp = false;
-        } else if (upDown > 0) {
-            faceRight = false;
-            faceUp = true;
-        }
-    }
-
-    /**
-     * Returns true if this character is facing right
-     *
-     * @return true if this character is facing right
-     */
-    public boolean isFacingRight() {
-        return faceRight;
-    }
-
-    /**
-     * Returns true if this character is facing right
-     *
-     * @return true if this character is facing right
-     */
-    public boolean isFacingUp() {
-        return faceUp;
     }
 
     /**
