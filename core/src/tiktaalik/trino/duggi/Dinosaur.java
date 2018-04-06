@@ -218,6 +218,9 @@ public abstract class Dinosaur extends GameObject {
         // Create the fixture
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
+        Filter filter = geometry.getFilterData();
+        filter.categoryBits = 0x0004;
+        geometry.setFilterData(filter);
         markDirty(false);
     }
 
