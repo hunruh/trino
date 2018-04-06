@@ -672,10 +672,10 @@ public class GameController implements ContactListener, Screen {
 		Collections.sort(drawObjects, new Comparator<GameObject>() {
 			@Override
 			public int compare(GameObject g1, GameObject g2) {
-				if (g1.getType() == GOAL)
-					return -1;
-				if (g2.getType() == GOAL)
-					return 1;
+//				if (g1.getType() == GOAL)
+//					return -1;
+//				if (g2.getType() == GOAL)
+//					return 1;
 
 				if (g1.getType() == SWITCH)
 					return -1;
@@ -686,6 +686,12 @@ public class GameController implements ContactListener, Screen {
 					return -1;
 				if (g2.getType() == COTTON)
 					return 1;
+
+				if (g1.getType() == FIREFLY)
+					return 1;
+				if (g2.getType() == FIREFLY)
+					return -1;
+
 				return (int)(g2.getY() - g1.getY());
 			}
 		});
@@ -1063,7 +1069,7 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 0; i < 17; i++) {
 			en[i].setType(ENEMY);
 			en[i].setDrawScale(scale);
-			en[i].setTexture(enemyTextureBack);
+			en[i].setTextureSet(enemyTextureLeft, enemyTextureRight, enemyTextureBack, enemyTextureFront);
 			en[i].setDirection(dirList[0]);
 			addObject(en[i]);
 			addEnemy(en[i]);
@@ -1161,8 +1167,8 @@ public class GameController implements ContactListener, Screen {
 
 		int direction = avatar.getDirection();
 
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
-			avatar.setUpDown(InputHandler.getInstance().getVertical());
+		avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
+		avatar.setUpDown(InputHandler.getInstance().getVertical());
 
 
 ////		else {
@@ -1321,72 +1327,10 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		avatar.applyForce();
+
 		// AI movement
-
-		for (int i = 0; i < enemies.size();i++){
-			if (enemies.get(1).getPosition().y + 0.2 > screenToMaze(3)) {
-				enemies.get(1).setTexture(enemyTextureFront);
-				enemies.get(1).setDirection(Dinosaur.DOWN);
-			}
-			else if (enemies.get(1).getPosition().y - 0.2 < screenToMaze(1)) {
-				enemies.get(1).setTexture(enemyTextureBack);
-				enemies.get(1).setDirection(Dinosaur.UP);
-			}
-
-			if (enemies.get(2).getPosition().x +0.2 > screenToMaze(8)) {
-				enemies.get(2).setTexture(enemyTextureLeft);
-				enemies.get(2).setDirection(Dinosaur.LEFT);
-			}
-			else if ((enemies.get(2).getPosition().x -0.2 < screenToMaze(6))) {
-				enemies.get(2).setTexture(enemyTextureRight);
-				enemies.get(2).setDirection(Dinosaur.RIGHT);
-			}
-
-			if (enemies.get(3).getPosition().y +0.2 > screenToMaze(3)) {
-				enemies.get(3).setTexture(enemyTextureFront);
-				enemies.get(3).setDirection(Dinosaur.DOWN);
-			}
-			else if ((enemies.get(3).getPosition().y -0.2 < screenToMaze(2))) {
-				enemies.get(3).setTexture(enemyTextureBack);
-				enemies.get(3).setDirection(Dinosaur.UP);
-			}
-
-			if (enemies.get(4).getPosition().y +0.2 > screenToMaze(4)) {
-				enemies.get(4).setTexture(enemyTextureFront);
-				enemies.get(4).setDirection(Dinosaur.DOWN);
-			}
-			else if ((enemies.get(4).getPosition().y -0.2 < screenToMaze(3))) {
-				enemies.get(4).setTexture(enemyTextureBack);
-				enemies.get(4).setDirection(Dinosaur.UP);
-			}
-			if (enemies.get(5).getPosition().y +0.2 > screenToMaze(8)) {
-				enemies.get(5).setTexture(enemyTextureLeft);
-				enemies.get(5).setDirection(Dinosaur.LEFT);
-			}
-			else if ((enemies.get(5).getPosition().y -0.2 < screenToMaze(6))) {
-				enemies.get(5).setTexture(enemyTextureRight);
-				enemies.get(5).setDirection(Dinosaur.RIGHT);
-			}
-
-			else if (enemies.get(5).getPosition().x +0.2 > screenToMaze(16)) {
-				enemies.get(5).setTexture(enemyTextureBack);
-				enemies.get(5).setDirection(Dinosaur.UP);
-			}
-			else if ((enemies.get(5).getPosition().x -0.2 < screenToMaze(11))) {
-				enemies.get(5).setTexture(enemyTextureFront);
-				enemies.get(5).setDirection(Dinosaur.DOWN);
-			}
-			if (enemies.get(6).getPosition().y +0.2 > screenToMaze(4)) {
-				enemies.get(6).setTexture(enemyTextureFront);
-				enemies.get(6).setDirection(Dinosaur.DOWN);
-			}
-			else if ((enemies.get(6).getPosition().y -0.2 < screenToMaze(1))) {
-				enemies.get(6).setTexture(enemyTextureBack);
-				enemies.get(6).setDirection(Dinosaur.UP);
-			}
-
+		for (int i = 0; i < enemies.size();i++)
 			controls.get(i).getMoveAlongPath();
-		}
 
 		hud.update(avatar.getResources(), avatar.getForm());
 	}

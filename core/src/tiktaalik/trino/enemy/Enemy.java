@@ -1,6 +1,7 @@
 package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -8,9 +9,12 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.duggi.Dinosaur;
 
 public class Enemy extends GameObject {
     private final float STUN_DURATION = 4.0f;
+
+    private TextureRegion[] textureSet;
 
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
@@ -22,11 +26,6 @@ public class Enemy extends GameObject {
     private boolean faceUp;
     private boolean stunned;
     private int direction;
-
-    public static final int LEFT = 0;
-    public static final int RIGHT = 1;
-    public static final int UP = 2;
-    public static final int DOWN = 3;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -45,9 +44,17 @@ public class Enemy extends GameObject {
         shape.setRadius(radius * 4/5);
 
         // Gameplay attributes
+        textureSet = new TextureRegion[4];
         faceRight = true;
         faceUp = false;
         stunned = false;
+    }
+
+    public void setTextureSet(TextureRegion left, TextureRegion right, TextureRegion up, TextureRegion down) {
+        textureSet[Dinosaur.LEFT] = left;
+        textureSet[Dinosaur.RIGHT] = right;
+        textureSet[Dinosaur.UP] = up;
+        textureSet[Dinosaur.DOWN] = down;
     }
 
     public void setStunned(){
@@ -66,16 +73,16 @@ public class Enemy extends GameObject {
 
     public void setDirection(float value) {
         if (value == 0) {
-            direction = LEFT;
+            direction = Dinosaur.LEFT;
         }
         else if (value == 1) {
-            direction = RIGHT;
+            direction = Dinosaur.RIGHT;
         }
         else if (value == 2) {
-            direction = UP;
+            direction = Dinosaur.UP;
         }
         else if (value == 3) {
-            direction = DOWN;
+            direction = Dinosaur.DOWN;
         }
     }
 
@@ -191,6 +198,8 @@ public class Enemy extends GameObject {
                 setLinearDamping(0);
                 stunned = false;
             }
+        } else {
+            setTexture(textureSet[direction]);
         }
     }
 

@@ -2,6 +2,7 @@ package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.math.Vector2;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.duggi.Dinosaur;
 
 public class AIController {
     private Enemy enemy; // The ship being controlled by this AIController
@@ -47,5 +48,14 @@ public class AIController {
 
         step = path[pathStep].cpy().sub(enemy.getPosition()).nor().scl(enemySpeed);
         enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
+
+        if (step.x < 0)
+            enemy.setDirection(Dinosaur.LEFT);
+        else if (step.x > 0)
+            enemy.setDirection(Dinosaur.RIGHT);
+        else if (step.y < 0)
+            enemy.setDirection(Dinosaur.DOWN);
+        else if (step.y > 0)
+            enemy.setDirection(Dinosaur.UP);
     }
 }
