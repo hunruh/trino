@@ -16,10 +16,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.enemy.AIController;
 import tiktaalik.trino.enemy.Enemy;
-import tiktaalik.trino.environment.FireFly;
-import tiktaalik.trino.environment.Switch;
-import tiktaalik.trino.environment.Wall;
-import tiktaalik.trino.environment.CottonFlower;
+import tiktaalik.trino.environment.*;
 import tiktaalik.trino.lights.ConeSource;
 import tiktaalik.trino.lights.LightSource;
 import tiktaalik.trino.lights.PointSource;
@@ -65,7 +62,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_FILE_LEFT = "trino/enemy_trex_left.png";
 	private static final String ENEMY_FILE_RIGHT = "trino/enemy_trex_right.png";
 	private static final String ENEMY_FILE_BACK = "trino/enemy_trex_back.png";
-	private static final String FIREFLY_FILE = "trino/enemy.png";
+	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
@@ -146,6 +143,7 @@ public class GameController implements ContactListener, Screen {
 	private PooledList<Enemy> enemies = new PooledList<Enemy>();
 	private PooledList<AIController> controls = new PooledList<AIController>();
 	private PooledList<FireFly> fireFlies = new PooledList<FireFly>();
+	private PooledList<FireFlyAIController> fControls = new PooledList<FireFlyAIController>();
 
 	private GameObject[][] grid = new GameObject[GRID_MAX_X][GRID_MAX_Y];
 	private World world;
@@ -986,20 +984,31 @@ public class GameController implements ContactListener, Screen {
 			controls.add(new AIController(i,avatar,en,pathList[i]));
 
 
-//		PointSource fireLight = new PointSource(rayhandler, 512, Color.WHITE, 3, 0, 0);
-//		fireLight.setColor(1.0f,1.0f,1.0f,1.0f);
-//		fireLight.setSoft(true);
-//		fireLight.setActive(true);
-//
-//		dwidth = fireFlyTexture.getRegionWidth() / (scale.x * 2);
-//		dheight = fireFlyTexture.getRegionHeight() / scale.y;
-//		FireFly ff = new FireFly(screenToMaze(1), screenToMaze(5), dwidth,0);
-//		ff.setType(FIREFLY);
-//		ff.setTexture(fireFlyTexture);
-//		ff.setDrawScale(scale);
-//		addObject(ff);
-//		addFireFly(ff);
-//		fireLight.attachToBody(ff.getBody(), fireLight.getX(), fireLight.getY(), fireLight.getDirection());
+		dwidth = fireFlyTexture.getRegionWidth() / (scale.x * 2);
+		dheight = fireFlyTexture.getRegionHeight() / scale.y;
+		FireFly ff1 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly ff2 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly ff3 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly ff4 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly ff5 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly[] ff = new FireFly[]{ff1,ff2,ff3,ff4,ff5};
+
+		for (FireFly f:ff){
+			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0.4f);
+			fireLight.setColor(0.85f,0.85f,0.95f,0.85f);
+			fireLight.setXray(true);
+			fireLight.setActive(true);
+
+			f.setType(FIREFLY);
+			f.setTexture(fireFlyTexture);
+			f.setDrawScale(scale);
+			addObject(f);
+			addFireFly(f);
+			fireLight.attachToBody(f.getBody(), fireLight.getX(), fireLight.getY(), fireLight.getDirection());
+		}
+
+		for (int i = 0; i < ff.length; i++)
+			fControls.add(new FireFlyAIController(i,ff,bounds));
 
 	}
 
@@ -1042,17 +1051,10 @@ public class GameController implements ContactListener, Screen {
 		raycamera.update();
 		rayhandler.setCombinedMatrix(raycamera);
 
-		int random = MathUtils.random(4);
-
-//		for(FireFly f: fireFlies){
-//			Vector2 sample = new Vector2(screenToMaze(14),screenToMaze(5));
-////			Vector2 randomLocation = new Vector2(screenToMaze(MathUtils.random(1,17)),screenToMaze(MathUtils.random(1,9)));
-//			random = MathUtils.random(4);
-//			Vector2 step = sample.cpy().sub(f.getPosition()).nor().scl(.025f);
-//			f.setPosition(f.getX() + step.x, f.getY() + step.y);
-//		}
-
-
+		// FireFlies AI Controller movement
+		for(FireFlyAIController ffAI:fControls){
+			ffAI.getMoveAlongPath();
+		}
 
 		int direction = avatar.getDirection();
 

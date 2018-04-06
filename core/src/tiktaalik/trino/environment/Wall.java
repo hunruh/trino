@@ -2,10 +2,7 @@ package tiktaalik.trino.environment;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
@@ -168,6 +165,9 @@ public class Wall extends GameObject {
         // Create the fixture
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
+        Filter filter = geometry.getFilterData();
+        filter.groupIndex = -8;
+        geometry.setFilterData(filter);
         markDirty(false);
     }
 
