@@ -3,6 +3,7 @@ package tiktaalik.trino.duggi;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
@@ -217,6 +218,9 @@ public abstract class Dinosaur extends GameObject {
         // Create the fixture
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
+        Filter filter = geometry.getFilterData();
+        filter.categoryBits = 0x0004;
+        geometry.setFilterData(filter);
         markDirty(false);
     }
 

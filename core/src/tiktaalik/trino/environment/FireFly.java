@@ -1,4 +1,4 @@
-package tiktaalik.trino.enemy;
+package tiktaalik.trino.environment;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
-public class Enemy extends GameObject {
+public class FireFly extends GameObject {
     private final float STUN_DURATION = 4.0f;
 
     protected CircleShape shape; // Shape information for this circle
@@ -35,7 +35,7 @@ public class Enemy extends GameObject {
      * @param y  		Initial y position of the avatar center
      * @param radius	The object radius in physics units
      */
-    public Enemy(float x, float y, float radius, int id) {
+    public FireFly(float x, float y, float radius, int id) {
         super(x,y);
         setDensity(1.0f);
         setFriction(0.0f);
@@ -159,7 +159,8 @@ public class Enemy extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = 0x0004;
+        filter.maskBits = 0x0002;
+        filter.groupIndex = -8;
         geometry.setFilterData(filter);
         markDirty(false);
     }
@@ -203,4 +204,5 @@ public class Enemy extends GameObject {
         canvas.drawPhysics(shape,Color.RED,getX(),getY(),drawScale.x,drawScale.y);
     }
 }
+
 

@@ -6,7 +6,9 @@ import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
-public class Wall extends GameObject {
+public class Boulder extends GameObject {
+    private final float PUSH_DURATION = 0.5f;
+    private float pushCooldown;
     protected PolygonShape shape; // Shape information for this box
     private Vector2 dimension; // The width and height of the box
     private Vector2 sizeCache; // A cache value for when the user wants to access the dimensions
@@ -14,8 +16,7 @@ public class Wall extends GameObject {
     private float[] vertices; // Cache of the polygon vertices (for resizing)
     private Vector2 gridLocation;
 
-    private boolean edible;
-    private boolean lowered;
+    private boolean pushed;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -24,7 +25,7 @@ public class Wall extends GameObject {
      * @param height	The object height in physics units
      * @param edible	If the wall can be consumed by the herbivore
      */
-    public Wall(float width, float height, boolean edible) {
+    public Boulder(float width, float height, boolean edible) {
         this(0,0,0,0,width,height, edible);
     }
 
@@ -37,7 +38,7 @@ public class Wall extends GameObject {
      * @param height	The object height in physics units
      * @param edible	If the wall can be consumed by the herbivore
      */
-    public Wall(int gx, int gy, float x, float y, float width, float height, boolean edible) {
+    public Boulder(int gx, int gy, float x, float y, float width, float height, boolean edible) {
         super(x,y);
         dimension = new Vector2(width,height);
         sizeCache = new Vector2();
@@ -50,16 +51,20 @@ public class Wall extends GameObject {
         setName("wall");
         resize(width, height);
 
-        this.edible = edible;
         gridLocation = new Vector2(gx, gy);
+
+        pushed = false;
     }
 
-    public boolean getEdible() {
-        return edible;
+    public void setPushed(){
+        pushed = true;
+        setLinearDamping(5);
+        pushCooldown = 0;
     }
 
-    public boolean getLowered() { return lowered; }
-    public void setLowered(boolean lowered) { this.lowered = lowered; }
+    public boolean getPushed() {
+        return pushed;
+    }
 
     /**
      * Returns the dimensions of this box
@@ -178,6 +183,31 @@ public class Wall extends GameObject {
         if (geometry != null) {
             body.destroyFixture(geometry);
             geometry = null;
+        }
+    }
+
+    /**
+     * Updates the object's physics state (NOT GAME LOGIC).
+     *
+     * @param dt Number of seconds since last animation frame
+     */
+    public void update(float dt) {
+        super.update(dt);
+        if (pushed) {
+            System.out.println(getLinearVelocity().len2());
+            if (pushCooldown <= PUSH_DURATION) {
+                setBodyType(BodyDef.BodyType.DynamicBody);
+                setLinearDamping(0);
+                System.out.println("inprocess");
+            }
+
+            if (pushCooldown > PUSH_DURATION) {
+                setBodyType(BodyDef.BodyType.StaticBody);
+                setLinearDamping(0);
+                pushed = false;
+                System.out.println(pushed);
+            }
+            pushCooldown += dt;
         }
     }
 

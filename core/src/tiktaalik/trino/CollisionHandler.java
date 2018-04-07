@@ -5,6 +5,8 @@ import tiktaalik.trino.duggi.Clone;
 import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.Wall;
+import tiktaalik.trino.environment.River;
+import tiktaalik.trino.environment.Boulder;
 
 public class CollisionHandler {
     GameController parent;
@@ -22,6 +24,9 @@ public class CollisionHandler {
                     g2.getType() == GameController.GOAL) {
                 handleCollision((Dinosaur) g1, (Wall) g2);
             }
+            else if (g2.getType() == GameController.BOULDER) {
+                handleCollision((Dinosaur) g1, (Boulder) g2);
+            }
         } else if (g2.getType() == GameController.DUGGI) {
             if (g1.getType() == GameController.ENEMY) {
                 handleCollision((Dinosaur) g2, (Enemy) g1);
@@ -29,6 +34,9 @@ public class CollisionHandler {
             else if (g1.getType() == GameController.WALL || g1.getType() == GameController.EDIBLEWALL ||
                     g1.getType() == GameController.GOAL) {
                 handleCollision((Dinosaur) g2, (Wall) g1);
+            }
+            else if (g1.getType() == GameController.BOULDER) {
+                handleCollision((Dinosaur) g2, (Boulder) g1);
             }
         }
 
@@ -50,10 +58,13 @@ public class CollisionHandler {
             parent.setFailure(true);
     }
 
-    public void handleCollision(Dinosaur d, Wall w) {
-//        System.out.println("exit");
-//        System.out.println(d.canExit());
+    public void handleCollision(Dinosaur duggi, Boulder b) {
+        if (duggi.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) duggi).getCharging()) {
+            b.setPushed();
+        }
+    }
 
+    public void handleCollision(Dinosaur d, Wall w) {
         if (w.getType() == GameController.GOAL) {
 
             if (d.canExit()) {

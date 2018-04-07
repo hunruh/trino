@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
@@ -15,10 +16,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.*;
 import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.enemy.AIController;
 import tiktaalik.trino.enemy.Enemy;
-import tiktaalik.trino.environment.Switch;
-import tiktaalik.trino.environment.Wall;
-import tiktaalik.trino.environment.CottonFlower;
-import tiktaalik.trino.level_editor.LevelParser;
+import tiktaalik.trino.environment.*;
+import tiktaalik.trino.lights.ConeSource;
+import tiktaalik.trino.lights.LightSource;
+import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.*;
 
 /**
@@ -43,7 +44,6 @@ public class GameController implements ContactListener, Screen {
 	// Texture files
 	private static String BACKGROUND_FILE = "trino/background.png";
 	private static String OVERLAY_FILE = "trino/overlay.png";
-	private static String EARTH_FILE = "shared/earthtile.png";
 	private static String GOAL_FILE = "trino/openExitPlaceHolder.png";
 	private static String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
 	private static final String DOLL_FILE_FRONT  = "trino/doll_front.png";
@@ -62,17 +62,19 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_FILE_LEFT = "trino/enemy_trex_left.png";
 	private static final String ENEMY_FILE_RIGHT = "trino/enemy_trex_right.png";
 	private static final String ENEMY_FILE_BACK = "trino/enemy_trex_back.png";
+	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
 	private static final String SWITCH_FILE = "trino/buttonRough.png";
+	private static final String RIVER_FILE = "trino/river.png";
+	private static final String BOULDER_FILE = "trino/boulder.png";
 
 	// Texture assets variables
 	private BitmapFont displayFont;
 	private TextureRegion background;
 	private TextureRegion overlay;
-	private TextureRegion earthTile;
 	private TextureRegion goalTile;
 	private TextureRegion goalClosedTile;
 
@@ -93,11 +95,13 @@ public class GameController implements ContactListener, Screen {
 	private TextureRegion enemyTextureLeft;
 	private TextureRegion enemyTextureRight;
 	private TextureRegion enemyTextureBack;
+	private TextureRegion fireFlyTexture;
 	private TextureRegion wallTexture;
 	private TextureRegion edibleWallTexture;
 	private TextureRegion cottonTexture;
-	private TextureRegion pathTexture;
 	private TextureRegion switchTexture;
+	private TextureRegion riverTexture;
+	private TextureRegion boulderTexture;
 
 	// GAME CONSTANTS
 	private static final int EXIT_COUNT = 60; // How many frames after winning/losing do we continue?
@@ -112,6 +116,8 @@ public class GameController implements ContactListener, Screen {
 	private static final float DEFAULT_WIDTH  = 32.0f; // Width of the game world in Box2d units
 	private static final float DEFAULT_HEIGHT = 18.0f; // Height of the game world in Box2d units
 	private static final float DEFAULT_GRAVITY = -0.0f; // The default value of gravity (going down)
+	private static final float CAMERA_WIDTH = 32.0f;
+	private static final float CAMERA_HEIGHT = 18.0f;
 
 	protected static final int COTTON = 0;
 	protected static final int EDIBLEWALL = 1;
@@ -121,8 +127,11 @@ public class GameController implements ContactListener, Screen {
 	protected static final int DUGGI = 5;
 	protected static final int CLONE = 6;
 	protected static final int SWITCH = 7;
+	protected static final int FIREFLY = 8;
+	protected static final int RIVER = 9;
+	protected static final int BOULDER = 10;
 
-	private static int GRID_MAX_X = 16;
+	private static int GRID_MAX_X = 32;
 	private static int GRID_MAX_Y = 8;
 
 	// GAME VARIABLES
@@ -137,12 +146,17 @@ public class GameController implements ContactListener, Screen {
 	private PooledList<GameObject> addQueue = new PooledList<GameObject>(); // Queue for adding objects
 	private PooledList<Wall> walls = new PooledList<Wall>();
 	private PooledList<CottonFlower> cottonFlower = new PooledList<CottonFlower>();
+	private PooledList<River> rivers = new PooledList<River>();
+	private PooledList<Boulder> boulders = new PooledList<Boulder>();
 	private PooledList<Enemy> enemies = new PooledList<Enemy>();
 	private PooledList<AIController> controls = new PooledList<AIController>();
+	private PooledList<FireFly> fireFlies = new PooledList<FireFly>();
+	private PooledList<FireFlyAIController> fControls = new PooledList<FireFlyAIController>();
 
 	private GameObject[][] grid = new GameObject[GRID_MAX_X][GRID_MAX_Y];
 	private World world;
 	private Rectangle bounds; // The boundary of the world
+	private Rectangle cameraBounds;
 	private Vector2 scale; // The world scale
 
 	private boolean active; // Whether or not this is an active controller
@@ -154,7 +168,34 @@ public class GameController implements ContactListener, Screen {
 	private Clone clone;
 	private boolean removeClone = false;
 	private Wall goalDoor;
-	private Vector2 switchLocation = new Vector2(16, 6);
+	private Vector2 switchLocation = new Vector2(28, 1);
+
+	/** The camera defining the RayHandler view; scale is in physics coordinates */
+	protected OrthographicCamera raycamera;
+	/** The rayhandler for storing lights, and drawing them (SIGH) */
+	protected RayHandler rayhandler;
+	/** All of the active lights that we loaded from the JSON file */
+	private Array<LightSource> lights = new Array<LightSource>();
+	/** The current light source being used.  If -1, there are no shadows */
+	private int activeLight;
+	/** The list of firefly light sources */
+	private LightSource[] ffLights;
+	private float currentDst = 2;
+	private float change = 0.01f;
+
+	private int ticks;
+
+	private LightSource duggiLight;
+
+	/** The reader to process JSON files */
+	private JsonReader jsonReader;
+	/** The JSON asset directory */
+	private JsonValue  assetDirectory;
+	/** The JSON defining the level model */
+	private JsonValue  levelFormat;
+
+	/** Time since the start of the level */
+	private int timeElapsed;
 
 	/**
 	 * Preloads the assets for this controller.
@@ -179,8 +220,6 @@ public class GameController implements ContactListener, Screen {
 		assets.add(BACKGROUND_FILE);
 		manager.load(OVERLAY_FILE,Texture.class);
 		assets.add(OVERLAY_FILE);
-		manager.load(EARTH_FILE,Texture.class);
-		assets.add(EARTH_FILE);
 		manager.load(GOAL_FILE,Texture.class);
 		assets.add(GOAL_FILE);
 		manager.load(GOAL_CLOSED_FILE,Texture.class);
@@ -223,10 +262,18 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_FILE_RIGHT);
 		manager.load(ENEMY_FILE_BACK, Texture.class);
 		assets.add(ENEMY_FILE_BACK);
+		manager.load(FIREFLY_FILE, Texture.class);
+		assets.add(FIREFLY_FILE);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
 		assets.add(SWITCH_FILE);
+		manager.load(RIVER_FILE, Texture.class);
+		assets.add(RIVER_FILE);
+		manager.load(BOULDER_FILE, Texture.class);
+		assets.add(BOULDER_FILE);
+
+		jsonReader = new JsonReader();
 	}
 
 	/**
@@ -253,7 +300,6 @@ public class GameController implements ContactListener, Screen {
 		// Allocate the textures
 		background = createTexture(manager,BACKGROUND_FILE,true);
 		overlay = createTexture(manager,OVERLAY_FILE,true);
-		earthTile = createTexture(manager,EARTH_FILE,true);
 		goalTile  = createTexture(manager,GOAL_FILE,true);
 		goalClosedTile =  createTexture(manager,GOAL_CLOSED_FILE, true);
 		dollTextureFront = createTexture(manager,DOLL_FILE_FRONT,false);
@@ -272,11 +318,13 @@ public class GameController implements ContactListener, Screen {
 		enemyTextureLeft = createTexture(manager,ENEMY_FILE_LEFT, false);
 		enemyTextureRight = createTexture(manager,ENEMY_FILE_RIGHT, false);
 		enemyTextureBack = createTexture(manager,ENEMY_FILE_BACK, false);
+		fireFlyTexture = createTexture(manager, FIREFLY_FILE, false);
 		wallTexture = createTexture(manager,WALL_FILE,false);
 		edibleWallTexture = createTexture(manager, EDIBLE_WALL_FILE, false);
 		cottonTexture = createTexture(manager, COTTON_FLOWER_FILE, false);
-		pathTexture = createTexture(manager,PATH_FILE,false);
 		switchTexture = createTexture(manager, SWITCH_FILE, false);
+		riverTexture = createTexture(manager, RIVER_FILE, false);
+		boulderTexture = createTexture(manager, BOULDER_FILE, false);
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -331,52 +379,42 @@ public class GameController implements ContactListener, Screen {
 	/**
 	 * Unloads the assets for this game.
 	 *
-	 * This method erases the static variables.  It also deletes the associated textures
-	 * from the asset manager. If no assets are loaded, this method does nothing.
-	 *
 	 * @param manager Reference to global asset manager.
 	 */
 	public void unloadContent(AssetManager manager) {
 		hud.unloadContent(manager);
-		for(String s : assets) {
-			if (manager.isLoaded(s)) {
-				manager.unload(s);
-			}
-		}
+    	for(String s : assets) {
+    		if (manager.isLoaded(s))
+    			manager.unload(s);
+    	}
 	}
 
 	/**
 	 * Sets whether the level is completed.
 	 *
-	 * If true, the level will advance after a countdown
-	 *
 	 * @param value whether the level is completed.
 	 */
 	public void setComplete(boolean value) {
-		if (value) {
+		if (value)
 			countdown = EXIT_COUNT;
-		}
+
 		complete = value;
 	}
 
 	/**
 	 * Sets whether the level is failed.
 	 *
-	 * If true, the level will reset after a countdown
-	 *
 	 * @param value whether the level is failed.
 	 */
 	public void setFailure(boolean value) {
-		if (value) {
+			if (value)
 			countdown = EXIT_COUNT;
-		}
+
 		failed = value;
 	}
 
 	/**
 	 * Returns the canvas associated with this controller
-	 *
-	 * The canvas is shared across all controllers
 	 *
 	 * @return the canvas associated with this controller
 	 */
@@ -386,9 +424,6 @@ public class GameController implements ContactListener, Screen {
 
 	/**
 	 * Sets the canvas associated with this controller
-	 *
-	 * The canvas is shared across all controllers.  Setting this value will compute
-	 * the drawing scale from the canvas size.
 	 *
 	 * @param canvas the canvas associated with this controller
 	 */
@@ -401,14 +436,13 @@ public class GameController implements ContactListener, Screen {
 
 	/**
 	 * Creates a new game world with the default values.
-	 *
-	 * The game world is scaled so that the screen coordinates do not agree
-	 * with the Box2d coordinates.  The bounds are in terms of the Box2d
-	 * world, not the screen.
 	 */
 	protected GameController() {
 		this(new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT),
 				new Vector2(0, DEFAULT_GRAVITY));
+
+		cameraBounds = new Rectangle(0,0, CAMERA_WIDTH,CAMERA_HEIGHT);
+		jsonReader = new JsonReader();
 		setComplete(false);
 		setFailure(false);
 		world.setContactListener(this);
@@ -416,10 +450,6 @@ public class GameController implements ContactListener, Screen {
 
 	/**
 	 * Creates a new game world
-	 *
-	 * The game world is scaled so that the screen coordinates do not agree
-	 * with the Box2d coordinates.  The bounds are in terms of the Box2d
-	 * world, not the screen.
 	 *
 	 * @param bounds	The game bounds in Box2d coordinates
 	 * @param gravity	The gravitational force on this Box2d world
@@ -441,6 +471,15 @@ public class GameController implements ContactListener, Screen {
 	 * Dispose of all (non-static) resources allocated to this mode.
 	 */
 	public void dispose() {
+		for(LightSource light : lights)
+			light.remove();
+		lights.clear();
+
+		if (rayhandler != null) {
+			rayhandler.dispose();
+			rayhandler = null;
+		}
+
 		for(GameObject g : objects)
 			g.deactivatePhysics(world);
 		objects.clear();
@@ -483,10 +522,23 @@ public class GameController implements ContactListener, Screen {
 		enemies.add(obj);
 	}
 
+	public void addFireFly(FireFly obj){
+		assert inBounds(obj) : "Objects is not in bounds";
+		fireFlies.add(obj);
+	}
+
+	public void addRiver(River obj) {
+		assert inBounds(obj) : "Objects is not in bounds";
+		rivers.add(obj);
+	}
+
+	public void addBoulder(Boulder obj) {
+		assert inBounds(obj) : "Objects is not in bounds";
+		boulders.add(obj);
+	}
+
 	/**
 	 * Returns true if the object is in bounds.
-	 *
-	 * This assertion is useful for debugging the physics.
 	 *
 	 * @param g The object to check.
 	 *
@@ -510,6 +562,7 @@ public class GameController implements ContactListener, Screen {
 			g.deactivatePhysics(world);
 		objects.clear();
 		enemies.clear();
+		fireFlies.clear();
 		controls.clear();
 		addQueue.clear();
 		world.dispose();
@@ -525,6 +578,8 @@ public class GameController implements ContactListener, Screen {
 		setFailure(false);
 		clone = null;
 
+		// Reload the json each time
+		levelFormat = jsonReader.parse(Gdx.files.internal("jsons/level.json"));
 		populateLevel();
 	}
 
@@ -548,6 +603,17 @@ public class GameController implements ContactListener, Screen {
 		// Handle resets
 		if (input.didReset())
 			reset();
+
+		// Handle nightmode
+		if (input.didNight())
+			if (duggiLight.isActive()){
+				duggiLight.setActive(false);
+				rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
+			} else {
+				duggiLight.setActive(true);
+				rayhandler.setAmbientLight(0.05f,0.05f,0.05f,0.05f);
+			}
+
 
 		// Reset level when colliding with enemy
 		if (countdown > 0) {
@@ -589,12 +655,7 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	/**
-	 * Draw the physics objects to the canvas
-	 *
-	 * For simple worlds, this method is enough by itself.  It will need
-	 * to be overriden if the world needs fancy backgrounds or the like.
-	 *
-	 * The method draws all objects in the order that they were added.
+	 * Draw everything to the canvas
 	 *
 	 * @param delta The difference from the last draw call
 	 */
@@ -628,21 +689,30 @@ public class GameController implements ContactListener, Screen {
 				return (int)(g2.getY() - g1.getY());
 			}
 		});
-		canvas.draw(background,0.0f,0.0f);
+		canvas.draw(background,0,0);
+		canvas.draw(background,1270,0);
 		for(GameObject g : drawObjects)
 			g.draw(canvas);
-		canvas.draw(overlay,0.0f,0.0f);
+		canvas.end();
+
+		// Now draw the shadows
+		if (rayhandler != null && activeLight != -1) {
+			rayhandler.render();
+		}
+
+		canvas.beginOverlay();
+		canvas.draw(overlay,0,0);
 		canvas.end();
 
 		// Final message
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
-			canvas.begin(); // DO NOT SCALE
+			canvas.beginOverlay(); // DO NOT SCALE
 			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
 			canvas.end();
 		} else if (failed) {
 			displayFont.setColor(Color.RED);
-			canvas.begin(); // DO NOT SCALE
+			canvas.beginOverlay(); // DO NOT SCALE
 			canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 			canvas.end();
 		}
@@ -694,51 +764,44 @@ public class GameController implements ContactListener, Screen {
 	 * Lays out the game geography.
 	 */
 	private void populateLevel() {
+		// Create the lighting if appropriate
+		if (levelFormat.has("lighting")) {
+			initLighting(levelFormat.get("lighting"));
+		}
+		rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
+
+		duggiLight = new PointSource(rayhandler, 256, Color.WHITE, 8, 0, 0.4f);
+		duggiLight.setColor(0.85f,0.85f,0.95f,0.85f);
+		duggiLight.setXray(true);
+		duggiLight.setActive(false);
+
 		// Create player character
 		// It is important that this is always created first, as transformations must swap the first element
 		// in the objects list
-
-		LevelParser parser = new LevelParser();
-		try{
-			parser.parse("trino/examplejson.txt");
-			parser.getCottonList(0);
-
-		} catch(Exception e){
-			System.out.println(e);
-		}
-
-
 		float dwidth = dollTextureRight.getRegionWidth() / (scale.x * 2);
 		float dheight = dollTextureRight.getRegionHeight() / scale.y;
-		avatar = new Doll(screenToMaze(1), screenToMaze(7), dwidth);
+		avatar = new Doll(screenToMaze(8), screenToMaze(6), dwidth);
 		avatar.setType(DUGGI);
 		avatar.setTextureSet(dollTextureLeft, dollTextureRight, dollTextureBack, dollTextureFront);
 		avatar.setDrawScale(scale);
 		addObject(avatar);
-
+		duggiLight.attachToBody(avatar.getBody(), duggiLight.getX(), duggiLight.getY(), duggiLight.getDirection());
 
 
 		/** Adding cotton flowers */
 		dwidth = cottonTexture.getRegionWidth() / scale.x;
 		dheight = cottonTexture.getRegionHeight() / scale.y;
-		CottonFlower cf1 = new CottonFlower(1,4, screenToMaze(1), screenToMaze(4), dwidth, dheight);
-		CottonFlower cf2 = new CottonFlower(2,1, screenToMaze(2), screenToMaze(1), dwidth, dheight);
-		CottonFlower cf3 = new CottonFlower(2,8,screenToMaze(2), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf4 = new CottonFlower(3,5,screenToMaze(3), screenToMaze(5), dwidth, dheight);
-		CottonFlower cf5 = new CottonFlower(3,8,screenToMaze(3), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf6 = new CottonFlower(4,5,screenToMaze(4), screenToMaze(5), dwidth, dheight);
-		CottonFlower cf7 = new CottonFlower(4,6,screenToMaze(4), screenToMaze(6), dwidth, dheight);
-		CottonFlower cf8 = new CottonFlower(4,8,screenToMaze(4), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf9 = new CottonFlower(7,7,screenToMaze(7), screenToMaze(7), dwidth, dheight);
-		CottonFlower cf10 = new CottonFlower(11,2,screenToMaze(11), screenToMaze(2), dwidth, dheight);
-		CottonFlower cf11 = new CottonFlower(13,6,screenToMaze(13), screenToMaze(6), dwidth, dheight);
-		CottonFlower cf12 = new CottonFlower(15,8,screenToMaze(15), screenToMaze(8), dwidth, dheight);
-		CottonFlower cf13 = new CottonFlower(16,1,screenToMaze(16), screenToMaze(1), dwidth, dheight);
-		CottonFlower cf14 = new CottonFlower(16,4,screenToMaze(16), screenToMaze(4), dwidth, dheight);
-		CottonFlower cf15 = new CottonFlower(16,8,screenToMaze(16), screenToMaze(8), dwidth, dheight);
-		CottonFlower[] cf = new CottonFlower[] {cf1, cf2, cf3, cf4, cf5, cf6, cf7, cf8, cf9, cf10,
-				cf11, cf12, cf13, cf14, cf15};
-		for (int i = 0; i < 15; i++) {
+		CottonFlower cf1 = new CottonFlower(1,5, screenToMaze(1), screenToMaze(5), dwidth, dheight);
+		CottonFlower cf2 = new CottonFlower(10,4, screenToMaze(10), screenToMaze(4), dwidth, dheight);
+		CottonFlower cf3 = new CottonFlower(12,7,screenToMaze(12), screenToMaze(7), dwidth, dheight);
+		CottonFlower cf4 = new CottonFlower(15,1,screenToMaze(15), screenToMaze(1), dwidth, dheight);
+		CottonFlower cf5 = new CottonFlower(18,8,screenToMaze(18), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf6 = new CottonFlower(25,8,screenToMaze(25), screenToMaze(8), dwidth, dheight);
+		CottonFlower cf7 = new CottonFlower(29,4,screenToMaze(29), screenToMaze(4), dwidth, dheight);
+		CottonFlower cf8 = new CottonFlower(32,3,screenToMaze(32), screenToMaze(3), dwidth, dheight);
+		CottonFlower cf9 = new CottonFlower(32,7,screenToMaze(32), screenToMaze(7), dwidth, dheight);
+		CottonFlower[] cf = new CottonFlower[] {cf1, cf2, cf3, cf4, cf5, cf6, cf7, cf8, cf9};
+		for (int i = 0; i < 9; i++) {
 			cf[i].setBodyType(BodyDef.BodyType.StaticBody);
 			cf[i].setDrawScale(scale);
 			cf[i].setTexture(cottonTexture);
@@ -748,12 +811,68 @@ public class GameController implements ContactListener, Screen {
 			grid[(int)cf[i].getGridLocation().x-1][(int)cf[i].getGridLocation().y-1] = cf[i];
 		}
 
+		// Adding river
+		dwidth = riverTexture.getRegionWidth() / scale.x;
+		dheight = cottonTexture.getRegionHeight() / scale.y;
+		River r1 = new River(4,3,screenToMaze(4),screenToMaze(3),dwidth,dheight, false);
+		River r2 = new River(4,4,screenToMaze(4),screenToMaze(4),dwidth,dheight, false);
+		River r3 = new River(4,5,screenToMaze(4),screenToMaze(5),dwidth,dheight, false);
+		River r4 = new River(4,6,screenToMaze(4),screenToMaze(6),dwidth,dheight, false);
+		River r5 = new River(4,7,screenToMaze(4),screenToMaze(7),dwidth,dheight, false);
+		River r6 = new River(5,3,screenToMaze(5),screenToMaze(3),dwidth,dheight, false);
+		River r7 = new River(5,4,screenToMaze(5),screenToMaze(4),dwidth,dheight, false);
+		River r8 = new River(5,5,screenToMaze(5),screenToMaze(5),dwidth,dheight, false);
+		River r9 = new River(5,6,screenToMaze(5),screenToMaze(6),dwidth,dheight, false);
+		River r10 = new River(5,7,screenToMaze(5),screenToMaze(7),dwidth,dheight, false);
+		River r11 = new River(12,5,screenToMaze(12),screenToMaze(5),dwidth,dheight, false);
+		River r12 = new River(13,5,screenToMaze(13),screenToMaze(5),dwidth,dheight, false);
+		River r13 = new River(14,5,screenToMaze(14),screenToMaze(5),dwidth,dheight, false);
+		River r14 = new River(15,5,screenToMaze(15),screenToMaze(5),dwidth,dheight, false);
+		River r15 = new River(16,5,screenToMaze(16),screenToMaze(5),dwidth,dheight, false);
+		River r16 = new River(19,2,screenToMaze(19),screenToMaze(2),dwidth,dheight, false);
+		River r17 = new River(20,2,screenToMaze(20),screenToMaze(2),dwidth,dheight, false);
+		River r18 = new River(21,2,screenToMaze(21),screenToMaze(2),dwidth,dheight, false);
+		River r19 = new River(22,2,screenToMaze(22),screenToMaze(2),dwidth,dheight, false);
+		River r20 = new River(23,2,screenToMaze(23),screenToMaze(2),dwidth,dheight, false);
+		River r21 = new River(24,2,screenToMaze(24),screenToMaze(2),dwidth,dheight, false);
+		River[] riv = new River[] {r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15,r16,r17,r18,r19,r20,r21};
+		for (int i = 0; i < 21; i++) {
+			riv[i].setBodyType(BodyDef.BodyType.StaticBody);
+			riv[i].setDrawScale(scale);
+			riv[i].setTexture(riverTexture);
+			riv[i].setType(RIVER);
+			addObject(riv[i]);
+			addRiver(riv[i]);
+			grid[(int)riv[i].getGridLocation().x-1][(int)riv[i].getGridLocation().y-1] = riv[i];
+		}
+
+		dwidth = boulderTexture.getRegionWidth() / scale.x;
+		dheight = boulderTexture.getRegionHeight() / scale.y;
+		Boulder b1 = new Boulder(7,1,screenToMaze(7),screenToMaze(1),dwidth,dheight, false);
+		Boulder b2 = new Boulder(7,2,screenToMaze(7),screenToMaze(2),dwidth,dheight, false);
+		Boulder b3 = new Boulder(8,3,screenToMaze(8),screenToMaze(3),dwidth,dheight, false);
+		Boulder b4 = new Boulder(24,1,screenToMaze(24),screenToMaze(1),dwidth,dheight, false);
+		Boulder b5 = new Boulder(26,6,screenToMaze(26),screenToMaze(6),dwidth,dheight, false);
+		Boulder b6 = new Boulder(26,7,screenToMaze(26),screenToMaze(7),dwidth,dheight, false);
+		Boulder b7 = new Boulder(26,8,screenToMaze(26),screenToMaze(8),dwidth,dheight, false);
+		Boulder[] b = new Boulder[] {b1,b2,b3,b4,b5,b6,b7};
+		for (int i = 0; i < 7; i++) {
+			b[i].setBodyType(BodyDef.BodyType.StaticBody);
+			b[i].setDrawScale(scale);
+			b[i].setTexture(boulderTexture);
+			b[i].setType(BOULDER);
+			addObject(b[i]);
+			addBoulder(b[i]);
+			grid[(int)b[i].getGridLocation().x-1][(int)b[i].getGridLocation().y-1] = b[i];
+		}
+
+
 
 		// Switch
 		dwidth = switchTexture.getRegionWidth() / scale.x;
 		dheight = switchTexture.getRegionHeight() / scale.y;
 		// Switch texture
-		Switch s = new Switch(16,6,screenToMaze(16),screenToMaze(6),dwidth,dheight);
+		Switch s = new Switch(28,1,screenToMaze(28),screenToMaze(1),dwidth,dheight);
 		s.setBodyType(BodyDef.BodyType.StaticBody);
 		s.setDrawScale(scale);
 		s.setTexture(switchTexture);
@@ -762,61 +881,81 @@ public class GameController implements ContactListener, Screen {
 		grid[(int)s.getGridLocation().x-1][(int)s.getGridLocation().y-1] = s;
 
 		/** Adding inedible walls */
-		Wall iw1 = new Wall(2,2,screenToMaze(2), screenToMaze(2), dwidth, dheight, false);
-		Wall iw2 = new Wall(2,3,screenToMaze(2), screenToMaze(3), dwidth, dheight, false);
+		Wall iw1 = new Wall(1,1,screenToMaze(1), screenToMaze(1), dwidth, dheight, false);
+		Wall iw2 = new Wall(1,7,screenToMaze(1), screenToMaze(7), dwidth, dheight, false);
 		Wall iw3 = new Wall(2,5,screenToMaze(2), screenToMaze(5), dwidth, dheight, false);
-		Wall iw4 = new Wall(2,6,screenToMaze(2), screenToMaze(6), dwidth, dheight, false);
-		Wall iw5 = new Wall(3,6,screenToMaze(3), screenToMaze(6), dwidth, dheight, false);
-		Wall iw6 = new Wall(3,7,screenToMaze(3), screenToMaze(7), dwidth, dheight, false);
-		Wall iw7 = new Wall(4,7,screenToMaze(4), screenToMaze(7), dwidth, dheight, false);
-		Wall iw8 = new Wall(5,3,screenToMaze(5), screenToMaze(3), dwidth, dheight, false);
-		Wall iw9 = new Wall(5,4,screenToMaze(5), screenToMaze(4), dwidth, dheight, false);
-		Wall iw10 = new Wall(5,8,screenToMaze(5), screenToMaze(8), dwidth, dheight, false);
-		Wall iw11 = new Wall(6,8,screenToMaze(6), screenToMaze(8), dwidth, dheight, false);
-		Wall iw12 = new Wall(7,3,screenToMaze(7), screenToMaze(3), dwidth, dheight, false);
+		Wall iw4 = new Wall(3,3,screenToMaze(3), screenToMaze(3), dwidth, dheight, false);
+		Wall iw5 = new Wall(3,4,screenToMaze(3), screenToMaze(4), dwidth, dheight, false);
+		Wall iw6 = new Wall(3,5,screenToMaze(3), screenToMaze(5), dwidth, dheight, false);
+		Wall iw7 = new Wall(3,6,screenToMaze(3), screenToMaze(6), dwidth, dheight, false);
+		Wall iw8 = new Wall(3,7,screenToMaze(3), screenToMaze(7), dwidth, dheight, false);
+		Wall iw9 = new Wall(6,3,screenToMaze(6), screenToMaze(3), dwidth, dheight, false);
+		Wall iw10 = new Wall(6,5,screenToMaze(6), screenToMaze(5), dwidth, dheight, false);
+		Wall iw11 = new Wall(6,6,screenToMaze(6), screenToMaze(6), dwidth, dheight, false);
+		Wall iw12 = new Wall(6,7,screenToMaze(6), screenToMaze(7), dwidth, dheight, false);
 		Wall iw13 = new Wall(7,4,screenToMaze(7), screenToMaze(4), dwidth, dheight, false);
-		Wall iw14 = new Wall(8,2,screenToMaze(8), screenToMaze(2), dwidth, dheight, false);
-		Wall iw15 = new Wall(9,4,screenToMaze(9), screenToMaze(4), dwidth, dheight, false);
-		Wall iw16 = new Wall(10,6,screenToMaze(10), screenToMaze(6), dwidth, dheight, false);
-		Wall iw17 = new Wall(10,7,screenToMaze(10), screenToMaze(7), dwidth, dheight, false);
-		Wall iw18 = new Wall(10,8,screenToMaze(10), screenToMaze(8), dwidth, dheight, false);
-		Wall iw19 = new Wall(12,5,screenToMaze(12), screenToMaze(5), dwidth, dheight, false);
-		Wall iw20 = new Wall(13,4,screenToMaze(13), screenToMaze(4), dwidth, dheight, false);
-		Wall iw21 = new Wall(13,5,screenToMaze(13), screenToMaze(5), dwidth, dheight, false);
-		Wall iw22 = new Wall(16,5,screenToMaze(16), screenToMaze(5), dwidth, dheight, false);
-		Wall iw23 = new Wall(4,4,screenToMaze(4), screenToMaze(4), dwidth, dheight, false);
+		Wall iw14 = new Wall(7,5,screenToMaze(7), screenToMaze(5), dwidth, dheight, false);
+		Wall iw15 = new Wall(7,6,screenToMaze(7), screenToMaze(6), dwidth, dheight, false);
+		Wall iw16 = new Wall(8,5,screenToMaze(8), screenToMaze(5), dwidth, dheight, false);
+		Wall iw17 = new Wall(9,4,screenToMaze(9), screenToMaze(4), dwidth, dheight, false);
+		Wall iw18 = new Wall(9,5,screenToMaze(9), screenToMaze(5), dwidth, dheight, false);
+		Wall iw19 = new Wall(10,5,screenToMaze(10), screenToMaze(5), dwidth, dheight, false);
+		Wall iw20 = new Wall(11,5,screenToMaze(11), screenToMaze(5), dwidth, dheight, false);
+		Wall iw21 = new Wall(11,7,screenToMaze(11), screenToMaze(7), dwidth, dheight, false);
+		Wall iw22 = new Wall(13,7,screenToMaze(13), screenToMaze(7), dwidth, dheight, false);
+		Wall iw23 = new Wall(15,7,screenToMaze(15), screenToMaze(7), dwidth, dheight, false);
+		Wall iw24 = new Wall(16,1,screenToMaze(16), screenToMaze(1), dwidth, dheight, false);
+		Wall iw25 = new Wall(16,2,screenToMaze(16), screenToMaze(2), dwidth, dheight, false);
+		Wall iw26 = new Wall(16,3,screenToMaze(16), screenToMaze(3), dwidth, dheight, false);
+		Wall iw27 = new Wall(16,4,screenToMaze(16), screenToMaze(4), dwidth, dheight, false);
+		Wall iw28 = new Wall(17,2,screenToMaze(17), screenToMaze(2), dwidth, dheight, false);
+		Wall iw29 = new Wall(17,7,screenToMaze(17), screenToMaze(7), dwidth, dheight, false);
+		Wall iw30 = new Wall(18,6,screenToMaze(18), screenToMaze(6), dwidth, dheight, false);
+		Wall iw31 = new Wall(19,6, screenToMaze(19), screenToMaze(6), dwidth, dheight, false);
+		Wall iw32 = new Wall(19,7,screenToMaze(19), screenToMaze(7), dwidth, dheight, false);
+		Wall iw33 = new Wall(19,8,screenToMaze(19), screenToMaze(8), dwidth, dheight, false);
+		Wall iw34 = new Wall(20,6,screenToMaze(20), screenToMaze(6), dwidth, dheight, false);
+		Wall iw35 = new Wall(21,5,screenToMaze(21), screenToMaze(5), dwidth, dheight, false);
+		Wall iw36 = new Wall(22,4,screenToMaze(22), screenToMaze(4), dwidth, dheight, false);
+		Wall iw37 = new Wall(22,7,screenToMaze(22), screenToMaze(7), dwidth, dheight, false);
+		Wall iw38 = new Wall(22,8,screenToMaze(22), screenToMaze(8), dwidth, dheight, false);
+		Wall iw39 = new Wall(23,3,screenToMaze(23), screenToMaze(3), dwidth, dheight, false);
+		Wall iw40 = new Wall(23,7,screenToMaze(23), screenToMaze(7), dwidth, dheight, false);
+		Wall iw41 = new Wall(25,2,screenToMaze(25), screenToMaze(2), dwidth, dheight, false);
+		Wall iw42 = new Wall(25,5,screenToMaze(25), screenToMaze(5), dwidth, dheight, false);
+		Wall iw43 = new Wall(26,5,screenToMaze(26), screenToMaze(5), dwidth, dheight, false);
+		Wall iw44 = new Wall(27,5,screenToMaze(27), screenToMaze(5), dwidth, dheight, false);
+		Wall iw45 = new Wall(29,5,screenToMaze(29), screenToMaze(5), dwidth, dheight, false);
+		Wall iw46 = new Wall(30,3,screenToMaze(30), screenToMaze(3), dwidth, dheight, false);
+		Wall iw47 = new Wall(30,4,screenToMaze(30), screenToMaze(4), dwidth, dheight, false);
+		Wall iw48 = new Wall(30,5,screenToMaze(30), screenToMaze(5), dwidth, dheight, false);
+		Wall iw49 = new Wall(32,2,screenToMaze(32), screenToMaze(2), dwidth, dheight, false);
 
-		Wall ew1 = new Wall(2,4,screenToMaze(2), screenToMaze(4), dwidth, dheight, true);
-		Wall ew2 = new Wall(3,3,screenToMaze(3), screenToMaze(3), dwidth, dheight, true);
-		Wall ew3 = new Wall(3,4,screenToMaze(3), screenToMaze(4), dwidth, dheight, true);
-		Wall ew4 = new Wall(5,5,screenToMaze(5), screenToMaze(5), dwidth, dheight, true);
-		Wall ew5 = new Wall(6,1,screenToMaze(6), screenToMaze(1), dwidth, dheight, true);
-		Wall ew6 = new Wall(6,2,screenToMaze(6), screenToMaze(2), dwidth, dheight, true);
-		Wall ew7 = new Wall(6,3,screenToMaze(6), screenToMaze(3), dwidth, dheight, true);
-		Wall ew8 = new Wall(6,4,screenToMaze(6), screenToMaze(4), dwidth, dheight, true);
-		Wall ew9 = new Wall(6,6,screenToMaze(6), screenToMaze(6), dwidth, dheight, true);
-		Wall ew10 = new Wall(6,7,screenToMaze(6), screenToMaze(7), dwidth, dheight, true);
-		Wall ew11 = new Wall(7,6,screenToMaze(7), screenToMaze(6), dwidth, dheight, true);
-		Wall ew12 = new Wall(8,6,screenToMaze(8), screenToMaze(6), dwidth, dheight, true);
-		Wall ew13 = new Wall(8,7,screenToMaze(8), screenToMaze(7), dwidth, dheight, true);
-		Wall ew14 = new Wall(9,1,screenToMaze(9), screenToMaze(1), dwidth, dheight, true);
-		Wall ew15 = new Wall(9,5,screenToMaze(9), screenToMaze(5), dwidth, dheight, true);
-		Wall ew16 = new Wall(10,5,screenToMaze(10), screenToMaze(5), dwidth, dheight, true);
-		Wall ew17 = new Wall(11,5,screenToMaze(11), screenToMaze(5), dwidth, dheight, true);
-		Wall ew18 = new Wall(12,2,screenToMaze(12), screenToMaze(2), dwidth, dheight, true);
-		Wall ew19 = new Wall(12,7,screenToMaze(12), screenToMaze(7), dwidth, dheight, true);
-		Wall ew20 = new Wall(13,2,screenToMaze(13), screenToMaze(2), dwidth, dheight, true);
-		Wall ew21 = new Wall(13,7,screenToMaze(13), screenToMaze(7), dwidth, dheight, true);
-		Wall ew22 = new Wall(14,5,screenToMaze(14), screenToMaze(5), dwidth, dheight, true);
-		Wall ew23 = new Wall(14,7,screenToMaze(14), screenToMaze(7), dwidth, dheight, true);
-		Wall ew24 = new Wall(15,3,screenToMaze(15), screenToMaze(3), dwidth, dheight, true);
-		Wall ew25 = new Wall(15,5,screenToMaze(15), screenToMaze(5), dwidth, dheight, true);
-		Wall ew26 = new Wall(15,7,screenToMaze(15), screenToMaze(7), dwidth, dheight, true);
+
+		Wall ew1 = new Wall(6,4,screenToMaze(6), screenToMaze(4), dwidth, dheight, true);
+		Wall ew2 = new Wall(6,8,screenToMaze(6), screenToMaze(8), dwidth, dheight, true);
+		Wall ew3 = new Wall(7,7,screenToMaze(7), screenToMaze(7), dwidth, dheight, true);
+		Wall ew4 = new Wall(8,2,screenToMaze(8), screenToMaze(2), dwidth, dheight, true);
+		Wall ew5 = new Wall(9,6,screenToMaze(9), screenToMaze(6), dwidth, dheight, true);
+		Wall ew6 = new Wall(9,7,screenToMaze(9), screenToMaze(7), dwidth, dheight, true);
+		Wall ew7 = new Wall(10,2,screenToMaze(10), screenToMaze(2), dwidth, dheight, true);
+		Wall ew8 = new Wall(12,4,screenToMaze(12), screenToMaze(4), dwidth, dheight, true);
+		Wall ew9 = new Wall(22,5,screenToMaze(22), screenToMaze(5), dwidth, dheight, true);
+		Wall ew10 = new Wall(23,4,screenToMaze(23), screenToMaze(4), dwidth, dheight, true);
+		Wall ew11 = new Wall(23,5,screenToMaze(23), screenToMaze(5), dwidth, dheight, true);
+		Wall ew12 = new Wall(24,4,screenToMaze(24), screenToMaze(4), dwidth, dheight, true);
+		Wall ew13 = new Wall(25,4,screenToMaze(25), screenToMaze(4), dwidth, dheight, true);
+		Wall ew14 = new Wall(28,2,screenToMaze(28), screenToMaze(2), dwidth, dheight, true);
+		Wall ew15 = new Wall(29,2,screenToMaze(29), screenToMaze(2), dwidth, dheight, true);
+		Wall ew16 = new Wall(29,6,screenToMaze(29), screenToMaze(6), dwidth, dheight, true);
+		Wall ew17 = new Wall(31,8,screenToMaze(31), screenToMaze(8), dwidth, dheight, true);
+		Wall ew18 = new Wall(32,8,screenToMaze(32), screenToMaze(8), dwidth, dheight, true);
 
 		Wall[] iw = new Wall[] {iw1, iw2, iw3, iw4, iw5, iw6, iw7, iw8, iw9, iw10, iw11, iw12, iw13, iw14,
-				iw15, iw16, iw17, iw18, iw19, iw20, iw21, iw22, iw23, ew1, ew2, ew3, ew4, ew5, ew6, ew7, ew8,
-				ew9, ew10, ew11, ew12, ew13, ew14, ew15, ew16, ew17, ew18, ew19, ew20, ew21, ew22, ew23, ew24,
-				ew25, ew26};
+				iw15, iw16, iw17, iw18, iw19, iw20, iw21, iw22, iw23, iw24, iw25, iw26, iw27, iw28,
+				iw29, iw30, iw31, iw32, iw33, iw34, iw35, iw36, iw37, iw38, iw39, iw40, iw41, iw42, iw43,
+				iw44, iw45, iw46, iw47, iw48, iw49, ew1, ew2, ew3, ew4, ew5, ew6, ew7, ew8,
+				ew9, ew10, ew11, ew12, ew13, ew14, ew15, ew16, ew17, ew18};
 
 		for (int i = iw.length - 1; i >= 0; i--) {
 			iw[i].setBodyType(BodyDef.BodyType.StaticBody);
@@ -838,7 +977,7 @@ public class GameController implements ContactListener, Screen {
 		// Add level goal
 		dwidth = goalTile.getRegionWidth() / scale.x;
 		dheight = goalTile.getRegionHeight() / scale.y;
-		goalDoor = new Wall(16,2,screenToMaze(16), screenToMaze(2), dwidth, dheight, false);
+		goalDoor = new Wall(8,4,screenToMaze(8), screenToMaze(4), dwidth, dheight, false);
 		goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
 		goalDoor.setSensor(true);
 		goalDoor.setDrawScale(scale);
@@ -852,44 +991,115 @@ public class GameController implements ContactListener, Screen {
 		dheight = carnivoreTextureFront.getRegionHeight() / scale.y;
 
 		// Adding the rest of the enemies; they're static right now
-		Enemy en1 = new Enemy(screenToMaze(4), screenToMaze(1), dwidth,0);
-		Enemy en2 = new Enemy(screenToMaze(6), screenToMaze(5), dwidth,1);
-		Enemy en3 = new Enemy(screenToMaze(9), screenToMaze(3), dwidth,2);
-		Enemy en4 = new Enemy(screenToMaze(12), screenToMaze(4), dwidth,3);
-		Enemy en5 = new Enemy(screenToMaze(14), screenToMaze(4), dwidth,4);
-		Enemy en6 = new Enemy(screenToMaze(11), screenToMaze(6), dwidth,5);
-		Enemy[] en = new Enemy[]{en1,en2,en3,en4,en5,en6};
+		Enemy en1 = new Enemy(screenToMaze(1), screenToMaze(2), dwidth,0);
+		Enemy en2 = new Enemy(screenToMaze(3), screenToMaze(1), dwidth,1);
+		Enemy en3 = new Enemy(screenToMaze(10), screenToMaze(6), dwidth,2);
+		Enemy en4 = new Enemy(screenToMaze(13), screenToMaze(4), dwidth,3);
+		Enemy en5 = new Enemy(screenToMaze(14), screenToMaze(2), dwidth,4);
+		Enemy en6 = new Enemy(screenToMaze(15), screenToMaze(3), dwidth,5);
+		Enemy en7 = new Enemy(screenToMaze(17), screenToMaze(8), dwidth,6);
+		Enemy en8 = new Enemy(screenToMaze(20), screenToMaze(5), dwidth,7);
+		Enemy en9 = new Enemy(screenToMaze(21), screenToMaze(4), dwidth,8);
+		Enemy en10 = new Enemy(screenToMaze(21), screenToMaze(6), dwidth,9);
+		Enemy en11 = new Enemy(screenToMaze(22), screenToMaze(3), dwidth,10);
+		Enemy en12 = new Enemy(screenToMaze(23), screenToMaze(8), dwidth,11);
+		Enemy en13 = new Enemy(screenToMaze(27), screenToMaze(4), dwidth,12);
+		Enemy en14 = new Enemy(screenToMaze(28), screenToMaze(5), dwidth,13);
+		Enemy en15 = new Enemy(screenToMaze(30), screenToMaze(8), dwidth,14);
+		Enemy en16 = new Enemy(screenToMaze(31), screenToMaze(1), dwidth,15);
+		Enemy en17 = new Enemy(screenToMaze(32), screenToMaze(6), dwidth,16);
+		Enemy[] en = new Enemy[]{en1,en2,en3,en4,en5,en6,en7,en8,en9,en10,en11,en12,en13,en14,en15,
+		en16,en17};
 
-		Vector2[] p1 = new Vector2[]{screenToMazeVector(4,1),
-				screenToMazeVector(4,2),screenToMazeVector(4,3)};
-		Vector2[] p2 = new Vector2[]{screenToMazeVector(6,5),
-				screenToMazeVector(7,5),screenToMazeVector(8,5)};
-		Vector2[] p3 = new Vector2[]{screenToMazeVector(9,3),
-				screenToMazeVector(9,2)};
-		Vector2[] p4 = new Vector2[]{screenToMazeVector(12,4),
-				screenToMazeVector(12,3)};
-		Vector2[] p5 = new Vector2[]{screenToMazeVector(14,4),
-				screenToMazeVector(14,3),screenToMazeVector(14,2), screenToMazeVector(14,1)};
-		Vector2[] p6 = new Vector2[]{screenToMazeVector(11,6),screenToMazeVector(12,6),
-				screenToMazeVector(13,6),screenToMazeVector(14,6),screenToMazeVector(15,6),
-				screenToMazeVector(16,6),screenToMazeVector(16,7),screenToMazeVector(16,8),
+		Vector2[] p1 = new Vector2[]{screenToMazeVector(1,2),
+				screenToMazeVector(1,3),screenToMazeVector(1,4),screenToMazeVector(1,5),
+				screenToMazeVector(1,6)};
+		Vector2[] p2 = new Vector2[]{screenToMazeVector(2,1),
+				screenToMazeVector(3,1),screenToMazeVector(4,1),screenToMazeVector(5,1),
+				screenToMazeVector(6,1)};
+		Vector2[] p3 = new Vector2[]{screenToMazeVector(10,6),
+				screenToMazeVector(11,6),screenToMazeVector(12,6),screenToMazeVector(13,6),
+				screenToMazeVector(14,6),screenToMazeVector(15,6),screenToMazeVector(16,6),
+				screenToMazeVector(17,6)};
+		Vector2[] p4 = new Vector2[]{screenToMazeVector(13,4),
+				screenToMazeVector(14,4),screenToMazeVector(15,4)};
+		Vector2[] p5 = new Vector2[]{screenToMazeVector(14,2),
+				screenToMazeVector(13,2),screenToMazeVector(12,2), screenToMazeVector(11,2)};
+		Vector2[] p6 = new Vector2[]{screenToMazeVector(15,3),screenToMazeVector(14,3),
+				screenToMazeVector(13,3),screenToMazeVector(12,3),screenToMazeVector(11,3)};
+		Vector2[] p7 = new Vector2[]{screenToMazeVector(17,8),screenToMazeVector(16,8),
 				screenToMazeVector(15,8),screenToMazeVector(14,8),screenToMazeVector(13,8),
-				screenToMazeVector(12,8),screenToMazeVector(11,8),screenToMazeVector(11,7)};
-		Vector2[][] pathList = new Vector2[][]{p1,p2,p3,p4,p5,p6};
+				screenToMazeVector(12,8),screenToMazeVector(11,8),screenToMazeVector(10,8),
+				screenToMazeVector(9,8),screenToMazeVector(8,8)};
+		Vector2[] p8 = new Vector2[]{screenToMazeVector(20,5),screenToMazeVector(19,5),
+				screenToMazeVector(18,5),screenToMazeVector(17,5)};
+		Vector2[] p9 = new Vector2[]{screenToMazeVector(21,4),screenToMazeVector(20,4),
+				screenToMazeVector(19,4),screenToMazeVector(18,4),screenToMazeVector(17,4)};
+		Vector2[] p10 = new Vector2[]{screenToMazeVector(21,6),screenToMazeVector(22,6),
+				screenToMazeVector(23,6),screenToMazeVector(24,6),screenToMazeVector(25,6)};
+		Vector2[] p11 = new Vector2[]{screenToMazeVector(22,3),screenToMazeVector(21,3),
+				screenToMazeVector(20,3),screenToMazeVector(19,3),screenToMazeVector(18,3),
+				screenToMazeVector(17,3)};
+		Vector2[] p12 = new Vector2[]{screenToMazeVector(23,8),screenToMazeVector(24,8),screenToMazeVector(25,8)};
+		Vector2[] p13 = new Vector2[]{screenToMazeVector(27,4),screenToMazeVector(27,3),
+				screenToMazeVector(27,2),screenToMazeVector(27,1)};
+		Vector2[] p14 = new Vector2[]{screenToMazeVector(28,7),screenToMazeVector(28,6),
+				screenToMazeVector(28,5),screenToMazeVector(28,4),screenToMazeVector(28,3)};
+		Vector2[] p15 = new Vector2[]{screenToMazeVector(30,8),screenToMazeVector(29,8),
+				screenToMazeVector(28,8),screenToMazeVector(27,8)};
+		Vector2[] p16 = new Vector2[]{screenToMazeVector(31,1),screenToMazeVector(30,1),
+				screenToMazeVector(29,1),screenToMazeVector(28,1),screenToMazeVector(27,1),
+				screenToMazeVector(26,1),screenToMazeVector(25,1)};
+		Vector2[] p17 = new Vector2[]{screenToMazeVector(32,6),screenToMazeVector(31,6),
+				screenToMazeVector(30,6)};
+		Vector2[][] pathList = new Vector2[][]{p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17};
 
-		int[] dirList = new int[]{Dinosaur.DOWN, Dinosaur.RIGHT, Dinosaur.DOWN, Dinosaur.DOWN, Dinosaur.DOWN, Dinosaur.RIGHT};
+		int[] dirList = new int[]{Dinosaur.UP, Dinosaur.RIGHT, Dinosaur.RIGHT, Dinosaur.RIGHT,
+				Dinosaur.LEFT, Dinosaur.LEFT, Dinosaur.LEFT, Dinosaur.LEFT, Dinosaur.LEFT, Dinosaur.RIGHT,
+				Dinosaur.LEFT, Dinosaur.RIGHT, Dinosaur.DOWN, Dinosaur.DOWN, Dinosaur.LEFT, Dinosaur.LEFT,
+				Dinosaur.LEFT};
 
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 17; i++) {
 			en[i].setType(ENEMY);
 			en[i].setDrawScale(scale);
 			en[i].setTexture(enemyTextureBack);
-			en[i].setDirection(Dinosaur.UP);
+			en[i].setDirection(dirList[0]);
 			addObject(en[i]);
 			addEnemy(en[i]);
 		}
 
 		for (int i = 0; i < en.length; i++)
 			controls.add(new AIController(i,avatar,en,pathList[i]));
+
+
+		dwidth = fireFlyTexture.getRegionWidth() / (scale.x * 2);
+		dheight = fireFlyTexture.getRegionHeight() / scale.y;
+		FireFly ff1 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly ff2 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly ff3 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly ff4 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly ff5 = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth,0);
+		FireFly[] ff = new FireFly[]{ff1,ff2,ff3,ff4,ff5};
+		ffLights = new LightSource[ff.length];
+
+		for (int i = 0; i < ff.length; i++){
+			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
+			fireLight.setColor(0.85f,0.85f,0.95f,0.85f);
+			fireLight.setXray(true);
+			fireLight.setActive(true);
+			ffLights[i] = fireLight;
+
+			ff[i].setType(FIREFLY);
+			ff[i].setTexture(fireFlyTexture);
+			ff[i].setDrawScale(scale);
+			addObject(ff[i]);
+			addFireFly(ff[i]);
+			fireLight.attachToBody(ff[i].getBody(), fireLight.getX(), fireLight.getY(), fireLight.getDirection());
+		}
+
+		for (int i = 0; i < ff.length; i++)
+			fControls.add(new FireFlyAIController(i,ff,bounds));
+
 	}
 
 	/**
@@ -898,60 +1108,66 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
+		ticks++;
+		if (rayhandler != null) {
+			rayhandler.update();
+		}
+
+		// Camera Follow
+		float halfWidth = canvas.getCamera().viewportWidth / 2;
+		float halfHeight = canvas.getCamera().viewportHeight / 2;
+
+		if ((avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth < halfWidth) {
+			canvas.getCamera().position.x = halfWidth;
+			raycamera.position.x = cameraBounds.width/2;
+		} else if ((avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth > 2560 - halfWidth) {
+			canvas.getCamera().position.x = 2560 - halfWidth;
+			raycamera.position.x = cameraBounds.width*2 - cameraBounds.width/2;
+		} else {
+			canvas.getCamera().position.x = (avatar.getX()/cameraBounds.width)*canvas.getCamera().viewportWidth;
+			raycamera.position.x = avatar.getX();
+		}
+
+		if ((avatar.getY()/cameraBounds.height)*canvas.getCamera().viewportHeight < halfHeight) {
+			canvas.getCamera().position.y = halfHeight;
+			raycamera.position.y = cameraBounds.height/2;
+		} else if ((avatar.getY()/cameraBounds.height)*canvas.getCamera().viewportHeight > 720 - halfHeight) {
+			canvas.getCamera().position.y = 720 - halfHeight;
+			raycamera.position.y = cameraBounds.height - cameraBounds.height/2;
+		} else {
+			canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
+			raycamera.position.y = avatar.getY();
+		}
+		canvas.getCamera().update();
+		raycamera.update();
+		rayhandler.setCombinedMatrix(raycamera);
+
+		// FireFlies AI Controller movement
+		for(FireFlyAIController ffAI:fControls){
+			ffAI.getMoveAlongPath();
+		}
+
+		if (currentDst >= 2){
+			change = -change;
+		} else if (currentDst <= 0.5){
+			change = -change;
+		}
+
+		for(LightSource ffLight:ffLights){
+			ffLight.setDistance(currentDst +change);
+		}
+		currentDst+=change;
+
 		int direction = avatar.getDirection();
 
-		if (avatar.getX() >= screenToMaze(1) && avatar.getX() <= screenToMaze(16)
-				&& avatar.getY() >= screenToMaze(1) && avatar.getY() <= screenToMaze(8)) {
 			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
 			avatar.setUpDown(InputHandler.getInstance().getVertical());
 
-		}
-		else {
-			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging())
-				((Carnivore) avatar).stopCharge();
 
-			if (avatar.getX() < screenToMaze(1)) {
-				avatar.setLeftRight(InputHandler.getInstance().getHorizontal()+ 5.0f);
-				if (avatar.getY() < screenToMaze(1)) {
-					avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
-					avatar.setDirection(Dinosaur.DOWN);
-				}
-				if (avatar.getY() > screenToMaze(8)) {
-					avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
-					avatar.setDirection(Dinosaur.UP);
-				}
-				else {
-					avatar.setUpDown(InputHandler.getInstance().getVertical());
-					avatar.setDirection(Dinosaur.LEFT);
-				}
-			}
-			if (avatar.getX() > screenToMaze(16)) {
-				avatar.setLeftRight(InputHandler.getInstance().getHorizontal()- 5.0f);
-				if (avatar.getY() < screenToMaze(1)) {
-					avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
-					avatar.setDirection(Dinosaur.DOWN);
-				}
-				if (avatar.getY() > screenToMaze(8)) {
-					avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
-					avatar.setDirection(Dinosaur.UP);
-				}
-				else {
-					avatar.setUpDown(InputHandler.getInstance().getVertical());
-					avatar.setDirection(Dinosaur.RIGHT);
-				}
-			}
-			if (avatar.getY() < screenToMaze(1)) {
-				avatar.setUpDown(InputHandler.getInstance().getHorizontal());
-				avatar.setUpDown(InputHandler.getInstance().getVertical() + 5.0f);
-				avatar.setDirection(Dinosaur.DOWN);
-
-			}
-			if (avatar.getY() > screenToMaze(8)) {
-				avatar.setUpDown(InputHandler.getInstance().getHorizontal());
-				avatar.setUpDown(InputHandler.getInstance().getVertical() - 5.0f);
-				avatar.setDirection(Dinosaur.UP);
-			}
-		}
+////		else {
+////			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging())
+////				((Carnivore) avatar).stopCharge();
+////		}
 
 		if (InputHandler.getInstance().didTransform()) {
 			if (avatar.canTransform()) {
@@ -988,6 +1204,7 @@ public class GameController implements ContactListener, Screen {
 		if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging() &&
 				avatar.getLinearVelocity().len2() < 5)
 			((Carnivore) avatar).stopCharge();
+
 		if (clone != null &&(removeClone || clone.getRemoved())) {
 			clone.deactivatePhysics(world);
 			objects.remove(clone);
@@ -1006,7 +1223,7 @@ public class GameController implements ContactListener, Screen {
 		}
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
-				GameObject cotton= grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
+				GameObject cotton = grid[(int)avatarGrid().x-1][(int)avatarGrid().y-1];
 				if (cotton != null && cotton.getType() == COTTON) {
 					SoundController.getInstance().playCottonPickup();
 					cotton.deactivatePhysics(world);
@@ -1015,7 +1232,6 @@ public class GameController implements ContactListener, Screen {
 					grid[(int)((CottonFlower)cotton).getGridLocation().x-1][(int)((CottonFlower)cotton).getGridLocation().y-1] = null;
 					avatar.incrementResources();
 				}
-
 				else if (clone == null && avatar.getResources() >= 1) {
 					Vector2 location = avatarGrid();
 					GameObject goal = grid[(int)switchLocation.x-1][(int)switchLocation.y-1];
@@ -1028,19 +1244,19 @@ public class GameController implements ContactListener, Screen {
 						}
 					}
 					else if (direction == Dinosaur.DOWN) {
-						if (location.y != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)) {
+						if (location.y != 1 && (objectInFrontOfAvatar()== null || objectInFrontOfAvatar() == goal)) {
 							clone = new Clone(screenToMaze(location.x), screenToMaze(location.y-1), dwidth);
 							clone.setGridLocation(location.x, location.y-1);
 						}
 					}
 					else if (direction == Dinosaur.LEFT) {
-						if (location.x != 1 && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
+						if (location.x != 1 && (objectInFrontOfAvatar()== null || objectInFrontOfAvatar() == goal)){
 							clone = new Clone(screenToMaze(location.x-1), screenToMaze(location.y), dwidth);
 							clone.setGridLocation(location.x-1, location.y);
 						}
 					}
 					else if (direction == Dinosaur.RIGHT) {
-						if (location.x != GRID_MAX_X && (objectInFrontOfAvatar()== null ||objectInFrontOfAvatar() == goal)){
+						if (location.x != GRID_MAX_X && (objectInFrontOfAvatar()== null || objectInFrontOfAvatar() == goal)){
 							clone = new Clone(screenToMaze(location.x+1), screenToMaze(location.y), dwidth);
 							clone.setGridLocation(location.x+1, location.y);
 						}
@@ -1307,6 +1523,30 @@ public class GameController implements ContactListener, Screen {
 
 	public Vector2 screenToMazeVector(float x, float y){
 		return new Vector2(screenToMaze(x), screenToMaze(y));
+	}
+
+
+	/**
+	 * Creates the ambient lighting for the level
+	 *
+	 * This is the amount of lighting that the level has without any light sources.
+	 * However, if activeLight is -1, this will be ignored and the level will be
+	 * completely visible.
+	 *
+	 * @param  light	the JSON tree defining the light
+	 */
+	private void initLighting(JsonValue light) {
+		raycamera = new OrthographicCamera(cameraBounds.width,cameraBounds.height);
+		raycamera.position.set(cameraBounds.width/2.0f, cameraBounds.height/2.0f, 0);
+		raycamera.update();
+
+		RayHandler.setGammaCorrection(light.getBoolean("gamma"));
+		RayHandler.useDiffuseLight(light.getBoolean("diffuse"));
+		rayhandler = new RayHandler(world, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
+		rayhandler.setCombinedMatrix(raycamera);
+
+		float[] color = light.get("color").asFloatArray();
+		rayhandler.setAmbientLight(color[0], color[0], color[0], color[0]);
 	}
 
 	/** Unused Screen method */

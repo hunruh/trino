@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
-public class Wall extends GameObject {
+public class River extends GameObject {
     protected PolygonShape shape; // Shape information for this box
     private Vector2 dimension; // The width and height of the box
     private Vector2 sizeCache; // A cache value for when the user wants to access the dimensions
@@ -24,7 +24,7 @@ public class Wall extends GameObject {
      * @param height	The object height in physics units
      * @param edible	If the wall can be consumed by the herbivore
      */
-    public Wall(float width, float height, boolean edible) {
+    public River(float width, float height, boolean edible) {
         this(0,0,0,0,width,height, edible);
     }
 
@@ -37,7 +37,7 @@ public class Wall extends GameObject {
      * @param height	The object height in physics units
      * @param edible	If the wall can be consumed by the herbivore
      */
-    public Wall(int gx, int gy, float x, float y, float width, float height, boolean edible) {
+    public River(int gx, int gy, float x, float y, float width, float height, boolean edible) {
         super(x,y);
         dimension = new Vector2(width,height);
         sizeCache = new Vector2();

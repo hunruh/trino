@@ -95,7 +95,7 @@ public class HUDController  {
     }
 
     public void draw() {
-        canvas.begin();
+        canvas.beginOverlay();
         drawDinoMeter(canvas);
         canvas.end();
     }
