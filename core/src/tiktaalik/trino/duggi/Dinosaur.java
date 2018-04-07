@@ -18,7 +18,7 @@ public abstract class Dinosaur extends GameObject {
     public static final int UP = 2;
     public static final int DOWN = 3;
 
-    private final int MAX_RESOURCES = 4;
+    public static final int MAX_RESOURCES = 3;
     private final int TRANSFORM_COST = 3;
 
     private TextureRegion[] textureSet;
