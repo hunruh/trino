@@ -608,6 +608,7 @@ public class GameController implements ContactListener, Screen {
 		if (rayhandler != null)
 			rayhandler.update();
 		Dinosaur avatar = level.getAvatar();
+		System.out.println(level.objectInFrontOfAvatar());
 
 		// Process camera updates
 		float halfWidth = canvas.getCamera().viewportWidth / 2;
@@ -706,7 +707,7 @@ public class GameController implements ContactListener, Screen {
 			((Carnivore) avatar).stopCharge();
 
 		GameObject b = level.objectInFrontOfAvatar();
-		for(int i = 0; i <= level.getBoulders().size(); i++) {
+		for(int i = 1; i <= level.getBoulders().size(); i++) {
 			if (b!= null && b.getType() == BOULDER && level.getBoulder(i).getGridLocation().x - level.getAvatarGridX() <= 1
 					&& level.getBoulder(i).getGridLocation().y - level.getAvatarGridY() <= 1 &&
 					b == level.getBoulder(i) && avatar.getForm() == Dinosaur.CARNIVORE_FORM &&
