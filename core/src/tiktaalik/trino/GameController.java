@@ -107,8 +107,8 @@ public class GameController implements ContactListener, Screen {
 	protected RayHandler rayhandler; // The rayhandler for storing lights, and drawing them
 	private LightSource duggiLight; // Duggi's light
 	private LightSource[] ffLights; // FireFly lights
-	private float currentDst = 2;
-	private float change = 0.01f;
+	private float ffLightDsts[];
+	private float ffLightChanges[];
 
 	private World world;
 	private Level level;
@@ -438,6 +438,8 @@ public class GameController implements ContactListener, Screen {
 
 		// Init FireFlies
 		ffLights = new LightSource[level.getFireFlies().size()];
+		ffLightDsts = new float[level.getFireFlies().size()];
+		ffLightChanges = new float[level.getFireFlies().size()];
 		for (int i = 1; i <= level.getFireFlies().size(); i++) {
 			fireFlyControls.add(new FireFlyAIController(i, level.getFireFlies(), level.getBounds()));
 
@@ -446,6 +448,8 @@ public class GameController implements ContactListener, Screen {
 			fireLight.setXray(true);
 			fireLight.setActive(true);
 			ffLights[i - 1] = fireLight;
+			ffLightDsts[i - 1] = MathUtils.random(2.0f);
+			ffLightChanges[i - 1] = MathUtils.random(0.005f, 0.015f);
 			fireLight.attachToBody(level.getFirefly(i).getBody(), fireLight.getX(), fireLight.getY(),
 					fireLight.getDirection());
 		}
@@ -632,15 +636,19 @@ public class GameController implements ContactListener, Screen {
 		for (FireFlyAIController ffAI:fireFlyControls)
 			ffAI.getMoveAlongPath();
 
-		if (currentDst >= 2)
-			change = -change;
-		else if (currentDst <= 0.5)
-			change = -change;
+		for (int i = 0; i < ffLights.length; i++) {
+			if (ffLightDsts[i] > 2) {
+				ffLightChanges[i] *= -1;
+				ffLightDsts[i] = 2;
+			}
+			else if (ffLightDsts[i] < 0.5f) {
+				ffLightChanges[i] *= -1;
+				ffLightDsts[i] = 0.5f;
+			}
 
-		for (LightSource ffLight:ffLights)
-			ffLight.setDistance(currentDst +change);
-
-		currentDst += change;
+			ffLightDsts[i] += ffLightChanges[i];
+			ffLights[i].setDistance(ffLightDsts[i]);
+		}
 
 		// Process enemy updates
 		for (int i = 1; i <= level.getEnemies().size();i++)
