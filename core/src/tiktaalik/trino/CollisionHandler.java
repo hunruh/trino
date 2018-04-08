@@ -5,7 +5,6 @@ import tiktaalik.trino.duggi.Clone;
 import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.Wall;
-import tiktaalik.trino.environment.River;
 import tiktaalik.trino.environment.Boulder;
 
 public class CollisionHandler {
@@ -49,6 +48,12 @@ public class CollisionHandler {
                 handleCollision((Clone) g2, (Enemy) g1);
             }
         }
+
+        if (g1.getType() == GameController.ENEMY) {
+            if (g2.getType() == GameController.ENEMY) {
+                handleCollision((Enemy) g1, (Enemy) g2);
+            }
+        }
     }
 
     public void handleCollision(Dinosaur duggi, Enemy e) {
@@ -75,11 +80,16 @@ public class CollisionHandler {
             }
         }
 
-        if (parent.isInFrontOfAvatar(w))
-            SoundController.getInstance().playCollide();
+//        if (parent.isInFrontOfAvatar(w))
+//            SoundController.getInstance().playCollide();
     }
 
     public void handleCollision(Clone c, Enemy e) {
         c.setRemoved(true);
+    }
+
+    public void handleCollision(Enemy e1, Enemy e2) {
+        e1.setCollided(true);
+        e2.setCollided(true);
     }
 }

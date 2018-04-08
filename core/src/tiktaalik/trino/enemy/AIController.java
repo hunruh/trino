@@ -3,6 +3,8 @@ package tiktaalik.trino.enemy;
 import com.badlogic.gdx.math.Vector2;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.duggi.Dinosaur;
+import tiktaalik.trino.environment.FireFly;
+import tiktaalik.util.PooledList;
 
 public class AIController {
     public static int LEFT = 0;
@@ -12,20 +14,15 @@ public class AIController {
     private Enemy enemy; // The ship being controlled by this AIController
     private GameObject target; // The target dinosaur
 
-    private Vector2[] path;
-    private int pathStep;
     private Vector2 step;
     private int turnAngle;
 
-    private float speed;
     private float defaultSpeed = .025f;
 
-    public AIController(int id, GameObject duggi, Enemy[] enemies, Vector2[] p, int turnAngle) {
-        this.enemy = enemies[id];
+    public AIController(int id, GameObject duggi, PooledList<Enemy> enemies, int turnAngle) {
+        this.enemy = enemies.get(id);
 
         target = duggi;
-        pathStep = 1;
-        path = p;
         step = new Vector2();
         this.turnAngle = turnAngle;
     }
@@ -34,7 +31,8 @@ public class AIController {
         if (enemy.getStunned())
             return;
 
-        if (obstacle) {
+        if (obstacle || enemy.getCollided()) {
+            enemy.setCollided(false);
             if ((enemy.getDirection() == Dinosaur.LEFT && turnAngle == LEFT) ||
                 (enemy.getDirection() == Dinosaur.RIGHT && turnAngle == RIGHT) ||
                 (enemy.getDirection() == Dinosaur.UP && turnAngle == FLIP)) {
@@ -60,25 +58,25 @@ public class AIController {
         float speed = defaultSpeed;
 
         if (enemy.getDirection() == Dinosaur.LEFT) {
-//            if (enemy.getPosition().cpy().sub(target.getPosition()).x > 3.0f)
+//            if (enemy.getPosition().cpy().sub(target.getPosition()).x < 3.0f)
 //                speed *= 2;
 
             step.x = -speed;
             step.y = 0;
         } else if (enemy.getDirection() == Dinosaur.RIGHT) {
-//            if (enemy.getPosition().cpy().sub(target.getPosition()).x < -3.0f)
+//            if (enemy.getPosition().cpy().sub(target.getPosition()).x > -3.0f)
 //                speed *= 2;
 
             step.x = speed;
             step.y = 0;
         } else if (enemy.getDirection() == Dinosaur.DOWN) {
-//            if (enemy.getPosition().cpy().sub(target.getPosition()).y > 3.0f)
+//            if (enemy.getPosition().cpy().sub(target.getPosition()).y < 3.0f)
 //                speed *= 2;
 
             step.x = 0;
             step.y = -speed;
         } else if (enemy.getDirection() == Dinosaur.UP) {
-//            if (enemy.getPosition().cpy().sub(target.getPosition()).x < -3.0f)
+//            if (enemy.getPosition().cpy().sub(target.getPosition()).x > -3.0f)
 //                speed *= 2;
 
             step.x = 0;

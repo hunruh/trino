@@ -2,7 +2,6 @@ package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
@@ -12,6 +11,7 @@ import tiktaalik.trino.GameObject;
 import tiktaalik.trino.duggi.Dinosaur;
 
 public class Enemy extends GameObject {
+    private final float COLLIDE_RESET_DURATION = 1.0f;
     private final float STUN_DURATION = 4.0f;
 
     private TextureRegion[] textureSet;
@@ -19,11 +19,11 @@ public class Enemy extends GameObject {
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
-    private float leftRight; // The current horizontal movement of the character
-    private float upDown; // The current vertical movement of the character
+    private float collideCooldown;
     private float stunCooldown;
     private boolean faceRight;
     private boolean faceUp;
+    private boolean collided;
     private boolean stunned;
     private int direction;
 
@@ -48,6 +48,7 @@ public class Enemy extends GameObject {
         faceRight = true;
         faceUp = false;
         stunned = false;
+        collided = false;
     }
 
     public void setTextureSet(TextureRegion left, TextureRegion right, TextureRegion up, TextureRegion down) {
@@ -57,7 +58,16 @@ public class Enemy extends GameObject {
         textureSet[Dinosaur.DOWN] = down;
     }
 
-    public void setStunned(){
+    public void setCollided(boolean collided) {
+        if ((collided && collideCooldown <= 0) || !collided)
+            this.collided = collided;
+    }
+
+    public boolean getCollided() {
+        return collided;
+    }
+
+    public void setStunned() {
         stunned = true;
         setLinearDamping(11);
         stunCooldown = 0;
@@ -119,6 +129,10 @@ public class Enemy extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
+
+        if (collideCooldown > 0)
+            collideCooldown += dt;
+
         if (stunned) {
             if (getLinearVelocity().len2() < 5)
                 setBodyType(BodyDef.BodyType.StaticBody);
