@@ -102,6 +102,7 @@ public class GameController implements ContactListener, Screen {
 	private ScreenListener listener; // Listener that will update the player mode when we are done
 	protected Canvas canvas;
 
+	private Rectangle cameraBounds;
 	protected OrthographicCamera raycamera; // The camera defining the RayHandler view; scale is in physics coordinates
 	protected RayHandler rayhandler; // The rayhandler for storing lights, and drawing them
 	private LightSource duggiLight; // Duggi's light
@@ -388,6 +389,7 @@ public class GameController implements ContactListener, Screen {
 		failed = false;
 		active = false;
 		countdown = -1;
+		cameraBounds = new Rectangle(0,0, 32.0f,18.0f);
 		collisionHandler = new CollisionHandler(this);
 		hud = new HUDController();
 	}
@@ -425,6 +427,10 @@ public class GameController implements ContactListener, Screen {
 		// Init the level
 		level = new Level(world);
 		level.populate(textureDict, duggiLight, canvas.getWidth(), canvas.getHeight());
+
+		// This should be set before init lighting - should be moved when we load in the json
+		cameraBounds = level.getBounds();
+		cameraBounds.height *= 2;
 
 		// Init Enemy AI controllers
 		for (int i = 1; i <= level.getEnemies().size(); i++)
@@ -469,7 +475,7 @@ public class GameController implements ContactListener, Screen {
 				rayhandler.setAmbientLight(1.0f, 1.0f, 1.0f, 1.0f);
 			} else {
 				duggiLight.setActive(true);
-				rayhandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.5f);
+				rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
 			}
 		}
 
@@ -597,25 +603,25 @@ public class GameController implements ContactListener, Screen {
 		float halfWidth = canvas.getCamera().viewportWidth / 2;
 		float halfHeight = canvas.getCamera().viewportHeight / 2;
 
-		if ((avatar.getX() / level.getWidth()) * canvas.getCamera().viewportWidth < halfWidth) {
+		if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth < halfWidth) {
 			canvas.getCamera().position.x = halfWidth;
-			raycamera.position.x = level.getWidth() / 2;
-		} else if ((avatar.getX() / level.getWidth()) * canvas.getCamera().viewportWidth > 2560 - halfWidth) {
+			raycamera.position.x = cameraBounds.width / 2;
+		} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > 2560 - halfWidth) {
 			canvas.getCamera().position.x = 2560 - halfWidth;
-			raycamera.position.x = level.getWidth() * 2 - level.getWidth() / 2;
+			raycamera.position.x = cameraBounds.width * 2 - cameraBounds.width / 2;
 		} else {
-			canvas.getCamera().position.x = (avatar.getX() / level.getWidth()) * canvas.getCamera().viewportWidth;
+			canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
 			raycamera.position.x = avatar.getX();
 		}
 
-		if ((avatar.getY()/level.getHeight()) * canvas.getCamera().viewportHeight < halfHeight) {
+		if ((avatar.getY()/cameraBounds.height) * canvas.getCamera().viewportHeight < halfHeight) {
 			canvas.getCamera().position.y = halfHeight;
-			raycamera.position.y = level.getHeight() / 2;
-		} else if ((avatar.getY()/level.getHeight()) * canvas.getCamera().viewportHeight > 720 - halfHeight) {
+			raycamera.position.y = cameraBounds.height / 2;
+		} else if ((avatar.getY()/cameraBounds.height) * canvas.getCamera().viewportHeight > 720 - halfHeight) {
 			canvas.getCamera().position.y = 720 - halfHeight;
-			raycamera.position.y = level.getHeight() - level.getHeight()/2;
+			raycamera.position.y = cameraBounds.height - cameraBounds.height / 2;
 		} else {
-			canvas.getCamera().position.y = (avatar.getY() / level.getHeight()) * canvas.getCamera().viewportHeight;
+			canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
 			raycamera.position.y = avatar.getY();
 		}
 
@@ -809,10 +815,10 @@ public class GameController implements ContactListener, Screen {
 	 * @param  light	the JSON tree defining the light
 	 */
 	private void initLighting(JsonValue light) {
-		raycamera = new OrthographicCamera(level.getWidth(),level.getHeight());
-		raycamera.position.set(level.getWidth()/2.0f, level.getHeight()/2.0f, 0);
+		raycamera = new OrthographicCamera(cameraBounds.width, cameraBounds.height);
+		raycamera.position.set(cameraBounds.width/2.0f, cameraBounds.height/2.0f, 0);
 		raycamera.update();
-		
+
 		RayHandler.setGammaCorrection(light.getBoolean("gamma"));
 		RayHandler.useDiffuseLight(light.getBoolean("diffuse"));
 		rayhandler = new RayHandler(world, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
