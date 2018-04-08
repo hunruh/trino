@@ -608,7 +608,6 @@ public class GameController implements ContactListener, Screen {
 		if (rayhandler != null)
 			rayhandler.update();
 		Dinosaur avatar = level.getAvatar();
-		System.out.println(level.objectInFrontOfAvatar());
 
 		// Process camera updates
 		float halfWidth = canvas.getCamera().viewportWidth / 2;
