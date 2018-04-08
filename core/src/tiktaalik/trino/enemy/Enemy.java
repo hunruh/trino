@@ -2,6 +2,7 @@ package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
@@ -26,6 +27,7 @@ public class Enemy extends GameObject {
     private boolean collided;
     private boolean stunned;
     private int direction;
+    private Vector2 gridLocation;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -93,6 +95,19 @@ public class Enemy extends GameObject {
         }
     }
 
+
+    public void setGridLocation(Vector2 location){
+        this.gridLocation = location;
+    }
+
+    public void setGridLocation(float x, float y) {
+        gridLocation.x = x;
+        gridLocation.y = y;
+    }
+
+    public Vector2 getGridLocation(){
+        return gridLocation;
+    }
     /**
      * Create new fixtures for this body, defining the shape
      */

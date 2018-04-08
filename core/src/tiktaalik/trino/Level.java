@@ -35,6 +35,7 @@ public class Level {
     private PooledList<Boulder> boulders = new PooledList<Boulder>();
     private PooledList<Enemy> enemies = new PooledList<Enemy>();
     private PooledList<FireFly> fireFlies = new PooledList<FireFly>();
+    private PooledList<Switch> switches = new PooledList<Switch>();
 
     private GameObject[][] grid;
     private Rectangle bounds;
@@ -89,6 +90,9 @@ public class Level {
             case BOULDER:
                 boulders.add((Boulder) g);
                 break;
+            case SWITCH:
+                switches.add((Switch) g);
+                break;
         }
 
         objects.add(g);
@@ -124,6 +128,7 @@ public class Level {
                 clone.setRemoved(false);
                 clone = null;
                 break;
+            case SWITCH:
         }
 
         g.deactivatePhysics(world);
@@ -199,6 +204,14 @@ public class Level {
         return fireFlies;
     }
 
+    public Switch getSwitch(int idx) { return switches.get(idx); }
+
+    public PooledList<Switch> getSwitches() { return switches; }
+
+    public CottonFlower getCottonFlower(int idx) { return cottonFlowers.get(idx); }
+
+    public PooledList<CottonFlower> getCottonFlowers() { return cottonFlowers; }
+
     public PooledList<GameObject> getObjects() {
         return objects;
     }
@@ -241,7 +254,7 @@ public class Level {
         CottonFlower cf9 = new CottonFlower(30,3,screenToMaze(30), screenToMaze(3), dwidth, dheight);
         CottonFlower cf10 = new CottonFlower(30,7,screenToMaze(30), screenToMaze(7), dwidth, dheight);
         CottonFlower[] cf = new CottonFlower[] {cf1, cf2, cf3, cf4, cf5, cf6, cf7, cf8, cf9,cf10};
-        for (int i = 0; i < cf.length-1; i++) {
+        for (int i = 0; i < cf.length; i++) {
             cf[i].setBodyType(BodyDef.BodyType.StaticBody);
             cf[i].setDrawScale(scale);
             cf[i].setTexture(cottonTexture);
@@ -268,7 +281,7 @@ public class Level {
         River r13 = new River(21,2,screenToMaze(21),screenToMaze(2),dwidth,dheight, false);
         River r14 = new River(22,2,screenToMaze(22),screenToMaze(2),dwidth,dheight, false);
         River[] riv = new River[] {r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14};
-        for (int i = 0; i < riv.length-1; i++) {
+        for (int i = 0; i < riv.length; i++) {
             riv[i].setBodyType(BodyDef.BodyType.StaticBody);
             riv[i].setDrawScale(scale);
             riv[i].setTexture(textureDict.get("river"));
@@ -286,7 +299,7 @@ public class Level {
         Boulder b5 = new Boulder(24,6,screenToMaze(24),screenToMaze(6),dwidth,dheight, false);
         Boulder b6 = new Boulder(24,7,screenToMaze(24),screenToMaze(7),dwidth,dheight, false);
         Boulder[] b = new Boulder[] {b1,b2,b3,b4,b5,b6};
-        for (int i = 0; i < b.length-1; i++) {
+        for (int i = 0; i < b.length; i++) {
             b[i].setBodyType(BodyDef.BodyType.StaticBody);
             b[i].setDrawScale(scale);
             b[i].setTexture(textureDict.get("boulder"));
@@ -300,12 +313,15 @@ public class Level {
         dheight = textureDict.get("switch").getRegionHeight() / scale.y;
         // Switch texture
         Switch s = new Switch(26,1,screenToMaze(26),screenToMaze(1),dwidth,dheight);
-        s.setBodyType(BodyDef.BodyType.StaticBody);
-        s.setDrawScale(scale);
-        s.setTexture(textureDict.get("switch"));
-        s.setType(SWITCH);
-        addObject(s);
-        grid[(int)s.getGridLocation().x][(int)s.getGridLocation().y] = s;
+        Switch[] switches = new Switch[]{s};
+        for (int i = 0; i < switches.length; i++) {
+            switches[i].setBodyType(BodyDef.BodyType.StaticBody);
+            switches[i].setDrawScale(scale);
+            switches[i].setTexture(textureDict.get("switch"));
+            switches[i].setType(SWITCH);
+            addObject(switches[i]);
+            grid[(int)switches[i].getGridLocation().x][(int)switches[i].getGridLocation().y] = switches[i];
+        }
 
         /** Adding inedible walls */
         Wall iw1 = new Wall(1,1,screenToMaze(1), screenToMaze(1), dwidth, dheight, false);
@@ -457,7 +473,7 @@ public class Level {
         Enemy[] en = new Enemy[]{en1,en2,en3,en4,en5,en6,en7,en8,en9,en10,en11,en12,en13};
         int[] dir = new int[]{2,1,1,0,0,0,0,1,0,3,3,0,0};
 
-        for (int i = 0; i < en.length-1; i++) {
+        for (int i = 0; i < en.length; i++) {
             en[i].setType(ENEMY);
             en[i].setDrawScale(scale);
             en[i].setTextureSet(textureDict.get("enemyLeft"), textureDict.get("enemyRight"),
@@ -696,6 +712,7 @@ public class Level {
         boulders.clear();
         enemies.clear();
         fireFlies.clear();
+        switches.clear();
 
         objects = null;
         walls = null;
@@ -708,5 +725,6 @@ public class Level {
         scale = null;
         locationCache = null;
         objectCache = null;
+        switches = null;
     }
 }

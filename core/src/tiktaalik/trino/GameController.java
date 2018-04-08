@@ -121,6 +121,11 @@ public class GameController implements ContactListener, Screen {
 	private boolean failed; // Whether we have failed at this world (and need a reset)
 	private int countdown; // Countdown active for winning or losing
 	private boolean removeClone; // Whether or not the clone should be removed
+	private boolean isSwitch; // Whether the tile in front is a switch or not
+	private boolean isCotton; // Whether the tile in front is a cotton flower or not
+	GameObject tmp;
+	float tmpx;
+	float tmpy;
 
 	/** The reader to process JSON files */
 	private JsonReader jsonReader;
@@ -392,6 +397,8 @@ public class GameController implements ContactListener, Screen {
 		cameraBounds = new Rectangle(0,0, 32.0f,18.0f);
 		collisionHandler = new CollisionHandler(this);
 		hud = new HUDController();
+		isSwitch = false;
+		isCotton = false;
 	}
 
 	/**
@@ -705,37 +712,225 @@ public class GameController implements ContactListener, Screen {
 					b == level.getBoulder(i) && avatar.getForm() == Dinosaur.CARNIVORE_FORM &&
 					((Carnivore)avatar).getCharging()){
 				level.getBoulder(i).setBodyType(BodyDef.BodyType.DynamicBody);
+
 				if (direction == Dinosaur.RIGHT ) {
-					level.getBoulder(i).setVX(125);
-					level.getGrid()[(int)(((Boulder) b).getGridLocation().x+1)]
-							[(int)(((Boulder) b).getGridLocation().y)] = b;
-					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-							[(int)(((Boulder) b).getGridLocation().y)] = null;
-					((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x+1.0f, ((Boulder) b).getGridLocation().y);
+					if (level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
+							(int)(((Boulder) b).getGridLocation().y)) != null &&
+							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
+									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH) {
+						System.out.println("ENEMY");
+					}
+					else {
+						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
+								isSwitch = true;
+								tmp = level.getSwitch(k);
+								tmpx = ((Switch) tmp).getGridLocation().x;
+								tmpy = ((Switch) tmp).getGridLocation().y;
+							}
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
+								tmp = level.getSwitch(k);
+							}
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x-1)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
+								tmp = level.getSwitch(k);
+							}
+						}
+						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getCottonFlower(m)) {
+								isCotton = true;
+								tmp = level.getCottonFlower(m);
+								tmpx = ((CottonFlower) tmp).getGridLocation().x;
+								tmpy = ((CottonFlower) tmp).getGridLocation().y;
+							}
+						}
+						level.getBoulder(i).setVX(125);
+						level.getGrid()[(int)(((Boulder) b).getGridLocation().x+1)]
+								[(int)(((Boulder) b).getGridLocation().y)] = b;
+
+						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+								[(int)(((Boulder) b).getGridLocation().y)] = null;
+						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x+1.0f, ((Boulder) b).getGridLocation().y);
+						if (isSwitch == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((Switch) tmp).setGridLocation(tmpx,tmpy);
+							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							isSwitch = false;
+						}
+						else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((CottonFlower) tmp).setGridLocation(tmpx,tmpy);
+							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							isCotton = false;
+						}
+
+					}
+
 				}
 				else if (direction == Dinosaur.LEFT) {
-					level.getBoulder(i).setVX(-125);
-					level.getGrid()[(int)(((Boulder) b).getGridLocation().x-1)]
-							[(int)(((Boulder) b).getGridLocation().y)] = b;
-					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-							[(int)(((Boulder) b).getGridLocation().y)] = null;
-					((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x-1.0f, ((Boulder) b).getGridLocation().y);
+					if (level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
+							(int)(((Boulder) b).getGridLocation().y)) != null &&
+							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
+									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH &&
+							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
+									(int)(((Boulder) b).getGridLocation().y)).getType() != COTTON) {
+						System.out.println("ENEMY");
+					}
+					else {
+						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
+								isSwitch = true;
+								tmp = level.getSwitch(k);
+								tmpx = ((Switch) tmp).getGridLocation().x;
+								tmpy = ((Switch) tmp).getGridLocation().y;
+							}
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
+								tmp = level.getSwitch(k);
+							}
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x+1)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
+								tmp = level.getSwitch(k);
+							}
+						}
+						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getCottonFlower(m)) {
+								isCotton = true;
+								tmp = level.getCottonFlower(m);
+								tmpx = ((CottonFlower) tmp).getGridLocation().x;
+								tmpy = ((CottonFlower) tmp).getGridLocation().y;
+							}
+						}
+						level.getBoulder(i).setVX(-125);
+						level.getGrid()[(int)(((Boulder) b).getGridLocation().x-1)]
+								[(int)(((Boulder) b).getGridLocation().y)] = b;
+
+						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+								[(int)(((Boulder) b).getGridLocation().y)] = null;
+						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x-1.0f, ((Boulder) b).getGridLocation().y);
+						if (isSwitch == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((Switch) tmp).setGridLocation(tmpx,tmpy);
+							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							isSwitch = false;
+						}
+						else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((CottonFlower) tmp).setGridLocation(tmpx,tmpy);
+							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							isCotton = false;
+						}
+
+					}
 				}
 				else if (direction == Dinosaur.UP) {
-					level.getBoulder(i).setVY(125);
-					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-							[(int)(((Boulder) b).getGridLocation().y+1)] = b;
-					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-							[(int)(((Boulder) b).getGridLocation().y)] = null;
-					((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y+1.0f);
+					if (level.getGridObject((int)(((Boulder) b).getGridLocation().x),
+							(int)(((Boulder) b).getGridLocation().y+1)) != null &&
+							level.getGridObject((int)(((Boulder) b).getGridLocation().x),
+									(int)(((Boulder) b).getGridLocation().y+1)).getType() != SWITCH) {
+						System.out.println("ENEMY");
+					}
+					else {
+						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getSwitch(k)) {
+								isSwitch = true;
+								tmp = level.getSwitch(k);
+								tmpx = ((Switch) tmp).getGridLocation().x;
+								tmpy = ((Switch) tmp).getGridLocation().y;
+							}
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
+								tmp = level.getSwitch(k);
+							}
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getSwitch(k)) {
+								tmp = level.getSwitch(k);
+							}
+						}
+						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getCottonFlower(m)) {
+								isCotton = true;
+								tmp = level.getCottonFlower(m);
+								tmpx = ((CottonFlower) tmp).getGridLocation().x;
+								tmpy = ((CottonFlower) tmp).getGridLocation().y;
+							}
+						}
+						level.getBoulder(i).setVY(125);
+						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+								[(int)(((Boulder) b).getGridLocation().y+1)] = b;
+
+						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+								[(int)(((Boulder) b).getGridLocation().y)] = null;
+						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y+1.0f);
+						if (isSwitch == true && ((Boulder) b).getGridLocation().y != tmpy) {
+							((Switch) tmp).setGridLocation(tmpx,tmpy);
+							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							isSwitch = false;
+						}
+						else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((CottonFlower) tmp).setGridLocation(tmpx,tmpy);
+							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							isCotton = false;
+						}
+
+					}
 				}
 				else if (direction == Dinosaur.DOWN) {
-					level.getBoulder(i).setVY(-125);
-					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-							[(int)(((Boulder) b).getGridLocation().y-1)] = b;
-					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-							[(int)(((Boulder) b).getGridLocation().y)] = null;
-					((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y-1.0f);
+					if (level.getGridObject((int)(((Boulder) b).getGridLocation().x),
+							(int)(((Boulder) b).getGridLocation().y-1)) != null &&
+							level.getGridObject((int)(((Boulder) b).getGridLocation().x),
+									(int)(((Boulder) b).getGridLocation().y-1)).getType() != SWITCH) {
+						System.out.println("ENEMY");
+					}
+					else {
+						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getSwitch(k)) {
+								isSwitch = true;
+								tmp = level.getSwitch(k);
+								tmpx = ((Switch) tmp).getGridLocation().x;
+								tmpy = ((Switch) tmp).getGridLocation().y;
+							}
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
+								tmp = level.getSwitch(k);
+							}
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getSwitch(k)) {
+								tmp = level.getSwitch(k);
+							}
+						}
+						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getCottonFlower(m)) {
+								isCotton = true;
+								tmp = level.getCottonFlower(m);
+								tmpx = ((CottonFlower) tmp).getGridLocation().x;
+								tmpy = ((CottonFlower) tmp).getGridLocation().y;
+							}
+						}
+						level.getBoulder(i).setVY(-125);
+						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+								[(int)(((Boulder) b).getGridLocation().y-1)] = b;
+
+						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+								[(int)(((Boulder) b).getGridLocation().y)] = null;
+						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y-1.0f);
+						if (isSwitch == true && ((Boulder) b).getGridLocation().y != tmpy) {
+							((Switch) tmp).setGridLocation(tmpx,tmpy);
+							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							isSwitch = false;
+						}
+						else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((CottonFlower) tmp).setGridLocation(tmpx,tmpy);
+							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							isCotton = false;
+						}
+
+					}
 				}
 				((Carnivore) avatar).stopCharge();
 			}
@@ -750,14 +945,14 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		// Check if Duggi or Clone is on top of button
-		if (level.getClone() != null && level.getClone().getGridLocation() != null &&
-				level.getClone().getGridLocation().equals(new Vector2(12,4))) {
-			avatar.setCanExit(true);
-			level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
-		} else {
-			avatar.setCanExit(false);
-			level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
-		}
+//		if (level.getClone() != null && level.getClone().getGridLocation() != null &&
+//				level.getClone().getGridLocation().equals(new Vector2(12,4))) {
+//			avatar.setCanExit(true);
+//			level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
+//		} else {
+//			avatar.setCanExit(false);
+//			level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
+//		}
 		if (InputHandler.getInstance().didAction()) {
 			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 				GameObject cotton = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
@@ -789,6 +984,14 @@ public class GameController implements ContactListener, Screen {
 						if (level.getAvatarGridX() != level.getWidth() && (level.objectInFrontOfAvatar() == null ||
 								level.objectInFrontOfAvatar().getType() == SWITCH))
 							level.placeClone(level.getAvatarGridX() + 1, level.getAvatarGridY());
+					}
+
+					if (level.objectInFrontOfAvatar() != null && level.objectInFrontOfAvatar().getType()  == SWITCH) {
+						avatar.setCanExit(true);
+						level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
+					} else {
+						avatar.setCanExit(false);
+						level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
 					}
 
 					if (level.getClone() != null)
