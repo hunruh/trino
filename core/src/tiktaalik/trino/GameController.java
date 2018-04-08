@@ -596,7 +596,6 @@ public class GameController implements ContactListener, Screen {
 	public void update(float dt) {
 		if (rayhandler != null)
 			rayhandler.update();
-
 		Dinosaur avatar = level.getAvatar();
 
 		// Process camera updates
@@ -691,6 +690,52 @@ public class GameController implements ContactListener, Screen {
 				avatar.getLinearVelocity().len2() < 5)
 			((Carnivore) avatar).stopCharge();
 
+		GameObject b = level.objectInFrontOfAvatar();
+		for(int i = 0; i <= level.getBoulders().size(); i++) {
+			if (b!= null && b.getType() == BOULDER && level.getBoulder(i).getGridLocation().x - level.getAvatarGridX() <= 1
+					&& level.getBoulder(i).getGridLocation().y - level.getAvatarGridY() <= 1 &&
+					b == level.getBoulder(i) && avatar.getForm() == Dinosaur.CARNIVORE_FORM &&
+					((Carnivore)avatar).getCharging()){
+				level.getBoulder(i).setBodyType(BodyDef.BodyType.DynamicBody);
+				if (direction == Dinosaur.RIGHT ) {
+					level.getBoulder(i).setVX(125);
+					level.getGrid()[(int)(((Boulder) b).getGridLocation().x+1)]
+							[(int)(((Boulder) b).getGridLocation().y)] = b;
+					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+							[(int)(((Boulder) b).getGridLocation().y)] = null;
+					((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x+1.0f, ((Boulder) b).getGridLocation().y);
+				}
+				else if (direction == Dinosaur.LEFT) {
+					level.getBoulder(i).setVX(-125);
+					level.getGrid()[(int)(((Boulder) b).getGridLocation().x-1)]
+							[(int)(((Boulder) b).getGridLocation().y)] = b;
+					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+							[(int)(((Boulder) b).getGridLocation().y)] = null;
+					((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x-1.0f, ((Boulder) b).getGridLocation().y);
+				}
+				else if (direction == Dinosaur.UP) {
+					level.getBoulder(i).setVY(125);
+					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+							[(int)(((Boulder) b).getGridLocation().y+1)] = b;
+					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+							[(int)(((Boulder) b).getGridLocation().y)] = null;
+					((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y+1.0f);
+				}
+				else if (direction == Dinosaur.DOWN) {
+					level.getBoulder(i).setVY(-125);
+					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+							[(int)(((Boulder) b).getGridLocation().y-1)] = b;
+					level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
+							[(int)(((Boulder) b).getGridLocation().y)] = null;
+					((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y-1.0f);
+				}
+				((Carnivore) avatar).stopCharge();
+			}
+			else {
+				level.getBoulder(i).setBodyType(BodyDef.BodyType.StaticBody);
+			}
+		}
+
 		if (level.getClone() != null && (removeClone || level.getClone().getRemoved())) {
 			removeClone = false;
 			level.removeClone();
@@ -718,8 +763,9 @@ public class GameController implements ContactListener, Screen {
 					removeClone = false;
 					if (direction == Dinosaur.UP) {
 						if (level.getAvatarGridY() != level.getHeight() && (level.objectInFrontOfAvatar() == null ||
-								level.objectInFrontOfAvatar().getType() == SWITCH))
+								level.objectInFrontOfAvatar().getType() == SWITCH)) {
 							level.placeClone(level.getAvatarGridX(), level.getAvatarGridY() + 1);
+						}
 					}
 					else if (direction == Dinosaur.DOWN) {
 						if (level.getAvatarGridY() != 0 && (level.objectInFrontOfAvatar() == null ||

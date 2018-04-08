@@ -146,6 +146,8 @@ public class Level {
         return grid[x][y];
     }
 
+    public GameObject[][] getGrid() { return grid; }
+
     public Dinosaur getAvatar() {
         return avatar;
     }
@@ -185,6 +187,10 @@ public class Level {
         return enemies;
     }
 
+    public Boulder getBoulder(int idx) { return boulders.get(idx); }
+
+    public PooledList<Boulder> getBoulders() { return boulders; }
+
     public FireFly getFirefly(int idx) {
         return fireFlies.get(idx);
     }
@@ -212,7 +218,7 @@ public class Level {
         // It is important that this is always created first, as transformations must swap the first element
         // in the objects list
         dwidth = textureDict.get("dollFront").getRegionWidth() / (scale.x * 2);
-        avatar = new Doll(screenToMaze(8), screenToMaze(6), dwidth);
+        avatar = new Doll(screenToMaze(7), screenToMaze(6), dwidth);
         avatar.setType(DUGGI);
         avatar.setTextureSet(textureDict.get("dollLeft"), textureDict.get("dollRight"), textureDict.get("dollBack"),
                 textureDict.get("dollFront"));
@@ -224,17 +230,18 @@ public class Level {
         TextureRegion cottonTexture = textureDict.get("cotton");
         dwidth = cottonTexture.getRegionWidth() / scale.x;
         dheight = cottonTexture.getRegionHeight() / scale.y;
-        CottonFlower cf1 = new CottonFlower(0,4, screenToMaze(0), screenToMaze(4), dwidth, dheight);
-        CottonFlower cf2 = new CottonFlower(9,3, screenToMaze(9), screenToMaze(3), dwidth, dheight);
-        CottonFlower cf3 = new CottonFlower(11,6,screenToMaze(11), screenToMaze(6), dwidth, dheight);
-        CottonFlower cf4 = new CottonFlower(14,0,screenToMaze(14), screenToMaze(0), dwidth, dheight);
-        CottonFlower cf5 = new CottonFlower(17,7,screenToMaze(17), screenToMaze(7), dwidth, dheight);
-        CottonFlower cf6 = new CottonFlower(24,7,screenToMaze(24), screenToMaze(7), dwidth, dheight);
-        CottonFlower cf7 = new CottonFlower(28,3,screenToMaze(28), screenToMaze(3), dwidth, dheight);
-        CottonFlower cf8 = new CottonFlower(31,2,screenToMaze(31), screenToMaze(2), dwidth, dheight);
-        CottonFlower cf9 = new CottonFlower(31,6,screenToMaze(31), screenToMaze(6), dwidth, dheight);
-        CottonFlower[] cf = new CottonFlower[] {cf1, cf2, cf3, cf4, cf5, cf6, cf7, cf8, cf9};
-        for (int i = 0; i < 9; i++) {
+        CottonFlower cf1 = new CottonFlower(1,5, screenToMaze(1), screenToMaze(5), dwidth, dheight);
+        CottonFlower cf2 = new CottonFlower(9,4, screenToMaze(9), screenToMaze(4), dwidth, dheight);
+        CottonFlower cf3 = new CottonFlower(11,7,screenToMaze(11), screenToMaze(7), dwidth, dheight);
+        CottonFlower cf4 = new CottonFlower(14,1,screenToMaze(14), screenToMaze(1), dwidth, dheight);
+        CottonFlower cf5 = new CottonFlower(16,1,screenToMaze(16), screenToMaze(1), dwidth, dheight);
+        CottonFlower cf6 = new CottonFlower(16,6,screenToMaze(16), screenToMaze(6), dwidth, dheight);
+        CottonFlower cf7 = new CottonFlower(23,7,screenToMaze(23), screenToMaze(7), dwidth, dheight);
+        CottonFlower cf8 = new CottonFlower(27,4,screenToMaze(27), screenToMaze(4), dwidth, dheight);
+        CottonFlower cf9 = new CottonFlower(30,3,screenToMaze(30), screenToMaze(3), dwidth, dheight);
+        CottonFlower cf10 = new CottonFlower(30,7,screenToMaze(30), screenToMaze(7), dwidth, dheight);
+        CottonFlower[] cf = new CottonFlower[] {cf1, cf2, cf3, cf4, cf5, cf6, cf7, cf8, cf9,cf10};
+        for (int i = 0; i < cf.length-1; i++) {
             cf[i].setBodyType(BodyDef.BodyType.StaticBody);
             cf[i].setDrawScale(scale);
             cf[i].setTexture(cottonTexture);
@@ -244,48 +251,42 @@ public class Level {
         }
 
         // Adding river
-//        dwidth = textureDict.get("river").getRegionWidth() / scale.x;
-//        dheight = textureDict.get("river").getRegionHeight() / scale.y;
-//        River r1 = new River(4,3,screenToMaze(4),screenToMaze(3),dwidth,dheight, false);
-//        River r2 = new River(4,4,screenToMaze(4),screenToMaze(4),dwidth,dheight, false);
-//        River r3 = new River(4,5,screenToMaze(4),screenToMaze(5),dwidth,dheight, false);
-//        River r4 = new River(4,6,screenToMaze(4),screenToMaze(6),dwidth,dheight, false);
-//        River r5 = new River(4,7,screenToMaze(4),screenToMaze(7),dwidth,dheight, false);
-//        River r6 = new River(5,3,screenToMaze(5),screenToMaze(3),dwidth,dheight, false);
-//        River r7 = new River(5,4,screenToMaze(5),screenToMaze(4),dwidth,dheight, false);
-//        River r8 = new River(5,5,screenToMaze(5),screenToMaze(5),dwidth,dheight, false);
-//        River r9 = new River(5,6,screenToMaze(5),screenToMaze(6),dwidth,dheight, false);
-//        River r10 = new River(5,7,screenToMaze(5),screenToMaze(7),dwidth,dheight, false);
-//        River r11 = new River(12,5,screenToMaze(12),screenToMaze(5),dwidth,dheight, false);
-//        River r12 = new River(13,5,screenToMaze(13),screenToMaze(5),dwidth,dheight, false);
-//        River r13 = new River(14,5,screenToMaze(14),screenToMaze(5),dwidth,dheight, false);
-//        River r14 = new River(15,5,screenToMaze(15),screenToMaze(5),dwidth,dheight, false);
-//        River r15 = new River(16,5,screenToMaze(16),screenToMaze(5),dwidth,dheight, false);
-//        River r16 = new River(19,2,screenToMaze(19),screenToMaze(2),dwidth,dheight, false);
-//        River r17 = new River(20,2,screenToMaze(20),screenToMaze(2),dwidth,dheight, false);
-//        River r18 = new River(21,2,screenToMaze(21),screenToMaze(2),dwidth,dheight, false);
-//        River r19 = new River(22,2,screenToMaze(22),screenToMaze(2),dwidth,dheight, false);
-//        River r20 = new River(23,2,screenToMaze(23),screenToMaze(2),dwidth,dheight, false);
-//        River r21 = new River(24,2,screenToMaze(24),screenToMaze(2),dwidth,dheight, false);
-//        River[] riv = new River[] {r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15,r16,r17,r18,r19,r20,r21};
-//        for (int i = 0; i < 21; i++) {
-//            riv[i].setBodyType(BodyDef.BodyType.StaticBody);
-//            riv[i].setDrawScale(scale);
-//            riv[i].setTexture(textureDict.get("river"));
-//            riv[i].setType(RIVER);
-//            addObject(riv[i]);
-//            grid[(int)riv[i].getGridLocation().x-1][(int)riv[i].getGridLocation().y-1] = riv[i];
-//        }
+        dwidth = textureDict.get("river").getRegionWidth() / scale.x;
+        dheight = textureDict.get("river").getRegionHeight() / scale.y;
+        River r1 = new River(4,3,screenToMaze(4),screenToMaze(3),dwidth,dheight, false);
+        River r2 = new River(4,4,screenToMaze(4),screenToMaze(4),dwidth,dheight, false);
+        River r3 = new River(4,5,screenToMaze(4),screenToMaze(5),dwidth,dheight, false);
+        River r4 = new River(4,6,screenToMaze(4),screenToMaze(6),dwidth,dheight, false);
+        River r5 = new River(11,5,screenToMaze(11),screenToMaze(5),dwidth,dheight, false);
+        River r6 = new River(12,5,screenToMaze(12),screenToMaze(5),dwidth,dheight, false);
+        River r7 = new River(13,5,screenToMaze(13),screenToMaze(5),dwidth,dheight, false);
+        River r8 = new River(14,5,screenToMaze(14),screenToMaze(5),dwidth,dheight, false);
+        River r9 = new River(15,5,screenToMaze(15),screenToMaze(5),dwidth,dheight, false);
+        River r10 = new River(18,2,screenToMaze(19),screenToMaze(2),dwidth,dheight, false);
+        River r11 = new River(19,2,screenToMaze(19),screenToMaze(2),dwidth,dheight, false);
+        River r12 = new River(20,2,screenToMaze(20),screenToMaze(2),dwidth,dheight, false);
+        River r13 = new River(21,2,screenToMaze(21),screenToMaze(2),dwidth,dheight, false);
+        River r14 = new River(22,2,screenToMaze(22),screenToMaze(2),dwidth,dheight, false);
+        River[] riv = new River[] {r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14};
+        for (int i = 0; i < riv.length-1; i++) {
+            riv[i].setBodyType(BodyDef.BodyType.StaticBody);
+            riv[i].setDrawScale(scale);
+            riv[i].setTexture(textureDict.get("river"));
+            riv[i].setType(RIVER);
+            addObject(riv[i]);
+            grid[(int)riv[i].getGridLocation().x-1][(int)riv[i].getGridLocation().y-1] = riv[i];
+        }
 
         dwidth = textureDict.get("boulder").getRegionWidth() / scale.x;
         dheight = textureDict.get("boulder").getRegionHeight() / scale.y;
         Boulder b1 = new Boulder(6,1,screenToMaze(6),screenToMaze(1),dwidth,dheight, false);
-        Boulder b2 = new Boulder(7,2,screenToMaze(7),screenToMaze(2),dwidth,dheight, false);
-        Boulder b3 = new Boulder(25,5,screenToMaze(25),screenToMaze(5),dwidth,dheight, false);
-        Boulder b4 = new Boulder(25,6,screenToMaze(25),screenToMaze(6),dwidth,dheight, false);
-        Boulder b5 = new Boulder(25,7,screenToMaze(25),screenToMaze(7),dwidth,dheight, false);
-        Boulder[] b = new Boulder[] {b1,b2,b3,b4,b5};
-        for (int i = 0; i < 5; i++) {
+        Boulder b2 = new Boulder(6,2,screenToMaze(6),screenToMaze(2),dwidth,dheight, false);
+        Boulder b3 = new Boulder(7,3,screenToMaze(7),screenToMaze(3),dwidth,dheight, false);
+        Boulder b4 = new Boulder(22,1,screenToMaze(22),screenToMaze(1),dwidth,dheight, false);
+        Boulder b5 = new Boulder(24,6,screenToMaze(24),screenToMaze(6),dwidth,dheight, false);
+        Boulder b6 = new Boulder(24,7,screenToMaze(24),screenToMaze(7),dwidth,dheight, false);
+        Boulder[] b = new Boulder[] {b1,b2,b3,b4,b5,b6};
+        for (int i = 0; i < b.length-1; i++) {
             b[i].setBodyType(BodyDef.BodyType.StaticBody);
             b[i].setDrawScale(scale);
             b[i].setTexture(textureDict.get("boulder"));
@@ -298,7 +299,7 @@ public class Level {
         dwidth = textureDict.get("switch").getRegionWidth() / scale.x;
         dheight = textureDict.get("switch").getRegionHeight() / scale.y;
         // Switch texture
-        Switch s = new Switch(12,4,screenToMaze(12),screenToMaze(4),dwidth,dheight);
+        Switch s = new Switch(26,1,screenToMaze(26),screenToMaze(1),dwidth,dheight);
         s.setBodyType(BodyDef.BodyType.StaticBody);
         s.setDrawScale(scale);
         s.setTexture(textureDict.get("switch"));
@@ -307,81 +308,72 @@ public class Level {
         grid[(int)s.getGridLocation().x][(int)s.getGridLocation().y] = s;
 
         /** Adding inedible walls */
-        Wall iw1 = new Wall(0,0,screenToMaze(0), screenToMaze(1), dwidth, dheight, false);
-        Wall iw2 = new Wall(0,6,screenToMaze(0), screenToMaze(7), dwidth, dheight, false);
-        Wall iw3 = new Wall(1,4,screenToMaze(1), screenToMaze(5), dwidth, dheight, false);
-        Wall iw4 = new Wall(2,2,screenToMaze(2), screenToMaze(3), dwidth, dheight, false);
-        Wall iw5 = new Wall(2,3,screenToMaze(2), screenToMaze(4), dwidth, dheight, false);
-        Wall iw6 = new Wall(2,4,screenToMaze(2), screenToMaze(5), dwidth, dheight, false);
-        Wall iw7 = new Wall(2,5,screenToMaze(2), screenToMaze(6), dwidth, dheight, false);
-        Wall iw8 = new Wall(2,6,screenToMaze(2), screenToMaze(7), dwidth, dheight, false);
-        Wall iw9 = new Wall(5,2,screenToMaze(5), screenToMaze(3), dwidth, dheight, false);
-        Wall iw10 = new Wall(5,4,screenToMaze(5), screenToMaze(5), dwidth, dheight, false);
-        Wall iw11 = new Wall(5,5,screenToMaze(5), screenToMaze(6), dwidth, dheight, false);
-        Wall iw12 = new Wall(5,6,screenToMaze(5), screenToMaze(7), dwidth, dheight, false);
-        Wall iw13 = new Wall(6,3,screenToMaze(6), screenToMaze(4), dwidth, dheight, false);
-        Wall iw14 = new Wall(6,4,screenToMaze(6), screenToMaze(5), dwidth, dheight, false);
-        Wall iw15 = new Wall(6,5,screenToMaze(6), screenToMaze(6), dwidth, dheight, false);
-        Wall iw16 = new Wall(7,4,screenToMaze(7), screenToMaze(5), dwidth, dheight, false);
-        Wall iw17 = new Wall(8,3,screenToMaze(8), screenToMaze(4), dwidth, dheight, false);
-        Wall iw18 = new Wall(8,4,screenToMaze(8), screenToMaze(5), dwidth, dheight, false);
-        Wall iw19 = new Wall(9,4,screenToMaze(9), screenToMaze(5), dwidth, dheight, false);
-        Wall iw20 = new Wall(10,4,screenToMaze(10), screenToMaze(4), dwidth, dheight, false);
-        Wall iw21 = new Wall(10,6,screenToMaze(10), screenToMaze(6), dwidth, dheight, false);
-        Wall iw22 = new Wall(12,6,screenToMaze(12), screenToMaze(6), dwidth, dheight, false);
-        Wall iw23 = new Wall(14,6,screenToMaze(14), screenToMaze(6), dwidth, dheight, false);
-        Wall iw24 = new Wall(15,0,screenToMaze(15), screenToMaze(0), dwidth, dheight, false);
-        Wall iw25 = new Wall(15,1,screenToMaze(15), screenToMaze(1), dwidth, dheight, false);
-        Wall iw26 = new Wall(15,2,screenToMaze(15), screenToMaze(2), dwidth, dheight, false);
-        Wall iw27 = new Wall(15,3,screenToMaze(15), screenToMaze(3), dwidth, dheight, false);
-        Wall iw28 = new Wall(16,1,screenToMaze(16), screenToMaze(1), dwidth, dheight, false);
-        Wall iw29 = new Wall(16,6,screenToMaze(16), screenToMaze(6), dwidth, dheight, false);
-        Wall iw30 = new Wall(17,5,screenToMaze(17), screenToMaze(5), dwidth, dheight, false);
-        Wall iw31 = new Wall(18,5,screenToMaze(18), screenToMaze(5), dwidth, dheight, false);
-        Wall iw32 = new Wall(18,6,screenToMaze(18), screenToMaze(6), dwidth, dheight, false);
-        Wall iw33 = new Wall(18,7,screenToMaze(18), screenToMaze(7), dwidth, dheight, false);
-        Wall iw34 = new Wall(19,5,screenToMaze(19), screenToMaze(5), dwidth, dheight, false);
-        Wall iw35 = new Wall(20,4,screenToMaze(20), screenToMaze(4), dwidth, dheight, false);
-        Wall iw36 = new Wall(21,3,screenToMaze(21), screenToMaze(3), dwidth, dheight, false);
-        Wall iw37 = new Wall(21,6,screenToMaze(21), screenToMaze(6), dwidth, dheight, false);
-        Wall iw38 = new Wall(21,7,screenToMaze(21), screenToMaze(7), dwidth, dheight, false);
-        Wall iw39 = new Wall(22,2,screenToMaze(22), screenToMaze(2), dwidth, dheight, false);
-        Wall iw40 = new Wall(22,6,screenToMaze(22), screenToMaze(6), dwidth, dheight, false);
-        Wall iw41 = new Wall(24,1,screenToMaze(24), screenToMaze(1), dwidth, dheight, false);
-        Wall iw42 = new Wall(24,4,screenToMaze(24), screenToMaze(4), dwidth, dheight, false);
-        Wall iw43 = new Wall(25,4,screenToMaze(25), screenToMaze(4), dwidth, dheight, false);
-        Wall iw44 = new Wall(26,4,screenToMaze(26), screenToMaze(4), dwidth, dheight, false);
-        Wall iw45 = new Wall(28,4,screenToMaze(28), screenToMaze(4), dwidth, dheight, false);
-        Wall iw46 = new Wall(29,2,screenToMaze(29), screenToMaze(2), dwidth, dheight, false);
-        Wall iw47 = new Wall(29,3,screenToMaze(29), screenToMaze(3), dwidth, dheight, false);
-        Wall iw48 = new Wall(29,4,screenToMaze(29), screenToMaze(4), dwidth, dheight, false);
-        Wall iw49 = new Wall(31,1,screenToMaze(31), screenToMaze(1), dwidth, dheight, false);
+        Wall iw1 = new Wall(1,1,screenToMaze(1), screenToMaze(1), dwidth, dheight, false);
+        Wall iw2 = new Wall(1,7,screenToMaze(1), screenToMaze(7), dwidth, dheight, false);
+        Wall iw3 = new Wall(2,5,screenToMaze(2), screenToMaze(5), dwidth, dheight, false);
+        Wall iw4 = new Wall(3,3,screenToMaze(3), screenToMaze(3), dwidth, dheight, false);
+        Wall iw5 = new Wall(3,4,screenToMaze(3), screenToMaze(4), dwidth, dheight, false);
+        Wall iw6 = new Wall(3,5,screenToMaze(3), screenToMaze(5), dwidth, dheight, false);
+        Wall iw7 = new Wall(3,6,screenToMaze(3), screenToMaze(6), dwidth, dheight, false);
+        Wall iw8 = new Wall(5,3,screenToMaze(5), screenToMaze(3), dwidth, dheight, false);
+        Wall iw9 = new Wall(5,5,screenToMaze(5), screenToMaze(5), dwidth, dheight, false);
+        Wall iw10 = new Wall(5,6,screenToMaze(5), screenToMaze(6), dwidth, dheight, false);
+        Wall iw11 = new Wall(6,4,screenToMaze(6), screenToMaze(4), dwidth, dheight, false);
+        Wall iw12 = new Wall(6,5,screenToMaze(6), screenToMaze(5), dwidth, dheight, false);
+        Wall iw13 = new Wall(6,6,screenToMaze(6), screenToMaze(6), dwidth, dheight, false);
+        Wall iw14 = new Wall(7,5,screenToMaze(7), screenToMaze(5), dwidth, dheight, false);
+        Wall iw15 = new Wall(8,4,screenToMaze(8), screenToMaze(4), dwidth, dheight, false);
+        Wall iw16 = new Wall(8,5,screenToMaze(8), screenToMaze(5), dwidth, dheight, false);
+        Wall iw17 = new Wall(9,5,screenToMaze(9), screenToMaze(5), dwidth, dheight, false);
+        Wall iw18 = new Wall(10,5,screenToMaze(10), screenToMaze(5), dwidth, dheight, false);
+        Wall iw19 = new Wall(10,7,screenToMaze(10), screenToMaze(7), dwidth, dheight, false);
+        Wall iw20 = new Wall(12,7,screenToMaze(12), screenToMaze(7), dwidth, dheight, false);
+        Wall iw21 = new Wall(14,7,screenToMaze(14), screenToMaze(7), dwidth, dheight, false);
+        Wall iw22 = new Wall(15,1,screenToMaze(15), screenToMaze(1), dwidth, dheight, false);
+        Wall iw23 = new Wall(15,2,screenToMaze(15), screenToMaze(2), dwidth, dheight, false);
+        Wall iw24 = new Wall(15,3,screenToMaze(15), screenToMaze(3), dwidth, dheight, false);
+        Wall iw25 = new Wall(15,4,screenToMaze(15), screenToMaze(4), dwidth, dheight, false);
+        Wall iw26 = new Wall(16,2,screenToMaze(16), screenToMaze(2), dwidth, dheight, false);
+        Wall iw27 = new Wall(16,7,screenToMaze(16), screenToMaze(7), dwidth, dheight, false);
+        Wall iw28 = new Wall(17,6,screenToMaze(17), screenToMaze(6), dwidth, dheight, false);
+        Wall iw29 = new Wall(17,7,screenToMaze(17), screenToMaze(7), dwidth, dheight, false);
+        Wall iw30 = new Wall(18,6,screenToMaze(18), screenToMaze(6), dwidth, dheight, false);
+        Wall iw31 = new Wall(18,7,screenToMaze(18), screenToMaze(7), dwidth, dheight, false);
+        Wall iw32 = new Wall(19,5,screenToMaze(19), screenToMaze(5), dwidth, dheight, false);
+        Wall iw33 = new Wall(20,4,screenToMaze(20), screenToMaze(4), dwidth, dheight, false);
+        Wall iw34 = new Wall(20,7,screenToMaze(20), screenToMaze(7), dwidth, dheight, false);
+        Wall iw35 = new Wall(21,3,screenToMaze(21), screenToMaze(3), dwidth, dheight, false);
+        Wall iw36 = new Wall(21,7,screenToMaze(21), screenToMaze(7), dwidth, dheight, false);
+        Wall iw37 = new Wall(23,2,screenToMaze(23), screenToMaze(2), dwidth, dheight, false);
+        Wall iw38 = new Wall(23,5,screenToMaze(23), screenToMaze(5), dwidth, dheight, false);
+        Wall iw39 = new Wall(24,5,screenToMaze(24), screenToMaze(5), dwidth, dheight, false);
+        Wall iw40 = new Wall(25,5,screenToMaze(25), screenToMaze(5), dwidth, dheight, false);
+        Wall iw41 = new Wall(27,5,screenToMaze(27), screenToMaze(5), dwidth, dheight, false);
+        Wall iw42 = new Wall(28,3,screenToMaze(28), screenToMaze(3), dwidth, dheight, false);
+        Wall iw43 = new Wall(28,4,screenToMaze(28), screenToMaze(4), dwidth, dheight, false);
+        Wall iw44 = new Wall(28,5,screenToMaze(28), screenToMaze(5), dwidth, dheight, false);
+        Wall iw45 = new Wall(30,2,screenToMaze(30), screenToMaze(2), dwidth, dheight, false);
 
-
-        Wall ew1 = new Wall(5,3,screenToMaze(5), screenToMaze(3), dwidth, dheight, true);
-        Wall ew2 = new Wall(5,7,screenToMaze(5), screenToMaze(7), dwidth, dheight, true);
-        Wall ew3 = new Wall(6,6,screenToMaze(6), screenToMaze(6), dwidth, dheight, true);
-        Wall ew4 = new Wall(7,1,screenToMaze(7), screenToMaze(1), dwidth, dheight, true);
-        Wall ew5 = new Wall(8,5,screenToMaze(8), screenToMaze(5), dwidth, dheight, true);
-        Wall ew6 = new Wall(8,6,screenToMaze(8), screenToMaze(6), dwidth, dheight, true);
-        Wall ew7 = new Wall(9,1,screenToMaze(9), screenToMaze(1), dwidth, dheight, true);
-        Wall ew8 = new Wall(11,3,screenToMaze(11), screenToMaze(3), dwidth, dheight, true);
-        Wall ew9 = new Wall(21,4,screenToMaze(21), screenToMaze(4), dwidth, dheight, true);
-        Wall ew10 = new Wall(22,3,screenToMaze(22), screenToMaze(3), dwidth, dheight, true);
-        Wall ew11 = new Wall(22,4,screenToMaze(22), screenToMaze(4), dwidth, dheight, true);
-        Wall ew12 = new Wall(23,3,screenToMaze(23), screenToMaze(3), dwidth, dheight, true);
-        Wall ew13 = new Wall(24,3,screenToMaze(24), screenToMaze(3), dwidth, dheight, true);
-        Wall ew14 = new Wall(27,1,screenToMaze(27), screenToMaze(1), dwidth, dheight, true);
-        Wall ew15 = new Wall(28,1,screenToMaze(28), screenToMaze(1), dwidth, dheight, true);
-        Wall ew16 = new Wall(28,5,screenToMaze(28), screenToMaze(5), dwidth, dheight, true);
-        Wall ew17 = new Wall(30,7,screenToMaze(30), screenToMaze(7), dwidth, dheight, true);
-        Wall ew18 = new Wall(31,7,screenToMaze(31), screenToMaze(7), dwidth, dheight, true);
+        Wall ew1 = new Wall(5,4,screenToMaze(5), screenToMaze(4), dwidth, dheight, true);
+        Wall ew2 = new Wall(6,7,screenToMaze(6), screenToMaze(7), dwidth, dheight, true);
+        Wall ew3 = new Wall(7,2,screenToMaze(7), screenToMaze(2), dwidth, dheight, true);
+        Wall ew4 = new Wall(8,6,screenToMaze(8), screenToMaze(6), dwidth, dheight, true);
+        Wall ew5 = new Wall(9,2,screenToMaze(9), screenToMaze(2), dwidth, dheight, true);
+        Wall ew6 = new Wall(11,4,screenToMaze(11), screenToMaze(4), dwidth, dheight, true);
+        Wall ew7 = new Wall(15,7,screenToMaze(15), screenToMaze(7), dwidth, dheight, true);
+        Wall ew8 = new Wall(21,4,screenToMaze(21), screenToMaze(4), dwidth, dheight, true);
+        Wall ew9 = new Wall(22,4,screenToMaze(22), screenToMaze(4), dwidth, dheight, true);
+        Wall ew10 = new Wall(22,5,screenToMaze(22), screenToMaze(5), dwidth, dheight, true);
+        Wall ew11 = new Wall(23,4,screenToMaze(23), screenToMaze(4), dwidth, dheight, true);
+        Wall ew12 = new Wall(24,4,screenToMaze(24), screenToMaze(4), dwidth, dheight, true);
+        Wall ew13 = new Wall(26,2,screenToMaze(26), screenToMaze(2), dwidth, dheight, true);
+        Wall ew14 = new Wall(27,2,screenToMaze(27), screenToMaze(2), dwidth, dheight, true);
+        Wall ew15 = new Wall(29,7,screenToMaze(29), screenToMaze(7), dwidth, dheight, true);
 
         Wall[] iw = new Wall[] {iw1, iw2, iw3, iw4, iw5, iw6, iw7, iw8, iw9, iw10, iw11, iw12, iw13, iw14,
                 iw15, iw16, iw17, iw18, iw19, iw20, iw21, iw22, iw23, iw24, iw25, iw26, iw27, iw28,
                 iw29, iw30, iw31, iw32, iw33, iw34, iw35, iw36, iw37, iw38, iw39, iw40, iw41, iw42, iw43,
-                iw44, iw45, iw46, iw47, iw48, iw49, ew1, ew2, ew3, ew4, ew5, ew6, ew7, ew8,
-                ew9, ew10, ew11, ew12, ew13, ew14, ew15, ew16, ew17, ew18};
+                iw44, iw45, ew1, ew2, ew3, ew4, ew5, ew6, ew7, ew8, ew9, ew10, ew11, ew12, ew13, ew14, ew15};
 
         for (int i = iw.length - 1; i >= 0; i--) {
             iw[i].setBodyType(BodyDef.BodyType.StaticBody);
@@ -436,7 +428,7 @@ public class Level {
         // Add level goal
         dwidth = textureDict.get("goalOpenTile").getRegionWidth() / scale.x;
         dheight = textureDict.get("goalOpenTile").getRegionHeight() / scale.y;
-        goalDoor = new Wall(8,4,screenToMaze(8), screenToMaze(4), dwidth, dheight, false);
+        goalDoor = new Wall(7,4,screenToMaze(7), screenToMaze(4), dwidth, dheight, false);
         goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
         goalDoor.setSensor(true);
         goalDoor.setDrawScale(scale);
@@ -449,30 +441,28 @@ public class Level {
         dwidth = textureDict.get("enemyFront").getRegionWidth() / (scale.x * 2);
 
         // Adding the rest of the enemies; they're static right now
-        Enemy en2 = new Enemy(screenToMaze(2), screenToMaze(1), dwidth,1);
-        Enemy en3 = new Enemy(screenToMaze(9), screenToMaze(5), dwidth,2);
-        Enemy en4 = new Enemy(screenToMaze(12), screenToMaze(3), dwidth,3);
-        Enemy en5 = new Enemy(screenToMaze(13), screenToMaze(1), dwidth,4);
-        Enemy en6 = new Enemy(screenToMaze(14), screenToMaze(2), dwidth,5);
-        Enemy en7 = new Enemy(screenToMaze(16), screenToMaze(6), dwidth,6);
-        Enemy en8 = new Enemy(screenToMaze(19), screenToMaze(4), dwidth,7);
-        Enemy en9 = new Enemy(screenToMaze(20), screenToMaze(3), dwidth,8);
-        Enemy en10 = new Enemy(screenToMaze(20), screenToMaze(5), dwidth,9);
-        Enemy en11 = new Enemy(screenToMaze(22), screenToMaze(2), dwidth,10);
-        Enemy en12 = new Enemy(screenToMaze(22), screenToMaze(6), dwidth,11);
-        Enemy en13 = new Enemy(screenToMaze(26), screenToMaze(3), dwidth,12);
-        Enemy en14 = new Enemy(screenToMaze(27), screenToMaze(4), dwidth,13);
-        Enemy en15 = new Enemy(screenToMaze(29), screenToMaze(6), dwidth,14);
-        Enemy en16 = new Enemy(screenToMaze(30), screenToMaze(1), dwidth,15);
-        Enemy en17 = new Enemy(screenToMaze(30), screenToMaze(5), dwidth,16);
-        Enemy[] en = new Enemy[]{en2,en3,en4,en5,en6,en7,en8,en9,en10,en11,en12,en13,en14,en15,
-                en16,en17};
+        Enemy en1 = new Enemy(screenToMaze(1), screenToMaze(2), dwidth,1);
+        Enemy en2 = new Enemy(screenToMaze(3), screenToMaze(1), dwidth,2);
+        Enemy en3 = new Enemy(screenToMaze(9), screenToMaze(6), dwidth,3);
+        Enemy en4 = new Enemy(screenToMaze(13), screenToMaze(2), dwidth,5);
+        Enemy en5 = new Enemy(screenToMaze(14), screenToMaze(3), dwidth,6);
+        Enemy en6 = new Enemy(screenToMaze(18), screenToMaze(5), dwidth,7);
+        Enemy en7 = new Enemy(screenToMaze(19), screenToMaze(4), dwidth,8);
+        Enemy en8 = new Enemy(screenToMaze(19), screenToMaze(6), dwidth,9);
+        Enemy en9 = new Enemy(screenToMaze(20), screenToMaze(3), dwidth,10);
+        Enemy en10 = new Enemy(screenToMaze(25), screenToMaze(4), dwidth,11);
+        Enemy en11 = new Enemy(screenToMaze(26), screenToMaze(5), dwidth,12);
+        Enemy en12 = new Enemy(screenToMaze(29), screenToMaze(1), dwidth,13);
+        Enemy en13 = new Enemy(screenToMaze(29), screenToMaze(6), dwidth,14);
+        Enemy[] en = new Enemy[]{en1,en2,en3,en4,en5,en6,en7,en8,en9,en10,en11,en12,en13};
+        int[] dir = new int[]{2,1,1,0,0,0,0,1,0,3,3,0,0};
 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < en.length-1; i++) {
             en[i].setType(ENEMY);
             en[i].setDrawScale(scale);
             en[i].setTextureSet(textureDict.get("enemyLeft"), textureDict.get("enemyRight"),
                     textureDict.get("enemyBack"), textureDict.get("enemyFront"));
+            en[i].setDirection(dir[i]);
             addObject(en[i]);
         }
 
@@ -614,6 +604,37 @@ public class Level {
                 return null;
             else
                 return grid[(int)locationCache.x + 1][(int)locationCache.y];
+        }
+        return null;
+    }
+
+    public Vector2 objectInFrontofAvatarLocation() {
+        int direction = avatar.getDirection();
+        locationCache.set(getAvatarGridX(), getAvatarGridY());
+
+        if (direction == UP) {
+            if ((int)locationCache.y == getHeight())
+                return null;
+            else
+                return new Vector2((int)locationCache.x,(int)locationCache.y + 1);
+        }
+        else if (direction == DOWN) {
+            if ((int)locationCache.y == 0)
+                return null;
+            else
+                return new Vector2((int)locationCache.x, (int)locationCache.y - 1);
+        }
+        else if (direction == LEFT) {
+            if ((int)locationCache.x == 0)
+                return null;
+            else
+                return new Vector2((int)locationCache.x - 1, (int)locationCache.y);
+        }
+        else if (direction == RIGHT) {
+            if ((int)locationCache.x == getWidth())
+                return null;
+            else
+                return new Vector2((int)locationCache.x + 1, (int)locationCache.y);
         }
         return null;
     }
