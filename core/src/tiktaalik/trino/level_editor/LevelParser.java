@@ -25,6 +25,17 @@ public class LevelParser {
         else return false;
     }
 
+    public boolean isPanningLevel(int level){
+        String tmp = (String)((JSONObject)(levels.get(level))).get("Panning");
+        if (tmp == "yes") return true;
+        else return false;
+    }
+
+    public Vector2 getLevelDimension(int level){
+        JSONObject tmp = (JSONObject)((JSONObject)(levels.get(level))).get("Dimension");
+        return (new Vector2((Integer)tmp.get("width"), (Integer)tmp.get("height")));
+    }
+
     /**
      * the key should only be switch goal or player
      * @param level
@@ -32,7 +43,7 @@ public class LevelParser {
      * @return
      */
     public Vector2 getObjectLocation(int level, String key){
-        JSONObject tmp = (JSONObject)((JSONObject)(levels.get(level))).get("key");
+        JSONObject tmp = (JSONObject)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get(key);
         return (new Vector2((Integer)(tmp.get("x")),(Integer)(tmp.get("y"))));
     }
 
@@ -46,7 +57,15 @@ public class LevelParser {
         else return -1;
     }
 
-    
+    public PooledList<String[]> getEnemiesInformation(int level){
+        PooledList<String[]> tmp = new PooledList<String[]>();
+        JSONArray enemies = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Enemies");
+        for (int i = 0; i < enemies.size(); i++){
+            JSONObject e = (JSONObject)(enemies.get(i));
+            tmp.add(new String[]{(String)e.get("direction"), (String)e.get("type"), (String)e.get("movement")});
+        }
+        return tmp;
+    }
 
 
 
@@ -58,7 +77,7 @@ public class LevelParser {
         PooledList<Vector2> tmp = new PooledList<Vector2>();
         for (int i = 0; i < resources.size(); i++){
             JSONObject r = (JSONObject)(resources.get(i));
-            tmp.add(new Vector2((Integer)(r.get("x")),(Integer)(r.get("y"))));
+            tmp.add(new Vector2((Long)(r.get("x")),(Long)(r.get("y"))));
         }
         return tmp;
     }
