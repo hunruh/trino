@@ -38,7 +38,7 @@ public class Enemy extends GameObject {
      */
     public Enemy(float x, float y, float radius, int id) {
         super(x,y);
-        setDensity(1.0f);
+        setDensity(100.0f);
         setFriction(0.0f);
         setName("enemy");
 
