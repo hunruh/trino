@@ -166,6 +166,7 @@ public class River extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
+        filter.maskBits = 0x0002;
         filter.groupIndex = -8;
         geometry.setFilterData(filter);
         markDirty(false);

@@ -12,6 +12,7 @@ import tiktaalik.trino.GameObject;
 import tiktaalik.trino.duggi.Dinosaur;
 
 public class Enemy extends GameObject {
+    private final float COLLIDE_RESET_DURATION = 1.0f;
     private final float STUN_DURATION = 4.0f;
 
     private TextureRegion[] textureSet;
@@ -19,13 +20,14 @@ public class Enemy extends GameObject {
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
-    private float leftRight; // The current horizontal movement of the character
-    private float upDown; // The current vertical movement of the character
+    private float collideCooldown;
     private float stunCooldown;
     private boolean faceRight;
     private boolean faceUp;
+    private boolean collided;
     private boolean stunned;
     private int direction;
+    private Vector2 gridLocation;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -48,6 +50,7 @@ public class Enemy extends GameObject {
         faceRight = true;
         faceUp = false;
         stunned = false;
+        collided = false;
     }
 
     public void setTextureSet(TextureRegion left, TextureRegion right, TextureRegion up, TextureRegion down) {
@@ -57,7 +60,16 @@ public class Enemy extends GameObject {
         textureSet[Dinosaur.DOWN] = down;
     }
 
-    public void setStunned(){
+    public void setCollided(boolean collided) {
+        if ((collided && collideCooldown <= 0) || !collided)
+            this.collided = collided;
+    }
+
+    public boolean getCollided() {
+        return collided;
+    }
+
+    public void setStunned() {
         stunned = true;
         setLinearDamping(11);
         stunCooldown = 0;
@@ -74,84 +86,28 @@ public class Enemy extends GameObject {
     public void setDirection(float value) {
         if (value == 0) {
             direction = Dinosaur.LEFT;
-        }
-        else if (value == 1) {
+        } else if (value == 1) {
             direction = Dinosaur.RIGHT;
-        }
-        else if (value == 2) {
+        } else if (value == 2) {
             direction = Dinosaur.UP;
-        }
-        else if (value == 3) {
+        } else if (value == 3) {
             direction = Dinosaur.DOWN;
         }
     }
 
-    /**
-     * Returns left/right movement of this character.
-     *
-     * @return left/right movement of this character.
-     */
-    public float getLeftRight() {
-        return leftRight;
+
+    public void setGridLocation(Vector2 location){
+        this.gridLocation = location;
     }
 
-    /**
-     * Returns up/down movement of this character.
-     *
-     * @return up/down movement of this character.
-     */
-    public float getUpDown() {return upDown;}
-
-    /**
-     * Sets left/right movement of this character.
-     *
-     * @param value left/right movement of this character.
-     */
-    public void setLeftRight(float value) {
-        leftRight = value;
-        if (leftRight < 0) {
-            faceRight = false;
-            faceUp = false;
-        } else if (leftRight > 0) {
-            faceRight = true;
-            faceUp = false;
-        }
+    public void setGridLocation(float x, float y) {
+        gridLocation.x = x;
+        gridLocation.y = y;
     }
 
-    /**
-     * Sets up/down movement of this character.
-     *
-     * @param value up/down movement of this character.
-     */
-    public void setUpDown(float value) {
-        upDown = value;
-        if (upDown < 0) {
-            faceRight = false;
-            faceUp = false;
-        } else if (upDown > 0) {
-            faceRight = false;
-            faceUp = true;
-        }
+    public Vector2 getGridLocation(){
+        return gridLocation;
     }
-
-    /**
-     * Returns true if this character is facing right
-     *
-     * @return true if this character is facing right
-     */
-    public boolean isFacingRight() {
-        return faceRight;
-    }
-
-    /**
-     * Returns true if this character is facing right
-     *
-     * @return true if this character is facing right
-     */
-    public boolean isFacingUp() {
-        return faceUp;
-    }
-
     /**
      * Create new fixtures for this body, defining the shape
      */
@@ -188,6 +144,10 @@ public class Enemy extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
+
+        if (collideCooldown > 0)
+            collideCooldown += dt;
+
         if (stunned) {
             if (getLinearVelocity().len2() < 5)
                 setBodyType(BodyDef.BodyType.StaticBody);

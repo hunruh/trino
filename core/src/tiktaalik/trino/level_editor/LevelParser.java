@@ -39,26 +39,24 @@ public class LevelParser {
     public int getPlayerInitialOrientation(int level){
         JSONObject tmp = (JSONObject)((JSONObject)(levels.get(level))).get("Player");
         String orientation = (String)tmp.get("Orientation");
-        if (orientation == "left") return Dinosaur.LEFT;
-        else if (orientation == "right") return Dinosaur.RIGHT;
-        else if (orientation == "up") return Dinosaur.UP;
-        else if (orientation == "down") return Dinosaur.DOWN;
+        if (orientation == "Left") return Dinosaur.LEFT;
+        else if (orientation == "Right") return Dinosaur.RIGHT;
+        else if (orientation == "Up") return Dinosaur.UP;
+        else if (orientation == "Down") return Dinosaur.DOWN;
         else return -1;
     }
+
+    
 
     public PooledList<Vector2> getCottonList(int level){
         System.out.println("in getcottonlist");
         System.out.println(levels.get(level));
-        JSONArray resources = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Resources");
+        JSONArray resources = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Cottons");
         System.out.println(resources.size());
         PooledList<Vector2> tmp = new PooledList<Vector2>();
         for (int i = 0; i < resources.size(); i++){
             JSONObject r = (JSONObject)(resources.get(i));
-            //System.out.println(r.get("Type"));
-            if ((String)r.get("Type") == "cotton"){
-                //System.out.println("bruh");
-                tmp.add(new Vector2((Integer)(r.get("x")),(Integer)(r.get("y"))));
-            }
+            tmp.add(new Vector2((Integer)(r.get("x")),(Integer)(r.get("y"))));
         }
         return tmp;
 

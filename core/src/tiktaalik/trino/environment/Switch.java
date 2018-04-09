@@ -122,6 +122,11 @@ public class Switch extends GameObject {
         this.gridLocation = location;
     }
 
+    public void setGridLocation(float x, float y) {
+        gridLocation.x = x;
+        gridLocation.y = y;
+    }
+
     public Vector2 getGridLocation(){
         return gridLocation;
     }

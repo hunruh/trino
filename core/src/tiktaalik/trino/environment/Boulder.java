@@ -7,7 +7,7 @@ import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
 public class Boulder extends GameObject {
-    private final float PUSH_DURATION = 0.5f;
+    private final float PUSH_DURATION = 5.0f;
     private float pushCooldown;
     protected PolygonShape shape; // Shape information for this box
     private Vector2 dimension; // The width and height of the box
@@ -138,6 +138,11 @@ public class Boulder extends GameObject {
         this.gridLocation = location;
     }
 
+    public void setGridLocation(float x, float y) {
+        gridLocation.x = x;
+        gridLocation.y = y;
+    }
+
     public Vector2 getGridLocation(){
         return gridLocation;
     }
@@ -194,19 +199,16 @@ public class Boulder extends GameObject {
     public void update(float dt) {
         super.update(dt);
         if (pushed) {
-            System.out.println(getLinearVelocity().len2());
-            if (pushCooldown <= PUSH_DURATION) {
-                setBodyType(BodyDef.BodyType.DynamicBody);
-                setLinearDamping(0);
-                System.out.println("inprocess");
-            }
-
-            if (pushCooldown > PUSH_DURATION) {
-                setBodyType(BodyDef.BodyType.StaticBody);
-                setLinearDamping(0);
-                pushed = false;
-                System.out.println(pushed);
-            }
+//            if (pushCooldown <= PUSH_DURATION) {
+//                setBodyType(BodyDef.BodyType.DynamicBody);
+//                setLinearDamping(0);;
+//            }
+//
+//            if (pushCooldown > PUSH_DURATION) {
+//                setBodyType(BodyDef.BodyType.StaticBody);
+//                setLinearDamping(0);
+//                pushed = false;
+//            }
             pushCooldown += dt;
         }
     }

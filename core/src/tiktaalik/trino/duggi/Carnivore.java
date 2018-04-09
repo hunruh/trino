@@ -10,6 +10,9 @@ public class Carnivore extends Dinosaur {
     private float chargeCooldown, chargeLoad;
     private int chargeDirection;
 
+    private float collideCooldown;
+    private boolean collided;
+
     private Vector2 vectorCache;
 
     public Carnivore(Dinosaur d) {
@@ -20,6 +23,7 @@ public class Carnivore extends Dinosaur {
         loadingCharge = false;
         chargeCooldown = 0.0f;
         chargeLoad = 0.0f;
+        collided = false;
 
         vectorCache = new Vector2();
     }
@@ -50,6 +54,15 @@ public class Carnivore extends Dinosaur {
         }
     }
 
+    public void setCollided(boolean collided) {
+        if ((collided && collideCooldown <= 0) || !collided)
+            this.collided = collided;
+    }
+
+    public boolean getCollided() {
+        return collided;
+    }
+
     public void applyForce() {
         if (!isActive()) {
             return;
@@ -57,6 +70,10 @@ public class Carnivore extends Dinosaur {
 
         if (!charging)
             body.setLinearVelocity(getLeftRight(),getUpDown());
+        else if (collided) {
+            body.setLinearVelocity(0.0f, 0.0f);
+            collided = false;
+        }
         else {
             if (chargeDirection == LEFT)
                 body.setLinearVelocity(-15.0f, 0.0f);
