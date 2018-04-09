@@ -47,7 +47,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_FILE_LEFT  = "trino/doll_left.png";
 	private static final String DOLL_FILE_RIGHT  = "trino/doll_right.png";
 	private static final String DOLL_FILE_BACK  = "trino/doll_back.png";
-	private static final String DOLL_STRIP_LEFT  = "trino/dinodollwalk_side.png";
+	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
+	private static final String DOLL_STRIP_RIGHT  = "trino/doll_right_strip.png";
 	private static final String HERBIVORE_FILE_FRONT  = "trino/herbivore_front.png";
 	private static final String HERBIVORE_FILE_LEFT  = "trino/herbivore_left.png";
 	private static final String HERBIVORE_FILE_RIGHT  = "trino/herbivore_right.png";
@@ -165,6 +166,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(GOAL_CLOSED_FILE);
 		manager.load(DOLL_STRIP_LEFT, Texture.class);
 		assets.add(DOLL_STRIP_LEFT);
+		manager.load(DOLL_STRIP_RIGHT, Texture.class);
+		assets.add(DOLL_STRIP_RIGHT);
 		manager.load(DOLL_FILE_FRONT, Texture.class);
 		assets.add(DOLL_FILE_FRONT);
 		manager.load(DOLL_FILE_LEFT, Texture.class);
@@ -268,6 +271,7 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
+		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -688,7 +692,7 @@ public class GameController implements ContactListener, Screen {
 						avatar.getForm() != Dinosaur.DOLL_FORM) {
 
 					avatar = avatar.transformToDoll();
-					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"),
+					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
 							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
 					level.setAvatar(avatar);
 
@@ -697,7 +701,7 @@ public class GameController implements ContactListener, Screen {
 				} else if (InputHandler.getInstance().didTransformHerbi() &&
 						avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 					avatar = avatar.transformToHerbivore();
-					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"),
+					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
 							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
 					level.setAvatar(avatar);
 
@@ -706,7 +710,7 @@ public class GameController implements ContactListener, Screen {
 				} else if (InputHandler.getInstance().didTransformCarni() &&
 						avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 					avatar = avatar.transformToCarnivore();
-					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"),
+					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
 							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
 					level.setAvatar(avatar);
 

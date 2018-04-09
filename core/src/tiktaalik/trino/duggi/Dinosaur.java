@@ -251,11 +251,18 @@ public abstract class Dinosaur extends GameObject {
     public void update(float dt) {
         super.update(dt);
 
-        animeframe += ANIMATION_SPEED;
-        if (animeframe >= NUM_ANIM_FRAMES) {
-            animeframe -= NUM_ANIM_FRAMES;
+        if ((int)animeframe != 0 || getLinearVelocity().len2() > 0) {
+            if (getLinearVelocity().len2() == 0 && (int)animeframe >= NUM_ANIM_FRAMES / 2)
+                animeframe += ANIMATION_SPEED;
+            if (getLinearVelocity().len2() == 0 && (int)animeframe < NUM_ANIM_FRAMES / 2)
+                animeframe -= ANIMATION_SPEED;
+            else
+                animeframe += ANIMATION_SPEED;
+
+            if (animeframe >= NUM_ANIM_FRAMES) {
+                animeframe -= NUM_ANIM_FRAMES;
+            }
         }
-//        setTexture(textureSet[direction]);
     }
 
     /**

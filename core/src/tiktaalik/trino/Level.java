@@ -234,7 +234,7 @@ public class Level {
         dwidth = textureDict.get("dollFront").getRegionWidth() / (scale.x * 2);
         avatar = new Doll(screenToMaze(7), screenToMaze(6), dwidth);
         avatar.setType(DUGGI);
-        avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"),
+        avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
                 filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
         avatar.setDrawScale(scale);
         addObject(avatar);
