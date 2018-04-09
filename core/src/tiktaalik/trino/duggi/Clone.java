@@ -17,7 +17,7 @@ public class Clone extends GameObject {
     private boolean removed = false;
     private Vector2 gridLocation;
 
-    private final float totalTime = 60.0f;
+    private final float totalTime = 180.0f;
     private float timeElapsed;
 
     public Clone(float radius) {

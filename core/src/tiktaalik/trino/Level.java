@@ -251,8 +251,10 @@ public class Level {
         dwidth = textureDict.get("dollFront").getRegionWidth() / (scale.x * 2);
         avatar = new Doll(screenToMaze(7), screenToMaze(6), dwidth);
         avatar.setType(DUGGI);
-        avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
-                filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
+        avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
+                filmStripDict.get("dollRight"), 8,
+                filmStripDict.get("dollBack"), 8,
+                filmStripDict.get("dollFront"), 8);
         avatar.setDrawScale(scale);
 
         //Change filter data to that of the doll form
@@ -400,7 +402,8 @@ public class Level {
 
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
         for (int i = 0; i < 5; i++){
-            FireFly ff = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth);
+            FireFly ff = new FireFly(MathUtils.random(2*bounds.width),
+                    MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
             ff.setTexture(textureDict.get("fireFly"));
             ff.setDrawScale(scale);
@@ -420,6 +423,11 @@ public class Level {
         Collections.sort(drawObjects, new Comparator<GameObject>() {
             @Override
             public int compare(GameObject g1, GameObject g2) {
+                if (g1.getType() == RIVER)
+                    return -1;
+                if (g2.getType() == RIVER)
+                    return 1;
+
                 if (g1.getType() == SWITCH)
                     return -1;
                 if (g2.getType() == SWITCH)

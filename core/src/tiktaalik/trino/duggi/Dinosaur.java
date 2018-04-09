@@ -24,13 +24,13 @@ public abstract class Dinosaur extends GameObject {
     public static final int MAX_RESOURCES = 3;
     private final int TRANSFORM_COST = 3;
     private static final float ANIMATION_SPEED = 0.175f;
-    private static final int NUM_ANIM_FRAMES = 8;
 
     private FilmStrip[] textureSet;
 
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
+    private int numFrames[];
     private float animeframe;
     private boolean canExit;
     private float leftRight; // The current horizontal movement of the character
@@ -69,6 +69,7 @@ public abstract class Dinosaur extends GameObject {
         direction = d.direction;
 
         textureSet = new FilmStrip[4];
+        numFrames = new int[4];
         animeframe = 0;
         resourceCnt = 0;
         body.setUserData(this);
@@ -102,16 +103,22 @@ public abstract class Dinosaur extends GameObject {
         // Gameplay attributes
         direction = RIGHT;
         textureSet = new FilmStrip[4];
+        numFrames = new int[4];
         animeframe = 0;
         resourceCnt = 0;
         canExit = false;
     }
 
-    public void setTextureSet(Texture left, Texture right, Texture up, Texture down) {
-        textureSet[LEFT] = new FilmStrip(left,1,NUM_ANIM_FRAMES,NUM_ANIM_FRAMES);
-        textureSet[RIGHT] = new FilmStrip(right,1,NUM_ANIM_FRAMES,NUM_ANIM_FRAMES);
-        textureSet[UP] = new FilmStrip(up,1,NUM_ANIM_FRAMES,NUM_ANIM_FRAMES);
-        textureSet[DOWN] = new FilmStrip(down,1,NUM_ANIM_FRAMES,NUM_ANIM_FRAMES);
+    public void setTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                              Texture down, int downFrames) {
+        numFrames[LEFT] = leftFrames;
+        textureSet[LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[RIGHT] = rightFrames;
+        textureSet[RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[UP] = upFrames;
+        textureSet[UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[DOWN] = downFrames;
+        textureSet[DOWN] = new FilmStrip(down,1,downFrames,downFrames);
         origin = new Vector2(textureSet[LEFT].getRegionWidth()/2.0f, textureSet[LEFT].getRegionHeight()/2.0f);
     }
 
@@ -252,15 +259,15 @@ public abstract class Dinosaur extends GameObject {
         super.update(dt);
 
         if ((int)animeframe != 0 || getLinearVelocity().len2() > 0) {
-            if (getLinearVelocity().len2() == 0 && (int)animeframe >= NUM_ANIM_FRAMES / 2)
+            if (getLinearVelocity().len2() == 0 && (int)animeframe >= numFrames[direction] / 2)
                 animeframe += ANIMATION_SPEED;
-            if (getLinearVelocity().len2() == 0 && (int)animeframe < NUM_ANIM_FRAMES / 2)
+            if (getLinearVelocity().len2() == 0 && (int)animeframe < numFrames[direction] / 2)
                 animeframe -= ANIMATION_SPEED;
             else
                 animeframe += ANIMATION_SPEED;
 
-            if (animeframe >= NUM_ANIM_FRAMES) {
-                animeframe -= NUM_ANIM_FRAMES;
+            if (animeframe >= numFrames[direction]) {
+                animeframe -= numFrames[direction];
             }
         }
     }
