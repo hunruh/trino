@@ -373,31 +373,26 @@ public class Level {
 
         // Create enemy
         dwidth = textureDict.get("enemyFront").getRegionWidth() / (scale.x * 2);
-
-        // Adding the rest of the enemies; they're static right now
-        Enemy en1 = new Enemy(screenToMaze(1), screenToMaze(2), dwidth,1);
-        Enemy en2 = new Enemy(screenToMaze(3), screenToMaze(1), dwidth,2);
-        Enemy en3 = new Enemy(screenToMaze(9), screenToMaze(6), dwidth,3);
-        Enemy en4 = new Enemy(screenToMaze(13), screenToMaze(2), dwidth,5);
-        Enemy en5 = new Enemy(screenToMaze(14), screenToMaze(3), dwidth,6);
-        Enemy en6 = new Enemy(screenToMaze(18), screenToMaze(5), dwidth,7);
-        Enemy en7 = new Enemy(screenToMaze(19), screenToMaze(4), dwidth,8);
-        Enemy en8 = new Enemy(screenToMaze(19), screenToMaze(6), dwidth,9);
-        Enemy en9 = new Enemy(screenToMaze(20), screenToMaze(3), dwidth,10);
-        Enemy en10 = new Enemy(screenToMaze(25), screenToMaze(4), dwidth,11);
-        Enemy en11 = new Enemy(screenToMaze(26), screenToMaze(5), dwidth,12);
-        Enemy en12 = new Enemy(screenToMaze(29), screenToMaze(1), dwidth,13);
-        Enemy en13 = new Enemy(screenToMaze(29), screenToMaze(6), dwidth,14);
-        Enemy[] en = new Enemy[]{en1,en2,en3,en4,en5,en6,en7,en8,en9,en10,en11,en12,en13};
-        int[] dir = new int[]{2,1,1,0,0,0,0,1,0,3,3,0,0};
-
-        for (int i = 0; i < en.length; i++) {
-            en[i].setType(ENEMY);
-            en[i].setDrawScale(scale);
-            en[i].setTextureSet(textureDict.get("enemyLeft"), textureDict.get("enemyRight"),
+        tmp = parser.getAssetList(0, "Enemies");
+        PooledList<String[]> dir = parser.getEnemiesInformation(0);
+        for(int i = 0; i < tmp.size(); i++) {
+            float x = (tmp.get(i)).x;
+            float y = (tmp.get(i)).y-1;
+            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y), dwidth, i+1);
+            String sd = dir.get(i)[0];
+            int d = 0;
+            if (sd.equals("Up")) d = 2;
+            else if (sd.equals("Down")) d = 3;
+            else if (sd.equals("Left")) d = 0;
+            else if (sd.equals("Right")) d = 1;
+            else d = -1;
+            System.out.println("direction: " + sd + ", number: " + d +", x: "+x + ",y: "+y + ", id: " + (int)(i+1));
+            en.setType(ENEMY);
+            en.setDrawScale(scale);
+            en.setTextureSet(textureDict.get("enemyLeft"), textureDict.get("enemyRight"),
                     textureDict.get("enemyBack"), textureDict.get("enemyFront"));
-            en[i].setDirection(dir[i]);
-            addObject(en[i]);
+            en.setDirection(d);
+            addObject(en);
         }
 
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
