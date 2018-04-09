@@ -242,6 +242,10 @@ public class HUDController  {
     }
 
     private void drawDinoMeter(Canvas canvas) {
+        int padding = 18;
+        int rootX = 595 + padding;
+        float width = dinometerOutline.getRegionWidth() - 2 * padding;
+
         TextureRegion resource, lightResource;
         if (transformation == Dinosaur.DOLL_FORM) {
             resource = cotton;
@@ -256,19 +260,21 @@ public class HUDController  {
             lightResource = meatLight;
         }
 
-        int offsetY = 76 - (dinometerOutline.getRegionHeight() - resource.getRegionHeight())/2;
-        canvas.draw(dinometerOutline, 366, canvas.getHeight() - 76);
+        int offsetY = 72 - (dinometerOutline.getRegionHeight() - resource.getRegionHeight())/2;
+        canvas.draw(dinometerOutline, 595, canvas.getHeight() - 72);
         for (int i = 0; i < numResources; i++)
-            canvas.draw(resource, 380 + (40 * i), canvas.getHeight() - offsetY);
+            canvas.draw(resource, rootX + (1 + i * 2) * width/6 - resource.getRegionWidth()/2,
+                    canvas.getHeight() - offsetY);
         for (int i = numResources; i < Dinosaur.MAX_RESOURCES; i++)
-            canvas.draw(lightResource, 380 + (40 * i), canvas.getHeight() - offsetY);
+            canvas.draw(lightResource, rootX + (1 + i * 2) * width/6 - lightResource.getRegionWidth()/2,
+                    canvas.getHeight() - offsetY);
 
     }
 
     private void drawPause(Canvas canvas) {
         int x = 1156 + (pauseOutline.getRegionWidth() - pauseSymbolLight.getRegionWidth())/2;
-        int y = 76 - (pauseOutline.getRegionHeight() - pauseSymbolLight.getRegionHeight())/2;
-        canvas.draw(pauseOutline, 1156, canvas.getHeight() - 76);
+        int y = 72 - (pauseOutline.getRegionHeight() - pauseSymbolLight.getRegionHeight())/2;
+        canvas.draw(pauseOutline, 1156, canvas.getHeight() - 72);
         canvas.draw(pauseSymbolLight, x, canvas.getHeight() - y);
     }
 }

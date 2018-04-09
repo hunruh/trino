@@ -71,6 +71,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_FILE_LEFT = "trino/enemy_trex_left.png";
 	private static final String ENEMY_FILE_RIGHT = "trino/enemy_trex_right.png";
 	private static final String ENEMY_FILE_BACK = "trino/enemy_trex_back.png";
+	private static final String ENEMY_STRIP_FRONT = "trino/enemy_front_strip.png";
+	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
+	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
+	private static final String ENEMY_STRIP_BACK = "trino/enemy_back_strip.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
@@ -236,6 +240,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_FILE_RIGHT);
 		manager.load(ENEMY_FILE_BACK, Texture.class);
 		assets.add(ENEMY_FILE_BACK);
+		manager.load(ENEMY_STRIP_FRONT, Texture.class);
+		assets.add(ENEMY_STRIP_FRONT);
+		manager.load(ENEMY_STRIP_LEFT, Texture.class);
+		assets.add(ENEMY_STRIP_LEFT);
+		manager.load(ENEMY_STRIP_RIGHT, Texture.class);
+		assets.add(ENEMY_STRIP_RIGHT);
+		manager.load(ENEMY_STRIP_BACK, Texture.class);
+		assets.add(ENEMY_STRIP_BACK);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
 		manager.load(PATH_FILE, Texture.class);
@@ -312,6 +324,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreRight", createFilmTexture(manager,HERBIVORE_STRIP_RIGHT));
 		filmStripDict.put("herbivoreFront", createFilmTexture(manager,HERBIVORE_STRIP_FRONT));
 		filmStripDict.put("herbivoreBack", createFilmTexture(manager,HERBIVORE_STRIP_BACK));
+		filmStripDict.put("enemyLeft", createFilmTexture(manager,ENEMY_STRIP_LEFT));
+		filmStripDict.put("enemyRight", createFilmTexture(manager,ENEMY_STRIP_RIGHT));
+		filmStripDict.put("enemyFront", createFilmTexture(manager,ENEMY_STRIP_FRONT));
+		filmStripDict.put("enemyBack", createFilmTexture(manager,ENEMY_STRIP_BACK));
 
 		worldAssetState = AssetState.COMPLETE;
 	}

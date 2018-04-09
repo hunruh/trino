@@ -487,8 +487,10 @@ public class Level {
         for (int i = 0; i < en.length; i++) {
             en[i].setType(ENEMY);
             en[i].setDrawScale(scale);
-            en[i].setTextureSet(textureDict.get("enemyLeft"), textureDict.get("enemyRight"),
-                    textureDict.get("enemyBack"), textureDict.get("enemyFront"));
+            en[i].setTextureSet(filmStripDict.get("enemyLeft"), 9,
+                    filmStripDict.get("enemyRight"), 9,
+                    filmStripDict.get("enemyBack"), 8,
+                    filmStripDict.get("enemyFront"), 10);
             en[i].setDirection(dir[i]);
             addObject(en[i]);
         }
