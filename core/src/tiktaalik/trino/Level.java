@@ -229,13 +229,9 @@ public class Level {
         LevelParser parser = new LevelParser();
         try {
             parser.parse("trino/example.json");
-        }catch(Exception e){
+        } catch(Exception e) {
             System.out.println("oops dude");
         }
-
-
-
-
 
         float dwidth;
         float dheight;
@@ -336,7 +332,6 @@ public class Level {
         for(int i = 0; i < tmp.size(); i++){
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y - 1;
-            System.out.println("parsing walls, x: " + x +",y: "+y);
             Wall iw = new Wall((int)x, (int)y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
             iw.setBodyType(BodyDef.BodyType.StaticBody);
             iw.setDrawScale(scale);
@@ -386,7 +381,6 @@ public class Level {
             else if (sd.equals("Left")) d = 0;
             else if (sd.equals("Right")) d = 1;
             else d = -1;
-            System.out.println("direction: " + sd + ", number: " + d +", x: "+x + ",y: "+y + ", id: " + (int)(i+1));
             en.setType(ENEMY);
             en.setDrawScale(scale);
             en.setTextureSet(filmStripDict.get("enemyLeft"), 9,

@@ -16,7 +16,6 @@ public class LevelParser {
         FileReader reader = new FileReader(path);
         obj = (JSONObject)parser.parse(reader);
         levels = (JSONArray)obj.get("Levels");
-        System.out.println(levels);
     }
 
     public boolean isNightLevel(int level){
@@ -70,10 +69,7 @@ public class LevelParser {
 
 
     public PooledList<Vector2> getAssetList(int level, String key){
-        System.out.println("in getcottonlist");
-        System.out.println(levels.get(level));
         JSONArray resources = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get(key);
-        System.out.println(resources.size());
         PooledList<Vector2> tmp = new PooledList<Vector2>();
         for (int i = 0; i < resources.size(); i++){
             JSONObject r = (JSONObject)(resources.get(i));

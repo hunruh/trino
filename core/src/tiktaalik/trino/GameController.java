@@ -806,7 +806,7 @@ public class GameController implements ContactListener, Screen {
 			((Carnivore) avatar).stopCharge();
 
 		GameObject b = level.objectInFrontOfAvatar();
-		for(int i = 1; i <= level.getBoulders().size(); i++) {
+		for(int i = 0; i < level.getBoulders().size(); i++) {
 			if (b!= null && b.getType() == BOULDER &&
 					Math.abs(level.getBoulder(i).getGridLocation().x - level.getAvatarGridX()) <= 1
 					&& Math.abs(level.getBoulder(i).getGridLocation().y - level.getAvatarGridY()) <= 1 &&
@@ -821,7 +821,7 @@ public class GameController implements ContactListener, Screen {
 									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH) {
 					}
 					else {
-						for (int k = 1; k <= level.getSwitches().size(); k++) {
+						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
 								isSwitch = true;
@@ -838,7 +838,7 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 						}
-						for (int m = 1; m <= level.getCottonFlowers().size(); m++) {
+						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getCottonFlower(m)) {
 								isCotton = true;
@@ -866,7 +866,7 @@ public class GameController implements ContactListener, Screen {
 							isCotton = false;
 						}
 
-						for (int n = 1; n <= level.getEnemies().size(); n++) {
+						for (int n = 0; n < level.getEnemies().size(); n++) {
 							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
 									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
 								level.getEnemy(n).setVX(1);
@@ -884,7 +884,7 @@ public class GameController implements ContactListener, Screen {
 									(int)(((Boulder) b).getGridLocation().y)).getType() != COTTON) {
 					}
 					else {
-						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
 								isSwitch = true;
@@ -901,7 +901,7 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 						}
-						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getCottonFlower(m)) {
 								isCotton = true;
@@ -928,7 +928,7 @@ public class GameController implements ContactListener, Screen {
 							isCotton = false;
 						}
 
-						for (int n = 1; n <= level.getEnemies().size(); n++) {
+						for (int n = 0; n < level.getEnemies().size(); n++) {
 							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
 									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
 								level.getEnemy(n).setVX(-1);
@@ -945,7 +945,7 @@ public class GameController implements ContactListener, Screen {
 					}
 
 					else {
-						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
 									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getSwitch(k)) {
 								isSwitch = true;
@@ -962,7 +962,7 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 						}
-						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
 									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getCottonFlower(m)) {
 								isCotton = true;
@@ -989,7 +989,7 @@ public class GameController implements ContactListener, Screen {
 							isCotton = false;
 						}
 
-						for (int n = 1; n <= level.getEnemies().size(); n++) {
+						for (int n = 0; n < level.getEnemies().size(); n++) {
 							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
 									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
 								level.getEnemy(n).setVY(1);
@@ -1005,7 +1005,7 @@ public class GameController implements ContactListener, Screen {
 									(int)(((Boulder) b).getGridLocation().y-1)).getType() != SWITCH) {
 					}
 					else {
-						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
 									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getSwitch(k)) {
 								isSwitch = true;
@@ -1022,7 +1022,7 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 						}
-						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
 									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getCottonFlower(m)) {
 								isCotton = true;
@@ -1049,7 +1049,7 @@ public class GameController implements ContactListener, Screen {
 							isCotton = false;
 						}
 
-						for (int n = 1; n <= level.getEnemies().size(); n++) {
+						for (int n = 0; n < level.getEnemies().size(); n++) {
 							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
 									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
 								level.getEnemy(n).setVY(-1);
