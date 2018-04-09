@@ -516,23 +516,23 @@ public class GameController implements ContactListener, Screen {
 		cameraBounds.height *= 2;
 
 		// Init Enemy AI controllers
-		for (int i = 1; i <= level.getEnemies().size(); i++)
+		for (int i = 0; i < level.getEnemies().size(); i++)
 			controls.add(new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP));
 
 		// Init FireFlies
 		ffLights = new LightSource[level.getFireFlies().size()];
 		ffLightDsts = new float[level.getFireFlies().size()];
 		ffLightChanges = new float[level.getFireFlies().size()];
-		for (int i = 1; i <= level.getFireFlies().size(); i++) {
+		for (int i = 0; i < level.getFireFlies().size(); i++) {
 			fireFlyControls.add(new FireFlyAIController(i, level.getFireFlies(), level.getBounds()));
 
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
 			fireLight.setColor(0.85f,0.85f,0.95f,0.85f);
 			fireLight.setXray(true);
 			fireLight.setActive(true);
-			ffLights[i - 1] = fireLight;
-			ffLightDsts[i - 1] = MathUtils.random(2.0f);
-			ffLightChanges[i - 1] = MathUtils.random(0.005f, 0.015f);
+			ffLights[i] = fireLight;
+			ffLightDsts[i] = MathUtils.random(2.0f);
+			ffLightChanges[i] = MathUtils.random(0.005f, 0.015f);
 			fireLight.attachToBody(level.getFirefly(i).getBody(), fireLight.getX(), fireLight.getY(),
 					fireLight.getDirection());
 		}
@@ -735,7 +735,7 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		// Process enemy updates
-		for (int i = 1; i <= level.getEnemies().size();i++)
+		for (int i = 0; i < level.getEnemies().size();i++)
 			controls.get(i).step(level.objectInFrontOfEnemy(level.getEnemy(i)));
 
 		// Process avatar updates
