@@ -395,10 +395,10 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void unloadContent(AssetManager manager) {
 		hud.unloadContent(manager);
-    	for(String s : assets) {
-    		if (manager.isLoaded(s))
-    			manager.unload(s);
-    	}
+		for(String s : assets) {
+			if (manager.isLoaded(s))
+				manager.unload(s);
+		}
 	}
 
 	/**
@@ -517,7 +517,7 @@ public class GameController implements ContactListener, Screen {
 
 		// Init Enemy AI controllers
 		for (int i = 0; i < level.getEnemies().size(); i++)
-			controls.add(new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP));
+			controls.add(new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP, level));
 
 		// Init FireFlies
 		ffLights = new LightSource[level.getFireFlies().size()];

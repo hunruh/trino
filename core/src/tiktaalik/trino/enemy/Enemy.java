@@ -34,6 +34,12 @@ public class Enemy extends GameObject {
     private boolean stunned;
     private int direction;
     private Vector2 gridLocation;
+    private boolean charging;
+    private boolean chargeReady;
+    private final float CHARGE_COOLDOWN_DURATION = 0.5f;
+    private final float CHARGE_LOAD_DURATION = 1.0f;
+    private float chargeLoad;
+
 
     /**
      * Creates a new dinosaur at the given position.
@@ -59,6 +65,8 @@ public class Enemy extends GameObject {
         faceUp = false;
         stunned = false;
         collided = false;
+        charging = false;
+        chargeReady = false;
     }
 
     public void setTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
@@ -83,6 +91,14 @@ public class Enemy extends GameObject {
         return collided;
     }
 
+    public boolean getCharging() {
+        return charging;
+    }
+
+    public void setCharging(boolean v) {
+        charging = v;
+    }
+
     public void setStunned() {
         stunned = true;
         setLinearDamping(11);
@@ -91,6 +107,18 @@ public class Enemy extends GameObject {
 
     public boolean getStunned(){
         return stunned;
+    }
+
+    public boolean getChargeReady() { return chargeReady; }
+
+    public void setChargeReady(boolean v) { chargeReady = v; }
+
+    public boolean charge() {
+        if (charging) {
+            setCharging(false);
+            return true;
+        }
+        return false;
     }
 
     public int getDirection() {
@@ -161,6 +189,15 @@ public class Enemy extends GameObject {
 
         if (collideCooldown > 0)
             collideCooldown += dt;
+
+        if (chargeReady) {
+            chargeLoad += dt;
+            if (chargeLoad >= CHARGE_LOAD_DURATION) {
+                setCharging(true);
+                setChargeReady(false);
+                chargeLoad = 0;
+            }
+        }
 
         if (stunned) {
             if (getLinearVelocity().len2() < 5)
