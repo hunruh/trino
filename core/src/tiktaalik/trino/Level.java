@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import tiktaalik.trino.duggi.Clone;
 import tiktaalik.trino.duggi.Dinosaur;
@@ -237,6 +238,13 @@ public class Level {
         avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
                 filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
         avatar.setDrawScale(scale);
+
+        //Change filter data to that of the doll form
+        //Change the filter data
+        Filter filter = avatar.getFilterData();
+        filter.categoryBits = 0x0004;
+        avatar.setFilterData(filter);
+
         addObject(avatar);
         avatarLight.attachToBody(avatar.getBody(), avatarLight.getX(), avatarLight.getY(), avatarLight.getDirection());
 

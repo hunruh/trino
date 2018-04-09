@@ -692,8 +692,14 @@ public class GameController implements ContactListener, Screen {
 						avatar.getForm() != Dinosaur.DOLL_FORM) {
 
 					avatar = avatar.transformToDoll();
+
+					//Change the filter data
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = 0x0004;
+					avatar.setFilterData(filter);
 					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
 							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
+
 					level.setAvatar(avatar);
 
 					SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
@@ -701,8 +707,14 @@ public class GameController implements ContactListener, Screen {
 				} else if (InputHandler.getInstance().didTransformHerbi() &&
 						avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 					avatar = avatar.transformToHerbivore();
+
+					//Change the filter data
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = 0x0010;
+					avatar.setFilterData(filter);
 					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
 							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
+
 					level.setAvatar(avatar);
 
 					SoundController.getInstance().changeBackground(Dinosaur.HERBIVORE_FORM);
@@ -710,8 +722,13 @@ public class GameController implements ContactListener, Screen {
 				} else if (InputHandler.getInstance().didTransformCarni() &&
 						avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 					avatar = avatar.transformToCarnivore();
+
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = 0x0004;
+					avatar.setFilterData(filter);
 					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
 							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
+
 					level.setAvatar(avatar);
 
 					SoundController.getInstance().changeBackground(Dinosaur.CARNIVORE_FORM);
@@ -725,7 +742,7 @@ public class GameController implements ContactListener, Screen {
 			((Carnivore) avatar).stopCharge();
 
 		GameObject b = level.objectInFrontOfAvatar();
-		for(int i = 0; i <= level.getBoulders().size(); i++) {
+		for(int i = 1; i <= level.getBoulders().size(); i++) {
 			if (b!= null && b.getType() == BOULDER && level.getBoulder(i).getGridLocation().x - level.getAvatarGridX() <= 1
 					&& level.getBoulder(i).getGridLocation().y - level.getAvatarGridY() <= 1 &&
 					b == level.getBoulder(i) && avatar.getForm() == Dinosaur.CARNIVORE_FORM &&
@@ -737,7 +754,6 @@ public class GameController implements ContactListener, Screen {
 							(int)(((Boulder) b).getGridLocation().y)) != null &&
 							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
 									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH) {
-						System.out.println("ENEMY");
 					}
 					else {
 						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
@@ -794,7 +810,6 @@ public class GameController implements ContactListener, Screen {
 									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH &&
 							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
 									(int)(((Boulder) b).getGridLocation().y)).getType() != COTTON) {
-						System.out.println("ENEMY");
 					}
 					else {
 						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
@@ -848,7 +863,6 @@ public class GameController implements ContactListener, Screen {
 							(int)(((Boulder) b).getGridLocation().y+1)) != null &&
 							level.getGridObject((int)(((Boulder) b).getGridLocation().x),
 									(int)(((Boulder) b).getGridLocation().y+1)).getType() != SWITCH) {
-						System.out.println("ENEMY");
 					}
 					else {
 						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
@@ -902,7 +916,6 @@ public class GameController implements ContactListener, Screen {
 							(int)(((Boulder) b).getGridLocation().y-1)) != null &&
 							level.getGridObject((int)(((Boulder) b).getGridLocation().x),
 									(int)(((Boulder) b).getGridLocation().y-1)).getType() != SWITCH) {
-						System.out.println("ENEMY");
 					}
 					else {
 						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
