@@ -16,7 +16,7 @@ public class FireFlyAIController {
         this.firefly = fireFlies.get(id);
 
         // Choose a random location
-        goal = new Vector2(MathUtils.random(bounds.width),MathUtils.random(bounds.height));
+        goal = new Vector2(MathUtils.random(2*bounds.width),MathUtils.random(2*bounds.height));
         step = new Vector2();
         gameBounds = bounds;
     }
