@@ -182,6 +182,17 @@ public class Wall extends GameObject {
     }
 
     /**
+     * Draws the physics object.
+     *
+     * @param canvas Drawing context
+     */
+    public void draw(Canvas canvas) {
+        if (texture != null) {
+            canvas.draw(texture, Color.WHITE,origin.x,origin.y + 7,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
+        }
+    }
+
+    /**
      * Draws the outline of the physics body.
      *
      * @param canvas Drawing context

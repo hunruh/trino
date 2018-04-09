@@ -236,7 +236,7 @@ public class Level {
         avatar = new Doll(screenToMaze(7), screenToMaze(6), dwidth);
         avatar.setType(DUGGI);
         avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
-                filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
+                filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"), 8);
         avatar.setDrawScale(scale);
 
         //Change filter data to that of the doll form
@@ -513,6 +513,11 @@ public class Level {
         Collections.sort(drawObjects, new Comparator<GameObject>() {
             @Override
             public int compare(GameObject g1, GameObject g2) {
+                if (g1.getType() == RIVER)
+                    return -1;
+                if (g2.getType() == RIVER)
+                    return 1;
+
                 if (g1.getType() == SWITCH)
                     return -1;
                 if (g2.getType() == SWITCH)

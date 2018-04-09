@@ -53,6 +53,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_FILE_LEFT  = "trino/herbivore_left.png";
 	private static final String HERBIVORE_FILE_RIGHT  = "trino/herbivore_right.png";
 	private static final String HERBIVORE_FILE_BACK  = "trino/herbivore_back.png";
+	private static final String CARNIVORE_STRIP_LEFT  = "trino/carnivore_left_strip.png";
+	private static final String CARNIVORE_STRIP_RIGHT  = "trino/carnivore_right_strip.png";
 	private static final String CARNIVORE_FILE_FRONT  = "trino/carnivore_front.png";
 	private static final String CARNIVORE_FILE_LEFT  = "trino/carnivore_left.png";
 	private static final String CARNIVORE_FILE_RIGHT  = "trino/carnivore_right.png";
@@ -184,6 +186,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_FILE_RIGHT);
 		manager.load(HERBIVORE_FILE_BACK, Texture.class);
 		assets.add(HERBIVORE_FILE_BACK);
+		manager.load(CARNIVORE_STRIP_LEFT, Texture.class);
+		assets.add(CARNIVORE_STRIP_LEFT);
+		manager.load(CARNIVORE_STRIP_RIGHT, Texture.class);
+		assets.add(CARNIVORE_STRIP_RIGHT);
 		manager.load(CARNIVORE_FILE_FRONT, Texture.class);
 		assets.add(CARNIVORE_FILE_FRONT);
 		manager.load(CARNIVORE_FILE_LEFT, Texture.class);
@@ -272,6 +278,8 @@ public class GameController implements ContactListener, Screen {
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
+		filmStripDict.put("carnivoreLeft", createFilmTexture(manager,CARNIVORE_STRIP_LEFT));
+		filmStripDict.put("carnivoreRight", createFilmTexture(manager,CARNIVORE_STRIP_RIGHT));
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -698,7 +706,7 @@ public class GameController implements ContactListener, Screen {
 					filter.categoryBits = 0x0004;
 					avatar.setFilterData(filter);
 					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
-							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
+							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"), 8);
 
 					level.setAvatar(avatar);
 
@@ -713,7 +721,7 @@ public class GameController implements ContactListener, Screen {
 					filter.categoryBits = 0x0010;
 					avatar.setFilterData(filter);
 					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
-							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
+							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"), 8);
 
 					level.setAvatar(avatar);
 
@@ -726,8 +734,8 @@ public class GameController implements ContactListener, Screen {
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0004;
 					avatar.setFilterData(filter);
-					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
-							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
+					avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), filmStripDict.get("carnivoreRight"),
+							filmStripDict.get("carnivoreLeft"), filmStripDict.get("carnivoreRight"), 9);
 
 					level.setAvatar(avatar);
 
