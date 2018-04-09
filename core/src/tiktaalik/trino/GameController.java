@@ -416,6 +416,7 @@ public class GameController implements ContactListener, Screen {
 		cameraBounds = new Rectangle(0,0, 32.0f,18.0f);
 		collisionHandler = new CollisionHandler(this);
 		hud = new HUDController();
+
 		isSwitch = false;
 		isCotton = false;
 	}
@@ -551,6 +552,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void draw(float delta) {
 		canvas.clear();
+
 
 		level.draw(canvas);
 
