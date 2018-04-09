@@ -1,12 +1,15 @@
 package tiktaalik.trino.duggi;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
+import tiktaalik.util.FilmStrip;
 
 public abstract class Dinosaur extends GameObject {
     public static final int DOLL_FORM = 0;
@@ -20,12 +23,15 @@ public abstract class Dinosaur extends GameObject {
 
     public static final int MAX_RESOURCES = 3;
     private final int TRANSFORM_COST = 3;
+    private static final float ANIMATION_SPEED = 0.175f;
+    private static final int NUM_ANIM_FRAMES = 8;
 
-    private TextureRegion[] textureSet;
+    private FilmStrip[] textureSet;
 
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
+    private float animeframe;
     private boolean canExit;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
@@ -62,7 +68,8 @@ public abstract class Dinosaur extends GameObject {
         upDown = d.upDown;
         direction = d.direction;
 
-        textureSet = new TextureRegion[4];
+        textureSet = new FilmStrip[4];
+        animeframe = 0;
         resourceCnt = 0;
         body.setUserData(this);
     }
@@ -94,16 +101,18 @@ public abstract class Dinosaur extends GameObject {
 
         // Gameplay attributes
         direction = RIGHT;
-        textureSet = new TextureRegion[4];
+        textureSet = new FilmStrip[4];
+        animeframe = 0;
         resourceCnt = 0;
         canExit = false;
     }
 
-    public void setTextureSet(TextureRegion left, TextureRegion right, TextureRegion up, TextureRegion down) {
-        textureSet[LEFT] = left;
-        textureSet[RIGHT] = right;
-        textureSet[UP] = up;
-        textureSet[DOWN] = down;
+    public void setTextureSet(Texture left, Texture right, Texture up, Texture down) {
+        textureSet[LEFT] = new FilmStrip(left,1,NUM_ANIM_FRAMES,NUM_ANIM_FRAMES);
+        textureSet[RIGHT] = new FilmStrip(right,1,NUM_ANIM_FRAMES,NUM_ANIM_FRAMES);
+        textureSet[UP] = new FilmStrip(up,1,NUM_ANIM_FRAMES,NUM_ANIM_FRAMES);
+        textureSet[DOWN] = new FilmStrip(down,1,NUM_ANIM_FRAMES,NUM_ANIM_FRAMES);
+        origin = new Vector2(textureSet[LEFT].getRegionWidth()/2.0f, textureSet[LEFT].getRegionHeight()/2.0f);
     }
 
     /**
@@ -241,7 +250,31 @@ public abstract class Dinosaur extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
-        setTexture(textureSet[direction]);
+
+        if ((int)animeframe != 0 || getLinearVelocity().len2() > 0) {
+            if (getLinearVelocity().len2() == 0 && (int)animeframe >= NUM_ANIM_FRAMES / 2)
+                animeframe += ANIMATION_SPEED;
+            if (getLinearVelocity().len2() == 0 && (int)animeframe < NUM_ANIM_FRAMES / 2)
+                animeframe -= ANIMATION_SPEED;
+            else
+                animeframe += ANIMATION_SPEED;
+
+            if (animeframe >= NUM_ANIM_FRAMES) {
+                animeframe -= NUM_ANIM_FRAMES;
+            }
+        }
+    }
+
+    /**
+     * Draws the physics object.
+     *
+     * @param canvas Drawing context
+     */
+    public void draw(Canvas canvas) {
+        textureSet[direction].setFrame((int)animeframe);
+        if (textureSet[direction] != null) {
+            canvas.draw(textureSet[direction], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
+        }
     }
 
     /**

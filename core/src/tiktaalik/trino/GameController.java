@@ -47,6 +47,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_FILE_LEFT  = "trino/doll_left.png";
 	private static final String DOLL_FILE_RIGHT  = "trino/doll_right.png";
 	private static final String DOLL_FILE_BACK  = "trino/doll_back.png";
+	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
+	private static final String DOLL_STRIP_RIGHT  = "trino/doll_right_strip.png";
 	private static final String HERBIVORE_FILE_FRONT  = "trino/herbivore_front.png";
 	private static final String HERBIVORE_FILE_LEFT  = "trino/herbivore_left.png";
 	private static final String HERBIVORE_FILE_RIGHT  = "trino/herbivore_right.png";
@@ -71,6 +73,7 @@ public class GameController implements ContactListener, Screen {
 	// Texture assets variables
 	private BitmapFont displayFont;
 	private Hashtable<String, TextureRegion> textureDict = new Hashtable<String, TextureRegion>();
+	private Hashtable<String, Texture> filmStripDict = new Hashtable<String, Texture>();
 
 	// GAME CONSTANTS
 	private static final int EXIT_COUNT = 60; // How many frames after winning/losing do we continue?
@@ -81,7 +84,7 @@ public class GameController implements ContactListener, Screen {
 	private static final float WORLD_STEP = 1/60.0f; // The amount of time for a physics engine step
 	private static final int WORLD_VELOC = 6; // Number of velocity iterations for the constrain solvers
 	private static final int WORLD_POSIT = 2; // Number of position iterations for the constrain solvers
-	
+
 	private static final float DEFAULT_GRAVITY = -0.0f; // The default value of gravity (going down)
 
 	protected static final int COTTON = 0;
@@ -161,6 +164,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(GOAL_FILE);
 		manager.load(GOAL_CLOSED_FILE,Texture.class);
 		assets.add(GOAL_CLOSED_FILE);
+		manager.load(DOLL_STRIP_LEFT, Texture.class);
+		assets.add(DOLL_STRIP_LEFT);
+		manager.load(DOLL_STRIP_RIGHT, Texture.class);
+		assets.add(DOLL_STRIP_RIGHT);
 		manager.load(DOLL_FILE_FRONT, Texture.class);
 		assets.add(DOLL_FILE_FRONT);
 		manager.load(DOLL_FILE_LEFT, Texture.class);
@@ -263,6 +270,9 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("river", createTexture(manager, RIVER_FILE, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 
+		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
+		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
+
 		worldAssetState = AssetState.COMPLETE;
 	}
 
@@ -286,6 +296,15 @@ public class GameController implements ContactListener, Screen {
 				region.getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 			}
 			return region;
+		}
+		return null;
+	}
+
+	private Texture createFilmTexture(AssetManager manager, String file) {
+		if (manager.isLoaded(file)) {
+			Texture texture = manager.get(file, Texture.class);
+			texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			return texture;
 		}
 		return null;
 	}
@@ -433,7 +452,7 @@ public class GameController implements ContactListener, Screen {
 
 		// Init the level
 		level = new Level(world);
-		level.populate(textureDict, duggiLight, canvas.getWidth(), canvas.getHeight());
+		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
 
 		// This should be set before init lighting - should be moved when we load in the json
 		cameraBounds = level.getBounds();
@@ -605,8 +624,6 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
-		System.out.println("avatar filter data is category bits" + level.getAvatar().getFilterData().categoryBits);
-		System.out.println("avatar filter data is mask bits" + level.getAvatar().getFilterData().maskBits);
 		if (rayhandler != null)
 			rayhandler.update();
 		Dinosaur avatar = level.getAvatar();
@@ -680,9 +697,9 @@ public class GameController implements ContactListener, Screen {
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0004;
 					avatar.setFilterData(filter);
+					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
+							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
 
-					avatar.setTextureSet(textureDict.get("dollLeft"), textureDict.get("dollRight"),
-							textureDict.get("dollBack"), textureDict.get("dollFront"));
 					level.setAvatar(avatar);
 
 					SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
@@ -695,9 +712,9 @@ public class GameController implements ContactListener, Screen {
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0010;
 					avatar.setFilterData(filter);
+					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
+							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
 
-					avatar.setTextureSet(textureDict.get("herbivoreLeft"), textureDict.get("herbivoreRight"),
-							textureDict.get("herbivoreBack"), textureDict.get("herbivoreFront"));
 					level.setAvatar(avatar);
 
 					SoundController.getInstance().changeBackground(Dinosaur.HERBIVORE_FORM);
@@ -706,13 +723,12 @@ public class GameController implements ContactListener, Screen {
 						avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 					avatar = avatar.transformToCarnivore();
 
-					//Change the filter data
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0004;
 					avatar.setFilterData(filter);
+					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
+							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
 
-					avatar.setTextureSet(textureDict.get("carnivoreLeft"), textureDict.get("carnivoreRight"),
-							textureDict.get("carnivoreBack"), textureDict.get("carnivoreFront"));
 					level.setAvatar(avatar);
 
 					SoundController.getInstance().changeBackground(Dinosaur.CARNIVORE_FORM);
@@ -738,7 +754,6 @@ public class GameController implements ContactListener, Screen {
 							(int)(((Boulder) b).getGridLocation().y)) != null &&
 							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
 									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH) {
-						System.out.println("ENEMY");
 					}
 					else {
 						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
@@ -795,7 +810,6 @@ public class GameController implements ContactListener, Screen {
 									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH &&
 							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
 									(int)(((Boulder) b).getGridLocation().y)).getType() != COTTON) {
-						System.out.println("ENEMY");
 					}
 					else {
 						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
@@ -849,7 +863,6 @@ public class GameController implements ContactListener, Screen {
 							(int)(((Boulder) b).getGridLocation().y+1)) != null &&
 							level.getGridObject((int)(((Boulder) b).getGridLocation().x),
 									(int)(((Boulder) b).getGridLocation().y+1)).getType() != SWITCH) {
-						System.out.println("ENEMY");
 					}
 					else {
 						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
@@ -903,7 +916,6 @@ public class GameController implements ContactListener, Screen {
 							(int)(((Boulder) b).getGridLocation().y-1)) != null &&
 							level.getGridObject((int)(((Boulder) b).getGridLocation().x),
 									(int)(((Boulder) b).getGridLocation().y-1)).getType() != SWITCH) {
-						System.out.println("ENEMY");
 					}
 					else {
 						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
