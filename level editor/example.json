@@ -1,0 +1,1 @@
+[{"ID":1,"Panning":"no","Night":"no","Dimension":{"width":10,"height":10},"GameObjects":{"Walls":[{"x":5,"y":5},{"x":4,"y":5},{"x":3,"y":5}],"EdibleWalls":[{"x":4,"y":4}],"Cottons":[{"x":5,"y":4},{"x":2,"y":3},{"x":8,"y":3}],"Boulders":[{"x":8,"y":6},{"x":6,"y":6}],"Rivers":[{"x":9,"y":5}],"Switch":[{"x":6,"y":2}],"Goal":[{"x":0,"y":0}]}}]
