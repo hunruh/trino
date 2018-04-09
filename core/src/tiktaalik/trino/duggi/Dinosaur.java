@@ -85,7 +85,7 @@ public abstract class Dinosaur extends GameObject {
      */
     public Dinosaur(float x, float y, float radius) {
         super(x,y);
-        setDensity(1.0f);
+        setDensity(150.0f);
         setFriction(0.0f);
         setName("duggi");
 
