@@ -30,6 +30,9 @@ public class AIController {
     private int chargeDetectionDistance = 5;
     private boolean charging = false;
 
+    private final float CHARGE_COOLDOWN_DURATION = 0.5f;
+    private final float CHARGE_LOAD_DURATION = 1.0f;
+
     public AIController(int id, GameObject duggi, PooledList<Enemy> enemies, int turnAngle, Level level) {
         this.enemy = enemies.get(id);
 
@@ -45,22 +48,22 @@ public class AIController {
             return;
 
         if (playerInFrontOfEnemy()){
-            if(enemy.getCollided()){
-                enemy.setStunned();
+//            if(enemy.getCollided()){
+//                enemy.setStunned();
+//                return;
+//            }
+            enemy.setChargeReady(true);
+                if (enemy.getDirection() == Dinosaur.LEFT)
+                    enemy.getBody().setLinearVelocity(-5.0f, 0.0f);
+                else if (enemy.getDirection() == Dinosaur.RIGHT)
+                    enemy.getBody().setLinearVelocity(5.0f, 0.0f);
+                else if (enemy.getDirection() == Dinosaur.UP)
+                    enemy.getBody().setLinearVelocity(0.0f, 5.0f);
+                else
+                    enemy.getBody().setLinearVelocity(0.0f, -5.0f);
+                enemy.setCharging(false);
                 return;
-            }
 
-
-            if (enemy.getDirection() == Dinosaur.LEFT)
-                enemy.getBody().setLinearVelocity(-10.0f, 0.0f);
-            else if (enemy.getDirection() == Dinosaur.RIGHT)
-                enemy.getBody().setLinearVelocity(10.0f, 0.0f);
-            else if (enemy.getDirection() == Dinosaur.UP)
-                enemy.getBody().setLinearVelocity(0.0f, 10.0f);
-            else
-                enemy.getBody().setLinearVelocity(0.0f, -10.0f);
-
-            return;
         }
 
         if (obstacle || enemy.getCollided()) {
@@ -117,6 +120,8 @@ public class AIController {
 
         enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
     }
+
+
     public int getEnemyGridX() {
 
         return Math.round((enemy.getX() - 1) / 2);

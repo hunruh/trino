@@ -94,7 +94,6 @@ public class Carnivore extends Dinosaur {
         loadingCharge = false;
         charging = false;
         coolingCharge = true;
-        System.out.println("Stop the madness");
     }
 
     public void update(float dt) {

@@ -395,10 +395,10 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void unloadContent(AssetManager manager) {
 		hud.unloadContent(manager);
-    	for(String s : assets) {
-    		if (manager.isLoaded(s))
-    			manager.unload(s);
-    	}
+		for(String s : assets) {
+			if (manager.isLoaded(s))
+				manager.unload(s);
+		}
 	}
 
 	/**
@@ -516,9 +516,8 @@ public class GameController implements ContactListener, Screen {
 		cameraBounds.height *= 2;
 
 		// Init Enemy AI controllers
-		for (int i = 1; i <= level.getEnemies().size(); i++)
+		for (int i = 0; i < level.getEnemies().size(); i++)
 			controls.add(new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP, level));
-
 
 		// Init FireFlies
 		ffLights = new LightSource[level.getFireFlies().size()];
@@ -752,9 +751,6 @@ public class GameController implements ContactListener, Screen {
 
 					avatar = avatar.transformToDoll();
 
-					// Change Duggi Density
-                    avatar.setDensity(1.0f);
-
 					//Change the filter data
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0004;
@@ -772,9 +768,6 @@ public class GameController implements ContactListener, Screen {
 						avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 					avatar = avatar.transformToHerbivore();
 
-                    // Change Duggi Density
-                    avatar.setDensity(1.0f);
-
 					//Change the filter data
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0010;
@@ -791,9 +784,6 @@ public class GameController implements ContactListener, Screen {
 				} else if (InputHandler.getInstance().didTransformCarni() &&
 						avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 					avatar = avatar.transformToCarnivore();
-
-                    // Change Duggi Density
-                    avatar.setDensity(1.0f);
 
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0004;
