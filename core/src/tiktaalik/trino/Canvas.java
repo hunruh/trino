@@ -542,7 +542,7 @@ public class Canvas {
     	spriteBatch.setColor(Color.WHITE);
 		spriteBatch.draw(region, x,  y);
 	}
-	
+
 	/**
 	 * Draws the polygonal region with the given transformations
 	 *
