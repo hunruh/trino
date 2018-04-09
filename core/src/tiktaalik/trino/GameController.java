@@ -605,6 +605,8 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
+		System.out.println("avatar filter data is category bits" + level.getAvatar().getFilterData().categoryBits);
+		System.out.println("avatar filter data is mask bits" + level.getAvatar().getFilterData().maskBits);
 		if (rayhandler != null)
 			rayhandler.update();
 		Dinosaur avatar = level.getAvatar();
@@ -673,6 +675,12 @@ public class GameController implements ContactListener, Screen {
 						avatar.getForm() != Dinosaur.DOLL_FORM) {
 
 					avatar = avatar.transformToDoll();
+
+					//Change the filter data
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = 0x0004;
+					avatar.setFilterData(filter);
+
 					avatar.setTextureSet(textureDict.get("dollLeft"), textureDict.get("dollRight"),
 							textureDict.get("dollBack"), textureDict.get("dollFront"));
 					level.setAvatar(avatar);
@@ -682,6 +690,12 @@ public class GameController implements ContactListener, Screen {
 				} else if (InputHandler.getInstance().didTransformHerbi() &&
 						avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 					avatar = avatar.transformToHerbivore();
+
+					//Change the filter data
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = 0x0010;
+					avatar.setFilterData(filter);
+
 					avatar.setTextureSet(textureDict.get("herbivoreLeft"), textureDict.get("herbivoreRight"),
 							textureDict.get("herbivoreBack"), textureDict.get("herbivoreFront"));
 					level.setAvatar(avatar);
@@ -691,6 +705,12 @@ public class GameController implements ContactListener, Screen {
 				} else if (InputHandler.getInstance().didTransformCarni() &&
 						avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 					avatar = avatar.transformToCarnivore();
+
+					//Change the filter data
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = 0x0004;
+					avatar.setFilterData(filter);
+
 					avatar.setTextureSet(textureDict.get("carnivoreLeft"), textureDict.get("carnivoreRight"),
 							textureDict.get("carnivoreBack"), textureDict.get("carnivoreFront"));
 					level.setAvatar(avatar);
