@@ -29,6 +29,7 @@ public class Enemy extends GameObject {
     private int direction;
     private Vector2 gridLocation;
 
+
     /**
      * Creates a new dinosaur at the given position.
      *
