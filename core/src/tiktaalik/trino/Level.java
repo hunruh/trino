@@ -495,7 +495,8 @@ public class Level {
 
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
         for (int i = 0; i < 5; i++){
-            FireFly ff = new FireFly(MathUtils.random(bounds.width), MathUtils.random(bounds.height), dwidth);
+            FireFly ff = new FireFly(MathUtils.random(2*bounds.width),
+                    MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
             ff.setTexture(textureDict.get("fireFly"));
             ff.setDrawScale(scale);

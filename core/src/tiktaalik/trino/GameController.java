@@ -1113,7 +1113,7 @@ public class GameController implements ContactListener, Screen {
 			}
 			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				GameObject tmp = level.objectInFrontOfAvatar();
-				if (tmp != null && tmp.getType() == EDIBLEWALL && level.isOnGrid(0.5,0.5)){
+				if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5){
 					SoundController.getInstance().playEat();
 					level.removeObject(tmp);
 					avatar.incrementResources();
