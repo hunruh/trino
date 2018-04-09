@@ -3,6 +3,7 @@ package tiktaalik.trino;
 import static tiktaalik.trino.GameController.*;
 import static tiktaalik.trino.duggi.Dinosaur.*;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -216,8 +217,8 @@ public class Level {
         return objects;
     }
 
-    public void populate(Hashtable<String, TextureRegion> textureDict, LightSource avatarLight,
-                         int canvasWidth, int canvasHeight) {
+    public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
+                         LightSource avatarLight, int canvasWidth, int canvasHeight) {
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
 
         float dwidth;
@@ -233,8 +234,8 @@ public class Level {
         dwidth = textureDict.get("dollFront").getRegionWidth() / (scale.x * 2);
         avatar = new Doll(screenToMaze(7), screenToMaze(6), dwidth);
         avatar.setType(DUGGI);
-        avatar.setTextureSet(textureDict.get("dollLeft"), textureDict.get("dollRight"), textureDict.get("dollBack"),
-                textureDict.get("dollFront"));
+        avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"),
+                filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"));
         avatar.setDrawScale(scale);
         addObject(avatar);
         avatarLight.attachToBody(avatar.getBody(), avatarLight.getX(), avatarLight.getY(), avatarLight.getDirection());
