@@ -24,7 +24,6 @@ public abstract class Dinosaur extends GameObject {
     private TextureRegion[] textureSet;
 
     protected CircleShape shape; // Shape information for this circle
-    private Fixture geometry; // A cache value for the fixture (for resizing)
 
     private boolean canExit;
     private float leftRight; // The current horizontal movement of the character
@@ -56,6 +55,7 @@ public abstract class Dinosaur extends GameObject {
         origin = d.origin;
         setName(d.getName());
         setType(d.getType());
+        markDirty(true);
 
         canExit = d.canExit;
         leftRight = d.leftRight;
@@ -208,31 +208,12 @@ public abstract class Dinosaur extends GameObject {
     /**
      * Create new fixtures for this body, defining the shape
      */
-    protected void createFixtures() {
-        if (body == null) {
-            return;
-        }
-
-        releaseFixtures();
-
-        // Create the fixture
-        fixture.shape = shape;
-        geometry = body.createFixture(fixture);
-        Filter filter = geometry.getFilterData();
-        filter.categoryBits = 0x0004;
-        geometry.setFilterData(filter);
-        markDirty(false);
-    }
+    protected abstract void createFixtures();
 
     /**
      * Release the fixtures for this body, reseting the shape
      */
-    protected void releaseFixtures() {
-        if (geometry != null) {
-            body.destroyFixture(geometry);
-            geometry = null;
-        }
-    }
+    protected abstract void releaseFixtures();
 
     /**
      * Updates the object's physics state (NOT GAME LOGIC).

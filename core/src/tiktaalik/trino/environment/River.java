@@ -6,6 +6,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
+import static tiktaalik.trino.GameController.*;
+
 public class River extends GameObject {
     protected PolygonShape shape; // Shape information for this box
     private Vector2 dimension; // The width and height of the box
@@ -47,7 +49,7 @@ public class River extends GameObject {
 
         // Initialize
         setBodyType(BodyDef.BodyType.StaticBody);
-        setName("wall");
+        setName("river");
         resize(width, height);
 
         this.edible = edible;
@@ -166,8 +168,8 @@ public class River extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.maskBits = 0x0002;
-        filter.groupIndex = -8;
+        filter.categoryBits = RIVER_BYTE;
+        filter.maskBits = RIVER_BYTE | ENEMY_BYTE | DOLL_BYTE | CARNIVORE_BYTE;
         geometry.setFilterData(filter);
         markDirty(false);
     }

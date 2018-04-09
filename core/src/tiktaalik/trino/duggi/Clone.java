@@ -9,6 +9,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
+import static tiktaalik.trino.GameController.*;
+
 public class Clone extends GameObject {
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for thefixture (for resizing)
@@ -95,7 +97,8 @@ public class Clone extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = 0x0004;
+        filter.categoryBits = DOLL_BYTE;
+        filter.maskBits = WALL_BYTE | RIVER_BYTE | ENEMY_BYTE | DOLL_BYTE;
         geometry.setFilterData(filter);
         markDirty(false);
     }

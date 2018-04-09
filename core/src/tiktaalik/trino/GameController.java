@@ -96,6 +96,14 @@ public class GameController implements ContactListener, Screen {
 	protected static final int RIVER = 9;
 	protected static final int BOULDER = 10;
 
+	public static final short WALL_BYTE = 0x0001;
+	public static final short RIVER_BYTE = 0x0002;
+	public static final short FIREFLY_BYTE = 0x0003;
+	public static final short DOLL_BYTE = 0x0004;
+	public static final short CARNIVORE_BYTE = 0x0005;
+	public static final short HERBIVORE_BYTE = 0x0006;
+	public static final short ENEMY_BYTE = 0x0007;
+
 	// GAME VARIABLES
 	private CollisionHandler collisionHandler;
 	private HUDController hud;

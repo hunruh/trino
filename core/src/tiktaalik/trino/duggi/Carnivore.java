@@ -1,6 +1,10 @@
 package tiktaalik.trino.duggi;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
+
+import static tiktaalik.trino.GameController.*;
 
 public class Carnivore extends Dinosaur {
     private final float CHARGE_COOLDOWN_DURATION = 0.5f;
@@ -13,6 +17,7 @@ public class Carnivore extends Dinosaur {
     private float collideCooldown;
     private boolean collided;
 
+    private Fixture geometry; // A cache value for the fixture (for resizing)
     private Vector2 vectorCache;
 
     public Carnivore(Dinosaur d) {
@@ -114,6 +119,30 @@ public class Carnivore extends Dinosaur {
                 coolingCharge = false;
                 chargeCooldown = 0.0f;
             }
+        }
+    }
+
+    protected void createFixtures() {
+        if (body == null) {
+            return;
+        }
+
+        releaseFixtures();
+
+        // Create the fixture
+        fixture.shape = shape;
+        geometry = body.createFixture(fixture);
+        Filter filter = geometry.getFilterData();
+        filter.categoryBits = DOLL_BYTE;
+        filter.maskBits = WALL_BYTE | RIVER_BYTE | ENEMY_BYTE | DOLL_BYTE;
+        geometry.setFilterData(filter);
+        markDirty(false);
+    }
+
+    protected void releaseFixtures() {
+        if (geometry != null) {
+            body.destroyFixture(geometry);
+            geometry = null;
         }
     }
 }

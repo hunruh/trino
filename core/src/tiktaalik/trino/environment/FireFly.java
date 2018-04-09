@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
+import static tiktaalik.trino.GameController.*;
+
 public class FireFly extends GameObject {
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
@@ -42,8 +44,6 @@ public class FireFly extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.maskBits = 0x0002;
-        filter.groupIndex = -8;
         geometry.setFilterData(filter);
         markDirty(false);
     }

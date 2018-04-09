@@ -6,6 +6,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 
+import static tiktaalik.trino.GameController.*;
+
 public class Wall extends GameObject {
     protected PolygonShape shape; // Shape information for this box
     private Vector2 dimension; // The width and height of the box
@@ -166,7 +168,8 @@ public class Wall extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.groupIndex = -8;
+        filter.categoryBits = WALL_BYTE;
+        filter.maskBits = ENEMY_BYTE | DOLL_BYTE | CARNIVORE_BYTE | HERBIVORE_BYTE;
         geometry.setFilterData(filter);
         markDirty(false);
     }

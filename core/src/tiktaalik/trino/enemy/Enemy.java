@@ -11,6 +11,8 @@ import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.duggi.Dinosaur;
 
+import static tiktaalik.trino.GameController.*;
+
 public class Enemy extends GameObject {
     private final float COLLIDE_RESET_DURATION = 1.0f;
     private final float STUN_DURATION = 4.0f;
@@ -122,7 +124,8 @@ public class Enemy extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = 0x0004;
+        filter.categoryBits = ENEMY_BYTE;
+        filter.maskBits = WALL_BYTE | RIVER_BYTE | ENEMY_BYTE | DOLL_BYTE;
         geometry.setFilterData(filter);
         markDirty(false);
     }
