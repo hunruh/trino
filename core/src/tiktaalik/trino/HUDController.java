@@ -212,19 +212,33 @@ public class HUDController  {
     }
 
     private void drawForm(Canvas canvas) {
-        TextureRegion form;
+        int padding = 12;
+        int rootX = 59 + padding;
+        float width = currentFormOutline.getRegionWidth() - 2 * padding;
 
-        if (transformation == Dinosaur.DOLL_FORM)
-            form = doll;
-        else if (transformation == Dinosaur.HERBIVORE_FORM)
-            form = herbivore;
-        else
-            form = carnivore;
+        if (transformation == Dinosaur.DOLL_FORM) {
+            canvas.draw(doll, rootX + width/6 - doll.getRegionWidth()/2, canvas.getHeight() - 66);
+            canvas.draw(two, rootX + width/2 - one.getRegionWidth()/2, canvas.getHeight() - 31);
+            canvas.draw(herbivoreTiny, rootX + width/2 - herbivoreTiny.getRegionWidth()/2, canvas.getHeight() - 66);
+            canvas.draw(three, rootX + 5 * width/6 - three.getRegionWidth()/2, canvas.getHeight() - 31);
+            canvas.draw(carnivoreTiny, rootX + 5 * width/6 - carnivoreTiny.getRegionWidth()/2, canvas.getHeight() - 66);
+        }
+        else if (transformation == Dinosaur.HERBIVORE_FORM) {
+            canvas.draw(one, rootX + width/6 - one.getRegionWidth()/2, canvas.getHeight() - 31);
+            canvas.draw(dollTiny, rootX + width/6 - dollTiny.getRegionWidth()/2, canvas.getHeight() - 66);
+            canvas.draw(herbivore, rootX + width/2 - herbivore.getRegionWidth()/2, canvas.getHeight() - 66);
+            canvas.draw(three, rootX + 5 * width/6 - three.getRegionWidth()/2, canvas.getHeight() - 31);
+            canvas.draw(carnivoreTiny, rootX + 5 * width/6 - carnivoreTiny.getRegionWidth()/2, canvas.getHeight() - 66);
+        }
+        else {
+            canvas.draw(one, rootX + width/6 - one.getRegionWidth()/2, canvas.getHeight() - 31);
+            canvas.draw(dollTiny, rootX + width/6 - dollTiny.getRegionWidth()/2, canvas.getHeight() - 66);
+            canvas.draw(two, rootX + width/2 - one.getRegionWidth()/2, canvas.getHeight() - 31);
+            canvas.draw(herbivoreTiny, rootX + width/2 - herbivoreTiny.getRegionWidth()/2, canvas.getHeight() - 66);
+            canvas.draw(carnivore, rootX + 5 * width/6 - carnivore.getRegionWidth()/2, canvas.getHeight() - 66);
+        }
 
-        int x = 56 + (currentFormOutline.getRegionWidth() - form.getRegionWidth())/2;
-        int y = 76 - (currentFormOutline.getRegionHeight() - form.getRegionHeight())/2;
-        canvas.draw(form, x, canvas.getHeight() - y);
-        canvas.draw(currentFormOutline, 56, canvas.getHeight() - 76);
+        canvas.draw(currentFormOutline, 59, canvas.getHeight() - 71);
     }
 
     private void drawDinoMeter(Canvas canvas) {
