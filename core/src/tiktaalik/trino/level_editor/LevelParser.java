@@ -46,12 +46,12 @@ public class LevelParser {
         else return -1;
     }
 
-    
 
-    public PooledList<Vector2> getCottonList(int level){
+
+    public PooledList<Vector2> getAssetList(int level, String key){
         System.out.println("in getcottonlist");
         System.out.println(levels.get(level));
-        JSONArray resources = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Cottons");
+        JSONArray resources = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get(key);
         System.out.println(resources.size());
         PooledList<Vector2> tmp = new PooledList<Vector2>();
         for (int i = 0; i < resources.size(); i++){
@@ -59,8 +59,8 @@ public class LevelParser {
             tmp.add(new Vector2((Integer)(r.get("x")),(Integer)(r.get("y"))));
         }
         return tmp;
-
     }
+
 
 
 

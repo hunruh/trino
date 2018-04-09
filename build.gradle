@@ -61,6 +61,9 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+		compile "org.json.simple.JSONObject"
+		compile "org.json.simple.JSONArray"
+		compile "org.json.simple.parser.JSONParser"
 
     }
 }
