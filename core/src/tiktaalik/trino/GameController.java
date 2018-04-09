@@ -47,14 +47,22 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_FILE_LEFT  = "trino/doll_left.png";
 	private static final String DOLL_FILE_RIGHT  = "trino/doll_right.png";
 	private static final String DOLL_FILE_BACK  = "trino/doll_back.png";
+	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
 	private static final String DOLL_STRIP_RIGHT  = "trino/doll_right_strip.png";
+	private static final String DOLL_STRIP_BACK  = "trino/doll_back_strip.png";
 	private static final String HERBIVORE_FILE_FRONT  = "trino/herbivore_front.png";
 	private static final String HERBIVORE_FILE_LEFT  = "trino/herbivore_left.png";
 	private static final String HERBIVORE_FILE_RIGHT  = "trino/herbivore_right.png";
 	private static final String HERBIVORE_FILE_BACK  = "trino/herbivore_back.png";
+	private static final String HERBIVORE_STRIP_FRONT  = "trino/herbivore_front_strip.png";
+	private static final String HERBIVORE_STRIP_LEFT  = "trino/herbivore_left_strip.png";
+	private static final String HERBIVORE_STRIP_RIGHT  = "trino/herbivore_right_strip.png";
+	private static final String HERBIVORE_STRIP_BACK  = "trino/herbivore_back_strip.png";
+	private static final String CARNIVORE_STRIP_FRONT  = "trino/carnivore_front_strip.png";
 	private static final String CARNIVORE_STRIP_LEFT  = "trino/carnivore_left_strip.png";
 	private static final String CARNIVORE_STRIP_RIGHT  = "trino/carnivore_right_strip.png";
+	private static final String CARNIVORE_STRIP_BACK  = "trino/carnivore_back_strip.png";
 	private static final String CARNIVORE_FILE_FRONT  = "trino/carnivore_front.png";
 	private static final String CARNIVORE_FILE_LEFT  = "trino/carnivore_left.png";
 	private static final String CARNIVORE_FILE_RIGHT  = "trino/carnivore_right.png";
@@ -63,6 +71,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_FILE_LEFT = "trino/enemy_trex_left.png";
 	private static final String ENEMY_FILE_RIGHT = "trino/enemy_trex_right.png";
 	private static final String ENEMY_FILE_BACK = "trino/enemy_trex_back.png";
+	private static final String ENEMY_STRIP_FRONT = "trino/enemy_front_strip.png";
+	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
+	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
+	private static final String ENEMY_STRIP_BACK = "trino/enemy_back_strip.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
@@ -170,6 +182,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOLL_STRIP_LEFT);
 		manager.load(DOLL_STRIP_RIGHT, Texture.class);
 		assets.add(DOLL_STRIP_RIGHT);
+		manager.load(DOLL_STRIP_FRONT, Texture.class);
+		assets.add(DOLL_STRIP_FRONT);
+		manager.load(DOLL_STRIP_BACK, Texture.class);
+		assets.add(DOLL_STRIP_BACK);
 		manager.load(DOLL_FILE_FRONT, Texture.class);
 		assets.add(DOLL_FILE_FRONT);
 		manager.load(DOLL_FILE_LEFT, Texture.class);
@@ -178,6 +194,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOLL_FILE_RIGHT);
 		manager.load(DOLL_FILE_BACK, Texture.class);
 		assets.add(DOLL_FILE_BACK);
+		manager.load(HERBIVORE_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_STRIP_LEFT);
+		manager.load(HERBIVORE_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_STRIP_RIGHT);
+		manager.load(HERBIVORE_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_STRIP_FRONT);
+		manager.load(HERBIVORE_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_STRIP_BACK);
 		manager.load(HERBIVORE_FILE_FRONT, Texture.class);
 		assets.add(HERBIVORE_FILE_FRONT);
 		manager.load(HERBIVORE_FILE_LEFT, Texture.class);
@@ -190,6 +214,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_STRIP_LEFT);
 		manager.load(CARNIVORE_STRIP_RIGHT, Texture.class);
 		assets.add(CARNIVORE_STRIP_RIGHT);
+		manager.load(CARNIVORE_STRIP_FRONT, Texture.class);
+		assets.add(CARNIVORE_STRIP_FRONT);
+		manager.load(CARNIVORE_STRIP_BACK, Texture.class);
+		assets.add(CARNIVORE_STRIP_BACK);
 		manager.load(CARNIVORE_FILE_FRONT, Texture.class);
 		assets.add(CARNIVORE_FILE_FRONT);
 		manager.load(CARNIVORE_FILE_LEFT, Texture.class);
@@ -212,6 +240,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_FILE_RIGHT);
 		manager.load(ENEMY_FILE_BACK, Texture.class);
 		assets.add(ENEMY_FILE_BACK);
+		manager.load(ENEMY_STRIP_FRONT, Texture.class);
+		assets.add(ENEMY_STRIP_FRONT);
+		manager.load(ENEMY_STRIP_LEFT, Texture.class);
+		assets.add(ENEMY_STRIP_LEFT);
+		manager.load(ENEMY_STRIP_RIGHT, Texture.class);
+		assets.add(ENEMY_STRIP_RIGHT);
+		manager.load(ENEMY_STRIP_BACK, Texture.class);
+		assets.add(ENEMY_STRIP_BACK);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
 		manager.load(PATH_FILE, Texture.class);
@@ -278,8 +314,20 @@ public class GameController implements ContactListener, Screen {
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
+		filmStripDict.put("dollFront", createFilmTexture(manager,DOLL_STRIP_FRONT));
+		filmStripDict.put("dollBack", createFilmTexture(manager,DOLL_STRIP_BACK));
 		filmStripDict.put("carnivoreLeft", createFilmTexture(manager,CARNIVORE_STRIP_LEFT));
 		filmStripDict.put("carnivoreRight", createFilmTexture(manager,CARNIVORE_STRIP_RIGHT));
+		filmStripDict.put("carnivoreFront", createFilmTexture(manager,CARNIVORE_STRIP_FRONT));
+		filmStripDict.put("carnivoreBack", createFilmTexture(manager,CARNIVORE_STRIP_BACK));
+		filmStripDict.put("herbivoreLeft", createFilmTexture(manager,HERBIVORE_STRIP_LEFT));
+		filmStripDict.put("herbivoreRight", createFilmTexture(manager,HERBIVORE_STRIP_RIGHT));
+		filmStripDict.put("herbivoreFront", createFilmTexture(manager,HERBIVORE_STRIP_FRONT));
+		filmStripDict.put("herbivoreBack", createFilmTexture(manager,HERBIVORE_STRIP_BACK));
+		filmStripDict.put("enemyLeft", createFilmTexture(manager,ENEMY_STRIP_LEFT));
+		filmStripDict.put("enemyRight", createFilmTexture(manager,ENEMY_STRIP_RIGHT));
+		filmStripDict.put("enemyFront", createFilmTexture(manager,ENEMY_STRIP_FRONT));
+		filmStripDict.put("enemyBack", createFilmTexture(manager,ENEMY_STRIP_BACK));
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -471,20 +519,21 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 1; i <= level.getEnemies().size(); i++)
 			controls.add(new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP, level));
 
+
 		// Init FireFlies
 		ffLights = new LightSource[level.getFireFlies().size()];
 		ffLightDsts = new float[level.getFireFlies().size()];
 		ffLightChanges = new float[level.getFireFlies().size()];
-		for (int i = 1; i <= level.getFireFlies().size(); i++) {
+		for (int i = 0; i < level.getFireFlies().size(); i++) {
 			fireFlyControls.add(new FireFlyAIController(i, level.getFireFlies(), level.getBounds()));
 
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
 			fireLight.setColor(0.85f,0.85f,0.95f,0.85f);
 			fireLight.setXray(true);
 			fireLight.setActive(true);
-			ffLights[i - 1] = fireLight;
-			ffLightDsts[i - 1] = MathUtils.random(2.0f);
-			ffLightChanges[i - 1] = MathUtils.random(0.005f, 0.015f);
+			ffLights[i] = fireLight;
+			ffLightDsts[i] = MathUtils.random(2.0f);
+			ffLightChanges[i] = MathUtils.random(0.005f, 0.015f);
 			fireLight.attachToBody(level.getFirefly(i).getBody(), fireLight.getX(), fireLight.getY(),
 					fireLight.getDirection());
 		}
@@ -687,7 +736,7 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		// Process enemy updates
-		for (int i = 1; i <= level.getEnemies().size();i++)
+		for (int i = 0; i < level.getEnemies().size();i++)
 			controls.get(i).step(level.objectInFrontOfEnemy(level.getEnemy(i)));
 
 		// Process avatar updates
@@ -710,8 +759,10 @@ public class GameController implements ContactListener, Screen {
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0004;
 					avatar.setFilterData(filter);
-					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
-							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"), 8);
+					avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
+							filmStripDict.get("dollRight"), 8,
+							filmStripDict.get("dollBack"), 8,
+							filmStripDict.get("dollFront"), 8);
 
 					level.setAvatar(avatar);
 
@@ -728,8 +779,10 @@ public class GameController implements ContactListener, Screen {
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0010;
 					avatar.setFilterData(filter);
-					avatar.setTextureSet(filmStripDict.get("dollLeft"), filmStripDict.get("dollRight"),
-							filmStripDict.get("dollLeft"), filmStripDict.get("dollLeft"), 8);
+					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
+							filmStripDict.get("herbivoreRight"), 7,
+							filmStripDict.get("herbivoreBack"), 8,
+							filmStripDict.get("herbivoreFront"), 8);
 
 					level.setAvatar(avatar);
 
@@ -745,8 +798,10 @@ public class GameController implements ContactListener, Screen {
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0004;
 					avatar.setFilterData(filter);
-					avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), filmStripDict.get("carnivoreRight"),
-							filmStripDict.get("carnivoreLeft"), filmStripDict.get("carnivoreRight"), 9);
+					avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), 9,
+							filmStripDict.get("carnivoreRight"), 9,
+							filmStripDict.get("carnivoreBack"), 8,
+							filmStripDict.get("carnivoreFront"), 10);
 
 					level.setAvatar(avatar);
 
@@ -761,7 +816,7 @@ public class GameController implements ContactListener, Screen {
 			((Carnivore) avatar).stopCharge();
 
 		GameObject b = level.objectInFrontOfAvatar();
-		for(int i = 1; i <= level.getBoulders().size(); i++) {
+		for(int i = 0; i < level.getBoulders().size(); i++) {
 			if (b!= null && b.getType() == BOULDER &&
 					Math.abs(level.getBoulder(i).getGridLocation().x - level.getAvatarGridX()) <= 1
 					&& Math.abs(level.getBoulder(i).getGridLocation().y - level.getAvatarGridY()) <= 1 &&
@@ -776,7 +831,7 @@ public class GameController implements ContactListener, Screen {
 									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH) {
 					}
 					else {
-						for (int k = 1; k <= level.getSwitches().size(); k++) {
+						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
 								isSwitch = true;
@@ -793,7 +848,7 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 						}
-						for (int m = 1; m <= level.getCottonFlowers().size(); m++) {
+						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getCottonFlower(m)) {
 								isCotton = true;
@@ -821,7 +876,7 @@ public class GameController implements ContactListener, Screen {
 							isCotton = false;
 						}
 
-						for (int n = 1; n <= level.getEnemies().size(); n++) {
+						for (int n = 0; n < level.getEnemies().size(); n++) {
 							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
 									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
 								level.getEnemy(n).setVX(1);
@@ -839,7 +894,7 @@ public class GameController implements ContactListener, Screen {
 									(int)(((Boulder) b).getGridLocation().y)).getType() != COTTON) {
 					}
 					else {
-						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
 								isSwitch = true;
@@ -856,7 +911,7 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 						}
-						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getCottonFlower(m)) {
 								isCotton = true;
@@ -883,7 +938,7 @@ public class GameController implements ContactListener, Screen {
 							isCotton = false;
 						}
 
-						for (int n = 1; n <= level.getEnemies().size(); n++) {
+						for (int n = 0; n < level.getEnemies().size(); n++) {
 							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
 									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
 								level.getEnemy(n).setVX(-1);
@@ -900,7 +955,7 @@ public class GameController implements ContactListener, Screen {
 					}
 
 					else {
-						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
 									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getSwitch(k)) {
 								isSwitch = true;
@@ -917,7 +972,7 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 						}
-						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
 									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getCottonFlower(m)) {
 								isCotton = true;
@@ -944,7 +999,7 @@ public class GameController implements ContactListener, Screen {
 							isCotton = false;
 						}
 
-						for (int n = 1; n <= level.getEnemies().size(); n++) {
+						for (int n = 0; n < level.getEnemies().size(); n++) {
 							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
 									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
 								level.getEnemy(n).setVY(1);
@@ -960,7 +1015,7 @@ public class GameController implements ContactListener, Screen {
 									(int)(((Boulder) b).getGridLocation().y-1)).getType() != SWITCH) {
 					}
 					else {
-						for (int k = 0; k <= level.getSwitches().size()-1; k++) {
+						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
 									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getSwitch(k)) {
 								isSwitch = true;
@@ -977,7 +1032,7 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 						}
-						for (int m = 0; m <= level.getCottonFlowers().size()-1; m++) {
+						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
 									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getCottonFlower(m)) {
 								isCotton = true;
@@ -1004,7 +1059,7 @@ public class GameController implements ContactListener, Screen {
 							isCotton = false;
 						}
 
-						for (int n = 1; n <= level.getEnemies().size(); n++) {
+						for (int n = 0; n < level.getEnemies().size(); n++) {
 							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
 									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
 								level.getEnemy(n).setVY(-1);

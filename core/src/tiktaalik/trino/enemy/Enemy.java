@@ -1,7 +1,9 @@
 package tiktaalik.trino.enemy;
 
+import static tiktaalik.trino.duggi.Dinosaur.*;
+
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -10,16 +12,20 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.duggi.Dinosaur;
+import tiktaalik.util.FilmStrip;
 
 public class Enemy extends GameObject {
     private final float COLLIDE_RESET_DURATION = 1.0f;
     private final float STUN_DURATION = 4.0f;
 
-    private TextureRegion[] textureSet;
+    private static final float ANIMATION_SPEED = 0.175f;
+    private FilmStrip[] textureSet;
 
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
+    private int numFrames[];
+    private float animeframe;
     private float collideCooldown;
     private float stunCooldown;
     private boolean faceRight;
@@ -47,18 +53,26 @@ public class Enemy extends GameObject {
         shape.setRadius(radius * 4/5);
 
         // Gameplay attributes
-        textureSet = new TextureRegion[4];
+        textureSet = new FilmStrip[4];
+        numFrames = new int[4];
+        animeframe = 0;
         faceRight = true;
         faceUp = false;
         stunned = false;
         collided = false;
     }
 
-    public void setTextureSet(TextureRegion left, TextureRegion right, TextureRegion up, TextureRegion down) {
-        textureSet[Dinosaur.LEFT] = left;
-        textureSet[Dinosaur.RIGHT] = right;
-        textureSet[Dinosaur.UP] = up;
-        textureSet[Dinosaur.DOWN] = down;
+    public void setTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                              Texture down, int downFrames) {
+        numFrames[LEFT] = leftFrames;
+        textureSet[LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[RIGHT] = rightFrames;
+        textureSet[RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[UP] = upFrames;
+        textureSet[UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[DOWN] = downFrames;
+        textureSet[DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+        origin = new Vector2(textureSet[LEFT].getRegionWidth()/2.0f, textureSet[LEFT].getRegionHeight()/2.0f);
     }
 
     public void setCollided(boolean collided) {
@@ -160,7 +174,23 @@ public class Enemy extends GameObject {
                 stunned = false;
             }
         } else {
-            setTexture(textureSet[direction]);
+            animeframe += ANIMATION_SPEED;
+
+            if (animeframe >= numFrames[direction]) {
+                animeframe -= numFrames[direction];
+            }
+        }
+    }
+
+    /**
+     * Draws the physics object.
+     *
+     * @param canvas Drawing context
+     */
+    public void draw(Canvas canvas) {
+        textureSet[direction].setFrame((int)animeframe);
+        if (textureSet[direction] != null) {
+            canvas.draw(textureSet[direction], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
         }
     }
 
