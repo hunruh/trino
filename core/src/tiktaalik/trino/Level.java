@@ -429,11 +429,6 @@ public class Level {
                 if (g2.getType() == COTTON)
                     return 1;
 
-                if (g1.getType() == GOAL)
-                    return -1;
-                if (g2.getType() == GOAL)
-                    return 1;
-
                 if (g1.getType() == FIREFLY)
                     return 1;
                 if (g2.getType() == FIREFLY)
