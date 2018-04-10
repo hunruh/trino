@@ -1,0 +1,423 @@
+<!DOCTYPE HTML>
+<!-- this is Nicole being too lazy to learn how to do widgets and stuff in libgdx and giving up and reverting back to the most basic solution lmao -->
+<html>
+<head>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="http://d3js.org/topojson.v2.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.0.slim.min.js"></script>
+	<script>
+	</script>
+	<style>
+		#level{
+			border: 1px black solid;
+		}
+		#creation{
+			position: fixed;
+			left: 0px;
+			right: 0px;
+			top: 0px;
+			bottom: 0px;
+		}
+		#creation>div, #loadfile>div, #newfile>div{
+			margin: 0 auto;
+			margin-top: 25%;
+			width: 300px;
+			text-align: center;
+		}
+		
+		select{
+			width: 150px;
+		}
+		
+		#widget{
+			position: fixed;
+			width: 470px;
+			bottom: 0px;
+			right: 0px;
+			top: 0px;
+			border: 1px black solid;
+			overflow: auto;
+		}
+		
+		td{
+			width: 80px;
+			height: 80px;
+			border: 1px black solid;
+		}
+		tr, table{
+			border-collapse: collapse;
+		}
+		#assets img{
+			filter: grayscale(100%);
+		}
+		
+		#entities img{
+			filter: grayscale(100%);
+		}
+		
+		
+	</style>	
+</head>
+<body>
+	<!-- creation screen-->
+	<div id = "creation" class = "container">
+		<div>
+		Level Editor v0.1
+		<div onclick = "hideAndShow('#creation', '#newfile')">Create New</div>
+		<div onclick = "loadFile()">Load Existing</div>
+		</div>
+	</div>
+	
+	<div id = "newfile" class = "container">
+		<div>
+		<form action = "newfile.php" method = "POST">
+			Enter file name (without a file extension)<br>
+			<input type = "text" name = "filename"><br>
+			<input type = "submit"><br>
+			<span onclick = "hideAndShow('#newfile', '#creation')">Back</span>
+		</form>
+		</div>
+	</div>
+	
+	<div id = "loadfile" class = "container">
+		<div>Select a file<br>
+		<select>
+		<select><br>
+		<span onclick = "loadIntoEditor()">Confirm</span> | <span onclick = "hideAndShow('#loadfile', '#creation')">Back</span>
+		</div>
+	</div>
+	<!-- -->
+	
+	<div id = "levelcreation" class = "container">
+		<form action = "writeJSON.php" method = "POST">
+		<div id = "widget">
+			<div id = "levelselect">
+				<select id = "lvlselect" onchange = "updateCurrentLevel()">
+				</select>
+			</div>
+			<div id = "lvlproperties">
+				<div>ID:<input name = 'id' type = 'text' value = "1"></div>
+				<div>Dimension: <input name = 'width' type = 'text' value = "32"> x <input name = 'height' type = 'text' value = "9"></div>
+				<div>Panning: <input name = 'panning' type = 'radio' value = 'Yes' checked = "checked">Yes <input name = 'panning' type = 'radio' value = 'No'>No</div>
+				<div>Night: <input name = 'night' type = 'radio' value = 'Yes' checked = "checked">Yes <input name = 'night' type = 'radio' value = 'No'>No</div>
+			</div>
+			<div id = "assets">
+				<img id = "Cottons" onclick = "selectAsset('Cottons', '', '', '')" src = "data/images/Cottons.png">
+				<img id = "EdibleWalls" onclick = "selectAsset('EdibleWalls', '', '', '')" src = "data/images/EdibleWalls.png">
+				<img id = "Boulders" onclick = "selectAsset('Boulders', '', '', '')" src = "data/images/Boulders.png">
+				<img id = "Walls" onclick = "selectAsset('Walls', '', '', '')" src = "data/images/Walls.png">
+				<img id = "Rivers" onclick = "selectAsset('Rivers', '', '', '')" src = "data/images/Rivers.png">
+				<img id = "Switch" onclick = "selectAsset('Switch', '', '', '')" src = "data/images/Switch.png">
+				<img id = "Goal" onclick = "selectAsset('Goal', '', '', '')" src = "data/images/Goal.png">
+			</div>
+			<div id = "entities">
+				<div id = "player">
+				<img id = "PlayerUp" onclick = "selectAsset('Player', 'Up', '', '')" src = "data/images/PlayerUp.png">
+				<img id = "PlayerDown" onclick = "selectAsset('Player', 'Down', '', '')" src = "data/images/PlayerDown.png">
+				<img id = "PlayerLeft" onclick = "selectAsset('Player', 'Left', '', '')" src = "data/images/PlayerLeft.png">
+				<img id = "PlayerRight" onclick = "selectAsset('Player', 'Right', '', '')" src = "data/images/PlayerRight.png">
+				</div>
+				<div id = "CarniStraight">
+				<img id = "EnemiesCarniStraightUp" onclick = "selectAsset('Enemies', 'Up', 'Straight', 'Carni')" src = "data/images/CarniStraightUp.png">
+				<img id = "EnemiesCarniStraightDown" onclick = "selectAsset('Enemies', 'Down', 'Straight', 'Carni')" src = "data/images/CarniStraightDown.png">
+				<img id = "EnemiesCarniStraightLeft" onclick = "selectAsset('Enemies', 'Left', 'Straight', 'Carni')" src = "data/images/CarniStraightLeft.png">
+				<img id = "EnemiesCarniStraightRight" onclick = "selectAsset('Enemies', 'Right', 'Straight', 'Carni')" src = "data/images/CarniStraightRight.png">
+				</div>
+				<div id = "CarniCircle">
+				<img id = "EnemiesCarniCircleUp" onclick = "selectAsset('Enemies', 'Up', 'Circle', 'Carni')" src = "data/images/CarniCircleUp.png">
+				<img id = "EnemiesCarniCircleDown" onclick = "selectAsset('Enemies', 'Down', 'Circle', 'Carni')" src = "data/images/CarniCircleDown.png">
+				<img id = "EnemiesCarniCircleLeft" onclick = "selectAsset('Enemies', 'Left', 'Circle', 'Carni')" src = "data/images/CarniCircleLeft.png">
+				<img id = "EnemiesCarniCircleRight" onclick = "selectAsset('Enemies', 'Right', 'Circle', 'Carni')" src = "data/images/CarniCircleRight.png">
+				</div>
+				<div id = "Herbi">
+				<img id = "EnemiesHerbiStraightUp" onclick = "selectAsset('Enemies', 'Up', 'Straight', 'Herbi')" src = "data/images/HerbiStraightUp.png">
+				<img id = "EnemiesHerbiStraightDown" onclick = "selectAsset('Enemies', 'Down', 'Straight', 'Herbi')" src = "data/images/HerbiStraightDown.png">
+				<img id = "EnemiesHerbiStraightLeft" onclick = "selectAsset('Enemies', 'Left', 'Straight', 'Herbi')" src = "data/images/HerbiStraightLeft.png">
+				<img id = "EnemiesHerbiStraightRight" onclick = "selectAsset('Enemies', 'Right', 'Straight', 'Herbi')" src = "data/images/HerbiStraightRight.png">
+				</div>
+			</div>
+			<input type = "hidden" name = "fileName" id = "filenameinput">
+			<div id = "coord">
+			</div>
+			<div onclick = "saveJSONString()">Save</div>
+			<input type = "hidden" id = "jsonstring" name = "jsonString">
+			<div><input type = "submit"></div>
+			
+		</div>
+		</form>
+		<div id = "level">
+			
+		</div>
+		
+	</div>
+	
+	
+	
+	
+	<script>
+		var DEFAULT_WIDTH = 80;
+		var currentWidth = 80;
+		var scale = 1;
+		var blockwidth;
+		var blockheight;
+	
+		var filenames = [];
+		var levels = [];
+		var svg;
+		var levelObjList = [];
+		
+		var JSONString;
+		
+		var currentLevel = 0;
+		
+		var asset = "";
+		var direction = "";
+		var movement = "";
+		var type = "";
+		
+		var height = window.innerHeight * 0.8 - 39;
+		var width = window.innerWidth - 500;
+		
+		function saveJSONString(){
+			JSONString = JSON.stringify(levelObjList);
+			$("#jsonstring").val(JSONString);
+		}
+	
+		function loadFile(){
+			$("#creation").hide();
+			$("#loadfile").show();
+			loadfile = $("#loadfile select");
+			d3.csv("data/info/filenames.txt", function(data){
+				console.log(data);
+				if (data.columns.length == 0){
+					loadfile.append("<option>There is no file</option>");
+				}
+				else{
+					data.columns.forEach(function(d){
+						if (d != ""){
+							loadfile.append("<option>" + d + "</option>");
+							filenames[filenames.length] = d;
+						}
+					})
+				}
+			})
+		}
+		
+		function loadIntoEditor(){
+			$("#loadfile").hide();
+			$("#levelcreation").show();
+			d = $("#loadfile select")[0].selectedIndex;
+			$("#filenameinput").val(filenames[d]);
+			d3.json("data/"+filenames[d]+".json", function(data){
+				if (data.Levels != null)
+					levels = data.Levels;
+				levels.forEach(function(d, i){
+					$("#levelselect select").append("<option id = '"+i+"'>Level" + d.ID + "</option>");
+					levelObjList.push({ID: d.ID, Panning: d.Panning, Night: d.Night, Dimension: {width: d.Dimension.width, height: d.Dimension.height}, GameObjects: {Walls: d.GameObjects.Walls, EdibleWalls: d.GameObjects.EdibleWalls, Cottons: d.GameObjects.Cottons, Boulders: d.GameObjects.Boulders, Rivers: d.GameObjects.Rivers, Switch: d.GameObjects.Switch, Goal: d.GameObjects.Goal, Player: d.GameObjects.Player, Enemies: d.GameObjects.Enemies}});
+				})
+					$("#levelselect select").append("<option>Add New Level</option>");
+					$("#level").append("<svg height = '"+height+"' width = '"+width+"'></svg>");
+					scale = calculateCellScale(levels[0].Dimension.width, levels[0].Dimension.height);
+					currentWidth *= scale;
+					makeGrid(levels[0].Dimension.width, levels[0].Dimension.height);
+					blockwidth = levels[0].Dimension.width;
+					blockheight = levels[0].Dimension.height;
+					initGrid();
+			})
+		}
+		
+		function hideAndShow(hide, show){
+			$(hide).hide();
+			$(show).show();
+		}
+		
+		function calculateCellScale(x, y){
+			if (x * DEFAULT_WIDTH > width){
+				return width/(x*DEFAULT_WIDTH);
+			}
+			else if (y * DEFAULT_WIDTH > height){
+				return height/(y*DEFAULT_WIDTH);
+			}
+			else return 1;
+		
+		}
+	
+		function resizeDisplay(){
+			$("#level").css("height", window.innerHeight * 0.9);
+			$("#level").css("width", window.innerWidth - 500);
+		}
+		
+		function makeGrid(row, column){
+			svg = d3.select("#level svg");
+			svg.on("click", function(){
+				var path;
+				random = Math.random();
+				console.log(random);
+				img = addOrRemove(d3.mouse(this));
+			});
+			svg.on("mouseover", function(){
+				coords = (d3.mouse(this));
+				x = Math.floor(coords[0]/currentWidth);
+				y = Math.floor(coords[1]/currentWidth);
+				$("#coord").text("x: " + x + ", y: " + (blockheight - 1 - y));
+
+			})
+			for(var i = 0; i < column; i++){
+					g = svg.append("g")
+					.attr("id", "g"+i);
+				for (var j = 0; j < row; j++){
+					rect = g.append("rect")
+					.attr("width", currentWidth)
+					.attr("height", currentWidth)
+					.attr("stroke", "black")
+					.attr("fill", "none")
+					.attr("x", j*currentWidth)
+					.attr("y", i*currentWidth + 39*scale);
+				}
+			}
+		}
+		
+		function updateCurrentLevel(){
+			var selectBox = document.getElementById("lvlselect");
+			currentLevel = selectBox.options[selectBox.selectedIndex].id;
+		}
+		
+		
+		function addOrRemove(coords){
+			x = Math.floor(coords[0]/currentWidth)*DEFAULT_WIDTH;
+			y = Math.floor((coords[1]-39*scale)/currentWidth)*DEFAULT_WIDTH;
+			id = "x"+(x/DEFAULT_WIDTH)+"y"+(blockheight - y/DEFAULT_WIDTH);
+			console.log(id);
+			obj = {x: x/DEFAULT_WIDTH, y: blockheight - y/DEFAULT_WIDTH};
+			if (document.getElementById(id)==null && asset != ""){
+				if (asset == "Switch" || asset == "Goal" || asset == "Player"){
+					if (levelObjList[currentLevel].GameObjects[asset][0] != null){
+						tmp = levelObjList[currentLevel].GameObjects[asset][0];
+						tmpid = "x"+tmp.x+"y"+tmp.y;
+						$("#"+tmpid).remove();
+					}
+					if (asset != "Player")
+						levelObjList[currentLevel].GameObjects[asset][0] = obj;
+					else{
+						levelObjList[currentLevel].GameObjects[asset][0] = {x: obj.x, y: obj.y, direction: direction};
+					}
+				}
+				else{
+					if (asset != "Enemies")
+						levelObjList[currentLevel].GameObjects[asset].push(obj);
+					else{
+						levelObjList[currentLevel].GameObjects[asset].push({x: obj.x, y: obj.y, direction: direction, type: type, movement: movement});
+					}
+				}
+				tmp = d3.select("#g"+y/DEFAULT_WIDTH).append("image");
+				if (asset == "Player")
+					tmp.attr("xlink:href", "data/images/Player"+direction+".png");
+				else if (asset == "Enemies")
+					tmp.attr("xlink:href", "data/images/"+type+movement+direction+".png");
+				else	
+					tmp.attr("xlink:href", "data/images/"+asset+".png");
+				tmp.attr("id", id)
+				.attr("class", asset)
+				.attr("x", x);
+				if (asset == "Walls" || asset == "EdibleWalls" || asset == "Goal"){
+					tmp.attr("y", y);
+				}
+				else{
+					tmp.attr("y", y + 39);
+				}
+				tmp.attr("transform", "scale("+scale+")");
+			}
+			else{
+				if (asset != "Player" && asset != "Enemies"){
+					tmptype = $("#"+id).attr("class");
+					$("#"+id).remove();
+					removeFromArray(levelObjList[currentLevel].GameObjects[tmptype], obj);
+				}
+				else{
+					tmptype = $("#"+id).attr("class"); 
+					if (tmptype == "Enemies" || tmptype == "Player"){
+						$("#"+id).remove();
+						removeFromArray(levelObjList[currentLevel].GameObjects[tmptype], obj);
+					}
+					else{
+						tmp = d3.select("#g"+y/DEFAULT_WIDTH).append("image");
+						if (asset == "Player"){
+							levelObjList[currentLevel].GameObjects[asset][0] = {x: obj.x, y: obj.y, direction: direction};
+							tmp.attr("xlink:href", "data/images/Player"+direction+".png");
+						}
+						else{
+							levelObjList[currentLevel].GameObjects[asset].push({x: obj.x, y: obj.y, direction: direction, type: type, movement: movement});
+							tmp.attr("xlink:href", "data/images/"+type+movement+direction+".png");
+						}
+						tmp.attr("id", id)
+						.attr("class", asset)
+						.attr("x", x)
+						.attr("y", y + 39)
+						.attr("transform", "scale("+scale+")");
+					}
+						
+					
+				}
+			}
+		}
+		
+		function initGrid(){
+			tmp = ["EdibleWalls", "Walls", "Goal", "Cottons", "Rivers", "Boulders", "Switch", "Player", "Enemies"];
+			for (var i = 0; i < tmp.length; i++){
+				tmparr = levelObjList[currentLevel].GameObjects[tmp[i]];
+				for (var j = 0; j < tmparr.length; j++){
+					tmpasset = d3.select("#g"+(blockheight - tmparr[j].y)).append("image");
+					if (tmp[i] != "Player" && tmp[i] != "Enemies"){
+						tmpasset.attr("xlink:href", "data/images/"+tmp[i]+".png");
+					}
+					else{
+						if (tmp[i] == "Player")
+							tmpasset.attr("xlink:href", "data/images/Player"+tmparr[j].direction+".png");
+						else
+							tmpasset.attr("xlink:href", "data/images/"+tmparr[j].type+tmparr[j].movement+tmparr[j].direction+".png");
+					}
+					tmpasset.attr("id", "x"+(tmparr[j].x)+"y"+(tmparr[j].y))
+					.attr("class", tmp[i])
+					.attr("x", tmparr[j].x*DEFAULT_WIDTH);
+					if (i < 3){
+						tmpasset.attr("y", (blockheight - tmparr[j].y)*DEFAULT_WIDTH);
+					}
+					else 
+						tmpasset.attr("y", (blockheight - tmparr[j].y)*DEFAULT_WIDTH+39);
+					tmpasset.attr("transform", "scale("+scale+")");
+				}
+			}
+		}
+		
+		function selectAsset(img, dir, mov, t){
+			if (asset == img){
+				asset = "";
+				$("#"+img+t+mov+dir).css("filter", "grayscale(100%)");
+			}
+			else{
+				if (asset != "")
+					$("#"+asset).css("filter", "grayscale(100%)");
+				asset = img;
+				$("#"+img+t+mov+dir).css("filter", "grayscale(0%)");
+			}
+			direction = dir;
+			movement = mov;
+			type = t;
+			
+		}
+		
+		
+		function removeFromArray(key, value){
+			idx = key.indexOf(value);
+			key.splice(idx, 1);
+		}
+		
+		resizeDisplay();
+		$("#newfile").hide();
+		$("#loadfile").hide();
+		$("#levelcreation").hide();
+		
+	</script>
+</body>
+</html>
