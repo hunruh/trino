@@ -228,6 +228,7 @@ public class Level {
 
         LevelParser parser = new LevelParser();
         try {
+//            parser.parse("/trino/example.json");
             parser.parse("trino/example.json");
         } catch(Exception e) {
             System.out.println("oops dude");

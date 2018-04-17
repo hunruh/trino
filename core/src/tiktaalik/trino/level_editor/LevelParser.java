@@ -13,7 +13,8 @@ public class LevelParser {
     JSONParser parser = new JSONParser();
     JSONArray levels = new JSONArray();
     public void parse(String path) throws Exception{
-        System.out.println("starting to parse");
+//        InputStream in = getClass().getResourceAsStream(path);
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         FileReader reader = new FileReader(path);
         System.out.println("read file");
         obj = (JSONObject)parser.parse(reader);
