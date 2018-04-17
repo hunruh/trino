@@ -230,6 +230,10 @@ public class Enemy extends GameObject {
         }
     }
 
+    public void drawShadow(Canvas canvas) {
+        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x-9,drawScale.x);
+    }
+
     /**
      * Draws the outline of the physics body.
      *

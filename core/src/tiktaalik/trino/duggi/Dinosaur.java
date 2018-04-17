@@ -281,7 +281,12 @@ public abstract class Dinosaur extends GameObject {
         textureSet[direction].setFrame((int)animeframe);
         if (textureSet[direction] != null) {
             canvas.draw(textureSet[direction], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
+
         }
+    }
+
+    public void drawShadow(Canvas canvas) {
+        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
     }
 
     /**

@@ -25,10 +25,12 @@ public class Canvas {
 	}	
 
 	private PolygonSpriteBatch spriteBatch; // Drawing context to handle textures AND POLYGONS as sprites
+	private ShapeRenderer shadowRender; // Rendering context for shadows
 	private ShapeRenderer debugRender; // Rendering context for the debug outlines
 	private DrawPass active; // Track whether or not we are active (for error checking)
 	private BlendState blend; // The current color blending mode
 	private OrthographicCamera camera; // Camera for the underlying SpriteBatch
+	private Color shadow = new Color(0.19f, 0.22f, 0, 0.7f);
 
 	// CACHE VARIABLES
 	int width; // Value to cache window width (if we are currently full screen)
@@ -46,6 +48,7 @@ public class Canvas {
 		active = DrawPass.INACTIVE;
 		spriteBatch = new PolygonSpriteBatch();
 		debugRender = new ShapeRenderer();
+		shadowRender = new ShapeRenderer();
 		
 		// Set the projection matrix (for proper scaling)
 		camera = new OrthographicCamera(getWidth(),getHeight());
@@ -75,6 +78,8 @@ public class Canvas {
 		}
 		spriteBatch.dispose();
     	spriteBatch = null;
+    	shadowRender.dispose();
+    	shadowRender = null;
     	local  = null;
     	global = null;
     	vertex = null;
@@ -296,7 +301,17 @@ public class Canvas {
 		spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
+
     }
+
+    public void beginShadows() {
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shadowRender.setProjectionMatrix(camera.combined);
+		shadowRender.begin(ShapeRenderer.ShapeType.Filled);
+		active = DrawPass.STANDARD;
+	}
+
 
     public void beginOverlay() {
     	spriteBatch.setProjectionMatrix(cameraMatrix);
@@ -311,6 +326,12 @@ public class Canvas {
     	spriteBatch.end();
     	active = DrawPass.INACTIVE;
     }
+
+    public void endShadows() {
+    	shadowRender.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+    	active = DrawPass.INACTIVE;
+	}
 
 	/**
 	 * Draws the tinted texture at the given position.
@@ -637,6 +658,25 @@ public class Canvas {
 		// Invert and restore
 		local.inv();
 		computeVertices(local,region.getVertices());
+	}
+
+	public void drawShadow(CircleShape shape, float x, float y, float s) {
+		if (active != DrawPass.STANDARD) {
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
+			return;
+		}
+
+		float d = shape.getRadius()*s;
+
+		shadowRender.setColor(shadow);
+		shadowRender.ellipse(x-d, y-d-5, 2*shape.getRadius()*s, shape.getRadius()*s, 20);
+
+//		float w = shape.getRadius()*sx;
+//		float h = shape.getRadius()*sy;
+//
+//		System.out.println("x: " + (x-w) + ", y: " + (y-h) + ", sx: " + 2*w + ", sy: " + shape.getRadius() * 2*h);
+//		shadowRender.setColor(color);
+//		shadowRender.ellipse(x-w, y-h, 2*w, 2*h, 12);
 	}
 	
 	/**

@@ -384,8 +384,8 @@ public class Level {
             else d = -1;
             en.setType(ENEMY);
             en.setDrawScale(scale);
-            en.setTextureSet(filmStripDict.get("enemyLeft"), 9,
-                    filmStripDict.get("enemyRight"), 9,
+            en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
+                    filmStripDict.get("enemyRight"), 10,
                     filmStripDict.get("enemyBack"), 8,
                     filmStripDict.get("enemyFront"), 10);
             en.setDirection(d);
@@ -443,9 +443,17 @@ public class Level {
         });
         canvas.draw(background, 0, 0);
         canvas.draw(background, 1270, 0);
+        canvas.end();
+
+        canvas.beginShadows();
+        avatar.drawShadow(canvas);
+        for(Enemy e : enemies)
+            e.drawShadow(canvas);
+        canvas.endShadows();
+
+        canvas.begin();
         for(GameObject g : drawObjects)
             g.draw(canvas);
-
         canvas.end();
 
         drawObjects.clear();

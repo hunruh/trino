@@ -788,8 +788,8 @@ public class GameController implements ContactListener, Screen {
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = 0x0004;
 					avatar.setFilterData(filter);
-					avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), 9,
-							filmStripDict.get("carnivoreRight"), 9,
+					avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), 10,
+							filmStripDict.get("carnivoreRight"), 10,
 							filmStripDict.get("carnivoreBack"), 8,
 							filmStripDict.get("carnivoreFront"), 10);
 
