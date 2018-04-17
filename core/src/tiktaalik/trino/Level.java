@@ -447,13 +447,15 @@ public class Level {
 
         canvas.beginShadows();
         avatar.drawShadow(canvas);
+        for(Enemy e : enemies)
+            e.drawShadow(canvas);
         canvas.endShadows();
 
         canvas.begin();
         for(GameObject g : drawObjects)
             g.draw(canvas);
         canvas.end();
-        
+
         drawObjects.clear();
     }
 
