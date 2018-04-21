@@ -15,7 +15,6 @@ import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.util.FilmStrip;
 
 public class Enemy extends GameObject {
-    private final float COLLIDE_RESET_DURATION = 1.0f;
     private final float STUN_DURATION = 4.0f;
 
     private static final float ANIMATION_SPEED = 0.175f;
@@ -32,12 +31,15 @@ public class Enemy extends GameObject {
     private boolean faceUp;
     private boolean collided;
     private boolean stunned;
+    private boolean coolingCharge;
+    private boolean loadingCharge;
     private int direction;
     private Vector2 gridLocation;
     private boolean charging;
     private boolean chargeReady;
     private final float CHARGE_COOLDOWN_DURATION = 0.5f;
     private final float CHARGE_LOAD_DURATION = 1.0f;
+    private float chargeCooldown;
     private float chargeLoad;
 
 
@@ -66,6 +68,7 @@ public class Enemy extends GameObject {
         stunned = false;
         collided = false;
         charging = false;
+        coolingCharge = false;
         chargeReady = false;
     }
 
@@ -95,8 +98,11 @@ public class Enemy extends GameObject {
         return charging;
     }
 
-    public void setCharging(boolean v) {
-        charging = v;
+    public void setCharging(boolean charging) {
+        this.charging = charging;
+        if (!charging) {
+            coolingCharge = true;
+        }
     }
 
     public void setStunned() {
@@ -105,20 +111,17 @@ public class Enemy extends GameObject {
         stunCooldown = 0;
     }
 
-    public boolean getStunned(){
-        return stunned;
+    public void loadCharge() {
+        if (!coolingCharge)
+            loadingCharge = true;
     }
 
-    public boolean getChargeReady() { return chargeReady; }
+    public boolean getLoadingCharge() {
+        return loadingCharge;
+    }
 
-    public void setChargeReady(boolean v) { chargeReady = v; }
-
-    public boolean charge() {
-        if (charging) {
-            setCharging(false);
-            return true;
-        }
-        return false;
+    public boolean getStunned(){
+        return stunned;
     }
 
     public int getDirection() {
@@ -190,12 +193,18 @@ public class Enemy extends GameObject {
         if (collideCooldown > 0)
             collideCooldown += dt;
 
-        if (chargeReady) {
+        if (loadingCharge) {
             chargeLoad += dt;
             if (chargeLoad >= CHARGE_LOAD_DURATION) {
                 setCharging(true);
-                setChargeReady(false);
+                loadingCharge = false;
                 chargeLoad = 0;
+            }
+        } else if (coolingCharge && !stunned) {
+            chargeCooldown += dt;
+            if (chargeCooldown >= CHARGE_COOLDOWN_DURATION) {
+                coolingCharge = false;
+                chargeCooldown = 0.0f;
             }
         }
 
