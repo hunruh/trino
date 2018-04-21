@@ -11,7 +11,7 @@ public class SoundController {
     private GameController.AssetState soundAssetState = GameController.AssetState.EMPTY;
     private Array<String> assets;
 
-    private static String DOLL_BG_FILE = "trino/doll_bg.mp3";
+    private static String MUSIC_FILE = "trino/music.mp3";
     private static String HERBIVORE_BG_FILE = "trino/herbivore_bg.mp3";
     private static String CARNIVORE_BG_FILE = "trino/carnivore_bg.mp3";
     private static String POP_1_FILE = "trino/pop1.mp3";
@@ -31,6 +31,14 @@ public class SoundController {
     private Sound collideWall;
     private Sound transformSound;
 
+    private float dollStartTime = 9.056f;
+    private float herbivoreStartTime = 131.387f;
+    private float carnivoreStartTime = 253.718f;
+    private float dollEndTime = 117.735f;
+    private float herbivoreEndTime = 240.066f;
+    private float carnivoreEndTime = 362.397f;
+    private int currentForm = Dinosaur.DOLL_FORM;
+
     private static SoundController theController = null;
 
     public static SoundController getInstance() {
@@ -41,9 +49,9 @@ public class SoundController {
     }
 
     public void init() {
-        bgDoll = Gdx.audio.newMusic(Gdx.files.internal(DOLL_BG_FILE));
-        bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
-        bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
+        bgMusic = Gdx.audio.newMusic(Gdx.files.internal(MUSIC_FILE));
+//        bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
+//        bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
 
         cottonPickUp = Gdx.audio.newSound(Gdx.files.internal(POP_1_FILE));
         eatWall = Gdx.audio.newSound(Gdx.files.internal(POP_2_FILE));
@@ -54,14 +62,15 @@ public class SoundController {
     public void playBackground(int form) {
         if (bgMusic != null) {
             bgMusic.pause();
-            bgDoll.pause();
-            bgHerb.pause();
-            bgCarn.pause();
+//            bgDoll.pause();
+//            bgHerb.pause();
+//            bgCarn.pause();
         }
 
-        bgMusic = formToMusic(form);
-        bgMusic.setLooping(true);
+        bgMusic.setLooping(false);
         bgMusic.setVolume(0.10f);
+        bgMusic.play();
+        bgMusic.pause();
         bgMusic.setPosition(0);
         bgMusic.play();
     }
@@ -90,13 +99,13 @@ public class SoundController {
     public void changeBackground(int form){
         bgMusic.pause();
         float seconds = bgMusic.getPosition();
-        bgMusic = formToMusic(form);
-        bgMusic.setLooping(true);
+        seconds = formToSeconds(currentForm, seconds);
         bgMusic.setVolume(0.10f);
         bgMusic.play();
         bgMusic.pause();
-        bgMusic.setPosition(seconds);
+        bgMusic.setPosition(newMusicPosition(form,seconds));
         bgMusic.play();
+        currentForm = form;
     }
 
     private Music formToMusic(int form) {
@@ -108,16 +117,73 @@ public class SoundController {
             return bgCarn;
     }
 
+    private float formToSeconds(int form, float seconds){
+        if (form == Dinosaur.DOLL_FORM)
+            return seconds - dollStartTime;
+        else if (form == Dinosaur.HERBIVORE_FORM)
+            return seconds - herbivoreStartTime;
+        else
+            return seconds - carnivoreStartTime;
+    }
+
+    private float newMusicPosition (int form, float seconds){
+        if (form == Dinosaur.DOLL_FORM)
+            return dollStartTime + seconds;
+        else if (form == Dinosaur.HERBIVORE_FORM)
+            return herbivoreStartTime + seconds;
+        else
+            return carnivoreStartTime + seconds;
+
+    }
+
     public void dispose() {
         if (bgMusic != null) {
             bgMusic.dispose();
-            bgDoll.dispose();
-            bgHerb.dispose();
-            bgCarn.dispose();
+//            bgDoll.dispose();
+//            bgHerb.dispose();
+//            bgCarn.dispose();
             cottonPickUp.dispose();
             eatWall.dispose();
             collideWall.dispose();
             transformSound.dispose();
         }
+    }
+
+    public void checkMusicEnd(){
+        if (currentForm == Dinosaur.DOLL_FORM) {
+            if (bgMusic.isPlaying()) {
+                if (bgMusic.getPosition() >= dollEndTime) {
+                    bgMusic.pause();
+                    bgMusic.setVolume(0.10f);
+                    bgMusic.play();
+                    bgMusic.pause();
+                    bgMusic.setPosition(dollStartTime);
+                    bgMusic.play();
+                }
+            }
+        } else if (currentForm == Dinosaur.HERBIVORE_FORM) {
+            if (bgMusic.isPlaying()) {
+                if (bgMusic.getPosition() >= herbivoreEndTime) {
+                    bgMusic.pause();
+                    bgMusic.setVolume(0.10f);
+                    bgMusic.play();
+                    bgMusic.pause();
+                    bgMusic.setPosition(herbivoreStartTime);
+                    bgMusic.play();
+                }
+            }
+        } else {
+            if (bgMusic.isPlaying()) {
+                if (bgMusic.getPosition() >= carnivoreEndTime) {
+                    bgMusic.pause();
+                    bgMusic.setVolume(0.10f);
+                    bgMusic.play();
+                    bgMusic.pause();
+                    bgMusic.setPosition(carnivoreStartTime);
+                    bgMusic.play();
+                }
+            }
+        }
+
     }
 }
