@@ -101,17 +101,17 @@ public class GameController implements ContactListener, Screen {
 
 	private static final float DEFAULT_GRAVITY = -0.0f; // The default value of gravity (going down)
 
-	protected static final int COTTON = 0;
-	protected static final int EDIBLEWALL = 1;
-	protected static final int WALL = 2;
-	protected static final int ENEMY = 3;
-	protected static final int GOAL = 4;
-	protected static final int DUGGI = 5;
-	protected static final int CLONE = 6;
-	protected static final int SWITCH = 7;
-	protected static final int FIREFLY = 8;
-	protected static final int RIVER = 9;
-	protected static final int BOULDER = 10;
+	public static final int COTTON = 0;
+	public static final int EDIBLEWALL = 1;
+	public static final int WALL = 2;
+	public static final int ENEMY = 3;
+	public static final int GOAL = 4;
+	public static final int DUGGI = 5;
+	public static final int CLONE = 6;
+	public static final int SWITCH = 7;
+	public static final int FIREFLY = 8;
+	public static final int RIVER = 9;
+	public static final int BOULDER = 10;
 
 	// GAME VARIABLES
 	private CollisionHandler collisionHandler;

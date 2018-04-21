@@ -135,9 +135,6 @@ public class CollisionHandler {
 
     public void handleCollision(Enemy e, Wall w) {
         e.setCollided(true);
-        if (e.getCharging()) {
-            e.setStunned();
-        }
     }
 
     public void handleCollision(Enemy e, Boulder b) {
