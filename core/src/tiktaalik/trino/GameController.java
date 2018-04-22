@@ -166,10 +166,6 @@ public class GameController implements ContactListener, Screen {
 	float totalTime = 300;
 	int minutes = 0;
 	int seconds = 0;
-	float cloneDelayTime = 0;
-	float cloneDelayAmt = 1f;
-	int newCloneX = -1;
-	int newCloneY = -1;
 
 	/** The reader to process JSON files */
 	private JsonReader jsonReader;
@@ -836,7 +832,6 @@ public class GameController implements ContactListener, Screen {
 		if (failed) {
 			state = GAME_OVER;
 		}
-
 		else {
 		    if (level.getClone() != null){
 		        if (level.getClone().getGridLocation().x == level.getSwitch(0).getGridLocation().x &&
@@ -1268,12 +1263,12 @@ public class GameController implements ContactListener, Screen {
 						SoundController.getInstance().playCottonPickup();
 						level.removeObject(cotton);
 						avatar.incrementResources();
-					} else {
-
-                        if (!avatar.inActionCycle())
-                            avatar.loadAction();
-
-                    }
+					} else if (level.getClone() == null) {
+						if (!avatar.inActionCycle())
+							avatar.loadAction();
+					} else if (level.getClone() != null) {
+						removeClone = true;
+					}
 				} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 					GameObject tmp = level.objectInFrontOfAvatar();
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
@@ -1304,22 +1299,17 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 
+			if (level.getAvatar().getActionComplete()) {
+				if (level.getAvatar().getForm() == Dinosaur.DOLL_FORM) {
+					level.getAvatar().useAction();
+					level.placeClone();
+				}
+			}
+
 
 			if (InputHandler.getInstance().didActionRelease()) {
 				if (avatar.actionReady())
 					avatar.beginAction();
-				    if (avatar.getForm() == Dinosaur.DOLL_FORM){
-                        if (level.getClone()!= null){
-                            level.removeClone();
-                        }
-                        removeClone = false;
-                        cloneDelayTime = totalTime - cloneDelayAmt;
-                        if (cloneDelayTime <= cloneDelayAmt){
-                            cloneDelayTime = 0;
-                        }
-                        newCloneX = level.getAvatarGridX();
-                        newCloneY = level.getAvatarGridY();
-                    }
 				else
 					avatar.stopAction();
 			}
@@ -1330,21 +1320,10 @@ public class GameController implements ContactListener, Screen {
 			}
 
 			avatar.applyForce();
-            placeCloneDelay();
 
 			hud.update(avatar.getResources(), avatar.getForm());
 		}
 	}
-
-	private void placeCloneDelay(){
-	    if (cloneDelayTime > 0){
-	        if (totalTime < cloneDelayTime){
-	            level.placeClone(newCloneX,newCloneY);
-	            cloneDelayTime = 0;
-            }
-        }
-
-    }
 
 	private void updatePaused() {
 		if (InputHandler.getInstance().didPause()) {

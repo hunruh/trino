@@ -180,9 +180,9 @@ public class Level {
         return clone;
     }
 
-    public void placeClone(int x, int y) {
-        clone = new Clone(screenToMaze(x), screenToMaze(y), cloneTexture.getRegionWidth() / (scale.x * 2));
-        clone.setGridLocation(x, y);
+    public void placeClone() {
+        clone = new Clone(avatar.getX(), avatar.getY(), cloneTexture.getRegionWidth() / (scale.x * 2));
+        clone.setGridLocation(getAvatarGridX(), getAvatarGridY());
         clone.setDrawScale(scale);
         clone.setType(CLONE);
         clone.setTexture(cloneTexture);

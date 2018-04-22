@@ -49,7 +49,7 @@ public abstract class Dinosaur extends GameObject {
     private boolean canExit;
 
     protected int actionDirection;
-    protected boolean actionInProgress, actionReady, coolingAction, loadingAction, eating;
+    protected boolean actionInProgress, actionComplete, actionReady, coolingAction, loadingAction, eating;
     protected float actionCooldown, actionLoad;
     private boolean canBeSeen = true;
     private float leftRight; // The current horizontal movement of the character
@@ -109,6 +109,7 @@ public abstract class Dinosaur extends GameObject {
         body.setUserData(this);
 
         // Actions
+        actionComplete = false;
         actionInProgress = false;
         actionReady = false;
         coolingAction = false;
@@ -153,6 +154,7 @@ public abstract class Dinosaur extends GameObject {
         eating = false;
 
         // Actions
+        actionComplete = false;
         actionInProgress = false;
         actionReady = false;
         coolingAction = false;
@@ -260,6 +262,14 @@ public abstract class Dinosaur extends GameObject {
             direction = DOWN;
         else if (upDown > 0)
             direction = UP;
+    }
+
+    public boolean getActionComplete() {
+        return actionComplete;
+    }
+
+    public void useAction() {
+        actionComplete = false;
     }
 
     public boolean inActionCycle() {
@@ -417,6 +427,7 @@ public abstract class Dinosaur extends GameObject {
                     animeframe -= (numFrames[direction + 8]);
                 else {
                     stopAction();
+                    actionComplete = true;
                     animeframe = 0;
                 }
             }
