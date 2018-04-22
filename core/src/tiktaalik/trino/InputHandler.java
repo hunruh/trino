@@ -76,6 +76,10 @@ public class InputHandler {
 	private boolean carniFormPrevious;
 	private boolean actionPressed;
 	private boolean actionPrevious;
+	private boolean pausePressed;
+	private boolean pausePrevious;
+	private boolean mousePressed;
+	private boolean mousePrevious;
 	
 	/** How much did we move horizontally? */
 	private float horizontal;
@@ -87,6 +91,9 @@ public class InputHandler {
 	private Vector2 crosscache;
 	/** For the gamepad crosshair control */
 	private float momentum;
+
+	private float prevHorizontal = 0f;
+	private float prevVertical = 0f;
 	
 	/**
 	 * Returns the amount of sideways movement. 
@@ -178,15 +185,25 @@ public class InputHandler {
 	public boolean didNight() {
 		return nightPressed && !nightPrevious;
 	}
+
+	/**
+	 * Returns true if the pause button was pressed.
+	 *
+	 * @return true if the pause button was pressed.
+	 */
+	public boolean didPause() {
+		return (pausePressed && !pausePrevious) || (mousePressed && !mousePrevious &&
+				((Gdx.input.getX() >= 1157) && (Gdx.input.getX() <= 1216)) &&
+				((Gdx.input.getY() >= 11) && (Gdx.input.getY() <= 71))); }
 	
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.
 	 *
 	 * @return true if the player wants to go toggle the debug mode.
 	 */
-	/*public boolean didDebug() {
+	public boolean didDebug() {
 		return debugPressed && !debugPrevious;
-	}*/
+	}
 	
 	/**
 	 * Returns true if the exit button was pressed.
@@ -246,6 +263,8 @@ public class InputHandler {
 		debugPrevious  = debugPressed;
 		exitPrevious = exitPressed;
 		actionPrevious = actionPressed;
+		pausePrevious = pausePressed;
+		mousePrevious = mousePressed;
 
 		readKeyboard();
 	}
@@ -260,24 +279,62 @@ public class InputHandler {
 		herbiFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2);
 		carniFormPressed = Gdx.input.isKeyPressed(Input.Keys.NUM_3) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3);
 		actionPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
+		pausePressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+		mousePressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
 		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
+		debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
 
-		exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
+		exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.E));
 		// Directional controls
+		prevHorizontal = horizontal;
+		prevVertical = vertical;
 		horizontal = 0.0f;
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+		vertical = 0.0f;
+		if (Gdx.input.isKeyPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			if (prevVertical > 0){
+				vertical += 5.0f;
+			} else if (prevHorizontal > 0) {
+				horizontal += 5.0f;
+			}
+		}
+		else if (Gdx.input.isKeyPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			if (prevVertical > 0){
+				vertical += 5.0f;
+			} else if (prevHorizontal < 0) {
+				horizontal -= 5.0f;
+			}
+		}
+		else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			if (prevVertical < 0){
+				vertical -= 5.0f;
+			} else if (prevHorizontal > 0) {
+				horizontal += 5.0f;
+			}
+		}
+		else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			if (prevVertical < 0){
+				vertical -= 5.0f;
+			} else if (prevHorizontal < 0){
+				horizontal -= 5.0f;
+			}
+		}
+
+		else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.UP) &&
+				!Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			horizontal += 5.0f;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.UP) &&
+				!Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			horizontal -= 5.0f;
 		}
-		
-		vertical = 0.0f;
-		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+
+		else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) &&
+				!Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			vertical += 5.0f;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+		else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) &&
+				!Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			vertical -= 5.0f;
 		}
 		

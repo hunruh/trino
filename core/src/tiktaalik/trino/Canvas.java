@@ -669,7 +669,8 @@ public class Canvas {
 		float d = shape.getRadius()*s;
 
 		shadowRender.setColor(shadow);
-		shadowRender.ellipse(x-d, y-d-5, 2*shape.getRadius()*s, shape.getRadius()*s, 20);
+		shadowRender.ellipse(x-d, y-d, 2*shape.getRadius()*s, 2*shape.getRadius()*s, 20);
+//		shadowRender.ellipse(x-d, y-d-5, 2*shape.getRadius()*s, shape.getRadius()*s, 20);
 
 //		float w = shape.getRadius()*sx;
 //		float h = shape.getRadius()*sy;
