@@ -245,8 +245,9 @@ public class Level {
         float dwidth;
         float dheight;
 
-        levelHeight = pixelFactor * (int)parser.getLevelDimension(0).y;
-        levelWidth = pixelFactor * (int)parser.getLevelDimension(0).x;
+        System.out.println("rdjgheks"+parser.getLevelDimension(0).y);
+        levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(0).y));
+        levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(0).x));
 
         // Set permanent textures
         background = textureDict.get("background");

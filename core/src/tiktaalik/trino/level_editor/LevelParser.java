@@ -36,7 +36,7 @@ public class LevelParser {
 
     public Vector2 getLevelDimension(int level){
         JSONObject tmp = (JSONObject)((JSONObject)(levels.get(level))).get("Dimension");
-        return (new Vector2((Integer)tmp.get("width"), (Integer)tmp.get("height")));
+        return (new Vector2((Long)tmp.get("width"), (Long)tmp.get("height")));
     }
 
     /**
@@ -47,7 +47,7 @@ public class LevelParser {
      */
     public Vector2 getObjectLocation(int level, String key){
         JSONObject tmp = (JSONObject)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get(key);
-        return (new Vector2((Integer)(tmp.get("x")),(Integer)(tmp.get("y"))));
+        return (new Vector2((Long)(tmp.get("x")),(Long)(tmp.get("y"))));
     }
 
     public int getPlayerInitialOrientation(int level){
