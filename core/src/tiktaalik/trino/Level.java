@@ -374,6 +374,7 @@ public class Level {
             ew.setDrawScale(scale);
             ew.setTexture(textureDict.get("edibleWall"));
             ew.setType(EDIBLEWALL);
+            ew.setEatAnimation(filmStripDict.get("edibleWallEating"), 8);
             addObject(ew);
             grid[(int) ew.getGridLocation().x][(int) ew.getGridLocation().y] = ew;
         }

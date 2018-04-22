@@ -4,10 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
+import tiktaalik.trino.EdibleObject;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.duggi.Dinosaur;
+import tiktaalik.util.FilmStrip;
 
-public class Wall extends GameObject {
+public class Wall extends EdibleObject {
     protected PolygonShape shape; // Shape information for this box
     private Vector2 dimension; // The width and height of the box
     private Vector2 sizeCache; // A cache value for when the user wants to access the dimensions
@@ -190,9 +192,7 @@ public class Wall extends GameObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-        if (texture != null) {
-            canvas.draw(texture, Color.WHITE,origin.x,origin.y + 7,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
-        }
+        super.draw(canvas, 0, 7);
     }
 
     /**

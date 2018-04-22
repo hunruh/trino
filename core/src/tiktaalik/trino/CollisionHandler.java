@@ -131,14 +131,10 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Dinosaur d, River r) {
-        System.out.println("asfdas");
         if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
             ((Carnivore) d).setCollided(true);
             d.stopAction();
         }
-
-//        if (parent.isInFrontOfAvatar(w))
-//            SoundController.getInstance().playCollide();
     }
 
     public void handleCollision(Clone c, Enemy e) {

@@ -90,6 +90,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
+	private static final String EDIBLE_WALL_EATING_STRIP = "trino/ediblewall_decay_strip.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
 	private static final String SWITCH_FILE = "trino/buttonRough.png";
@@ -247,6 +248,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(WALL_FILE);
 		manager.load(EDIBLE_WALL_FILE, Texture.class);
 		assets.add(EDIBLE_WALL_FILE);
+		manager.load(EDIBLE_WALL_EATING_STRIP, Texture.class);
+		assets.add(EDIBLE_WALL_EATING_STRIP);
 		manager.load(COTTON_FLOWER_FILE, Texture.class);
 		assets.add(COTTON_FLOWER_FILE);
 		manager.load(ENEMY_STRIP_FRONT, Texture.class);
@@ -363,6 +366,7 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("enemyChargeRight", createFilmTexture(manager,ENEMY_CHARGE_STRIP_RIGHT));
 		filmStripDict.put("enemyAttackLeft", createFilmTexture(manager,ENEMY_ATTACK_STRIP_LEFT));
 		filmStripDict.put("enemyAttackRight", createFilmTexture(manager,ENEMY_ATTACK_STRIP_RIGHT));
+		filmStripDict.put("edibleWallEating", createFilmTexture(manager, EDIBLE_WALL_EATING_STRIP));
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -646,6 +650,12 @@ public class GameController implements ContactListener, Screen {
 		while (iterator.hasNext()) {
 			PooledList<GameObject>.Entry entry = iterator.next();
 			GameObject g = entry.getValue();
+
+			if (g.getType() == EDIBLEWALL) {
+				if (((EdibleObject) g).getEaten())
+					level.removeObject(g);
+			}
+
 			if (g.isRemoved()) {
 				g.deactivatePhysics(world);
 				entry.remove();
@@ -662,7 +672,6 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void draw(float delta) {
 		canvas.clear();
-
 
 		level.draw(canvas);
 
@@ -890,7 +899,8 @@ public class GameController implements ContactListener, Screen {
 			avatar.setUpDown(InputHandler.getInstance().getVertical());
 
 			if (InputHandler.getInstance().didTransform()) {
-				if (avatar.canTransform()) {
+				if (true) {
+//				if (avatar.canTransform()) {
 					if (InputHandler.getInstance().didTransformDoll() &&
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 
@@ -1265,7 +1275,7 @@ public class GameController implements ContactListener, Screen {
 					GameObject tmp = level.objectInFrontOfAvatar();
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
 						SoundController.getInstance().playEat();
-						level.removeObject(tmp);
+						((EdibleObject) tmp).beginEating();
 						avatar.incrementResources();
 					} else {
 					    avatar.setCanBeSeen(!avatar.getCanBeSeen());

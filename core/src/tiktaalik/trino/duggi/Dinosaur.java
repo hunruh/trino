@@ -419,6 +419,7 @@ public abstract class Dinosaur extends GameObject {
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 12]) {
                 eating = false;
+                animeframe = 0;
             }
         } else if (((int)animeframe != 0 || getLinearVelocity().len2() > 0) && !actionAnimating) {
             if (getLinearVelocity().len2() == 0 && (int)animeframe >= numFrames[direction] / 2)
