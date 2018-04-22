@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.duggi.Dinosaur;
 
 public class River extends GameObject {
     protected PolygonShape shape; // Shape information for this box
@@ -166,7 +167,9 @@ public class River extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.maskBits = 0x0004;
+        filter.categoryBits = Dinosaur.riverCatBits;
+        filter.maskBits = Dinosaur.dollCatBits|Dinosaur.carnCatBits|Dinosaur.enemyCatBits|
+                Dinosaur.cloneCatBits|Dinosaur.wallCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
