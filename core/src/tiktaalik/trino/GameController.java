@@ -499,6 +499,7 @@ public class GameController implements ContactListener, Screen {
 	 * This method disposes of the world and creates a new one.
 	 */
 	public void reset() {
+        totalTime = levelTime;
 		Vector2 gravity = new Vector2(world.getGravity() );
 
 		level.dispose();
@@ -647,6 +648,22 @@ public class GameController implements ContactListener, Screen {
 			canvas.end();
 		}
 
+        if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER) {
+            displayFont.setColor(Color.WHITE);
+            canvas.beginOverlay();
+            if (seconds < 10) {
+                canvas.drawTextCorner(Integer.toString(minutes)+":0"+Integer.toString(seconds), displayFont, 0.0f);
+            }
+            else if (seconds == 60) {
+                canvas.drawTextCorner(Integer.toString(minutes+1)+":00", displayFont, 0.0f);
+            }
+            else {
+                canvas.drawTextCorner(Integer.toString(minutes)+":"+Integer.toString(seconds), displayFont, 0.0f);
+            }
+            //canvas.drawTextCorner(Float.toString(totalTime), displayFont, 0.0f);
+            canvas.end();
+        }
+
 		// Final message
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
@@ -685,8 +702,8 @@ public class GameController implements ContactListener, Screen {
 					postUpdate(delta);
 					totalTime -= delta;
 
-					minutes = ((int)totalTime) / 60;
-					seconds = ((int)totalTime) % 60;
+					minutes = (int)totalTime / 60;
+					seconds = (int)(totalTime % 60);
 
 					timeout();
 				}
