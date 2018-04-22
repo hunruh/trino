@@ -16,6 +16,16 @@ public abstract class Dinosaur extends GameObject {
     public static final int HERBIVORE_FORM = 1;
     public static final int CARNIVORE_FORM = 2;
 
+    // Category Bits
+    public static final short dollCatBits = 0x0001;
+    public static final short herbCatBits = 0x0002;
+    public static final short carnCatBits = 0x0004;
+    public static final short enemyCatBits = 0x0008;
+    public static final short riverCatBits = 0x0010;
+    public static final short cloneCatBits = 0x0011;
+    public static final short switchCatBits = 0x0012;
+    public static final short wallCatBits = 0x0014;
+
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
     public static final int UP = 2;
@@ -271,7 +281,8 @@ public abstract class Dinosaur extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = 0x0004;
+        filter.categoryBits = Dinosaur.dollCatBits;
+        filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }

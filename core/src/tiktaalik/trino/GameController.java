@@ -18,6 +18,7 @@ import tiktaalik.trino.environment.*;
 import tiktaalik.trino.lights.LightSource;
 import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.*;
+import tiktaalik.trino.duggi.Dinosaur;
 
 /**
  * Base class for the game controller.
@@ -852,7 +853,8 @@ public class GameController implements ContactListener, Screen {
 
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
-						filter.categoryBits = 0x0004;
+						filter.categoryBits = Dinosaur.dollCatBits;
+						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
 						avatar.setFilterData(filter);
 						avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
 								filmStripDict.get("dollRight"), 8,
@@ -869,7 +871,8 @@ public class GameController implements ContactListener, Screen {
 
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
-						filter.categoryBits = 0x0010;
+						filter.categoryBits = Dinosaur.herbCatBits;
+						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits;
 						avatar.setFilterData(filter);
 						avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
 								filmStripDict.get("herbivoreRight"), 7,
@@ -885,7 +888,8 @@ public class GameController implements ContactListener, Screen {
 						avatar = avatar.transformToCarnivore();
 
 						Filter filter = avatar.getFilterData();
-						filter.categoryBits = 0x0004;
+						filter.categoryBits = Dinosaur.carnCatBits;
+						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
 						avatar.setFilterData(filter);
 						avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), 10,
 								filmStripDict.get("carnivoreRight"), 10,

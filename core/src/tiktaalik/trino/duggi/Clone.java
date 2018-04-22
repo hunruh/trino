@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.duggi.Dinosaur;
 
 public class Clone extends GameObject {
     protected CircleShape shape; // Shape information for this circle
@@ -95,7 +96,8 @@ public class Clone extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = 0x0004;
+        filter.categoryBits = Dinosaur.cloneCatBits;
+        filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }

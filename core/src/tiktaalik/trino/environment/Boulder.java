@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.duggi.Dinosaur;
 
 public class Boulder extends GameObject {
     private final float PUSH_DURATION = 5.0f;
@@ -176,7 +177,9 @@ public class Boulder extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.groupIndex = -8;
+        filter.categoryBits = Dinosaur.wallCatBits;
+        filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
+                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.switchCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
