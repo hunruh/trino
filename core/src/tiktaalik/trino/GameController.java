@@ -1167,27 +1167,10 @@ public class GameController implements ContactListener, Screen {
 						SoundController.getInstance().playCottonPickup();
 						level.removeObject(cotton);
 						avatar.incrementResources();
-					} else if (level.getClone() == null && avatar.getResources() >= 1) {
+					} else if (level.getClone() == null) {
 						GameObject goal = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
 						removeClone = false;
-						if (direction == Dinosaur.UP) {
-							if (level.getAvatarGridY() != level.getHeight() && (level.objectInFrontOfAvatar() == null ||
-									level.objectInFrontOfAvatar().getType() == SWITCH)) {
-								level.placeClone(level.getAvatarGridX(), level.getAvatarGridY() + 1);
-							}
-						} else if (direction == Dinosaur.DOWN) {
-							if (level.getAvatarGridY() != 0 && (level.objectInFrontOfAvatar() == null ||
-									level.objectInFrontOfAvatar().getType() == SWITCH))
-								level.placeClone(level.getAvatarGridX(), level.getAvatarGridY() - 1);
-						} else if (direction == Dinosaur.LEFT) {
-							if (level.getAvatarGridX() != 0 && (level.objectInFrontOfAvatar() == null ||
-									level.objectInFrontOfAvatar().getType() == SWITCH))
-								level.placeClone(level.getAvatarGridX() - 1, level.getAvatarGridY());
-						} else if (direction == Dinosaur.RIGHT) {
-							if (level.getAvatarGridX() != level.getWidth() && (level.objectInFrontOfAvatar() == null ||
-									level.objectInFrontOfAvatar().getType() == SWITCH))
-								level.placeClone(level.getAvatarGridX() + 1, level.getAvatarGridY());
-						}
+                        level.placeClone(level.getAvatarGridX(), level.getAvatarGridY());
 
 						if (level.objectInFrontOfAvatar() != null && level.objectInFrontOfAvatar().getType() == SWITCH) {
 							avatar.setCanExit(true);
@@ -1197,8 +1180,6 @@ public class GameController implements ContactListener, Screen {
 							level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
 						}
 
-						if (level.getClone() != null)
-							avatar.decrementResources();
 
 					} else if (level.getClone() != null) {
 						removeClone = true;
