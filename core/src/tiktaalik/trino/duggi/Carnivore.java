@@ -12,6 +12,10 @@ public class Carnivore extends Dinosaur {
         return CARNIVORE_FORM;
     }
 
+    protected boolean loopAction() {
+        return true;
+    }
+
     public void setCollided(boolean collided) {
         if ((collided) || !collided)
             this.collided = collided;

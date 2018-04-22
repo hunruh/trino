@@ -1,6 +1,8 @@
 package tiktaalik.trino.duggi;
 
 public class Doll extends Dinosaur {
+    protected boolean actionLoop = false;
+
     public Doll(Dinosaur d) {
         super(d);
     }
@@ -11,5 +13,9 @@ public class Doll extends Dinosaur {
 
     public int getForm() {
         return DOLL_FORM;
+    }
+
+    protected boolean loopAction() {
+        return false;
     }
 }

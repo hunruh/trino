@@ -274,6 +274,10 @@ public class Level {
                     filmStripDict.get("dollEatingRight"), 5,
                     filmStripDict.get("dollEatingBack"), 7,
                     filmStripDict.get("dollEatingFront"), 7);
+            avatar.setActionTextureSet(filmStripDict.get("dollCloningFront"), 12,
+                    filmStripDict.get("dollCloningFront"), 12,
+                    filmStripDict.get("dollCloningFront"), 12,
+                    filmStripDict.get("dollCloningFront"), 12);
             avatar.setDrawScale(scale);
 
             //Change filter data to that of the doll form

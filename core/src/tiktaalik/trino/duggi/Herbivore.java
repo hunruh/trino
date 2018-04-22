@@ -4,12 +4,18 @@ import com.badlogic.gdx.graphics.Color;
 import tiktaalik.trino.Canvas;
 
 public class Herbivore extends Dinosaur {
+    protected boolean actionLoop = false;
+
     public Herbivore(Dinosaur d) {
         super(d);
     }
 
     public int getForm() {
         return HERBIVORE_FORM;
+    }
+
+    protected boolean loopAction() {
+        return false;
     }
 
     public void draw(Canvas canvas) {

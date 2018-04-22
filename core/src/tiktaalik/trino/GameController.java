@@ -904,8 +904,7 @@ public class GameController implements ContactListener, Screen {
 			avatar.setUpDown(InputHandler.getInstance().getVertical());
 
 			if (InputHandler.getInstance().didTransform()) {
-				if (true) {
-//				if (avatar.canTransform()) {
+				if (avatar.canTransform()) {
 					if (InputHandler.getInstance().didTransformDoll() &&
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 
@@ -1271,8 +1270,10 @@ public class GameController implements ContactListener, Screen {
 //							avatar.setCanExit(false);
 //							level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
 //						}
-                        if (!avatar.inActionCycle())
-                            avatar.loadAction();
+
+						if (!avatar.inActionCycle())
+							avatar.loadAction();
+						
 
 
 					} else if (level.getClone() != null) {
@@ -1310,12 +1311,10 @@ public class GameController implements ContactListener, Screen {
 
 
 			if (InputHandler.getInstance().didActionRelease()) {
-				if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
-					if (avatar.actionReady())
-						avatar.beginAction();
-					else
-						avatar.stopAction();
-				}
+				if (avatar.actionReady())
+					avatar.beginAction();
+				else
+					avatar.stopAction();
 			}
 
 			if (InputHandler.getInstance().didPause()) {

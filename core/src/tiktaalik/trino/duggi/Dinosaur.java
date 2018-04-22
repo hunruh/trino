@@ -405,7 +405,7 @@ public abstract class Dinosaur extends GameObject {
     public void update(float dt) {
         super.update(dt);
 
-        if (loadingAction || (actionReady && !actionInProgress)) {
+        if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 4]) {
                 animeframe -= (numFrames[direction + 4] - 3);
@@ -413,7 +413,12 @@ public abstract class Dinosaur extends GameObject {
         } else if (actionInProgress) {
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 8]) {
-                animeframe -= (numFrames[direction + 8]);
+                if (loopAction())
+                    animeframe -= (numFrames[direction + 8]);
+                else {
+                    stopAction();
+                    animeframe = 0;
+                }
             }
         } else if (eating) {
             animeframe += ANIMATION_SPEED;
@@ -459,7 +464,7 @@ public abstract class Dinosaur extends GameObject {
      */
     public void draw(Canvas canvas) {
         int filmStripItem = direction;
-        if (loadingAction || (actionReady && !actionInProgress))
+        if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null)
             filmStripItem += 4;
         else if (actionInProgress)
             filmStripItem += 8;
@@ -487,4 +492,5 @@ public abstract class Dinosaur extends GameObject {
     }
 
     public abstract int getForm();
+    protected abstract boolean loopAction();
 }
