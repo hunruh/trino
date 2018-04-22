@@ -734,10 +734,7 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	private void updateRunning(float dt) {
-		if (rayhandler != null) {
-		SoundController.getInstance().checkMusicEnd();
->>>>>>> b1683b461e7c2e52cfa4dec1a55005927ed1157f
-		if (rayhandler != null)
+		if (rayhandler != null){
 			rayhandler.update();
 		}
 		Dinosaur avatar = level.getAvatar();
