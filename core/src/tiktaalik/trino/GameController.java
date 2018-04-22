@@ -839,8 +839,8 @@ public class GameController implements ContactListener, Screen {
 			if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth < halfWidth) {
 				canvas.getCamera().position.x = halfWidth;
 				raycamera.position.x = cameraBounds.width / 2;
-			} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > 2560 - halfWidth) {
-				canvas.getCamera().position.x = 2560 - halfWidth;
+			} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > level.getLevelWidth() - halfWidth) {
+				canvas.getCamera().position.x = level.getLevelWidth() - halfWidth;
 				raycamera.position.x = cameraBounds.width * 2 - cameraBounds.width / 2;
 			} else {
 				canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
@@ -850,8 +850,8 @@ public class GameController implements ContactListener, Screen {
 			if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight < halfHeight) {
 				canvas.getCamera().position.y = halfHeight;
 				raycamera.position.y = cameraBounds.height / 2;
-			} else if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight > 720 - halfHeight) {
-				canvas.getCamera().position.y = 720 - halfHeight;
+			} else if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight > level.getLevelHeight() - halfHeight) {
+				canvas.getCamera().position.y = level.getLevelHeight() - halfHeight;
 				raycamera.position.y = cameraBounds.height - cameraBounds.height / 2;
 			} else {
 				canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;

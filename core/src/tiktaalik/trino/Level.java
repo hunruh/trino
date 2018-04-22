@@ -59,6 +59,10 @@ public class Level {
     private TextureRegion background;
     private TextureRegion cloneTexture;
 
+    private int pixelFactor = 80;
+    private int levelWidth;
+    private int levelHeight;
+
     public Level(World world) {
         this.bounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.world = world;
@@ -163,6 +167,10 @@ public class Level {
         return avatar;
     }
 
+    public int getLevelWidth(){return levelWidth;}
+
+    public int getLevelHeight(){return levelHeight;}
+
     public void setAvatar(Dinosaur avatar) {
         this.avatar = avatar;
         objects.set(1, this.avatar);
@@ -236,6 +244,10 @@ public class Level {
 
         float dwidth;
         float dheight;
+
+        System.out.println("rdjgheks"+parser.getLevelDimension(0).y);
+        levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(0).y));
+        levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(0).x));
 
         // Set permanent textures
         background = textureDict.get("background");
