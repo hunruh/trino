@@ -850,6 +850,7 @@ public class GameController implements ContactListener, Screen {
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 
 						avatar = avatar.transformToDoll();
+                        avatar.setCanBeSeen(true);
 
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
@@ -868,6 +869,7 @@ public class GameController implements ContactListener, Screen {
 					} else if (InputHandler.getInstance().didTransformHerbi() &&
 							avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 						avatar = avatar.transformToHerbivore();
+                        avatar.setCanBeSeen(true);
 
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
@@ -886,6 +888,7 @@ public class GameController implements ContactListener, Screen {
 					} else if (InputHandler.getInstance().didTransformCarni() &&
 							avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 						avatar = avatar.transformToCarnivore();
+                        avatar.setCanBeSeen(true);
 
 						Filter filter = avatar.getFilterData();
 						filter.categoryBits = Dinosaur.carnCatBits;
@@ -1207,7 +1210,9 @@ public class GameController implements ContactListener, Screen {
 						SoundController.getInstance().playEat();
 						level.removeObject(tmp);
 						avatar.incrementResources();
-					}
+					} else {
+					    avatar.setCanBeSeen(!avatar.getCanBeSeen());
+                    }
 				} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 					boolean ate = false;
 

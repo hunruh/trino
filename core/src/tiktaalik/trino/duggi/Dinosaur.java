@@ -44,6 +44,7 @@ public abstract class Dinosaur extends GameObject {
     protected float animeframe;
     protected boolean actionAnimating;
     private boolean canExit;
+    private boolean canBeSeen = true;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
     protected int direction;
@@ -254,6 +255,13 @@ public abstract class Dinosaur extends GameObject {
 
     public boolean canTransform() {
         return resourceCnt >= TRANSFORM_COST;
+    }
+
+    public boolean getCanBeSeen(){
+        return canBeSeen;
+    }
+    public void setCanBeSeen(boolean assignment){
+        canBeSeen = assignment;
     }
 
     /**

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.Level;
 import tiktaalik.trino.duggi.Dinosaur;
+import tiktaalik.trino.duggi.Herbivore;
 import tiktaalik.util.PooledList;
 
 import static tiktaalik.trino.GameController.*;
@@ -14,7 +15,7 @@ public class AIController {
     public static int FLIP = 2;
 
     private Enemy enemy; // The ship being controlled by this AIController
-    private GameObject target; // The target dinosaur
+    private Dinosaur target; // The target dinosaur
 
     private Vector2 step;
     private int turnAngle;
@@ -27,7 +28,7 @@ public class AIController {
 
     private int chargeDetectionDistance = 5;
 
-    public AIController(int id, GameObject duggi, PooledList<Enemy> enemies, int turnAngle, Level level) {
+    public AIController(int id, Dinosaur duggi, PooledList<Enemy> enemies, int turnAngle, Level level) {
         this.enemy = enemies.get(id);
 
         target = duggi;
@@ -42,7 +43,12 @@ public class AIController {
             return;
 
         if (playerInFrontOfEnemy() && !enemy.getCharging()){
-            enemy.loadCharge();
+
+            if (level.getAvatar().getCanBeSeen()){
+                enemy.loadCharge();
+            }
+
+
         }
 
         if (enemy.getLoadingCharge())
