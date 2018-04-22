@@ -368,7 +368,7 @@ public class Level {
         addObject(goalDoor);
 
         // Create enemy
-        dwidth = textureDict.get("enemyFront").getRegionWidth() / (scale.x * 2);
+        dwidth = filmStripDict.get("enemyFront").getWidth() / (10 * (scale.x * 2));
         tmp = parser.getAssetList(0, "Enemies");
         PooledList<String[]> dir = parser.getEnemiesInformation(0);
         for(int i = 0; i < tmp.size(); i++) {
@@ -388,6 +388,10 @@ public class Level {
                     filmStripDict.get("enemyRight"), 10,
                     filmStripDict.get("enemyBack"), 8,
                     filmStripDict.get("enemyFront"), 10);
+            en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
+                    filmStripDict.get("enemyStunnedRight"), 3,
+                    filmStripDict.get("enemyStunnedBack"), 3,
+                    filmStripDict.get("enemyStunnedFront"), 3);
             en.setDirection(d);
             addObject(en);
         }

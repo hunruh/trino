@@ -42,6 +42,11 @@ public class Enemy extends GameObject {
     private float chargeCooldown;
     private float chargeLoad;
 
+    private static final int STUNNED_LEFT = 4;
+    private static final int STUNNED_RIGHT = 5;
+    private static final int STUNNED_UP = 6;
+    private static final int STUNNED_DOWN = 7;
+
 
     /**
      * Creates a new dinosaur at the given position.
@@ -60,8 +65,8 @@ public class Enemy extends GameObject {
         shape.setRadius(radius * 4/5);
 
         // Gameplay attributes
-        textureSet = new FilmStrip[4];
-        numFrames = new int[4];
+        textureSet = new FilmStrip[8];
+        numFrames = new int[8];
         animeframe = 0;
         faceRight = true;
         faceUp = false;
@@ -85,6 +90,18 @@ public class Enemy extends GameObject {
         origin = new Vector2(textureSet[LEFT].getRegionWidth()/2.0f, textureSet[LEFT].getRegionHeight()/2.0f);
     }
 
+    public void setStunnedTextureSet(Texture left, int leftFrames, Texture right, int rightFrames,
+                                     Texture up, int upFrames, Texture down, int downFrames) {
+        numFrames[STUNNED_LEFT] = leftFrames;
+        textureSet[STUNNED_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[STUNNED_RIGHT] = rightFrames;
+        textureSet[STUNNED_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[STUNNED_UP] = upFrames;
+        textureSet[STUNNED_UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[STUNNED_DOWN] = downFrames;
+        textureSet[STUNNED_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
     public void setCollided(boolean collided) {
         if ((collided && collideCooldown <= 0) || !collided)
             this.collided = collided;
@@ -106,9 +123,11 @@ public class Enemy extends GameObject {
     }
 
     public void setStunned() {
+        animeframe = 0;
         stunned = true;
         setLinearDamping(11);
         stunCooldown = 0;
+        chargeLoad = 0;
     }
 
     public void loadCharge() {
@@ -208,7 +227,10 @@ public class Enemy extends GameObject {
             }
         }
 
+        int filmStripItem = direction;
+
         if (stunned) {
+            filmStripItem += 4;
             if (getLinearVelocity().len2() < 5)
                 setBodyType(BodyDef.BodyType.StaticBody);
 
@@ -218,12 +240,12 @@ public class Enemy extends GameObject {
                 setLinearDamping(0);
                 stunned = false;
             }
-        } else {
-            animeframe += ANIMATION_SPEED;
+        }
 
-            if (animeframe >= numFrames[direction]) {
-                animeframe -= numFrames[direction];
-            }
+        animeframe += ANIMATION_SPEED;
+
+        if (animeframe >= numFrames[filmStripItem]) {
+            animeframe -= numFrames[filmStripItem];
         }
     }
 
@@ -233,9 +255,13 @@ public class Enemy extends GameObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-        textureSet[direction].setFrame((int)animeframe);
-        if (textureSet[direction] != null) {
-            canvas.draw(textureSet[direction], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
+        int filmStripItem = direction;
+        if (stunned)
+            filmStripItem += 4;
+
+        textureSet[filmStripItem].setFrame((int)animeframe);
+        if (textureSet[filmStripItem] != null) {
+            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
         }
     }
 
