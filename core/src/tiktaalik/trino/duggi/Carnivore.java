@@ -1,5 +1,7 @@
 package tiktaalik.trino.duggi;
 
+import tiktaalik.trino.Canvas;
+
 public class Carnivore extends Dinosaur {
     private boolean collided;
 
@@ -42,5 +44,14 @@ public class Carnivore extends Dinosaur {
             else
                 body.setLinearVelocity(0.0f, -15.0f);
         }
+    }
+
+    public void draw(Canvas canvas) {
+        float offsetX = 0;
+        if (eating) {
+            if (direction == LEFT)
+                offsetX = -16.4f;
+        }
+        super.draw(canvas, offsetX, 0);
     }
 }

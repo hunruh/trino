@@ -20,21 +20,10 @@ public class Herbivore extends Dinosaur {
 
     public void draw(Canvas canvas) {
         int offsetX = 0;
-        int filmStripItem = direction;
-        if (loadingAction || (actionReady && !actionInProgress))
-            filmStripItem += 4;
-        else if (actionInProgress)
-            filmStripItem += 8;
-        else if (eating) {
+        if (eating) {
             if (direction == LEFT)
                 offsetX = -37;
-            filmStripItem += 12;
         }
-
-        textureSet[filmStripItem].setFrame((int)animeframe);
-        if (textureSet[filmStripItem] != null) {
-            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,getY()*drawScale.x,0,1,1);
-
-        }
+        super.draw(canvas, offsetX, 0);
     }
 }

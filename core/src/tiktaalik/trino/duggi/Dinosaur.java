@@ -457,12 +457,16 @@ public abstract class Dinosaur extends GameObject {
         }
     }
 
+    public void draw(Canvas canvas) {
+        draw(canvas, 0, 0);
+    }
+
     /**
      * Draws the physics object.
      *
      * @param canvas Drawing context
      */
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, float offsetX, float offsetY) {
         int filmStripItem = direction;
         if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null)
             filmStripItem += 4;
@@ -473,8 +477,8 @@ public abstract class Dinosaur extends GameObject {
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {
-            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
-
+            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,
+                    getY()*drawScale.x,0,1,1);
         }
     }
 
