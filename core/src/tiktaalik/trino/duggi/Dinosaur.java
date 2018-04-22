@@ -211,8 +211,10 @@ public abstract class Dinosaur extends GameObject {
      * @param value left/right movement of this character.
      */
     public void setLeftRight(float value) {
-        if (eating)
+        if (eating) {
+            leftRight = 0;
             return;
+        }
 
         leftRight = value;
         if (leftRight < 0)
@@ -227,8 +229,10 @@ public abstract class Dinosaur extends GameObject {
      * @param value up/down movement of this character.
      */
     public void setUpDown(float value) {
-        if (eating)
+        if (eating) {
+            upDown = 0;
             return;
+        }
 
         upDown = value;
         if (upDown < 0)

@@ -246,26 +246,33 @@ public class Level {
         // It is important that this is always created first, as transformations must swap the first element
         // in the objects list
         dwidth = textureDict.get("clone").getRegionWidth() / (scale.x * 2);
-        avatar = new Doll(screenToMaze(7), screenToMaze(6), dwidth);
-        avatar.setType(DUGGI);
-        avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
-                filmStripDict.get("dollRight"), 8,
-                filmStripDict.get("dollBack"), 8,
-                filmStripDict.get("dollFront"), 8);
-        avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
-                filmStripDict.get("dollEatingRight"), 5,
-                filmStripDict.get("dollEatingBack"), 7,
-                filmStripDict.get("dollEatingFront"), 7);
-        avatar.setDrawScale(scale);
 
-        //Change filter data to that of the doll form
-        //Change the filter data
-        Filter filter = avatar.getFilterData();
-        filter.categoryBits = 0x0004;
-        avatar.setFilterData(filter);
+        tmp = parser.getAssetList(0, "Player");
+        for(int i = 0; i < tmp.size(); i++) {
+            float x = (tmp.get(i)).x;
+            float y = (tmp.get(i)).y - 1;
+            avatar = new Doll(screenToMaze(x), screenToMaze(y), dwidth);
 
-        addObject(avatar);
-        avatarLight.attachToBody(avatar.getBody(), avatarLight.getX(), avatarLight.getY(), avatarLight.getDirection());
+            avatar.setType(DUGGI);
+            avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
+                    filmStripDict.get("dollRight"), 8,
+                    filmStripDict.get("dollBack"), 8,
+                    filmStripDict.get("dollFront"), 8);
+            avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
+                    filmStripDict.get("dollEatingRight"), 5,
+                    filmStripDict.get("dollEatingBack"), 7,
+                    filmStripDict.get("dollEatingFront"), 7);
+            avatar.setDrawScale(scale);
+
+            //Change filter data to that of the doll form
+            //Change the filter data
+            Filter filter = avatar.getFilterData();
+            filter.categoryBits = 0x0004;
+            avatar.setFilterData(filter);
+
+            addObject(avatar);
+            avatarLight.attachToBody(avatar.getBody(), avatarLight.getX(), avatarLight.getY(), avatarLight.getDirection());
+        }
 
         /** Adding cotton flowers */
         TextureRegion cottonTexture = textureDict.get("cotton");
@@ -362,14 +369,19 @@ public class Level {
         // Add level goal
         dwidth = textureDict.get("goalOpenTile").getRegionWidth() / scale.x;
         dheight = textureDict.get("goalOpenTile").getRegionHeight() / scale.y;
-        goalDoor = new Wall(7,4,screenToMaze(7), screenToMaze(4), dwidth, dheight, false);
-        goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
-        goalDoor.setSensor(true);
-        goalDoor.setDrawScale(scale);
-        goalDoor.setTexture(textureDict.get("goalClosedTile"));
-        goalDoor.setName("exit");
-        goalDoor.setType(GOAL);
-        addObject(goalDoor);
+        tmp = parser.getAssetList(0, "Goal");
+        for(int i = 0; i < tmp.size(); i++) {
+            float x = (tmp.get(i)).x;
+            float y = (tmp.get(i)).y - 1;
+            goalDoor = new Wall((int) x, (int) y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
+            goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
+            goalDoor.setSensor(true);
+            goalDoor.setDrawScale(scale);
+            goalDoor.setTexture(textureDict.get("goalClosedTile"));
+            goalDoor.setName("exit");
+            goalDoor.setType(GOAL);
+            addObject(goalDoor);
+        }
 
         // Create enemy
         dwidth = filmStripDict.get("enemyFront").getWidth() / (10 * (scale.x * 2));
