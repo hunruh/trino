@@ -10,6 +10,7 @@ import tiktaalik.trino.environment.River;
 
 public class CollisionHandler {
     GameController parent;
+    private int cloneTime = 0;
 
     public CollisionHandler(GameController parent) {
         this.parent = parent;
@@ -124,7 +125,7 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Clone c, Enemy e) {
-        c.setRemoved(true);
+        c.startCountDown();
     }
 
     public void handleCollision(Enemy e1, Enemy e2) {
@@ -147,4 +148,5 @@ public class CollisionHandler {
             b.setPushed();
         }
     }
+
 }
