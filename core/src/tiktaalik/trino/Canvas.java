@@ -742,8 +742,8 @@ public class Canvas {
 		}
 
 		GlyphLayout layout = new GlyphLayout(font,text);
-		float x = 1000;
-		float y = 700;
+		float x = 1050;
+		float y = 705;
 		font.draw(spriteBatch, layout, x, y+offset);
 	}
     
