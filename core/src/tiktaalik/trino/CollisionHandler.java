@@ -138,7 +138,7 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Clone c, Enemy e) {
-        c.startCountDown();
+        c.setRemoved(true);
     }
 
     public void handleCollision(Enemy e1, Enemy e2) {
