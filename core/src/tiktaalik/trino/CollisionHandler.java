@@ -92,8 +92,8 @@ public class CollisionHandler {
             ((Carnivore) d).setCollided(true);
             ((Carnivore) d).stopCharge();
         }
-//        else if (!e.getStunned())
-//            parent.setFailure(true);
+        else if (!e.getStunned())
+            parent.setFailure(true);
     }
 
     public void handleCollision(Dinosaur d, Boulder b) {

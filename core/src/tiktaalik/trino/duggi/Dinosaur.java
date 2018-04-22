@@ -34,19 +34,24 @@ public abstract class Dinosaur extends GameObject {
     protected float animeframe;
     protected boolean actionAnimating;
     private boolean canExit;
+    protected boolean eating;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
     protected int direction;
     private int resourceCnt;
 
-    private static final int ACTION_LOADING_LEFT = 4;
-    private static final int ACTION_LOADING_RIGHT = 5;
-    private static final int ACTION_LOADING_UP = 6;
-    private static final int ACTION_LOADING_DOWN = 7;
-    private static final int ACTION_LEFT = 8;
-    private static final int ACTION_RIGHT = 9;
-    private static final int ACTION_UP = 10;
-    private static final int ACTION_DOWN = 11;
+    public static final int ACTION_LOADING_LEFT = 4;
+    public static final int ACTION_LOADING_RIGHT = 5;
+    public static final int ACTION_LOADING_UP = 6;
+    public static final int ACTION_LOADING_DOWN = 7;
+    public static final int ACTION_LEFT = 8;
+    public static final int ACTION_RIGHT = 9;
+    public static final int ACTION_UP = 10;
+    public static final int ACTION_DOWN = 11;
+    public static final int EATING_LEFT = 12;
+    public static final int EATING_RIGHT = 13;
+    public static final int EATING_UP = 14;
+    public static final int EATING_DOWN = 15;
 
     public Doll transformToDoll() {
         return new Doll(this);
@@ -78,10 +83,11 @@ public abstract class Dinosaur extends GameObject {
         upDown = d.upDown;
         direction = d.direction;
 
-        textureSet = new FilmStrip[12];
-        numFrames = new int[12];
+        textureSet = new FilmStrip[16];
+        numFrames = new int[16];
         animeframe = 0;
         resourceCnt = 0;
+        eating = false;
         actionAnimating = false;
         body.setUserData(this);
     }
@@ -113,12 +119,13 @@ public abstract class Dinosaur extends GameObject {
 
         // Gameplay attributes
         direction = RIGHT;
-        textureSet = new FilmStrip[4];
-        numFrames = new int[4];
+        textureSet = new FilmStrip[16];
+        numFrames = new int[16];
         animeframe = 0;
         resourceCnt = 0;
         canExit = false;
         actionAnimating = false;
+        eating = false;
     }
 
     public void setTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
@@ -156,6 +163,18 @@ public abstract class Dinosaur extends GameObject {
         textureSet[ACTION_UP] = new FilmStrip(up,1,upFrames,upFrames);
         numFrames[ACTION_DOWN] = downFrames;
         textureSet[ACTION_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
+    public void setEatingTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                                    Texture down, int downFrames) {
+        numFrames[EATING_LEFT] = leftFrames;
+        textureSet[EATING_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[EATING_RIGHT] = rightFrames;
+        textureSet[EATING_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[EATING_UP] = upFrames;
+        textureSet[EATING_UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[EATING_DOWN] = downFrames;
+        textureSet[EATING_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
     }
 
     /**
@@ -228,6 +247,8 @@ public abstract class Dinosaur extends GameObject {
     }
 
     public void incrementResources() {
+        eating = true;
+        animeframe = 0;
         if (resourceCnt < MAX_RESOURCES) {
             resourceCnt += 1;
         }
@@ -294,7 +315,14 @@ public abstract class Dinosaur extends GameObject {
     public void update(float dt) {
         super.update(dt);
 
-        if (((int)animeframe != 0 || getLinearVelocity().len2() > 0) && !actionAnimating) {
+        if (eating) {
+            animeframe += ANIMATION_SPEED;
+            System.out.println("eating");
+            System.out.println(numFrames[direction + 12]);
+            if (animeframe >= numFrames[direction + 12]) {
+                eating = false;
+            }
+        } else if (((int)animeframe != 0 || getLinearVelocity().len2() > 0) && !actionAnimating) {
             if (getLinearVelocity().len2() == 0 && (int)animeframe >= numFrames[direction] / 2)
                 animeframe += ANIMATION_SPEED;
             if (getLinearVelocity().len2() == 0 && (int)animeframe < numFrames[direction] / 2)
@@ -314,9 +342,13 @@ public abstract class Dinosaur extends GameObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-        textureSet[direction].setFrame((int)animeframe);
-        if (textureSet[direction] != null) {
-            canvas.draw(textureSet[direction], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
+        int filmStripItem = direction;
+        if (eating)
+            filmStripItem += 12;
+
+        textureSet[filmStripItem].setFrame((int)animeframe);
+        if (textureSet[filmStripItem] != null) {
+            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
 
         }
     }

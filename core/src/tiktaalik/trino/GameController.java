@@ -59,6 +59,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
 	private static final String DOLL_STRIP_RIGHT  = "trino/doll_right_strip.png";
 	private static final String DOLL_STRIP_BACK  = "trino/doll_back_strip.png";
+	private static final String DOLL_EATING_STRIP_FRONT  = "trino/doll_front_eating_strip.png";
+	private static final String DOLL_EATING_STRIP_LEFT  = "trino/doll_front_eating_strip.png";
+	private static final String DOLL_EATING_STRIP_RIGHT  = "trino/doll_right_eating_strip.png";
+	private static final String DOLL_EATING_STRIP_BACK  = "trino/doll_front_eating_strip.png";
 	private static final String HERBIVORE_STRIP_FRONT  = "trino/herbivore_front_strip.png";
 	private static final String HERBIVORE_STRIP_LEFT  = "trino/herbivore_left_strip.png";
 	private static final String HERBIVORE_STRIP_RIGHT  = "trino/herbivore_right_strip.png";
@@ -79,6 +83,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_STUNNED_STRIP_LEFT = "trino/enemy_left_stunned_strip.png";
 	private static final String ENEMY_STUNNED_STRIP_RIGHT = "trino/enemy_right_stunned_strip.png";
 	private static final String ENEMY_STUNNED_STRIP_BACK = "trino/enemy_back_stunned_strip.png";
+	private static final String ENEMY_CHARGE_STRIP_LEFT = "trino/enemy_left_charge_strip.png";
+	private static final String ENEMY_CHARGE_STRIP_RIGHT = "trino/enemy_right_charge_strip.png";
+	private static final String ENEMY_ATTACK_STRIP_LEFT = "trino/enemy_left_attack_strip.png";
+	private static final String ENEMY_ATTACK_STRIP_RIGHT = "trino/enemy_right_attack_strip.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
@@ -197,6 +205,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOLL_STRIP_FRONT);
 		manager.load(DOLL_STRIP_BACK, Texture.class);
 		assets.add(DOLL_STRIP_BACK);
+		manager.load(DOLL_EATING_STRIP_LEFT, Texture.class);
+		assets.add(DOLL_EATING_STRIP_LEFT);
+		manager.load(DOLL_EATING_STRIP_RIGHT, Texture.class);
+		assets.add(DOLL_EATING_STRIP_RIGHT);
+		manager.load(DOLL_EATING_STRIP_FRONT, Texture.class);
+		assets.add(DOLL_EATING_STRIP_FRONT);
+		manager.load(DOLL_EATING_STRIP_BACK, Texture.class);
+		assets.add(DOLL_EATING_STRIP_BACK);
 		manager.load(DOLL_FILE_FRONT, Texture.class);
 		assets.add(DOLL_FILE_FRONT);
 		manager.load(DOLL_FILE_LEFT, Texture.class);
@@ -251,6 +267,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_STUNNED_STRIP_RIGHT);
 		manager.load(ENEMY_STUNNED_STRIP_BACK, Texture.class);
 		assets.add(ENEMY_STUNNED_STRIP_BACK);
+		manager.load(ENEMY_CHARGE_STRIP_LEFT, Texture.class);
+		assets.add(ENEMY_CHARGE_STRIP_LEFT);
+		manager.load(ENEMY_CHARGE_STRIP_RIGHT, Texture.class);
+		assets.add(ENEMY_CHARGE_STRIP_RIGHT);
+		manager.load(ENEMY_ATTACK_STRIP_LEFT, Texture.class);
+		assets.add(ENEMY_ATTACK_STRIP_LEFT);
+		manager.load(ENEMY_ATTACK_STRIP_RIGHT, Texture.class);
+		assets.add(ENEMY_ATTACK_STRIP_RIGHT);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
 		manager.load(PATH_FILE, Texture.class);
@@ -307,10 +331,18 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
 		filmStripDict.put("dollFront", createFilmTexture(manager,DOLL_STRIP_FRONT));
 		filmStripDict.put("dollBack", createFilmTexture(manager,DOLL_STRIP_BACK));
+		filmStripDict.put("dollEatingLeft", createFilmTexture(manager,DOLL_EATING_STRIP_LEFT));
+		filmStripDict.put("dollEatingRight", createFilmTexture(manager,DOLL_EATING_STRIP_RIGHT));
+		filmStripDict.put("dollEatingFront", createFilmTexture(manager,DOLL_EATING_STRIP_FRONT));
+		filmStripDict.put("dollEatingBack", createFilmTexture(manager,DOLL_EATING_STRIP_BACK));
 		filmStripDict.put("carnivoreLeft", createFilmTexture(manager,CARNIVORE_STRIP_LEFT));
 		filmStripDict.put("carnivoreRight", createFilmTexture(manager,CARNIVORE_STRIP_RIGHT));
 		filmStripDict.put("carnivoreFront", createFilmTexture(manager,CARNIVORE_STRIP_FRONT));
 		filmStripDict.put("carnivoreBack", createFilmTexture(manager,CARNIVORE_STRIP_BACK));
+		filmStripDict.put("carnivoreEatingLeft", createFilmTexture(manager,DOLL_EATING_STRIP_LEFT));
+		filmStripDict.put("carnivoreEatingRight", createFilmTexture(manager,DOLL_EATING_STRIP_RIGHT));
+		filmStripDict.put("carnivoreEatingFront", createFilmTexture(manager,DOLL_EATING_STRIP_FRONT));
+		filmStripDict.put("carnivoreEatingBack", createFilmTexture(manager,DOLL_EATING_STRIP_BACK));
         filmStripDict.put("carnivoreChargeLeft", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_LEFT));
 		filmStripDict.put("carnivoreChargeRight", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_RIGHT));
         filmStripDict.put("carnivoreAttackLeft", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_LEFT));
@@ -319,6 +351,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreRight", createFilmTexture(manager,HERBIVORE_STRIP_RIGHT));
 		filmStripDict.put("herbivoreFront", createFilmTexture(manager,HERBIVORE_STRIP_FRONT));
 		filmStripDict.put("herbivoreBack", createFilmTexture(manager,HERBIVORE_STRIP_BACK));
+		filmStripDict.put("herbivoreEatingLeft", createFilmTexture(manager,DOLL_EATING_STRIP_LEFT));
+		filmStripDict.put("herbivoreEatingRight", createFilmTexture(manager,DOLL_EATING_STRIP_RIGHT));
+		filmStripDict.put("herbivoreEatingFront", createFilmTexture(manager,DOLL_EATING_STRIP_FRONT));
+		filmStripDict.put("herbivoreEatingBack", createFilmTexture(manager,DOLL_EATING_STRIP_BACK));
 		filmStripDict.put("enemyLeft", createFilmTexture(manager,ENEMY_STRIP_LEFT));
 		filmStripDict.put("enemyRight", createFilmTexture(manager,ENEMY_STRIP_RIGHT));
 		filmStripDict.put("enemyFront", createFilmTexture(manager,ENEMY_STRIP_FRONT));
@@ -327,6 +363,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("enemyStunnedRight", createFilmTexture(manager,ENEMY_STUNNED_STRIP_RIGHT));
 		filmStripDict.put("enemyStunnedFront", createFilmTexture(manager,ENEMY_STUNNED_STRIP_FRONT));
 		filmStripDict.put("enemyStunnedBack", createFilmTexture(manager,ENEMY_STUNNED_STRIP_BACK));
+		filmStripDict.put("enemyChargeLeft", createFilmTexture(manager,ENEMY_CHARGE_STRIP_LEFT));
+		filmStripDict.put("enemyChargeRight", createFilmTexture(manager,ENEMY_CHARGE_STRIP_RIGHT));
+		filmStripDict.put("enemyAttackLeft", createFilmTexture(manager,ENEMY_ATTACK_STRIP_LEFT));
+		filmStripDict.put("enemyAttackRight", createFilmTexture(manager,ENEMY_ATTACK_STRIP_RIGHT));
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -794,7 +834,7 @@ public class GameController implements ContactListener, Screen {
 				canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
 				raycamera.position.y = avatar.getY();
 			}
-			
+
 			canvas.getCamera().update();
 			raycamera.update();
 			rayhandler.setCombinedMatrix(raycamera);
@@ -841,6 +881,10 @@ public class GameController implements ContactListener, Screen {
 								filmStripDict.get("dollRight"), 8,
 								filmStripDict.get("dollBack"), 8,
 								filmStripDict.get("dollFront"), 8);
+						avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
+								filmStripDict.get("dollEatingRight"), 5,
+								filmStripDict.get("dollEatingBack"), 7,
+								filmStripDict.get("dollEatingFront"), 7);
 
 						level.setAvatar(avatar);
 
@@ -858,6 +902,10 @@ public class GameController implements ContactListener, Screen {
 								filmStripDict.get("herbivoreRight"), 7,
 								filmStripDict.get("herbivoreBack"), 8,
 								filmStripDict.get("herbivoreFront"), 8);
+						avatar.setEatingTextureSet(filmStripDict.get("herbivoreEatingLeft"), 7,
+								filmStripDict.get("herbivoreEatingRight"), 7,
+								filmStripDict.get("herbivoreEatingBack"), 7,
+								filmStripDict.get("herbivoreEatingFront"), 7);
 
 						level.setAvatar(avatar);
 
@@ -874,6 +922,10 @@ public class GameController implements ContactListener, Screen {
 								filmStripDict.get("carnivoreRight"), 10,
 								filmStripDict.get("carnivoreBack"), 8,
 								filmStripDict.get("carnivoreFront"), 10);
+						avatar.setEatingTextureSet(filmStripDict.get("carnivoreEatingLeft"), 7,
+								filmStripDict.get("carnivoreEatingRight"), 7,
+								filmStripDict.get("carnivoreEatingBack"), 7,
+								filmStripDict.get("carnivoreEatingFront"), 7);
 						avatar.setActionLoadingTextureSet(filmStripDict.get("carnivoreChargeLeft"), 15,
 								filmStripDict.get("carnivoreChargeRight"), 15,
 								filmStripDict.get("carnivoreChargeLeft"), 15,
@@ -890,10 +942,6 @@ public class GameController implements ContactListener, Screen {
 					}
 				}
 			}
-
-			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) avatar).getCharging() &&
-					avatar.getLinearVelocity().len2() < 5)
-				((Carnivore) avatar).stopCharge();
 
 			GameObject b = level.objectInFrontOfAvatar();
 			for (int i = 0; i < level.getBoulders().size(); i++) {

@@ -252,6 +252,10 @@ public class Level {
                 filmStripDict.get("dollRight"), 8,
                 filmStripDict.get("dollBack"), 8,
                 filmStripDict.get("dollFront"), 8);
+        avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
+                filmStripDict.get("dollEatingRight"), 5,
+                filmStripDict.get("dollEatingBack"), 7,
+                filmStripDict.get("dollEatingFront"), 7);
         avatar.setDrawScale(scale);
 
         //Change filter data to that of the doll form
@@ -388,6 +392,14 @@ public class Level {
                     filmStripDict.get("enemyRight"), 10,
                     filmStripDict.get("enemyBack"), 8,
                     filmStripDict.get("enemyFront"), 10);
+            en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
+                    filmStripDict.get("enemyChargeRight"), 15,
+                    filmStripDict.get("enemyChargeLeft"), 15,
+                    filmStripDict.get("enemyChargeLeft"), 15);
+            en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
+                    filmStripDict.get("enemyAttackRight"), 9,
+                    filmStripDict.get("enemyAttackLeft"), 9,
+                    filmStripDict.get("enemyAttackLeft"), 9);
             en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
                     filmStripDict.get("enemyStunnedRight"), 3,
                     filmStripDict.get("enemyStunnedBack"), 3,
