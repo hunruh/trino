@@ -42,10 +42,11 @@ public class Enemy extends GameObject {
     private float chargeCooldown;
     private float chargeLoad;
 
-    private static final int STUNNED_LEFT = 4;
-    private static final int STUNNED_RIGHT = 5;
-    private static final int STUNNED_UP = 6;
-    private static final int STUNNED_DOWN = 7;
+    private static final int STUNNED_LEFT = 12;
+    private static final int STUNNED_RIGHT = 13;
+    private static final int STUNNED_UP = 14;
+    private static final int STUNNED_DOWN = 15;
+
     private float offset = -0.5f;
 
     /**
@@ -65,8 +66,8 @@ public class Enemy extends GameObject {
         shape.setRadius(radius * 1/2);
 
         // Gameplay attributes
-        textureSet = new FilmStrip[8];
-        numFrames = new int[8];
+        textureSet = new FilmStrip[16];
+        numFrames = new int[16];
         animeframe = 0;
         faceRight = true;
         faceUp = false;
@@ -102,6 +103,30 @@ public class Enemy extends GameObject {
         textureSet[STUNNED_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
     }
 
+    public void setActionLoadingTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                                           Texture down, int downFrames) {
+        numFrames[ACTION_LOADING_LEFT] = leftFrames;
+        textureSet[ACTION_LOADING_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[ACTION_LOADING_RIGHT] = rightFrames;
+        textureSet[ACTION_LOADING_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[ACTION_LOADING_UP] = upFrames;
+        textureSet[ACTION_LOADING_UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[ACTION_LOADING_DOWN] = downFrames;
+        textureSet[ACTION_LOADING_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
+    public void setActionTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                                    Texture down, int downFrames) {
+        numFrames[ACTION_LEFT] = leftFrames;
+        textureSet[ACTION_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[ACTION_RIGHT] = rightFrames;
+        textureSet[ACTION_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[ACTION_UP] = upFrames;
+        textureSet[ACTION_UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[ACTION_DOWN] = downFrames;
+        textureSet[ACTION_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
     public void setCollided(boolean collided) {
         if ((collided && collideCooldown <= 0) || !collided)
             this.collided = collided;
@@ -128,6 +153,8 @@ public class Enemy extends GameObject {
         setLinearDamping(11);
         stunCooldown = 0;
         chargeLoad = 0;
+        loadingCharge = false;
+        charging = false;
     }
 
     public void loadCharge() {
@@ -229,10 +256,7 @@ public class Enemy extends GameObject {
             }
         }
 
-        int filmStripItem = direction;
-
         if (stunned) {
-            filmStripItem += 4;
             if (getLinearVelocity().len2() < 5)
                 setBodyType(BodyDef.BodyType.StaticBody);
 
@@ -246,8 +270,22 @@ public class Enemy extends GameObject {
 
         animeframe += ANIMATION_SPEED;
 
-        if (animeframe >= numFrames[filmStripItem]) {
-            animeframe -= numFrames[filmStripItem];
+        if (loadingCharge || (chargeReady && !charging)) {
+            if (animeframe >= numFrames[direction + 4]) {
+                animeframe -= (numFrames[direction + 4] - 3);
+            }
+        } else if (charging) {
+            if (animeframe >= numFrames[direction + 8]) {
+                animeframe -= (numFrames[direction + 8]);
+            }
+        } else if (stunned) {
+            if (animeframe >= numFrames[direction + 12]) {
+                animeframe -= numFrames[direction + 12];
+            }
+        } else {
+            if (animeframe >= numFrames[direction]) {
+                animeframe -= numFrames[direction];
+            }
         }
     }
 
@@ -258,8 +296,12 @@ public class Enemy extends GameObject {
      */
     public void draw(Canvas canvas) {
         int filmStripItem = direction;
-        if (stunned)
+        if (loadingCharge || (chargeReady && !charging))
             filmStripItem += 4;
+        else if (charging)
+            filmStripItem += 8;
+        else if (stunned)
+            filmStripItem += 12;
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {

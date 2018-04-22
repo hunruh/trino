@@ -95,8 +95,6 @@ public class Carnivore extends Dinosaur {
     }
 
     public void stopCharge() {
-        System.out.println("stop charge");
-
         if (charging)
             coolingCharge = true;
 
