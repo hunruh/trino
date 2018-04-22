@@ -566,8 +566,7 @@ public class GameController implements ContactListener, Screen {
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
 
 		// This should be set before init lighting - should be moved when we load in the json
-		cameraBounds = level.getBounds();
-		cameraBounds.height *= 2;
+		cameraBounds = new Rectangle(0,0,32,18);
 
 		// Init Enemy AI controllers
 		for (int i = 0; i < level.getEnemies().size(); i++)
@@ -816,8 +815,6 @@ public class GameController implements ContactListener, Screen {
 
 		else {
 		    if (level.getClone() != null){
-		        System.out.println("clone location is " + level.getClone().getGridLocation());
-		        System.out.println("switch location is " + level.getSwitch(0).getGridLocation());
 		        if (level.getClone().getGridLocation().x == level.getSwitch(0).getGridLocation().x &&
                         level.getClone().getGridLocation().y == level.getSwitch(0).getGridLocation().y){
 		            System.out.println("success");
