@@ -178,7 +178,7 @@ public class SoundController {
     }
 
     public void checkMusicEnd(){
-        System.out.println("song position at " + bgMusic.getPosition());
+        //.println("song position at " + bgMusic.getPosition());
         if (currentForm == Dinosaur.DOLL_FORM) {
             if (bgMusic.isPlaying()) {
                 if (bgMusic.getPosition() >= dollEndTime) {
