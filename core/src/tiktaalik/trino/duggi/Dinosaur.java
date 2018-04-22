@@ -473,7 +473,7 @@ public abstract class Dinosaur extends GameObject {
     }
 
     public void drawShadow(Canvas canvas) {
-        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
+//        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
     }
 
     /**
