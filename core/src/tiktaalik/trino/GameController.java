@@ -1260,17 +1260,19 @@ public class GameController implements ContactListener, Screen {
 						level.removeObject(cotton);
 						avatar.incrementResources();
 					} else if (level.getClone() == null) {
-						GameObject goal = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
-						removeClone = false;
-                        level.placeClone(level.getAvatarGridX(), level.getAvatarGridY());
-
-						if (level.objectInFrontOfAvatar() != null && level.objectInFrontOfAvatar().getType() == SWITCH) {
-							avatar.setCanExit(true);
-							level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
-						} else {
-							avatar.setCanExit(false);
-							level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
-						}
+//						GameObject goal = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
+//						removeClone = false;
+//                        level.placeClone(level.getAvatarGridX(), level.getAvatarGridY());
+//
+//						if (level.objectInFrontOfAvatar() != null && level.objectInFrontOfAvatar().getType() == SWITCH) {
+//							avatar.setCanExit(true);
+//							level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
+//						} else {
+//							avatar.setCanExit(false);
+//							level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
+//						}
+                        if (!avatar.inActionCycle())
+                            avatar.loadAction();
 
 
 					} else if (level.getClone() != null) {

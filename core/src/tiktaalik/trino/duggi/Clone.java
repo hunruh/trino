@@ -114,7 +114,7 @@ public class Clone extends GameObject {
     }
 
     public void startCountDown(){
-        totalTime = timeElapsed + eatTime;
+//        totalTime = timeElapsed + eatTime;
     }
 
     /**
