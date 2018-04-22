@@ -46,7 +46,7 @@ public class Enemy extends GameObject {
     private static final int STUNNED_RIGHT = 5;
     private static final int STUNNED_UP = 6;
     private static final int STUNNED_DOWN = 7;
-
+    private float offset = -0.5f;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -62,7 +62,7 @@ public class Enemy extends GameObject {
         setName("enemy");
 
         shape = new CircleShape();
-        shape.setRadius(radius * 4/5);
+        shape.setRadius(radius * 1/2);
 
         // Gameplay attributes
         textureSet = new FilmStrip[8];
