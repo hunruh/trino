@@ -682,7 +682,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
-		SoundController.getInstance().checkMusicEnd();
+//		SoundController.getInstance().checkMusicEnd();
 		if (rayhandler != null)
 			rayhandler.update();
 		Dinosaur avatar = level.getAvatar();
