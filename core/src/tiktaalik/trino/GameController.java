@@ -563,8 +563,7 @@ public class GameController implements ContactListener, Screen {
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
 
 		// This should be set before init lighting - should be moved when we load in the json
-		cameraBounds = level.getBounds();
-		cameraBounds.height *= 2;
+		cameraBounds = new Rectangle(0,0,32,18);
 
 		// Init Enemy AI controllers
 		for (int i = 0; i < level.getEnemies().size(); i++)
