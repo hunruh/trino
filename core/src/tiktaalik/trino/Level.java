@@ -246,16 +246,22 @@ public class Level {
         // It is important that this is always created first, as transformations must swap the first element
         // in the objects list
         dwidth = textureDict.get("dollFront").getRegionWidth() / (scale.x * 2);
+
         tmp = parser.getAssetList(0, "Player");
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y - 1;
             avatar = new Doll(screenToMaze(x), screenToMaze(y), dwidth);
+
             avatar.setType(DUGGI);
             avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
                     filmStripDict.get("dollRight"), 8,
                     filmStripDict.get("dollBack"), 8,
                     filmStripDict.get("dollFront"), 8);
+            avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
+                    filmStripDict.get("dollEatingRight"), 5,
+                    filmStripDict.get("dollEatingBack"), 7,
+                    filmStripDict.get("dollEatingFront"), 7);
             avatar.setDrawScale(scale);
 
             //Change filter data to that of the doll form
@@ -378,7 +384,7 @@ public class Level {
         }
 
         // Create enemy
-        dwidth = textureDict.get("enemyFront").getRegionWidth() / (scale.x * 2);
+        dwidth = filmStripDict.get("enemyFront").getWidth() / (10 * (scale.x * 2));
         tmp = parser.getAssetList(0, "Enemies");
         PooledList<String[]> dir = parser.getEnemiesInformation(0);
         for(int i = 0; i < tmp.size(); i++) {
@@ -398,6 +404,18 @@ public class Level {
                     filmStripDict.get("enemyRight"), 10,
                     filmStripDict.get("enemyBack"), 8,
                     filmStripDict.get("enemyFront"), 10);
+            en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
+                    filmStripDict.get("enemyChargeRight"), 15,
+                    filmStripDict.get("enemyChargeLeft"), 15,
+                    filmStripDict.get("enemyChargeLeft"), 15);
+            en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
+                    filmStripDict.get("enemyAttackRight"), 9,
+                    filmStripDict.get("enemyAttackLeft"), 9,
+                    filmStripDict.get("enemyAttackLeft"), 9);
+            en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
+                    filmStripDict.get("enemyStunnedRight"), 3,
+                    filmStripDict.get("enemyStunnedBack"), 3,
+                    filmStripDict.get("enemyStunnedFront"), 3);
             en.setDirection(d);
             addObject(en);
         }

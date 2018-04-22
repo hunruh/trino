@@ -41,6 +41,12 @@ public class Enemy extends GameObject {
     private final float CHARGE_LOAD_DURATION = 1.0f;
     private float chargeCooldown;
     private float chargeLoad;
+
+    private static final int STUNNED_LEFT = 12;
+    private static final int STUNNED_RIGHT = 13;
+    private static final int STUNNED_UP = 14;
+    private static final int STUNNED_DOWN = 15;
+
     private float offset = -0.5f;
 
     /**
@@ -60,8 +66,8 @@ public class Enemy extends GameObject {
         shape.setRadius(radius * 1/2);
 
         // Gameplay attributes
-        textureSet = new FilmStrip[4];
-        numFrames = new int[4];
+        textureSet = new FilmStrip[16];
+        numFrames = new int[16];
         animeframe = 0;
         faceRight = true;
         faceUp = false;
@@ -85,6 +91,42 @@ public class Enemy extends GameObject {
         origin = new Vector2(textureSet[LEFT].getRegionWidth()/2.0f, textureSet[LEFT].getRegionHeight()/2.0f);
     }
 
+    public void setStunnedTextureSet(Texture left, int leftFrames, Texture right, int rightFrames,
+                                     Texture up, int upFrames, Texture down, int downFrames) {
+        numFrames[STUNNED_LEFT] = leftFrames;
+        textureSet[STUNNED_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[STUNNED_RIGHT] = rightFrames;
+        textureSet[STUNNED_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[STUNNED_UP] = upFrames;
+        textureSet[STUNNED_UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[STUNNED_DOWN] = downFrames;
+        textureSet[STUNNED_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
+    public void setActionLoadingTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                                           Texture down, int downFrames) {
+        numFrames[ACTION_LOADING_LEFT] = leftFrames;
+        textureSet[ACTION_LOADING_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[ACTION_LOADING_RIGHT] = rightFrames;
+        textureSet[ACTION_LOADING_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[ACTION_LOADING_UP] = upFrames;
+        textureSet[ACTION_LOADING_UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[ACTION_LOADING_DOWN] = downFrames;
+        textureSet[ACTION_LOADING_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
+    public void setActionTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                                    Texture down, int downFrames) {
+        numFrames[ACTION_LEFT] = leftFrames;
+        textureSet[ACTION_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[ACTION_RIGHT] = rightFrames;
+        textureSet[ACTION_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[ACTION_UP] = upFrames;
+        textureSet[ACTION_UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[ACTION_DOWN] = downFrames;
+        textureSet[ACTION_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
     public void setCollided(boolean collided) {
         if ((collided && collideCooldown <= 0) || !collided)
             this.collided = collided;
@@ -106,9 +148,13 @@ public class Enemy extends GameObject {
     }
 
     public void setStunned() {
+        animeframe = 0;
         stunned = true;
         setLinearDamping(11);
         stunCooldown = 0;
+        chargeLoad = 0;
+        loadingCharge = false;
+        charging = false;
     }
 
     public void loadCharge() {
@@ -167,7 +213,9 @@ public class Enemy extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = 0x0004;
+        filter.categoryBits = Dinosaur.enemyCatBits;
+        filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
+                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.wallCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
@@ -218,9 +266,23 @@ public class Enemy extends GameObject {
                 setLinearDamping(0);
                 stunned = false;
             }
-        } else {
-            animeframe += ANIMATION_SPEED;
+        }
 
+        animeframe += ANIMATION_SPEED;
+
+        if (loadingCharge || (chargeReady && !charging)) {
+            if (animeframe >= numFrames[direction + 4]) {
+                animeframe -= (numFrames[direction + 4] - 3);
+            }
+        } else if (charging) {
+            if (animeframe >= numFrames[direction + 8]) {
+                animeframe -= (numFrames[direction + 8]);
+            }
+        } else if (stunned) {
+            if (animeframe >= numFrames[direction + 12]) {
+                animeframe -= numFrames[direction + 12];
+            }
+        } else {
             if (animeframe >= numFrames[direction]) {
                 animeframe -= numFrames[direction];
             }
@@ -233,9 +295,17 @@ public class Enemy extends GameObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-        textureSet[direction].setFrame((int)animeframe);
-        if (textureSet[direction] != null) {
-            canvas.draw(textureSet[direction], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
+        int filmStripItem = direction;
+        if (loadingCharge || (chargeReady && !charging))
+            filmStripItem += 4;
+        else if (charging)
+            filmStripItem += 8;
+        else if (stunned)
+            filmStripItem += 12;
+
+        textureSet[filmStripItem].setFrame((int)animeframe);
+        if (textureSet[filmStripItem] != null) {
+            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
         }
     }
 

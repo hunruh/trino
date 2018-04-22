@@ -2,12 +2,10 @@ package tiktaalik.trino.environment;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.duggi.Dinosaur;
 
 public class Switch extends GameObject {
     protected PolygonShape shape; // Shape information for this box
@@ -159,6 +157,10 @@ public class Switch extends GameObject {
         // Create the fixture
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
+        Filter filter = geometry.getFilterData();
+        filter.categoryBits = Dinosaur.switchCatBits;
+        filter.maskBits = Dinosaur.wallCatBits;
+        geometry.setFilterData(filter);
         markDirty(false);
     }
 

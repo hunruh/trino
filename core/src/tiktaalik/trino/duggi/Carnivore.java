@@ -1,6 +1,8 @@
 package tiktaalik.trino.duggi;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import tiktaalik.trino.Canvas;
 
 public class Carnivore extends Dinosaur {
     private final float CHARGE_COOLDOWN_DURATION = 0.5f;
@@ -38,7 +40,9 @@ public class Carnivore extends Dinosaur {
 
     public void loadCharge() {
         if (!loadingCharge && !charging && !coolingCharge && !chargeReady) {
+            animeframe = 0;
             loadingCharge = true;
+            actionAnimating = true;
         }
     }
 
@@ -91,15 +95,21 @@ public class Carnivore extends Dinosaur {
     }
 
     public void stopCharge() {
+        if (charging)
+            coolingCharge = true;
+
+        actionAnimating = false;
         loadingCharge = false;
         charging = false;
-        coolingCharge = true;
+        chargeReady = false;
+        chargeLoad = 0.0f;
     }
 
     public void update(float dt) {
         super.update(dt);
         if (loadingCharge) {
             chargeLoad += dt;
+
             System.out.println("Loading charge... " + chargeLoad);
             if (chargeLoad >= CHARGE_LOAD_DURATION) {
                 loadingCharge = false;
@@ -113,6 +123,32 @@ public class Carnivore extends Dinosaur {
                 coolingCharge = false;
                 chargeCooldown = 0.0f;
             }
+        }
+
+        if (loadingCharge || (chargeReady && !charging)) {
+            animeframe += ANIMATION_SPEED;
+            if (animeframe >= numFrames[direction + 4]) {
+                animeframe -= (numFrames[direction + 4] - 3);
+            }
+        } else if (charging) {
+            animeframe += ANIMATION_SPEED;
+            if (animeframe >= numFrames[direction + 8]) {
+                animeframe -= (numFrames[direction + 8]);
+            }
+        }
+    }
+
+    public void draw(Canvas canvas) {
+        int filmStripItem = direction;
+        if (loadingCharge || (chargeReady && !charging))
+            filmStripItem += 4;
+        else if (charging)
+            filmStripItem += 8;
+
+        textureSet[filmStripItem].setFrame((int)animeframe);
+        if (textureSet[filmStripItem] != null) {
+            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
+
         }
     }
 }

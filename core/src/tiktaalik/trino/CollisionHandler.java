@@ -10,6 +10,7 @@ import tiktaalik.trino.environment.River;
 
 public class CollisionHandler {
     GameController parent;
+    private int cloneTime = 0;
 
     public CollisionHandler(GameController parent) {
         this.parent = parent;
@@ -86,19 +87,21 @@ public class CollisionHandler {
         }
     }
 
-    public void handleCollision(Dinosaur duggi, Enemy e) {
-        if (duggi.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) duggi).getCharging()) {
+    public void handleCollision(Dinosaur d, Enemy e) {
+        if (d.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) d).getCharging()) {
             e.setStunned();
-            ((Carnivore) duggi).setCollided(true);
+            ((Carnivore) d).setCollided(true);
+            ((Carnivore) d).stopCharge();
         }
         else if (!e.getStunned())
             parent.setFailure(true);
     }
 
-    public void handleCollision(Dinosaur duggi, Boulder b) {
-        if (duggi.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) duggi).getCharging()) {
+    public void handleCollision(Dinosaur d, Boulder b) {
+        if (d.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) d).getCharging()) {
             b.setPushed();
-            ((Carnivore) duggi).setCollided(true);
+            ((Carnivore) d).setCollided(true);
+            ((Carnivore) d).stopCharge();
         }
     }
 
@@ -114,6 +117,7 @@ public class CollisionHandler {
         }
         if (d.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) d).getCharging()) {
             ((Carnivore) d).setCollided(true);
+            ((Carnivore) d).stopCharge();
         }
 
 //        if (parent.isInFrontOfAvatar(w))
@@ -121,7 +125,7 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Clone c, Enemy e) {
-        c.setRemoved(true);
+        c.startCountDown();
     }
 
     public void handleCollision(Enemy e1, Enemy e2) {
@@ -144,4 +148,5 @@ public class CollisionHandler {
             b.setPushed();
         }
     }
+
 }
