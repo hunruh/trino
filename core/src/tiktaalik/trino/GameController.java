@@ -52,10 +52,7 @@ public class GameController implements ContactListener, Screen {
 	private static String OVERLAY_FILE = "trino/overlay.png";
 	private static String GOAL_FILE = "trino/openExitPlaceHolder.png";
 	private static String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
-	private static final String DOLL_FILE_FRONT  = "trino/doll_front.png";
-	private static final String DOLL_FILE_LEFT  = "trino/doll_left.png";
-	private static final String DOLL_FILE_RIGHT  = "trino/doll_right.png";
-	private static final String DOLL_FILE_BACK  = "trino/doll_back.png";
+	private static final String CLONE_FILE  = "trino/clone.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
 	private static final String DOLL_STRIP_RIGHT  = "trino/doll_right_strip.png";
@@ -64,6 +61,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_EATING_STRIP_LEFT  = "trino/doll_front_eating_strip.png";
 	private static final String DOLL_EATING_STRIP_RIGHT  = "trino/doll_right_eating_strip.png";
 	private static final String DOLL_EATING_STRIP_BACK  = "trino/doll_front_eating_strip.png";
+	private static final String DOLL_CLONING_STRIP_FRONT  = "trino/doll_front_cloning_strip.png";
 	private static final String HERBIVORE_STRIP_FRONT  = "trino/herbivore_front_strip.png";
 	private static final String HERBIVORE_STRIP_LEFT  = "trino/herbivore_left_strip.png";
 	private static final String HERBIVORE_STRIP_RIGHT  = "trino/herbivore_right_strip.png";
@@ -214,14 +212,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOLL_EATING_STRIP_FRONT);
 		manager.load(DOLL_EATING_STRIP_BACK, Texture.class);
 		assets.add(DOLL_EATING_STRIP_BACK);
-		manager.load(DOLL_FILE_FRONT, Texture.class);
-		assets.add(DOLL_FILE_FRONT);
-		manager.load(DOLL_FILE_LEFT, Texture.class);
-		assets.add(DOLL_FILE_LEFT);
-		manager.load(DOLL_FILE_RIGHT, Texture.class);
-		assets.add(DOLL_FILE_RIGHT);
-		manager.load(DOLL_FILE_BACK, Texture.class);
-		assets.add(DOLL_FILE_BACK);
+		manager.load(DOLL_CLONING_STRIP_FRONT, Texture.class);
+		assets.add(DOLL_CLONING_STRIP_FRONT);
+		manager.load(CLONE_FILE, Texture.class);
+		assets.add(CLONE_FILE);
 		manager.load(HERBIVORE_STRIP_LEFT, Texture.class);
 		assets.add(HERBIVORE_STRIP_LEFT);
 		manager.load(HERBIVORE_STRIP_RIGHT, Texture.class);
@@ -316,10 +310,7 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("overlay", createTexture(manager,OVERLAY_FILE,true));
 		textureDict.put("goalOpenTile", createTexture(manager,GOAL_FILE,true));
 		textureDict.put("goalClosedTile", createTexture(manager,GOAL_CLOSED_FILE, true));
-		textureDict.put("dollFront", createTexture(manager,DOLL_FILE_FRONT,false));
-		textureDict.put("dollLeft", createTexture(manager,DOLL_FILE_LEFT,false));
-		textureDict.put("dollRight", createTexture(manager,DOLL_FILE_RIGHT,false));
-		textureDict.put("dollBack", createTexture(manager,DOLL_FILE_BACK,false));
+		textureDict.put("clone", createTexture(manager,CLONE_FILE,false));
 		textureDict.put("fireFly", createTexture(manager, FIREFLY_FILE, false));
 		textureDict.put("wall", createTexture(manager,WALL_FILE,false));
 		textureDict.put("edibleWall", createTexture(manager, EDIBLE_WALL_FILE, false));
@@ -336,6 +327,7 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("dollEatingRight", createFilmTexture(manager,DOLL_EATING_STRIP_RIGHT));
 		filmStripDict.put("dollEatingFront", createFilmTexture(manager,DOLL_EATING_STRIP_FRONT));
 		filmStripDict.put("dollEatingBack", createFilmTexture(manager,DOLL_EATING_STRIP_BACK));
+		filmStripDict.put("dollCloningFront", createFilmTexture(manager,DOLL_CLONING_STRIP_FRONT));
 		filmStripDict.put("carnivoreLeft", createFilmTexture(manager,CARNIVORE_STRIP_LEFT));
 		filmStripDict.put("carnivoreRight", createFilmTexture(manager,CARNIVORE_STRIP_RIGHT));
 		filmStripDict.put("carnivoreFront", createFilmTexture(manager,CARNIVORE_STRIP_FRONT));
@@ -918,6 +910,10 @@ public class GameController implements ContactListener, Screen {
 								filmStripDict.get("dollEatingRight"), 5,
 								filmStripDict.get("dollEatingBack"), 7,
 								filmStripDict.get("dollEatingFront"), 7);
+						avatar.setActionTextureSet(filmStripDict.get("dollCloningFront"), 12,
+								filmStripDict.get("dollCloningFront"), 12,
+								filmStripDict.get("dollCloningFront"), 12,
+								filmStripDict.get("dollCloningFront"), 12);
 
 						level.setAvatar(avatar);
 

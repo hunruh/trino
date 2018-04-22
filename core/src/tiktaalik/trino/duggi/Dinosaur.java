@@ -211,6 +211,11 @@ public abstract class Dinosaur extends GameObject {
      * @param value left/right movement of this character.
      */
     public void setLeftRight(float value) {
+        if (eating) {
+            leftRight = 0;
+            return;
+        }
+
         leftRight = value;
         if (leftRight < 0)
             direction = LEFT;
@@ -224,6 +229,11 @@ public abstract class Dinosaur extends GameObject {
      * @param value up/down movement of this character.
      */
     public void setUpDown(float value) {
+        if (eating) {
+            upDown = 0;
+            return;
+        }
+
         upDown = value;
         if (upDown < 0)
             direction = DOWN;
@@ -337,8 +347,6 @@ public abstract class Dinosaur extends GameObject {
 
         if (eating) {
             animeframe += ANIMATION_SPEED;
-            System.out.println("eating");
-            System.out.println(numFrames[direction + 12]);
             if (animeframe >= numFrames[direction + 12]) {
                 eating = false;
             }

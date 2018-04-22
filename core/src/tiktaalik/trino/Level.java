@@ -250,13 +250,13 @@ public class Level {
 
         // Set permanent textures
         background = textureDict.get("background");
-        cloneTexture = textureDict.get("dollFront");
+        cloneTexture = textureDict.get("clone");
 
         PooledList<Vector2> tmp = new PooledList<Vector2>();
         // Create player character
         // It is important that this is always created first, as transformations must swap the first element
         // in the objects list
-        dwidth = textureDict.get("dollFront").getRegionWidth() / (scale.x * 2);
+        dwidth = textureDict.get("clone").getRegionWidth() / (scale.x * 2);
 
         tmp = parser.getAssetList(0, "Player");
         for(int i = 0; i < tmp.size(); i++) {
