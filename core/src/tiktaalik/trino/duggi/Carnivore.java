@@ -110,7 +110,6 @@ public class Carnivore extends Dinosaur {
         if (loadingCharge) {
             chargeLoad += dt;
 
-            System.out.println("Loading charge... " + chargeLoad);
             if (chargeLoad >= CHARGE_LOAD_DURATION) {
                 loadingCharge = false;
                 chargeReady = true;

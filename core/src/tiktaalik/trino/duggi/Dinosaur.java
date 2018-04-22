@@ -290,7 +290,7 @@ public abstract class Dinosaur extends GameObject {
      * Applies the force to the body of the dinosaur
      */
     public void applyForce() {
-        if (!isActive()) {
+        if (!isActive() || eating) {
             return;
         }
 
@@ -337,8 +337,6 @@ public abstract class Dinosaur extends GameObject {
 
         if (eating) {
             animeframe += ANIMATION_SPEED;
-            System.out.println("eating");
-            System.out.println(numFrames[direction + 12]);
             if (animeframe >= numFrames[direction + 12]) {
                 eating = false;
             }
