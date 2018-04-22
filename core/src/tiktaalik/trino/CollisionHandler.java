@@ -28,6 +28,9 @@ public class CollisionHandler {
             else if (g2.getType() == GameController.BOULDER) {
                 handleCollision((Dinosaur) g1, (Boulder) g2);
             }
+            else if (g2.getType() == GameController.RIVER) {
+                handleCollision((Dinosaur) g1, (River) g2);
+            }
         } else if (g2.getType() == GameController.DUGGI) {
             if (g1.getType() == GameController.ENEMY) {
                 handleCollision((Dinosaur) g2, (Enemy) g1);
@@ -38,6 +41,9 @@ public class CollisionHandler {
             }
             else if (g1.getType() == GameController.BOULDER) {
                 handleCollision((Dinosaur) g2, (Boulder) g1);
+            }
+            else if (g1.getType() == GameController.RIVER) {
+                handleCollision((Dinosaur) g2, (River) g1);
             }
         }
 
@@ -88,20 +94,20 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Dinosaur d, Enemy e) {
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) d).getCharging()) {
+        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
             e.setStunned();
             ((Carnivore) d).setCollided(true);
-            ((Carnivore) d).stopCharge();
+            d.stopAction();
         }
         else if (!e.getStunned())
             parent.setFailure(true);
     }
 
     public void handleCollision(Dinosaur d, Boulder b) {
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) d).getCharging()) {
+        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
             b.setPushed();
             ((Carnivore) d).setCollided(true);
-            ((Carnivore) d).stopCharge();
+            d.stopAction();
         }
     }
 
@@ -115,9 +121,20 @@ public class CollisionHandler {
                 parent.setComplete(false);
             }
         }
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && ((Carnivore) d).getCharging()) {
+        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
             ((Carnivore) d).setCollided(true);
-            ((Carnivore) d).stopCharge();
+            d.stopAction();
+        }
+
+//        if (parent.isInFrontOfAvatar(w))
+//            SoundController.getInstance().playCollide();
+    }
+
+    public void handleCollision(Dinosaur d, River r) {
+        System.out.println("asfdas");
+        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
+            ((Carnivore) d).setCollided(true);
+            d.stopAction();
         }
 
 //        if (parent.isInFrontOfAvatar(w))

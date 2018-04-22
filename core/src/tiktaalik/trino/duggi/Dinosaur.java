@@ -12,6 +12,9 @@ import tiktaalik.trino.GameObject;
 import tiktaalik.util.FilmStrip;
 
 public abstract class Dinosaur extends GameObject {
+    private final float ACTION_COOLDOWN_DURATION = 0.5f;
+    private final float ACTION_LOAD_DURATION = 1.0f;
+
     public static final int DOLL_FORM = 0;
     public static final int HERBIVORE_FORM = 1;
     public static final int CARNIVORE_FORM = 2;
@@ -45,7 +48,9 @@ public abstract class Dinosaur extends GameObject {
     protected boolean actionAnimating;
     private boolean canExit;
 
-    protected boolean eating;
+    protected int actionDirection;
+    protected boolean actionInProgress, actionReady, coolingAction, loadingAction, eating;
+    protected float actionCooldown, actionLoad;
     private boolean canBeSeen = true;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
@@ -102,6 +107,14 @@ public abstract class Dinosaur extends GameObject {
         eating = false;
         actionAnimating = false;
         body.setUserData(this);
+
+        // Actions
+        actionInProgress = false;
+        actionReady = false;
+        coolingAction = false;
+        loadingAction = false;
+        actionCooldown = 0.0f;
+        actionLoad = 0.0f;
     }
 
     /**
@@ -138,6 +151,14 @@ public abstract class Dinosaur extends GameObject {
         canExit = false;
         actionAnimating = false;
         eating = false;
+
+        // Actions
+        actionInProgress = false;
+        actionReady = false;
+        coolingAction = false;
+        loadingAction = false;
+        actionCooldown = 0.0f;
+        actionLoad = 0.0f;
     }
 
     public void setTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
@@ -239,6 +260,45 @@ public abstract class Dinosaur extends GameObject {
             direction = DOWN;
         else if (upDown > 0)
             direction = UP;
+    }
+
+    public boolean inActionCycle() {
+        return loadingAction || actionInProgress || coolingAction;
+    }
+
+    public void loadAction() {
+        if (!loadingAction && !actionInProgress && !coolingAction && !actionReady) {
+            animeframe = 0;
+            loadingAction = true;
+            actionAnimating = true;
+        }
+    }
+
+    public boolean actionReady() {
+        return actionReady;
+    }
+
+    public void beginAction() {
+        if (actionReady) {
+            actionInProgress = true;
+            actionReady = false;
+            actionDirection = getDirection();
+        }
+    }
+
+    public boolean getActionInProgress() {
+        return actionInProgress;
+    }
+
+    public void stopAction() {
+        if (actionInProgress)
+            coolingAction = true;
+
+        actionAnimating = false;
+        loadingAction = false;
+        actionInProgress = false;
+        actionReady = false;
+        actionLoad = 0.0f;
     }
 
     public boolean canExit() {
@@ -345,7 +405,17 @@ public abstract class Dinosaur extends GameObject {
     public void update(float dt) {
         super.update(dt);
 
-        if (eating) {
+        if (loadingAction || (actionReady && !actionInProgress)) {
+            animeframe += ANIMATION_SPEED;
+            if (animeframe >= numFrames[direction + 4]) {
+                animeframe -= (numFrames[direction + 4] - 3);
+            }
+        } else if (actionInProgress) {
+            animeframe += ANIMATION_SPEED;
+            if (animeframe >= numFrames[direction + 8]) {
+                animeframe -= (numFrames[direction + 8]);
+            }
+        } else if (eating) {
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 12]) {
                 eating = false;
@@ -362,6 +432,23 @@ public abstract class Dinosaur extends GameObject {
                 animeframe -= numFrames[direction];
             }
         }
+
+        if (loadingAction) {
+            actionLoad += dt;
+
+            if (actionLoad >= ACTION_LOAD_DURATION) {
+                loadingAction = false;
+                actionReady = true;
+                actionLoad = 0.0f;
+            }
+        } else if (coolingAction) {
+            actionCooldown += dt;
+
+            if (actionCooldown >= ACTION_COOLDOWN_DURATION) {
+                coolingAction = false;
+                actionCooldown = 0.0f;
+            }
+        }
     }
 
     /**
@@ -371,7 +458,11 @@ public abstract class Dinosaur extends GameObject {
      */
     public void draw(Canvas canvas) {
         int filmStripItem = direction;
-        if (eating)
+        if (loadingAction || (actionReady && !actionInProgress))
+            filmStripItem += 4;
+        else if (actionInProgress)
+            filmStripItem += 8;
+        else if (eating)
             filmStripItem += 12;
 
         textureSet[filmStripItem].setFrame((int)animeframe);

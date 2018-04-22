@@ -982,7 +982,7 @@ public class GameController implements ContactListener, Screen {
 						Math.abs(level.getBoulder(i).getGridLocation().x - level.getAvatarGridX()) <= 1
 						&& Math.abs(level.getBoulder(i).getGridLocation().y - level.getAvatarGridY()) <= 1 &&
 						b == level.getBoulder(i) && avatar.getForm() == Dinosaur.CARNIVORE_FORM &&
-						((Carnivore) avatar).getCharging()) {
+						((Carnivore) avatar).getActionInProgress()) {
 					level.getBoulder(i).setBodyType(BodyDef.BodyType.DynamicBody);
 
 					if (direction == Dinosaur.RIGHT) {
@@ -1217,7 +1217,7 @@ public class GameController implements ContactListener, Screen {
 
 						}
 					}
-					((Carnivore) avatar).stopCharge();
+					avatar.stopAction();
 				} else {
 					level.getBoulder(i).setBodyType(BodyDef.BodyType.StaticBody);
 				}
@@ -1286,18 +1286,18 @@ public class GameController implements ContactListener, Screen {
 						}
 					}
 
-					if (!ate && !((Carnivore) avatar).inChargeCycle())
-						((Carnivore) avatar).loadCharge();
+					if (!ate && !avatar.inActionCycle())
+						avatar.loadAction();
 				}
 			}
 
 
 			if (InputHandler.getInstance().didActionRelease()) {
 				if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
-					if (((Carnivore) avatar).chargeReady())
-						((Carnivore) avatar).charge();
+					if (avatar.actionReady())
+						avatar.beginAction();
 					else
-						((Carnivore) avatar).stopCharge();
+						avatar.stopAction();
 				}
 			}
 

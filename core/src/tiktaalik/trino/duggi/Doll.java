@@ -12,8 +12,4 @@ public class Doll extends Dinosaur {
     public int getForm() {
         return DOLL_FORM;
     }
-
-    public void performAction() {
-
-    }
 }
