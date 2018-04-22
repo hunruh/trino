@@ -23,6 +23,14 @@ import tiktaalik.util.*;
  * Base class for the game controller.
  */
 public class GameController implements ContactListener, Screen {
+	static final int GAME_READY = 0;
+	static final int GAME_RUNNING = 1;
+	static final int GAME_PAUSED = 2;
+	static final int GAME_LEVEL_END = 3;
+	static final int GAME_OVER = 4;
+
+	int state;
+
 	// Tracks the asset state.  Otherwise subclasses will try to load assets
 	protected enum AssetState {
 		EMPTY,
@@ -454,6 +462,7 @@ public class GameController implements ContactListener, Screen {
 		setComplete(false);
 		setFailure(false);
 		world.setContactListener(this);
+
 	}
 
 	/**
@@ -475,6 +484,8 @@ public class GameController implements ContactListener, Screen {
 
 		isSwitch = false;
 		isCotton = false;
+
+		state = GAME_READY;
 	}
 
 	/**
@@ -616,9 +627,18 @@ public class GameController implements ContactListener, Screen {
 		if (rayhandler != null)
 			rayhandler.render();
 
+
 		canvas.beginOverlay();
 		canvas.draw(textureDict.get("overlay"),0,0);
 		canvas.end();
+
+
+		if (state == GAME_PAUSED) {
+			displayFont.setColor(Color.YELLOW);
+			canvas.beginOverlay();
+			canvas.drawTextCentered("PAUSED!", displayFont, 0.0f);
+			canvas.end();
+		}
 
 		// Final message
 		if (complete && !failed) {
@@ -646,10 +666,16 @@ public class GameController implements ContactListener, Screen {
 		if (active) {
 			if (preUpdate(delta)) {
 				update(delta);
-				postUpdate(delta);
+				if (state == GAME_RUNNING) {
+					postUpdate(delta);
+				}
+
+
+					draw(delta);
+					hud.draw();
+
 			}
-			draw(delta);
-			hud.draw();
+
 		}
 	}
 
@@ -682,8 +708,34 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
-		if (rayhandler != null)
+		//System.out.println(state);
+		switch (state) {
+			case GAME_READY:
+				updateReady();
+				break;
+			case GAME_RUNNING:
+				updateRunning(dt);
+				break;
+			case GAME_PAUSED:
+				updatePaused();
+				break;
+			case GAME_LEVEL_END:
+				updateLevelEnd();
+				break;
+			case GAME_OVER:
+				updateGameOver();
+				break;
+		}
+	}
+
+	private void updateReady() {
+		state = GAME_RUNNING;
+	}
+
+	private void updateRunning(float dt) {
+		if (rayhandler != null) {
 			rayhandler.update();
+		}
 		Dinosaur avatar = level.getAvatar();
 
 		// Process camera updates
@@ -701,10 +753,10 @@ public class GameController implements ContactListener, Screen {
 			raycamera.position.x = avatar.getX();
 		}
 
-		if ((avatar.getY()/cameraBounds.height) * canvas.getCamera().viewportHeight < halfHeight) {
+		if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight < halfHeight) {
 			canvas.getCamera().position.y = halfHeight;
 			raycamera.position.y = cameraBounds.height / 2;
-		} else if ((avatar.getY()/cameraBounds.height) * canvas.getCamera().viewportHeight > 720 - halfHeight) {
+		} else if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight > 720 - halfHeight) {
 			canvas.getCamera().position.y = 720 - halfHeight;
 			raycamera.position.y = cameraBounds.height - cameraBounds.height / 2;
 		} else {
@@ -717,15 +769,14 @@ public class GameController implements ContactListener, Screen {
 		rayhandler.setCombinedMatrix(raycamera);
 
 		// Process FireFly updates
-		for (FireFlyAIController ffAI:fireFlyControls)
+		for (FireFlyAIController ffAI : fireFlyControls)
 			ffAI.getMoveAlongPath();
 
 		for (int i = 0; i < ffLights.length; i++) {
 			if (ffLightDsts[i] > 2) {
 				ffLightChanges[i] *= -1;
 				ffLightDsts[i] = 2;
-			}
-			else if (ffLightDsts[i] < 0.5f) {
+			} else if (ffLightDsts[i] < 0.5f) {
 				ffLightChanges[i] *= -1;
 				ffLightDsts[i] = 0.5f;
 			}
@@ -735,7 +786,7 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		// Process enemy updates
-		for (int i = 0; i < level.getEnemies().size();i++)
+		for (int i = 0; i < level.getEnemies().size(); i++)
 			controls.get(i).step(level.objectInFrontOfEnemy(level.getEnemy(i)));
 
 		// Process avatar updates
@@ -806,21 +857,20 @@ public class GameController implements ContactListener, Screen {
 			((Carnivore) avatar).stopCharge();
 
 		GameObject b = level.objectInFrontOfAvatar();
-		for(int i = 0; i < level.getBoulders().size(); i++) {
-			if (b!= null && b.getType() == BOULDER &&
+		for (int i = 0; i < level.getBoulders().size(); i++) {
+			if (b != null && b.getType() == BOULDER &&
 					Math.abs(level.getBoulder(i).getGridLocation().x - level.getAvatarGridX()) <= 1
 					&& Math.abs(level.getBoulder(i).getGridLocation().y - level.getAvatarGridY()) <= 1 &&
 					b == level.getBoulder(i) && avatar.getForm() == Dinosaur.CARNIVORE_FORM &&
-					((Carnivore)avatar).getCharging()){
+					((Carnivore) avatar).getCharging()) {
 				level.getBoulder(i).setBodyType(BodyDef.BodyType.DynamicBody);
 
-				if (direction == Dinosaur.RIGHT ) {
-					if (level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
-							(int)(((Boulder) b).getGridLocation().y)) != null &&
-							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
-									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH) {
-					}
-					else {
+				if (direction == Dinosaur.RIGHT) {
+					if (level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
+							(int) (((Boulder) b).getGridLocation().y)) != null &&
+							level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
+									(int) (((Boulder) b).getGridLocation().y)).getType() != SWITCH) {
+					} else {
 						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
@@ -833,7 +883,7 @@ public class GameController implements ContactListener, Screen {
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
 								tmp = level.getSwitch(k);
 							}
-							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x-1)]
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
 								tmp = level.getSwitch(k);
 							}
@@ -849,41 +899,38 @@ public class GameController implements ContactListener, Screen {
 						}
 
 						level.getBoulder(i).setVX(125);
-						level.getGrid()[(int)(((Boulder) b).getGridLocation().x+1)]
-								[(int)(((Boulder) b).getGridLocation().y)] = b;
+						level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
+								[(int) (((Boulder) b).getGridLocation().y)] = b;
 
-						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-								[(int)(((Boulder) b).getGridLocation().y)] = null;
-						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x+1.0f, ((Boulder) b).getGridLocation().y);
+						level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+								[(int) (((Boulder) b).getGridLocation().y)] = null;
+						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x + 1.0f, ((Boulder) b).getGridLocation().y);
 						if (isSwitch == true && ((Boulder) b).getGridLocation().x != tmpx) {
-							((Switch) tmp).setGridLocation(tmpx,tmpy);
-							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							((Switch) tmp).setGridLocation(tmpx, tmpy);
+							level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
 							isSwitch = false;
-						}
-						else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
-							((CottonFlower) tmp).setGridLocation(tmpx,tmpy);
-							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+						} else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((CottonFlower) tmp).setGridLocation(tmpx, tmpy);
+							level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
 							isCotton = false;
 						}
 
 						for (int n = 0; n < level.getEnemies().size(); n++) {
-							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
-									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
+							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX() - 1) / 2) <= 1
+									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY() - 1) / 2) <= 1) {
 								level.getEnemy(n).setVX(1);
 							}
 						}
 					}
 
-				}
-				else if (direction == Dinosaur.LEFT) {
-					if (level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
-							(int)(((Boulder) b).getGridLocation().y)) != null &&
-							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
-									(int)(((Boulder) b).getGridLocation().y)).getType() != SWITCH &&
-							level.getGridObject((int)(((Boulder) b).getGridLocation().x+1),
-									(int)(((Boulder) b).getGridLocation().y)).getType() != COTTON) {
-					}
-					else {
+				} else if (direction == Dinosaur.LEFT) {
+					if (level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
+							(int) (((Boulder) b).getGridLocation().y)) != null &&
+							level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
+									(int) (((Boulder) b).getGridLocation().y)).getType() != SWITCH &&
+							level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
+									(int) (((Boulder) b).getGridLocation().y)).getType() != COTTON) {
+					} else {
 						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
@@ -896,7 +943,7 @@ public class GameController implements ContactListener, Screen {
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
 								tmp = level.getSwitch(k);
 							}
-							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x+1)]
+							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
 									[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
 								tmp = level.getSwitch(k);
 							}
@@ -911,43 +958,39 @@ public class GameController implements ContactListener, Screen {
 							}
 						}
 						level.getBoulder(i).setVX(-125);
-						level.getGrid()[(int)(((Boulder) b).getGridLocation().x-1)]
-								[(int)(((Boulder) b).getGridLocation().y)] = b;
+						level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
+								[(int) (((Boulder) b).getGridLocation().y)] = b;
 
-						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-								[(int)(((Boulder) b).getGridLocation().y)] = null;
-						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x-1.0f, ((Boulder) b).getGridLocation().y);
+						level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+								[(int) (((Boulder) b).getGridLocation().y)] = null;
+						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x - 1.0f, ((Boulder) b).getGridLocation().y);
 						if (isSwitch == true && ((Boulder) b).getGridLocation().x != tmpx) {
-							((Switch) tmp).setGridLocation(tmpx,tmpy);
-							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							((Switch) tmp).setGridLocation(tmpx, tmpy);
+							level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
 							isSwitch = false;
-						}
-						else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
-							((CottonFlower) tmp).setGridLocation(tmpx,tmpy);
-							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+						} else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((CottonFlower) tmp).setGridLocation(tmpx, tmpy);
+							level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
 							isCotton = false;
 						}
 
 						for (int n = 0; n < level.getEnemies().size(); n++) {
-							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
-									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
+							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX() - 1) / 2) <= 1
+									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY() - 1) / 2) <= 1) {
 								level.getEnemy(n).setVX(-1);
 							}
 						}
 
 					}
-				}
-				else if (direction == Dinosaur.UP) {
-					if (level.getGridObject((int)(((Boulder) b).getGridLocation().x),
-							(int)(((Boulder) b).getGridLocation().y+1)) != null &&
-							level.getGridObject((int)(((Boulder) b).getGridLocation().x),
-									(int)(((Boulder) b).getGridLocation().y+1)).getType() != SWITCH) {
-					}
-
-					else {
+				} else if (direction == Dinosaur.UP) {
+					if (level.getGridObject((int) (((Boulder) b).getGridLocation().x),
+							(int) (((Boulder) b).getGridLocation().y + 1)) != null &&
+							level.getGridObject((int) (((Boulder) b).getGridLocation().x),
+									(int) (((Boulder) b).getGridLocation().y + 1)).getType() != SWITCH) {
+					} else {
 						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getSwitch(k)) {
+									[(int) (((Boulder) b).getGridLocation().y + 1)] == level.getSwitch(k)) {
 								isSwitch = true;
 								tmp = level.getSwitch(k);
 								tmpx = ((Switch) tmp).getGridLocation().x;
@@ -958,13 +1001,13 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getSwitch(k)) {
+									[(int) (((Boulder) b).getGridLocation().y - 1)] == level.getSwitch(k)) {
 								tmp = level.getSwitch(k);
 							}
 						}
 						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getCottonFlower(m)) {
+									[(int) (((Boulder) b).getGridLocation().y + 1)] == level.getCottonFlower(m)) {
 								isCotton = true;
 								tmp = level.getCottonFlower(m);
 								tmpx = ((CottonFlower) tmp).getGridLocation().x;
@@ -972,42 +1015,39 @@ public class GameController implements ContactListener, Screen {
 							}
 						}
 						level.getBoulder(i).setVY(125);
-						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-								[(int)(((Boulder) b).getGridLocation().y+1)] = b;
+						level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+								[(int) (((Boulder) b).getGridLocation().y + 1)] = b;
 
-						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-								[(int)(((Boulder) b).getGridLocation().y)] = null;
-						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y+1.0f);
+						level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+								[(int) (((Boulder) b).getGridLocation().y)] = null;
+						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y + 1.0f);
 						if (isSwitch == true && ((Boulder) b).getGridLocation().y != tmpy) {
-							((Switch) tmp).setGridLocation(tmpx,tmpy);
-							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							((Switch) tmp).setGridLocation(tmpx, tmpy);
+							level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
 							isSwitch = false;
-						}
-						else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
-							((CottonFlower) tmp).setGridLocation(tmpx,tmpy);
-							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+						} else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((CottonFlower) tmp).setGridLocation(tmpx, tmpy);
+							level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
 							isCotton = false;
 						}
 
 						for (int n = 0; n < level.getEnemies().size(); n++) {
-							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
-									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
+							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX() - 1) / 2) <= 1
+									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY() - 1) / 2) <= 1) {
 								level.getEnemy(n).setVY(1);
 							}
 						}
 
 					}
-				}
-				else if (direction == Dinosaur.DOWN) {
-					if (level.getGridObject((int)(((Boulder) b).getGridLocation().x),
-							(int)(((Boulder) b).getGridLocation().y-1)) != null &&
-							level.getGridObject((int)(((Boulder) b).getGridLocation().x),
-									(int)(((Boulder) b).getGridLocation().y-1)).getType() != SWITCH) {
-					}
-					else {
+				} else if (direction == Dinosaur.DOWN) {
+					if (level.getGridObject((int) (((Boulder) b).getGridLocation().x),
+							(int) (((Boulder) b).getGridLocation().y - 1)) != null &&
+							level.getGridObject((int) (((Boulder) b).getGridLocation().x),
+									(int) (((Boulder) b).getGridLocation().y - 1)).getType() != SWITCH) {
+					} else {
 						for (int k = 0; k < level.getSwitches().size(); k++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getSwitch(k)) {
+									[(int) (((Boulder) b).getGridLocation().y - 1)] == level.getSwitch(k)) {
 								isSwitch = true;
 								tmp = level.getSwitch(k);
 								tmpx = ((Switch) tmp).getGridLocation().x;
@@ -1018,13 +1058,13 @@ public class GameController implements ContactListener, Screen {
 								tmp = level.getSwitch(k);
 							}
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y+1)] == level.getSwitch(k)) {
+									[(int) (((Boulder) b).getGridLocation().y + 1)] == level.getSwitch(k)) {
 								tmp = level.getSwitch(k);
 							}
 						}
 						for (int m = 0; m < level.getCottonFlowers().size(); m++) {
 							if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y-1)] == level.getCottonFlower(m)) {
+									[(int) (((Boulder) b).getGridLocation().y - 1)] == level.getCottonFlower(m)) {
 								isCotton = true;
 								tmp = level.getCottonFlower(m);
 								tmpx = ((CottonFlower) tmp).getGridLocation().x;
@@ -1032,26 +1072,25 @@ public class GameController implements ContactListener, Screen {
 							}
 						}
 						level.getBoulder(i).setVY(-125);
-						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-								[(int)(((Boulder) b).getGridLocation().y-1)] = b;
+						level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+								[(int) (((Boulder) b).getGridLocation().y - 1)] = b;
 
-						level.getGrid()[(int)(((Boulder) b).getGridLocation().x)]
-								[(int)(((Boulder) b).getGridLocation().y)] = null;
-						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y-1.0f);
+						level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
+								[(int) (((Boulder) b).getGridLocation().y)] = null;
+						((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y - 1.0f);
 						if (isSwitch == true && ((Boulder) b).getGridLocation().y != tmpy) {
-							((Switch) tmp).setGridLocation(tmpx,tmpy);
-							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+							((Switch) tmp).setGridLocation(tmpx, tmpy);
+							level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
 							isSwitch = false;
-						}
-						else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
-							((CottonFlower) tmp).setGridLocation(tmpx,tmpy);
-							level.getGrid()[(int)tmpx][(int)tmpy] = tmp;
+						} else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
+							((CottonFlower) tmp).setGridLocation(tmpx, tmpy);
+							level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
 							isCotton = false;
 						}
 
 						for (int n = 0; n < level.getEnemies().size(); n++) {
-							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX()-1)/2) <= 1
-									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY()-1)/2) <= 1) {
+							if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX() - 1) / 2) <= 1
+									&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY() - 1) / 2) <= 1) {
 								level.getEnemy(n).setVY(-1);
 							}
 						}
@@ -1059,8 +1098,7 @@ public class GameController implements ContactListener, Screen {
 					}
 				}
 				((Carnivore) avatar).stopCharge();
-			}
-			else {
+			} else {
 				level.getBoulder(i).setBodyType(BodyDef.BodyType.StaticBody);
 			}
 		}
@@ -1086,8 +1124,7 @@ public class GameController implements ContactListener, Screen {
 					SoundController.getInstance().playCottonPickup();
 					level.removeObject(cotton);
 					avatar.incrementResources();
-				}
-				else if (level.getClone() == null && avatar.getResources() >= 1) {
+				} else if (level.getClone() == null && avatar.getResources() >= 1) {
 					GameObject goal = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
 					removeClone = false;
 					if (direction == Dinosaur.UP) {
@@ -1095,24 +1132,21 @@ public class GameController implements ContactListener, Screen {
 								level.objectInFrontOfAvatar().getType() == SWITCH)) {
 							level.placeClone(level.getAvatarGridX(), level.getAvatarGridY() + 1);
 						}
-					}
-					else if (direction == Dinosaur.DOWN) {
+					} else if (direction == Dinosaur.DOWN) {
 						if (level.getAvatarGridY() != 0 && (level.objectInFrontOfAvatar() == null ||
 								level.objectInFrontOfAvatar().getType() == SWITCH))
 							level.placeClone(level.getAvatarGridX(), level.getAvatarGridY() - 1);
-					}
-					else if (direction == Dinosaur.LEFT) {
+					} else if (direction == Dinosaur.LEFT) {
 						if (level.getAvatarGridX() != 0 && (level.objectInFrontOfAvatar() == null ||
 								level.objectInFrontOfAvatar().getType() == SWITCH))
 							level.placeClone(level.getAvatarGridX() - 1, level.getAvatarGridY());
-					}
-					else if (direction == Dinosaur.RIGHT) {
+					} else if (direction == Dinosaur.RIGHT) {
 						if (level.getAvatarGridX() != level.getWidth() && (level.objectInFrontOfAvatar() == null ||
 								level.objectInFrontOfAvatar().getType() == SWITCH))
 							level.placeClone(level.getAvatarGridX() + 1, level.getAvatarGridY());
 					}
 
-					if (level.objectInFrontOfAvatar() != null && level.objectInFrontOfAvatar().getType()  == SWITCH) {
+					if (level.objectInFrontOfAvatar() != null && level.objectInFrontOfAvatar().getType() == SWITCH) {
 						avatar.setCanExit(true);
 						level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
 					} else {
@@ -1126,16 +1160,14 @@ public class GameController implements ContactListener, Screen {
 				} else if (level.getClone() != null) {
 					removeClone = true;
 				}
-			}
-			else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
+			} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 				GameObject tmp = level.objectInFrontOfAvatar();
-				if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5){
+				if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
 					SoundController.getInstance().playEat();
 					level.removeObject(tmp);
 					avatar.incrementResources();
 				}
-			}
-			else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
+			} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 				boolean ate = false;
 
 				for (int i = 0; i < level.getEnemies().size(); i++) {
@@ -1156,6 +1188,7 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 
+
 		if (InputHandler.getInstance().didActionRelease()) {
 			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 				if (((Carnivore) avatar).chargeReady())
@@ -1165,11 +1198,30 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 
+		if (InputHandler.getInstance().didPause()) {
+			state = GAME_PAUSED;
+			return;
+		}
+
 		avatar.applyForce();
 
 		hud.update(avatar.getResources(), avatar.getForm());
 	}
 
+	private void updatePaused() {
+		if (InputHandler.getInstance().didPause()) {
+			state = GAME_RUNNING;
+			return;
+		}
+	}
+
+	private void updateLevelEnd() {
+		state = GAME_READY;
+	}
+
+	private void updateGameOver() {
+		state = GAME_READY;
+	}
 	/**
 	 * Callback method for the start of a collision
 	 *
