@@ -94,7 +94,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
 	private static final String SWITCH_FILE = "trino/buttonRough.png";
-	private static final String RIVER_FILE = "trino/river.png";
+	private static final String RIVER_FILE = "trino/makeshiftriver.png";
+	private static final String RIVER_FILE_VERT = "trino/makeshiftriver2.png";
 	private static final String BOULDER_FILE = "trino/boulder.png";
 
 	// Texture assets variables
@@ -284,6 +285,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(SWITCH_FILE);
 		manager.load(RIVER_FILE, Texture.class);
 		assets.add(RIVER_FILE);
+		manager.load(RIVER_FILE_VERT, Texture.class);
+		assets.add(RIVER_FILE_VERT);
 		manager.load(BOULDER_FILE, Texture.class);
 		assets.add(BOULDER_FILE);
 
@@ -323,6 +326,7 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
 		textureDict.put("switch", createTexture(manager, SWITCH_FILE, false));
 		textureDict.put("river", createTexture(manager, RIVER_FILE, false));
+		textureDict.put("river2", createTexture(manager, RIVER_FILE_VERT, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
@@ -794,6 +798,7 @@ public class GameController implements ContactListener, Screen {
 	 */
 	public void update(float dt) {
 		//SoundController.getInstance().checkMusicEnd();
+
 		switch (state) {
 			case GAME_READY:
 				updateReady();
