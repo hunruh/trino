@@ -41,7 +41,7 @@ public class Enemy extends GameObject {
     private final float CHARGE_LOAD_DURATION = 1.0f;
     private float chargeCooldown;
     private float chargeLoad;
-
+    private float offset = -0.5f;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -57,7 +57,7 @@ public class Enemy extends GameObject {
         setName("enemy");
 
         shape = new CircleShape();
-        shape.setRadius(radius * 4/5);
+        shape.setRadius(radius * 1/2);
 
         // Gameplay attributes
         textureSet = new FilmStrip[4];
