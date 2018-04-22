@@ -213,7 +213,9 @@ public class Enemy extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = 0x0004;
+        filter.categoryBits = Dinosaur.enemyCatBits;
+        filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
+                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.wallCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }

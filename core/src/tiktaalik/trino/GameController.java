@@ -18,6 +18,7 @@ import tiktaalik.trino.environment.*;
 import tiktaalik.trino.lights.LightSource;
 import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.*;
+import tiktaalik.trino.duggi.Dinosaur;
 
 /**
  * Base class for the game controller.
@@ -539,6 +540,7 @@ public class GameController implements ContactListener, Screen {
 	 * This method disposes of the world and creates a new one.
 	 */
 	public void reset() {
+        totalTime = levelTime;
 		Vector2 gravity = new Vector2(world.getGravity() );
 
 		level.dispose();
@@ -687,6 +689,22 @@ public class GameController implements ContactListener, Screen {
 			canvas.end();
 		}
 
+        if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER) {
+            displayFont.setColor(Color.WHITE);
+            canvas.beginOverlay();
+            if (seconds < 10) {
+                canvas.drawTextCorner(Integer.toString(minutes)+":0"+Integer.toString(seconds), displayFont, 0.0f);
+            }
+            else if (seconds == 60) {
+                canvas.drawTextCorner(Integer.toString(minutes+1)+":00", displayFont, 0.0f);
+            }
+            else {
+                canvas.drawTextCorner(Integer.toString(minutes)+":"+Integer.toString(seconds), displayFont, 0.0f);
+            }
+            //canvas.drawTextCorner(Float.toString(totalTime), displayFont, 0.0f);
+            canvas.end();
+        }
+
 		// Final message
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
@@ -725,8 +743,8 @@ public class GameController implements ContactListener, Screen {
 					postUpdate(delta);
 					totalTime -= delta;
 
-					minutes = ((int)totalTime) / 60;
-					seconds = ((int)totalTime) % 60;
+					minutes = (int)totalTime / 60;
+					seconds = (int)(totalTime % 60);
 
 					timeout();
 				}
@@ -872,10 +890,12 @@ public class GameController implements ContactListener, Screen {
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 
 						avatar = avatar.transformToDoll();
+                        avatar.setCanBeSeen(true);
 
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
-						filter.categoryBits = 0x0004;
+						filter.categoryBits = Dinosaur.dollCatBits;
+						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
 						avatar.setFilterData(filter);
 						avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
 								filmStripDict.get("dollRight"), 8,
@@ -893,10 +913,12 @@ public class GameController implements ContactListener, Screen {
 					} else if (InputHandler.getInstance().didTransformHerbi() &&
 							avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 						avatar = avatar.transformToHerbivore();
+                        avatar.setCanBeSeen(true);
 
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
-						filter.categoryBits = 0x0010;
+						filter.categoryBits = Dinosaur.herbCatBits;
+						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits;
 						avatar.setFilterData(filter);
 						avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
 								filmStripDict.get("herbivoreRight"), 7,
@@ -914,9 +936,11 @@ public class GameController implements ContactListener, Screen {
 					} else if (InputHandler.getInstance().didTransformCarni() &&
 							avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 						avatar = avatar.transformToCarnivore();
+                        avatar.setCanBeSeen(true);
 
 						Filter filter = avatar.getFilterData();
-						filter.categoryBits = 0x0004;
+						filter.categoryBits = Dinosaur.carnCatBits;
+						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
 						avatar.setFilterData(filter);
 						avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), 10,
 								filmStripDict.get("carnivoreRight"), 10,
@@ -1211,27 +1235,10 @@ public class GameController implements ContactListener, Screen {
 						SoundController.getInstance().playCottonPickup();
 						level.removeObject(cotton);
 						avatar.incrementResources();
-					} else if (level.getClone() == null && avatar.getResources() >= 1) {
+					} else if (level.getClone() == null) {
 						GameObject goal = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
 						removeClone = false;
-						if (direction == Dinosaur.UP) {
-							if (level.getAvatarGridY() != level.getHeight() && (level.objectInFrontOfAvatar() == null ||
-									level.objectInFrontOfAvatar().getType() == SWITCH)) {
-								level.placeClone(level.getAvatarGridX(), level.getAvatarGridY() + 1);
-							}
-						} else if (direction == Dinosaur.DOWN) {
-							if (level.getAvatarGridY() != 0 && (level.objectInFrontOfAvatar() == null ||
-									level.objectInFrontOfAvatar().getType() == SWITCH))
-								level.placeClone(level.getAvatarGridX(), level.getAvatarGridY() - 1);
-						} else if (direction == Dinosaur.LEFT) {
-							if (level.getAvatarGridX() != 0 && (level.objectInFrontOfAvatar() == null ||
-									level.objectInFrontOfAvatar().getType() == SWITCH))
-								level.placeClone(level.getAvatarGridX() - 1, level.getAvatarGridY());
-						} else if (direction == Dinosaur.RIGHT) {
-							if (level.getAvatarGridX() != level.getWidth() && (level.objectInFrontOfAvatar() == null ||
-									level.objectInFrontOfAvatar().getType() == SWITCH))
-								level.placeClone(level.getAvatarGridX() + 1, level.getAvatarGridY());
-						}
+                        level.placeClone(level.getAvatarGridX(), level.getAvatarGridY());
 
 						if (level.objectInFrontOfAvatar() != null && level.objectInFrontOfAvatar().getType() == SWITCH) {
 							avatar.setCanExit(true);
@@ -1241,8 +1248,6 @@ public class GameController implements ContactListener, Screen {
 							level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
 						}
 
-						if (level.getClone() != null)
-							avatar.decrementResources();
 
 					} else if (level.getClone() != null) {
 						removeClone = true;
@@ -1253,7 +1258,9 @@ public class GameController implements ContactListener, Screen {
 						SoundController.getInstance().playEat();
 						level.removeObject(tmp);
 						avatar.incrementResources();
-					}
+					} else {
+					    avatar.setCanBeSeen(!avatar.getCanBeSeen());
+                    }
 				} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 					boolean ate = false;
 
