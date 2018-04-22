@@ -748,7 +748,7 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
-		//System.out.println(state);
+		//SoundController.getInstance().checkMusicEnd();
 		switch (state) {
 			case GAME_READY:
 				updateReady();
@@ -774,9 +774,9 @@ public class GameController implements ContactListener, Screen {
 
 	private void updateRunning(float dt) {
 		if (failed) {
-			System.out.println("gameover");
 			state = GAME_OVER;
 		}
+
 		else {
 			if (rayhandler != null) {
 				SoundController.getInstance().checkMusicEnd();
