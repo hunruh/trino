@@ -683,7 +683,7 @@ public class GameController implements ContactListener, Screen {
 			canvas.end();
 		}
 
-        if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER) {
+        if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER || state == GAME_PAUSED) {
             displayFont.setColor(Color.WHITE);
             canvas.beginOverlay();
             if (seconds < 10) {
