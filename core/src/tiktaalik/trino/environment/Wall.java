@@ -192,7 +192,7 @@ public class Wall extends EdibleObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-        super.draw(canvas, 0, 7);
+        super.draw(canvas, 0, 7, edible);
     }
 
     /**

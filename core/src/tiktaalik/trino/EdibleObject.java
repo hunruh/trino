@@ -45,8 +45,11 @@ public abstract class EdibleObject extends GameObject {
         }
     }
 
-    public void draw(Canvas canvas, float offsetX, float offsetY) {
-        if (eatInProgress) {
+    public void draw(Canvas canvas, float offsetX, float offsetY, boolean useAnimationAsFirst) {
+        if (eatInProgress || useAnimationAsFirst) {
+            if (animeframe >= numFrames)
+                return;
+
             textureSet.setFrame((int)animeframe);
             if (textureSet != null) {
                 canvas.draw(textureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,
