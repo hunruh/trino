@@ -727,6 +727,25 @@ public class Canvas {
 		float y = (getHeight() + layout.height) / 2.0f;
 		font.draw(spriteBatch, layout, x, y+offset);
     }
+
+	/**
+	 * Draws text on screen at position (x,y)
+	 *
+	 * @param text The string to draw
+	 * @param font The font to use
+	 * @param offset The y-value offset from the center of the screen.
+	 */
+	public void drawTextCorner(String text, BitmapFont font, float offset) {
+		if (active != DrawPass.STANDARD) {
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
+			return;
+		}
+
+		GlyphLayout layout = new GlyphLayout(font,text);
+		float x = 1000;
+		float y = 700;
+		font.draw(spriteBatch, layout, x, y+offset);
+	}
     
 	/**
 	 * Start the debug drawing sequence.
