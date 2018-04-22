@@ -158,8 +158,8 @@ public class Switch extends GameObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = Dinosaur.switchCatBits|Dinosaur.wallCatBits;
-        filter.maskBits = Dinosaur.cloneCatBits;
+        filter.categoryBits = Dinosaur.switchCatBits;
+        filter.maskBits = Dinosaur.wallCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }

@@ -18,8 +18,9 @@ public class Clone extends GameObject {
     private boolean removed = false;
     private Vector2 gridLocation;
 
-    private final float totalTime = 180.0f;
+    private float totalTime = 180.0f;
     private float timeElapsed;
+    private float eatTime = 2.0f;
 
     public Clone(float radius) {
         this(0, 0, radius);
@@ -110,6 +111,10 @@ public class Clone extends GameObject {
             body.destroyFixture(geometry);
             geometry = null;
         }
+    }
+
+    public void startCountDown(){
+        totalTime = timeElapsed + eatTime;
     }
 
     /**
