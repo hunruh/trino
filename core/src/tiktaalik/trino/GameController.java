@@ -100,6 +100,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String RIVER_FILE = "trino/makeshiftriver.png";
 	private static final String RIVER_FILE_VERT = "trino/makeshiftriver2.png";
 	private static final String BOULDER_FILE = "trino/boulder.png";
+	private static final String VICTORY_FILE = "trino/victoryImage.png";
+	private static final String GAMEOVER_FILE = "trino/gameoverImage.png";
 
 	// Texture assets variables
 	private BitmapFont displayFont;
@@ -298,6 +300,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(RIVER_FILE_VERT);
 		manager.load(BOULDER_FILE, Texture.class);
 		assets.add(BOULDER_FILE);
+		manager.load(VICTORY_FILE, Texture.class);
+		assets.add(VICTORY_FILE);
+		manager.load(GAMEOVER_FILE, Texture.class);
+		assets.add(GAMEOVER_FILE);
 
 		jsonReader = new JsonReader();
 	}
@@ -337,6 +343,8 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("river", createTexture(manager, RIVER_FILE, false));
 		textureDict.put("river2", createTexture(manager, RIVER_FILE_VERT, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
+		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
+		textureDict.put("gameover", createTexture(manager, GAMEOVER_FILE, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
@@ -733,19 +741,28 @@ public class GameController implements ContactListener, Screen {
 		if (complete && !failed) {
 			displayFont.setColor(Color.YELLOW);
 			canvas.beginOverlay();
-			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
+			canvas.draw(textureDict.get("victory"),Color.WHITE,canvas.getWidth()/2 - textureDict.get("victory").getRegionWidth()*.75f/2,
+					canvas.getHeight()/2 - textureDict.get("victory").getRegionHeight()*.75f/2,
+					textureDict.get("victory").getRegionWidth()*.75f,textureDict.get("victory").getRegionHeight()*.75f);
+//			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
 			canvas.end();
 		} else if (failed) {
 			state = GAME_OVER;
 			displayFont.setColor(Color.RED);
 			canvas.beginOverlay();
-			canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
+			canvas.draw(textureDict.get("gameover"), Color.WHITE,canvas.getWidth()/2 - textureDict.get("gameover").getRegionWidth()*.75f/2,
+					canvas.getHeight()/2 - textureDict.get("gameover").getRegionHeight()*.75f/2,
+					textureDict.get("gameover").getRegionWidth()*.75f,textureDict.get("gameover").getRegionHeight()*.75f);
+			//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 			canvas.end();
 		} else if (timeOut) {
 			state = GAME_OVER;
 			displayFont.setColor(Color.RED);
 			canvas.beginOverlay();
-			canvas.drawTextCentered("TIME'S UP!", displayFont, 0.0f);
+			canvas.draw(textureDict.get("gameover"),Color.WHITE,canvas.getWidth()/2 - textureDict.get("gameover").getRegionWidth()*.75f/2,
+					canvas.getHeight()/2 - textureDict.get("gameover").getRegionHeight()*.75f/2,
+					textureDict.get("gameover").getRegionWidth()*.75f,textureDict.get("gameover").getRegionHeight()*.75f);
+			//canvas.drawTextCentered("TIME'S UP!", displayFont, 0.0f);
 			canvas.end();
 		}
 	}
