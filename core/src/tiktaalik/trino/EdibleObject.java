@@ -8,10 +8,10 @@ import tiktaalik.util.FilmStrip;
 public abstract class EdibleObject extends GameObject {
     protected static final float ANIMATION_SPEED = 0.175f;
 
-    protected FilmStrip textureSet;
-    protected int numFrames;
+    protected FilmStrip eatenTextureSet;
+    protected int numEatenFrames;
     protected float animeframe;
-    private boolean eatInProgress;
+    protected boolean eatInProgress;
     private boolean eaten;
 
     public EdibleObject(float x, float y) {
@@ -21,6 +21,7 @@ public abstract class EdibleObject extends GameObject {
 
     public void beginEating() {
         eatInProgress = true;
+        animeframe = 0;
     }
 
     public boolean getEaten() {
@@ -28,9 +29,9 @@ public abstract class EdibleObject extends GameObject {
     }
 
     public void setEatAnimation(Texture texture, int frames) {
-        numFrames = frames;
-        textureSet = new FilmStrip(texture,1,frames,frames);
-        origin = new Vector2(textureSet.getRegionWidth()/2.0f, textureSet.getRegionHeight()/2.0f);
+        numEatenFrames = frames;
+        eatenTextureSet = new FilmStrip(texture,1,frames,frames);
+        origin = new Vector2( eatenTextureSet.getRegionWidth()/2.0f,  eatenTextureSet.getRegionHeight()/2.0f);
     }
 
     public void update(float dt) {
@@ -38,7 +39,7 @@ public abstract class EdibleObject extends GameObject {
 
         if (eatInProgress) {
             animeframe += ANIMATION_SPEED;
-            if (animeframe >= numFrames) {
+            if (animeframe >= numEatenFrames) {
                 eaten = true;
                 eatInProgress = false;
             }
@@ -47,12 +48,12 @@ public abstract class EdibleObject extends GameObject {
 
     public void draw(Canvas canvas, float offsetX, float offsetY, boolean useAnimationAsFirst) {
         if (eatInProgress || useAnimationAsFirst) {
-            if (animeframe >= numFrames)
+            if (animeframe >= numEatenFrames)
                 return;
 
-            textureSet.setFrame((int)animeframe);
-            if (textureSet != null) {
-                canvas.draw(textureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,
+            eatenTextureSet.setFrame((int)animeframe);
+            if ( eatenTextureSet != null) {
+                canvas.draw( eatenTextureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,
                         getY()*drawScale.x + offsetY,0,1,1);
 
             }

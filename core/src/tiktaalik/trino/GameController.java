@@ -89,6 +89,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_CHARGE_STRIP_RIGHT = "trino/enemy_right_charge_strip.png";
 	private static final String ENEMY_ATTACK_STRIP_LEFT = "trino/enemy_left_attack_strip.png";
 	private static final String ENEMY_ATTACK_STRIP_RIGHT = "trino/enemy_right_attack_strip.png";
+	private static final String ENEMY_LEFT_EATING_STRIP = "trino/enemy_left_eaten_strip.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
@@ -283,6 +284,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_ATTACK_STRIP_LEFT);
 		manager.load(ENEMY_ATTACK_STRIP_RIGHT, Texture.class);
 		assets.add(ENEMY_ATTACK_STRIP_RIGHT);
+		manager.load(ENEMY_LEFT_EATING_STRIP, Texture.class);
+		assets.add(ENEMY_LEFT_EATING_STRIP);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
 		manager.load(PATH_FILE, Texture.class);
@@ -376,6 +379,7 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("enemyChargeRight", createFilmTexture(manager,ENEMY_CHARGE_STRIP_RIGHT));
 		filmStripDict.put("enemyAttackLeft", createFilmTexture(manager,ENEMY_ATTACK_STRIP_LEFT));
 		filmStripDict.put("enemyAttackRight", createFilmTexture(manager,ENEMY_ATTACK_STRIP_RIGHT));
+		filmStripDict.put("enemyLeftEating", createFilmTexture(manager,ENEMY_LEFT_EATING_STRIP));
 		filmStripDict.put("edibleWallEating", createFilmTexture(manager, EDIBLE_WALL_EATING_STRIP));
 
 		worldAssetState = AssetState.COMPLETE;
@@ -583,8 +587,11 @@ public class GameController implements ContactListener, Screen {
 		cameraBounds = new Rectangle(0,0,32,18);
 
 		// Init Enemy AI controllers
-		for (int i = 0; i < level.getEnemies().size(); i++)
-			controls.add(new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP, level));
+		for (int i = 0; i < level.getEnemies().size(); i++) {
+			AIController controller = new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP, level);
+			controls.add(controller);
+			level.getEnemy(i).setController(controller);
+		}
 
 		// Init FireFlies
 		ffLights = new LightSource[level.getFireFlies().size()];
@@ -661,9 +668,13 @@ public class GameController implements ContactListener, Screen {
 			PooledList<GameObject>.Entry entry = iterator.next();
 			GameObject g = entry.getValue();
 
-			if (g.getType() == EDIBLEWALL) {
-				if (((EdibleObject) g).getEaten())
+			if (g.getType() == EDIBLEWALL || g.getType() == ENEMY) {
+				if (((EdibleObject) g).getEaten()) {
 					level.removeObject(g);
+
+					if (g.getType() == ENEMY)
+						controls.remove(((Enemy) g).getController());
+				}
 			}
 
 			if (g.isRemoved()) {
@@ -1286,8 +1297,7 @@ public class GameController implements ContactListener, Screen {
 						if (tmp.getStunned() && level.isInFrontOfAvatar(tmp)
 								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
 							SoundController.getInstance().playEat();
-							level.removeObject(tmp);
-							controls.remove(controls.get(i));
+							tmp.beginEating();
 							avatar.incrementResources();
 							ate = true;
 							break;

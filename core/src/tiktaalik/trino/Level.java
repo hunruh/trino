@@ -450,6 +450,7 @@ public class Level {
                     filmStripDict.get("enemyStunnedRight"), 3,
                     filmStripDict.get("enemyStunnedBack"), 3,
                     filmStripDict.get("enemyStunnedFront"), 3);
+            en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
             en.setDirection(d);
             addObject(en);
         }

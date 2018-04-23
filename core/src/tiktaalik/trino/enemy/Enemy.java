@@ -10,15 +10,18 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import tiktaalik.trino.Canvas;
+import tiktaalik.trino.EdibleObject;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.util.FilmStrip;
 
-public class Enemy extends GameObject {
+public class Enemy extends EdibleObject {
     private final float STUN_DURATION = 4.0f;
 
     private static final float ANIMATION_SPEED = 0.175f;
     private FilmStrip[] textureSet;
+
+    private AIController controller;
 
     protected CircleShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for the fixture (for resizing)
@@ -76,6 +79,14 @@ public class Enemy extends GameObject {
         charging = false;
         coolingCharge = false;
         chargeReady = false;
+    }
+
+    public void setController(AIController controller) {
+        this.controller = controller;
+    }
+
+    public AIController getController() {
+        return controller;
     }
 
     public void setTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
@@ -295,6 +306,20 @@ public class Enemy extends GameObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
+        if (eatInProgress) {
+            if (animeframe >= numEatenFrames)
+                return;
+
+            eatenTextureSet.setFrame((int)animeframe);
+            if ( eatenTextureSet != null) {
+                canvas.draw( eatenTextureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,
+                        getY()*drawScale.x,0,1,1);
+
+            }
+
+            return;
+        }
+
         int filmStripItem = direction;
         if (loadingCharge || (chargeReady && !charging))
             filmStripItem += 4;
