@@ -707,21 +707,26 @@ public class Canvas {
 //		shadowRender.ellipse(x-w, y-h, 2*w, 2*h, 12);
 	}
 
-	public void drawProgressCircle(CircleShape shape,Color color,float x, float y, float s){
+	public void drawProgressCircle(CircleShape shape,Color color,int type,float x, float y, float s){
 		if (active != DrawPass.STANDARD) {
 			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
+		if (type == 0){
+			float d = shape.getRadius()*s;
+			progressOutlineRender.setColor(progressBGColor);
+			progressOutlineRender.circle(x,y+50,2*(shape.getRadius()+.025f)*s,20);
 
-		float d = shape.getRadius()*s;
-		progressOutlineRender.setColor(progressBGColor);
-		progressOutlineRender.circle(x,y+50,2*(shape.getRadius()+.025f)*s,20);
+			progressRender.setColor(color);
+			progressRender.circle(x,y+50, 2*shape.getRadius()*s, 20);
+		} else {
+			float d = shape.getRadius()*s;
+			progressOutlineRender.setColor(progressBGColor);
+			progressOutlineRender.circle(x,y+50,2*(shape.getRadius()+.025f)*s,20);
 
-		progressRender.setColor(color);
-		progressRender.circle(x,y+50, 2*shape.getRadius()*s, 20);
-
-
-
+			progressRender.setColor(color);
+			progressRender.circle(x,y+50, 2*shape.getRadius()*s, 20);
+		}
 
 	}
 	

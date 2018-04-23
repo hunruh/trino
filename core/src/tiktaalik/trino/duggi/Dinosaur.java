@@ -536,18 +536,26 @@ public abstract class Dinosaur extends GameObject {
             newColor = new Color(1, 0, 0, 1);
             CircleShape progressCircle = new CircleShape();
             progressCircle.setRadius(value / 10);
-            canvas.drawProgressCircle(progressCircle, newColor, getX() * drawScale.x, getY() * drawScale.x, drawScale.x);
+            canvas.drawProgressCircle(progressCircle, newColor,0, getX() * drawScale.x, getY() * drawScale.x, drawScale.x);
         } else if (value > 0.5 && value < 1){
             newColor = new Color(1,1,0,1);
             CircleShape progressCircle = new CircleShape();
             progressCircle.setRadius(value/10);
-            canvas.drawProgressCircle(progressCircle,newColor,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
+            canvas.drawProgressCircle(progressCircle,newColor,0,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
         } else if (actionReady){
             newColor = new Color(0,1,0,1);
             CircleShape progressCircle = new CircleShape();
             progressCircle.setRadius(prevValueProgCircle/10);
-            canvas.drawProgressCircle(progressCircle,newColor,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
+            canvas.drawProgressCircle(progressCircle,newColor,0,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
         }
+
+        if (canBeSeenTimeStamp - ticks > 0){
+            newColor = new Color(0.133f, 0.545f, 0.133f, 1);
+            CircleShape progressCircle = new CircleShape();
+            progressCircle.setRadius((float)(canBeSeenTimeStamp - ticks)/10000f);
+            canvas.drawProgressCircle(progressCircle, newColor, 1,getX() * drawScale.x, getY() * drawScale.x, drawScale.x);
+        }
+
 
     }
 
