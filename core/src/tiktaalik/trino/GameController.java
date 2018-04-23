@@ -1291,11 +1291,9 @@ public class GameController implements ContactListener, Screen {
 						SoundController.getInstance().playCottonPickup();
 						level.removeObject(cotton);
 						avatar.incrementResources();
-					} else if (level.getClone() == null) {
+					} else {
 						if (!avatar.inActionCycle())
 							avatar.loadAction();
-					} else if (level.getClone() != null) {
-						removeClone = true;
 					}
 				} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 					GameObject tmp = level.objectInFrontOfAvatar();
@@ -1336,6 +1334,9 @@ public class GameController implements ContactListener, Screen {
 
 			if (level.getAvatar().getActionComplete()) {
 				if (level.getAvatar().getForm() == Dinosaur.DOLL_FORM) {
+                    if (level.getClone() != null) {
+                        level.removeClone();
+                    }
 					level.getAvatar().useAction();
 					level.placeClone();
 				} else if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
