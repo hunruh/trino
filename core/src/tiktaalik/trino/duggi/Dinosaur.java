@@ -532,7 +532,7 @@ public abstract class Dinosaur extends GameObject {
         }
         Color newColor = new Color(0,1,0,1);
 
-        if (value > 0 && value <= 0.5) {
+        if (value > 0.10 && value <= 0.5) {
             newColor = new Color(1, 0, 0, 1);
             CircleShape progressCircle = new CircleShape();
             progressCircle.setRadius(value / 10);

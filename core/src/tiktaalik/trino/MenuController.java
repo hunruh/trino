@@ -15,15 +15,17 @@ import tiktaalik.util.*;
 
 public class MenuController implements Screen, InputProcessor, ControllerListener {
 
-	private static final String BACKGROUND_FILE = "trino/menu.png";
+	private static final String BACKGROUND_FILE = "trino/menu2.png";
 	private static final String PROGRESS_FILE_ONE = "trino/load1.png";
 	private static final String PROGRESS_FILE_TWO = "trino/load2.png";
 	private static final String PROGRESS_FILE_THREE = "trino/load3.png";
-	private static final String PLAY_BTN_FILE = "shared/play.png";
+	private static final String PLAY_BTN_FILE = "trino/startButton.png";
+	private static final String LEVEL_SELECT_BTN_FILE = "trino/levelSelectButton.png";
 
 
 	private Texture background; // Background texture for start-up
 	private Texture playButton; // Play button to display when done
+	private Texture levelSelectButton; // Level Select button to display when done
 	private Texture statusOne; // Loading texture 1
 	private Texture statusTwo; // Loading texture 2
 	private Texture statusThree; // Loading texture 3
@@ -33,7 +35,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static int STANDARD_WIDTH  = 1280; // Standard window size (for scaling)
 	private static int STANDARD_HEIGHT = 720; // Standard window height (for scaling)
 	private static float BAR_HEIGHT_RATIO = 0.25f; // Ratio of the bar height to the screen
-	private static float BUTTON_SCALE  = 0.60f; // Amount to scale the play button
+	private static float BUTTON_SCALE  = 1.0f; // Amount to scale the play button
 
 	private AssetManager manager; // AssetManager to be loading in the background
 	private Canvas canvas; // Reference to Canvas created by the root
@@ -95,6 +97,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		resize(canvas.getWidth(),canvas.getHeight());
 
 		playButton = null;
+		levelSelectButton = null;
 		background = null;
 		statusOne  = new Texture(PROGRESS_FILE_ONE);
 		statusTwo  = new Texture(PROGRESS_FILE_TWO);
@@ -126,6 +129,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 			 playButton.dispose();
 			 playButton = null;
 		 }
+		if (levelSelectButton != null) {
+			levelSelectButton.dispose();
+			levelSelectButton = null;
+		}
 	}
 
 	/**
@@ -142,6 +149,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				background = new Texture(BACKGROUND_FILE);
 				playButton = new Texture(PLAY_BTN_FILE);
 				playButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+				levelSelectButton = new Texture(LEVEL_SELECT_BTN_FILE);
+				levelSelectButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			}
 		}
 	}
@@ -155,9 +164,11 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 			drawProgress(canvas);
 		} else {
 			canvas.draw(background, 0,0);
-			Color tint = (pressState == 1 ? Color.GRAY: new Color(0x4DC068ff));
+			Color tint = (pressState == 1 ? Color.GRAY: new Color(1,1,1,1));
 			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2,
-					centerX, centerY - playButton.getHeight()/3, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+					centerX, centerY+75, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+			canvas.draw(levelSelectButton, Color.WHITE, levelSelectButton.getWidth()/2, levelSelectButton.getHeight()/2,
+					centerX, centerY-25, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
 		}
 		canvas.end();
 	}
