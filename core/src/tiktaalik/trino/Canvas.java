@@ -32,7 +32,7 @@ public class Canvas {
 	private BlendState blend; // The current color blending mode
 	private OrthographicCamera camera; // Camera for the underlying SpriteBatch
 	private Color shadow = new Color(0.19f, 0.22f, 0, 0.7f);
-	private Color progressColor = new Color(0,1.0f,0,1.0f);
+	private Color progressColor = new Color(1.0f,1.0f,0,1.0f);
 	private Color progressBGColor = new Color(0.502f,0.502f,0.502f,1.0f);
 
 	// CACHE VARIABLES
