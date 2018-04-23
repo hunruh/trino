@@ -519,6 +519,10 @@ public class Level {
             g.draw(canvas);
         canvas.end();
 
+        canvas.beginProgressCircle();
+        avatar.drawProgressCircle(canvas, avatar.getActionLoadValue());
+        canvas.endProgressCircle();
+
         drawObjects.clear();
     }
 

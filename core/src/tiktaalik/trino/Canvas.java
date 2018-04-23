@@ -26,11 +26,14 @@ public class Canvas {
 
 	private PolygonSpriteBatch spriteBatch; // Drawing context to handle textures AND POLYGONS as sprites
 	private ShapeRenderer shadowRender; // Rendering context for shadows
+	private ShapeRenderer progressRender; // Rendering context for progress circle
 	private ShapeRenderer debugRender; // Rendering context for the debug outlines
 	private DrawPass active; // Track whether or not we are active (for error checking)
 	private BlendState blend; // The current color blending mode
 	private OrthographicCamera camera; // Camera for the underlying SpriteBatch
 	private Color shadow = new Color(0.19f, 0.22f, 0, 0.7f);
+	private Color progressColor = new Color(0,1.0f,0,1.0f);
+	private Color progressBGColor = new Color(0.502f,0.502f,0.502f,1.0f);
 
 	// CACHE VARIABLES
 	int width; // Value to cache window width (if we are currently full screen)
@@ -49,6 +52,7 @@ public class Canvas {
 		spriteBatch = new PolygonSpriteBatch();
 		debugRender = new ShapeRenderer();
 		shadowRender = new ShapeRenderer();
+		progressRender = new ShapeRenderer();
 		
 		// Set the projection matrix (for proper scaling)
 		camera = new OrthographicCamera(getWidth(),getHeight());
@@ -80,6 +84,8 @@ public class Canvas {
     	spriteBatch = null;
     	shadowRender.dispose();
     	shadowRender = null;
+    	progressRender.dispose();
+    	progressRender = null;
     	local  = null;
     	global = null;
     	vertex = null;
@@ -312,6 +318,14 @@ public class Canvas {
 		active = DrawPass.STANDARD;
 	}
 
+	public void beginProgressCircle(){
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		progressRender.setProjectionMatrix(camera.combined);
+		progressRender.begin(ShapeRenderer.ShapeType.Filled);
+		active = DrawPass.STANDARD;
+	}
+
 
     public void beginOverlay() {
     	spriteBatch.setProjectionMatrix(cameraMatrix);
@@ -331,6 +345,12 @@ public class Canvas {
     	shadowRender.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
     	active = DrawPass.INACTIVE;
+	}
+
+	public void endProgressCircle() {
+		progressRender.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+		active = DrawPass.INACTIVE;
 	}
 
 	/**
@@ -678,6 +698,20 @@ public class Canvas {
 //		System.out.println("x: " + (x-w) + ", y: " + (y-h) + ", sx: " + 2*w + ", sy: " + shape.getRadius() * 2*h);
 //		shadowRender.setColor(color);
 //		shadowRender.ellipse(x-w, y-h, 2*w, 2*h, 12);
+	}
+
+	public void drawProgressCircle(CircleShape shape,float x, float y, float s){
+		if (active != DrawPass.STANDARD) {
+			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
+			return;
+		}
+
+		float d = shape.getRadius()*s;
+		progressRender.setColor(progressColor);
+		progressRender.circle(x,y+50, 2*shape.getRadius()*s, 20);
+
+
+
 	}
 	
 	/**

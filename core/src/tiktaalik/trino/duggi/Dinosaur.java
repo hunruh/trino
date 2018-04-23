@@ -56,6 +56,8 @@ public abstract class Dinosaur extends GameObject {
     private float upDown; // The current vertical movement of the character
     protected int direction;
     private int resourceCnt;
+    private float prevValueProgCircle = 1.0f;
+    private int ticks = 0;
 
     public static final int ACTION_LOADING_LEFT = 4;
     public static final int ACTION_LOADING_RIGHT = 5;
@@ -211,6 +213,8 @@ public abstract class Dinosaur extends GameObject {
         numFrames[EATING_DOWN] = downFrames;
         textureSet[EATING_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
     }
+
+    public float getActionLoadValue(){return actionLoad;}
 
     /**
      * Returns left/right movement of this character.
@@ -414,6 +418,15 @@ public abstract class Dinosaur extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
+        ticks++;
+
+        if (ticks % 10 == 0){
+            if (prevValueProgCircle == 1){
+                prevValueProgCircle = 1.25f;
+            } else {
+                prevValueProgCircle = 1;
+            }
+        }
 
         if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
             animeframe += ANIMATION_SPEED;
@@ -495,6 +508,25 @@ public abstract class Dinosaur extends GameObject {
 
     public void drawShadow(Canvas canvas) {
 //        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
+    }
+
+    public void drawProgressCircle(Canvas canvas, float value){
+
+        if (value > 1){
+            value = 1;
+        }
+        if (value > 0){
+            CircleShape progressCircle = new CircleShape();
+            progressCircle.setRadius(value/10);
+            canvas.drawProgressCircle(progressCircle,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
+        } else if (actionReady){
+
+
+            CircleShape progressCircle = new CircleShape();
+            progressCircle.setRadius(prevValueProgCircle/10);
+            canvas.drawProgressCircle(progressCircle,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
+        }
+
     }
 
     /**
