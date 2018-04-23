@@ -862,9 +862,11 @@ public class GameController implements ContactListener, Screen {
 		}
 		else {
 		    if (level.getClone() != null){
-		        if (level.getClone().getGridLocation().x == level.getSwitch(0).getGridLocation().x &&
-                        level.getClone().getGridLocation().y == level.getSwitch(0).getGridLocation().y){
-		            System.out.println("success");
+		        if (Math.abs(level.getClone().getX() - level.getSwitch(0).getX()) < 1.5 &&
+                        Math.abs(level.getClone().getX() - level.getSwitch(0).getX()) > 0 &&
+                        Math.abs(level.getClone().getY() - level.getSwitch(0).getY()) < 1.5 &&
+                        Math.abs(level.getClone().getY() - level.getSwitch(0).getY()) > 0){
+		            //System.out.println("success");
                     level.getAvatar().setCanExit(true);
                     level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
                 } else {

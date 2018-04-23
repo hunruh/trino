@@ -521,6 +521,9 @@ public class Level {
 
         canvas.beginProgressCircle();
         avatar.drawProgressCircle(canvas, avatar.getActionLoadValue());
+        if (clone!= null){
+            clone.drawProgressCircle(canvas);
+        }
         canvas.endProgressCircle();
 
         drawObjects.clear();

@@ -18,7 +18,7 @@ public class Clone extends GameObject {
     private boolean removed = false;
     private Vector2 gridLocation;
 
-    private float totalTime = 180.0f;
+    private float totalTime = 60.0f;
     private float timeElapsed;
     private float eatTime = 2.0f;
 
@@ -115,6 +115,33 @@ public class Clone extends GameObject {
 
     public void startCountDown(){
 //        totalTime = timeElapsed + eatTime;
+    }
+
+    public void drawProgressCircle(Canvas canvas){
+
+
+        Color newColor = new Color(0,1,0,1);
+
+        if (totalTime- timeElapsed> 0){
+            if (totalTime - timeElapsed > 0.75f*totalTime){
+                newColor = new Color(0, 1, 0f, 1);
+                CircleShape progressCircle = new CircleShape();
+                progressCircle.setRadius((float)(totalTime - timeElapsed)/1000f);
+                canvas.drawProgressCircle(progressCircle, newColor, 2,getX() * drawScale.x, getY() * drawScale.x, drawScale.x);
+            }else if (totalTime - timeElapsed > 0.50f*totalTime){
+                newColor = new Color(1, 1, 0f, 1);
+                CircleShape progressCircle = new CircleShape();
+                progressCircle.setRadius((float)(totalTime - timeElapsed)/1000f);
+                canvas.drawProgressCircle(progressCircle, newColor, 2,getX() * drawScale.x, getY() * drawScale.x, drawScale.x);
+            } else {
+                newColor = new Color(1f, 0, 0f, 1);
+                CircleShape progressCircle = new CircleShape();
+                progressCircle.setRadius((float)(totalTime - timeElapsed)/1000f);
+                canvas.drawProgressCircle(progressCircle, newColor, 2,getX() * drawScale.x, getY() * drawScale.x, drawScale.x);
+            }
+        }
+
+
     }
 
     /**
