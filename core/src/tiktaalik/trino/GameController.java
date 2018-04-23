@@ -1300,11 +1300,19 @@ public class GameController implements ContactListener, Screen {
 				} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 					GameObject tmp = level.objectInFrontOfAvatar();
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
-						SoundController.getInstance().playEat();
-						((EdibleObject) tmp).beginEating();
-						avatar.incrementResources();
+
+						if (!avatar.inActionCycle()){
+							avatar.loadAction();
+						}
+//						if (avatar.getActionLoadValue() == 0){
+//							SoundController.getInstance().playEat();
+//							((EdibleObject) tmp).beginEating();
+//							avatar.incrementResources();
+//						} else if (!avatar.inActionCycle()){
+//							avatar.loadAction();
+//						}
 					} else {
-					    avatar.setCanBeSeen(!avatar.getCanBeSeen());
+//					    avatar.setCanBeSeen(!avatar.getCanBeSeen());
                     }
 				} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 					boolean ate = false;
@@ -1330,15 +1338,34 @@ public class GameController implements ContactListener, Screen {
 				if (level.getAvatar().getForm() == Dinosaur.DOLL_FORM) {
 					level.getAvatar().useAction();
 					level.placeClone();
+				} else if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
+					level.getAvatar().useAction();
+					GameObject tmp = level.objectInFrontOfAvatar();
+					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
+						SoundController.getInstance().playEat();
+						((EdibleObject) tmp).beginEating();
+						avatar.setCanBeSeen(false);
+					}
 				}
 			}
 
 
 			if (InputHandler.getInstance().didActionRelease()) {
-				if (avatar.actionReady())
+
+				if (avatar.getForm() == Dinosaur.HERBIVORE_FORM && avatar.getActionLoadValue() < 0.25f && avatar.getActionLoadValue()>0) {
+					GameObject tmp = level.objectInFrontOfAvatar();
+					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
+						SoundController.getInstance().playEat();
+						((EdibleObject) tmp).beginEating();
+						avatar.incrementResources();
+					}
+				}
+
+				if (avatar.actionReady()) {
 					avatar.beginAction();
-				else
+				} else {
 					avatar.stopAction();
+				}
 			}
 
 			if (InputHandler.getInstance().didPause()) {

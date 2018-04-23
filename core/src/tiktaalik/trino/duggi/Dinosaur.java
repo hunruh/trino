@@ -58,6 +58,9 @@ public abstract class Dinosaur extends GameObject {
     private int resourceCnt;
     private float prevValueProgCircle = 1.0f;
     private int ticks = 0;
+    private Color tint = Color.WHITE;
+    private int canBeSeenTimeStamp = 0;
+    private int stealthDuration = 1000;
 
     public static final int ACTION_LOADING_LEFT = 4;
     public static final int ACTION_LOADING_RIGHT = 5;
@@ -367,6 +370,9 @@ public abstract class Dinosaur extends GameObject {
         return canBeSeen;
     }
     public void setCanBeSeen(boolean assignment){
+        if (!assignment){
+            canBeSeenTimeStamp = ticks + stealthDuration;
+        }
         canBeSeen = assignment;
     }
 
@@ -426,6 +432,15 @@ public abstract class Dinosaur extends GameObject {
             } else {
                 prevValueProgCircle = 1;
             }
+        }
+        if (ticks >= canBeSeenTimeStamp){
+            canBeSeen = true;
+        }
+
+        if (canBeSeen){
+            tint = Color.WHITE;
+        }else {
+            tint = Color.GREEN;
         }
 
         if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
@@ -501,7 +516,7 @@ public abstract class Dinosaur extends GameObject {
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {
-            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,
+            canvas.draw(textureSet[filmStripItem], tint,origin.x,origin.y,getX()*drawScale.x + offsetX,
                     getY()*drawScale.x,0,1,1);
         }
     }
