@@ -118,7 +118,7 @@ public class SoundController {
 
     public void playCrash(){
         crashSound.pause();
-        crashSound.play(0.3f);
+        crashSound.play(0.1f);
     }
 
     public void playAlert(){
