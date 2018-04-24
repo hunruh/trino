@@ -22,6 +22,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String PLAY_BTN_FILE = "trino/startButton.png";
 	private static final String LEVEL_SELECT_BTN_FILE = "trino/levelSelectButton.png";
 
+	private Color hoverColor = new Color(0.86f, 0.81f, 0.75f, 1);
+	private Color selectColor = new Color(0.76f, 0.69f, 0.63f, 1);
 
 	private Texture background; // Background texture for start-up
 	private Texture playButton; // Play button to display when done
@@ -29,7 +31,6 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private Texture statusOne; // Loading texture 1
 	private Texture statusTwo; // Loading texture 2
 	private Texture statusThree; // Loading texture 3
-
 
 	private static int DEFAULT_BUDGET = 15; // Default budget for asset loader (do nothing but load 60 fps)
 	private static int STANDARD_WIDTH  = 1280; // Standard window size (for scaling)
@@ -53,7 +54,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	/** Current progress (0 to 1) of the asset manager */
 	private float progress;
 	/** The current state of the play button */
-	private int   pressState;
+	private int playPressState;
+	private int playHoverState;
+	private int levelPressState;
+	private int levelHoverState;
 	/** The amount of time to devote to loading assets (as opposed to on screen hints, etc.) */
 	private int   budget;
 	/** Whether or not this player mode is still active */
@@ -65,7 +69,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @return true if the player is ready to go
 	 */
 	public boolean isReady() {
-		return pressState == 2;
+		return playPressState == 2;
 	}
 
 	/**
@@ -105,7 +109,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 		// No progress so far.
 		progress   = 0;
-		pressState = 0;
+		playPressState = 0;
+		playHoverState = 0;
+		levelPressState = 0;
+		levelHoverState = 0;
 		active = false;
 
 		Gdx.input.setInputProcessor(this);
@@ -164,10 +171,24 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 			drawProgress(canvas);
 		} else {
 			canvas.draw(background, 0,0);
-			Color tint = (pressState == 1 ? Color.GRAY: new Color(1,1,1,1));
-			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2,
+			Color playTint;
+			if (playPressState == 1)
+				playTint = selectColor;
+			else if (playHoverState == 1)
+				playTint = hoverColor;
+			else
+				playTint = Color.WHITE;
+			canvas.draw(playButton, playTint, playButton.getWidth()/2, playButton.getHeight()/2,
 					centerX, centerY+75, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
-			canvas.draw(levelSelectButton, Color.WHITE, levelSelectButton.getWidth()/2, levelSelectButton.getHeight()/2,
+
+			Color levelTint;
+			if (levelPressState == 1)
+				levelTint = selectColor;
+			else if (levelHoverState == 1)
+				levelTint = hoverColor;
+			else
+				levelTint = Color.WHITE;
+			canvas.draw(levelSelectButton, levelTint, levelSelectButton.getWidth()/2, levelSelectButton.getHeight()/2,
 					centerX, centerY-25, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
 		}
 		canvas.end();
@@ -256,7 +277,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @return whether to hand the event to other listeners.
 	 */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (playButton == null || pressState == 2) {
+		if (playButton == null || playPressState == 2) {
 			return true;
 		}
 
@@ -265,10 +286,13 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 
 		// Play button is a circle.
-		float radius = BUTTON_SCALE*scale*playButton.getWidth()/2.0f;
-		float dist = (screenX-centerX)*(screenX-centerX)+(screenY-centerY+playButton.getHeight()/3)*(screenY-centerY+playButton.getHeight()/3);
-		if (dist < radius*radius) {
-			pressState = 1;
+		if ((screenX > centerX - playButton.getWidth()/2) && (screenX < centerX + playButton.getWidth()/2) &&
+				(screenY > centerY + 75 - playButton.getHeight()/2) && (screenY < centerY + 75 + playButton.getHeight()/2)) {
+			playPressState = 1;
+		}
+		if ((screenX > centerX - levelSelectButton.getWidth()/2) && (screenX < centerX + levelSelectButton.getWidth()/2) &&
+				(screenY > centerY - 25 - levelSelectButton.getHeight()/2) && (screenY < centerY - 25 + levelSelectButton.getHeight()/2)) {
+			levelPressState = 1;
 		}
 		return false;
 	}
@@ -283,13 +307,35 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @return whether to hand the event to other listeners.
 	 */
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if (pressState == 1) {
-			pressState = 2;
+		if (playPressState == 1) {
+			playPressState = 2;
 			return false;
 		}
 		return true;
 	}
 
+	public boolean mouseMoved(int screenX, int screenY) {
+		// Flip to match graphics coordinates
+		screenY = heightY-screenY;
+
+		if (playButton != null) {
+			if ((screenX > centerX - playButton.getWidth()/2) && (screenX < centerX + playButton.getWidth()/2) &&
+				(screenY > centerY + 75 - playButton.getHeight()/2) && (screenY < centerY + 75 + playButton.getHeight()/2)) {
+				playHoverState = 1;
+			} else {
+				playHoverState = 0;
+			}
+
+			if ((screenX > centerX - levelSelectButton.getWidth()/2) && (screenX < centerX + levelSelectButton.getWidth()/2) &&
+					(screenY > centerY - 25 - levelSelectButton.getHeight()/2) && (screenY < centerY - 25 + levelSelectButton.getHeight()/2)) {
+				levelHoverState = 1;
+			} else {
+				levelHoverState = 0;
+			}
+		}
+
+		return true;
+	}
 
 	/**
 	 * Called when a key is released.
@@ -300,7 +346,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 */
 	public boolean keyUp(int keycode) {
 		if (keycode == Input.Keys.N || keycode == Input.Keys.P) {
-			pressState = 2;
+			playPressState = 2;
 			return false;
 		}
 		return true;
@@ -326,10 +372,6 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	/* Unused InputProcessor method */
 	public boolean keyTyped(char character) {
 		return true;
-	}
-	/* Unused InputProcessor method */
-	public boolean mouseMoved(int screenX, int screenY) { 
-		return true; 
 	}
 	/* Unused InputProcessor method */
 	public boolean scrolled(int amount) { 
