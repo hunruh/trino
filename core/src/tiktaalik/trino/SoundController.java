@@ -21,6 +21,7 @@ public class SoundController {
     private static String POP_5_FILE = "trino/pop5.mp3";
     private static String POOF_FILE = "trino/poof.mp3";
     private static String CRASH_FILE = "trino/enemyCrash.mp3";
+    private static String ALERT_FILE = "trino/alert.mp3";
 
     private Music bgMusic;
     private Music bgDoll;
@@ -32,6 +33,7 @@ public class SoundController {
     private Sound collideWall;
     private Sound transformSound;
     private Sound crashSound;
+    private Sound alertSound;
 
     private float dollStartTime = 9.056f;
     private float herbivoreStartTime = 131.387f;
@@ -60,6 +62,7 @@ public class SoundController {
         collideWall = Gdx.audio.newSound(Gdx.files.internal(POP_5_FILE));
         transformSound = Gdx.audio.newSound(Gdx.files.internal(POOF_FILE));
         crashSound = Gdx.audio.newSound(Gdx.files.internal(CRASH_FILE));
+        alertSound = Gdx.audio.newSound(Gdx.files.internal(ALERT_FILE));
     }
 
     public void playBackground(int form) {
@@ -116,6 +119,11 @@ public class SoundController {
     public void playCrash(){
         crashSound.pause();
         crashSound.play(0.3f);
+    }
+
+    public void playAlert(){
+        alertSound.pause();
+        alertSound.play(0.3f);
     }
 
     /** Change the music based on timestamp */
@@ -183,6 +191,7 @@ public class SoundController {
             collideWall.dispose();
             transformSound.dispose();
             crashSound.dispose();
+            alertSound.dispose();
         }
     }
 
