@@ -510,8 +510,9 @@ public class Level {
 
         canvas.beginShadows();
         avatar.drawShadow(canvas);
-        for(Enemy e : enemies)
+        for(Enemy e : enemies) {
             e.drawShadow(canvas);
+        }
         canvas.endShadows();
 
         canvas.begin();
@@ -523,6 +524,9 @@ public class Level {
         avatar.drawProgressCircle(canvas, avatar.getActionLoadValue());
         if (clone!= null){
             clone.drawProgressCircle(canvas);
+        }
+        for(Enemy e : enemies) {
+            e.drawProgressCircle(canvas);
         }
         canvas.endProgressCircle();
 

@@ -47,6 +47,7 @@ public class AIController {
 
             if (level.getAvatar().getCanBeSeen()){
                 SoundController.getInstance().playAlert();
+                enemy.setAlert(true);
                 enemy.loadCharge();
             }
 

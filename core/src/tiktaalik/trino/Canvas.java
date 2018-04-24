@@ -727,7 +727,7 @@ public class Canvas {
 
 			progressRender.setColor(color);
 			progressRender.circle(x,y+50, 2*shape.getRadius()*s, 20);
-		} else {
+		} else if (type == 2){
             float d = shape.getRadius()*s;
             progressOutlineRender.setColor(progressBGColor);
             progressOutlineRender.circle(x,y+5,2*(shape.getRadius()+.025f)*s,20);
@@ -735,7 +735,12 @@ public class Canvas {
             progressRender.setColor(color);
             progressRender.circle(x,y+5, 2*shape.getRadius()*s, 20);
 
-        }
+        } else if (type == 3){
+			float d = shape.getRadius()*s;
+			progressOutlineRender.setColor(color);
+			progressOutlineRender.circle(x,y+50,2*(shape.getRadius())*s,20);
+			progressOutlineRender.rect(x-5,y+60,10,17);
+		}
 
 	}
 	
