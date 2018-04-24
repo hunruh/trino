@@ -601,6 +601,7 @@ public class GameController implements ContactListener, Screen {
 		// Init the level
 		level = new Level(world, currentLevel);
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
+		collisionHandler.setLevel(level);
 
 		// This should be set before init lighting - should be moved when we load in the json
 		cameraBounds = new Rectangle(0,0,32,18);
@@ -889,7 +890,10 @@ public class GameController implements ContactListener, Screen {
 		            level.getAvatar().setCanExit(false);
                     level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
                 }
-            }
+            } else {
+				level.getAvatar().setCanExit(false);
+				level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
+			}
 			if (rayhandler != null) {
 				SoundController.getInstance().checkMusicEnd();
 				if (rayhandler != null)

@@ -44,6 +44,9 @@ public class Enemy extends EdibleObject {
     private final float CHARGE_LOAD_DURATION = 1.0f;
     private float chargeCooldown;
     private float chargeLoad;
+    private float timeElapsed;
+    private float totalTime = 1.0f;
+    private boolean alert = false;
 
     private static final int STUNNED_LEFT = 12;
     private static final int STUNNED_RIGHT = 13;
@@ -79,6 +82,13 @@ public class Enemy extends EdibleObject {
         charging = false;
         coolingCharge = false;
         chargeReady = false;
+    }
+
+    public void setAlert(boolean assignment){
+        if (assignment){
+            timeElapsed = 0;
+        }
+        alert = assignment;
     }
 
     public void setController(AIController controller) {
@@ -248,6 +258,10 @@ public class Enemy extends EdibleObject {
      */
     public void update(float dt) {
         super.update(dt);
+        timeElapsed += dt;
+        if (timeElapsed > totalTime) {
+            alert = false;
+        }
 
         if (collideCooldown > 0)
             collideCooldown += dt;
@@ -337,6 +351,17 @@ public class Enemy extends EdibleObject {
     public void drawShadow(Canvas canvas) {
 //        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
 //        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x-9,drawScale.x);
+    }
+    public void drawProgressCircle(Canvas canvas){
+
+      if (alert) {
+          Color newColor = new Color(1, 0, 0, 1);
+          CircleShape progressCircle = new CircleShape();
+          progressCircle.setRadius(0.075f);
+          canvas.drawProgressCircle(progressCircle, newColor, 3, getX() * drawScale.x, getY() * drawScale.x, drawScale.x);
+      }
+
+
     }
 
     /**

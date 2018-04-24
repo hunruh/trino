@@ -517,8 +517,9 @@ public class Level {
 
         canvas.beginShadows();
         avatar.drawShadow(canvas);
-        for(Enemy e : enemies)
+        for(Enemy e : enemies) {
             e.drawShadow(canvas);
+        }
         canvas.endShadows();
 
         canvas.begin();
@@ -530,6 +531,9 @@ public class Level {
         avatar.drawProgressCircle(canvas, avatar.getActionLoadValue());
         if (clone!= null){
             clone.drawProgressCircle(canvas);
+        }
+        for(Enemy e : enemies) {
+            e.drawProgressCircle(canvas);
         }
         canvas.endProgressCircle();
 
@@ -580,12 +584,12 @@ public class Level {
                 }
                 else if (direction == UP){
                     if (((Wall) bd).getGridLocation().x == locationCache.x &&
-                            ((Wall) bd).getGridLocation().y + 1 == locationCache.y)
+                            ((Wall) bd).getGridLocation().y == locationCache.y + 1)
                         return true;
                 }
                 else if (direction == DOWN){
                     if (((Wall) bd).getGridLocation().x == locationCache.x &&
-                            ((Wall) bd).getGridLocation().y - 1 == locationCache.y)
+                            ((Wall) bd).getGridLocation().y == locationCache.y - 1)
                         return true;
                 }
                 return false;
