@@ -573,12 +573,12 @@ public class Level {
                 }
                 else if (direction == UP){
                     if (((Wall) bd).getGridLocation().x == locationCache.x &&
-                            ((Wall) bd).getGridLocation().y + 1 == locationCache.y)
+                            ((Wall) bd).getGridLocation().y == locationCache.y + 1)
                         return true;
                 }
                 else if (direction == DOWN){
                     if (((Wall) bd).getGridLocation().x == locationCache.x &&
-                            ((Wall) bd).getGridLocation().y - 1 == locationCache.y)
+                            ((Wall) bd).getGridLocation().y == locationCache.y - 1)
                         return true;
                 }
                 return false;

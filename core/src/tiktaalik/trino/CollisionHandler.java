@@ -1,5 +1,6 @@
 package tiktaalik.trino;
 
+import com.badlogic.gdx.audio.Sound;
 import tiktaalik.trino.duggi.Carnivore;
 import tiktaalik.trino.duggi.Clone;
 import tiktaalik.trino.duggi.Dinosaur;
@@ -10,10 +11,16 @@ import tiktaalik.trino.environment.River;
 
 public class CollisionHandler {
     GameController parent;
+    Level level;
     private int cloneTime = 0;
 
     public CollisionHandler(GameController parent) {
+
         this.parent = parent;
+        this.level = null;
+    }
+    public void setLevel(Level level){
+        this.level = level;
     }
 
     public void processCollision(GameObject g1, GameObject g2) {
@@ -126,8 +133,9 @@ public class CollisionHandler {
             d.stopAction();
         }
 
-//        if (parent.isInFrontOfAvatar(w))
-//            SoundController.getInstance().playCollide();
+        if (level.isInFrontOfAvatar(w)) {
+            SoundController.getInstance().playCollide();
+        }
     }
 
     public void handleCollision(Dinosaur d, River r) {

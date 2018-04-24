@@ -3,6 +3,7 @@ package tiktaalik.trino.enemy;
 import com.badlogic.gdx.math.Vector2;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.Level;
+import tiktaalik.trino.SoundController;
 import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.trino.duggi.Herbivore;
 import tiktaalik.util.PooledList;
@@ -57,6 +58,7 @@ public class AIController {
         if (obstacle || enemy.getCollided()) {
             enemy.setCollided(false);
             if (enemy.getCharging()) {
+                SoundController.getInstance().playCrash();
                 enemy.setStunned();
                 enemy.setCharging(false);
                 return;
