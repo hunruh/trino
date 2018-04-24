@@ -149,6 +149,8 @@ public class GameController implements ContactListener, Screen {
 	private World world;
 	private Level level;
 
+	private int currentLevel = 2;
+
 	private PooledList<AIController> controls = new PooledList<AIController>();
 	private PooledList<FireFlyAIController> fireFlyControls = new PooledList<FireFlyAIController>();
 
@@ -539,7 +541,7 @@ public class GameController implements ContactListener, Screen {
 	protected GameController(Vector2 gravity) {
 		assets = new Array<String>();
 		world = new World(gravity,false);
-		level = new Level(world);
+		level = new Level(world, currentLevel);
 		complete = false;
 		failed = false;
 		timeOut = false;
@@ -554,6 +556,15 @@ public class GameController implements ContactListener, Screen {
 
 		state = GAME_READY;
 	}
+
+	public void nextLevel(){
+		if (currentLevel == 2)
+			currentLevel = 0;
+		else
+			currentLevel++;
+		reset();
+	}
+
 
 	/**
 	 * Resets the status of the game so that we can play again.
@@ -588,7 +599,7 @@ public class GameController implements ContactListener, Screen {
 			initLighting(levelFormat.get("lighting"));
 
 		// Init the level
-		level = new Level(world);
+		level = new Level(world, currentLevel);
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
 
 		// This should be set before init lighting - should be moved when we load in the json
@@ -646,6 +657,11 @@ public class GameController implements ContactListener, Screen {
 				duggiLight.setActive(true);
 				rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
 			}
+		}
+
+		if (input.isNextLevelPressed()){
+			nextLevel();
+
 		}
 
 		// Reset level when colliding with enemy

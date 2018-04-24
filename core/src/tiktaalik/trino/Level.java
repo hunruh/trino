@@ -63,12 +63,19 @@ public class Level {
     private int levelWidth;
     private int levelHeight;
 
-    public Level(World world) {
+    private int currentLevel;
+
+    public Level(World world, int lvl) {
         this.bounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.world = world;
         scale = new Vector2();
         locationCache = new Vector2();
+        currentLevel = lvl;
         grid = new GameObject[(int) bounds.width][(int) bounds.height];
+    }
+
+    public int getCurrentLevel(){
+        return currentLevel;
     }
 
     public boolean inBounds(GameObject g) {
@@ -259,7 +266,7 @@ public class Level {
         // in the objects list
         dwidth = textureDict.get("clone").getRegionWidth() / (scale.x * 2);
 
-        tmp = parser.getAssetList(0, "Player");
+        tmp = parser.getAssetList(currentLevel, "Player");
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y - 1;
@@ -294,7 +301,7 @@ public class Level {
         TextureRegion cottonTexture = textureDict.get("cotton");
         dwidth = cottonTexture.getRegionWidth() / scale.x;
         dheight = cottonTexture.getRegionHeight() / scale.y;
-        tmp = parser.getAssetList(0, "Cottons");
+        tmp = parser.getAssetList(currentLevel, "Cottons");
         for(int i = 0; i < tmp.size(); i++){
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y-1;
@@ -342,7 +349,7 @@ public class Level {
 
         dwidth = textureDict.get("boulder").getRegionWidth() / scale.x;
         dheight = textureDict.get("boulder").getRegionHeight() / scale.y;
-        tmp = parser.getAssetList(0, "Boulders");
+        tmp = parser.getAssetList(currentLevel, "Boulders");
         for(int i = 0; i < tmp.size(); i++){
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y-1;
@@ -359,7 +366,7 @@ public class Level {
         dwidth = textureDict.get("switch").getRegionWidth() / scale.x;
         dheight = textureDict.get("switch").getRegionHeight() / scale.y;
         // Switch texture
-        tmp = parser.getAssetList(0, "Switch");
+        tmp = parser.getAssetList(currentLevel, "Switch");
         for(int i = 0; i < tmp.size(); i++){
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y-1;
@@ -373,7 +380,7 @@ public class Level {
         }
 
 
-        tmp = parser.getAssetList(0, "Walls");
+        tmp = parser.getAssetList(currentLevel, "Walls");
         for(int i = 0; i < tmp.size(); i++){
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y - 1;
@@ -386,7 +393,7 @@ public class Level {
             grid[(int)iw.getGridLocation().x][(int)iw.getGridLocation().y] = iw;
         }
 
-        tmp = parser.getAssetList(0, "EdibleWalls");
+        tmp = parser.getAssetList(currentLevel, "EdibleWalls");
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y-1;
@@ -403,7 +410,7 @@ public class Level {
         // Add level goal
         dwidth = textureDict.get("goalOpenTile").getRegionWidth() / scale.x;
         dheight = textureDict.get("goalOpenTile").getRegionHeight() / scale.y;
-        tmp = parser.getAssetList(0, "Goal");
+        tmp = parser.getAssetList(currentLevel, "Goal");
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y - 1;
@@ -419,7 +426,7 @@ public class Level {
 
         // Create enemy
         dwidth = filmStripDict.get("enemyFront").getWidth() / (10 * (scale.x * 2));
-        tmp = parser.getAssetList(0, "Enemies");
+        tmp = parser.getAssetList(currentLevel, "Enemies");
         PooledList<String[]> dir = parser.getEnemiesInformation(0);
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;

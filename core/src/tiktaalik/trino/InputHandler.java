@@ -80,6 +80,7 @@ public class InputHandler {
 	private boolean pausePrevious;
 	private boolean mousePressed;
 	private boolean mousePrevious;
+	private boolean nextLevelPressed;
 	
 	/** How much did we move horizontally? */
 	private float horizontal;
@@ -237,7 +238,11 @@ public class InputHandler {
 	public boolean didActionRelease() {
 		return !actionPressed && actionPrevious;
 	}
-	
+
+	public boolean isNextLevelPressed() {
+		return nextLevelPressed;
+	}
+
 	/**
 	 * Creates a new input controller
 	 * 
@@ -284,6 +289,7 @@ public class InputHandler {
 		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
+		nextLevelPressed = (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)||Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT));
 
 		exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.E));
 		// Directional controls
