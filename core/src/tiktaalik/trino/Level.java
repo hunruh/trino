@@ -252,7 +252,7 @@ public class Level {
         float dwidth;
         float dheight;
 
-        System.out.println("rdjgheks"+parser.getLevelDimension(0).y);
+        //System.out.println("rdjgheks"+parser.getLevelDimension(0).y);
         levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(0).y));
         levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(0).x));
 
@@ -265,6 +265,7 @@ public class Level {
         // It is important that this is always created first, as transformations must swap the first element
         // in the objects list
         dwidth = textureDict.get("clone").getRegionWidth() / (scale.x * 2);
+
 
         tmp = parser.getAssetList(currentLevel, "Player");
         for(int i = 0; i < tmp.size(); i++) {
@@ -317,34 +318,18 @@ public class Level {
         // Adding river
         dwidth = textureDict.get("river").getRegionWidth() / scale.x;
         dheight = textureDict.get("river").getRegionHeight() / scale.y;
-//        tmp = parser.getAssetList(0, "Rivers");
-        River r1 = new River(9, 4, screenToMaze(9), screenToMaze(4), dwidth, dheight, false);
-//        for(int i = 0; i < tmp.size(); i++){
-//            float x = (tmp.get(i)).x;
-//            float y = (tmp.get(i)).y-1;
-//            River riv = new River((int)x, (int)y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
-//            riv.setBodyType(BodyDef.BodyType.StaticBody);
-//            riv.setDrawScale(scale);
-//            riv.setTexture(textureDict.get("river"));
-//            riv.setType(RIVER);
-//            addObject(riv);
-//            grid[(int)riv.getGridLocation().x-1][(int)riv.getGridLocation().y-1] = riv;
-//        }
-        r1.setBodyType(BodyDef.BodyType.StaticBody);
-        r1.setDrawScale(scale);
-        r1.setTexture(textureDict.get("river"));
-        r1.setType(RIVER);
-        addObject(r1);
-        grid[(int)r1.getGridLocation().x-1][(int)r1.getGridLocation().y-1] = r1;
-//
-//        for (int i = 0; i < 2; i++) {
-//            riv[i].setBodyType(BodyDef.BodyType.StaticBody);
-//            riv[i].setDrawScale(scale);
-//            riv[i].setTexture(textureDict.get("river2"));
-//            riv[i].setType(RIVER);
-//            addObject(riv[i]);
-//            grid[(int)riv[i].getGridLocation().x-1][(int)riv[i].getGridLocation().y-1] = riv[i];
-//        }
+        tmp = parser.getAssetList(currentLevel, "Rivers");
+        for(int i = 0; i < tmp.size(); i++){
+            float x = (tmp.get(i)).x;
+            float y = (tmp.get(i)).y-1;
+            River riv = new River((int)x, (int)y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
+            riv.setBodyType(BodyDef.BodyType.StaticBody);
+            riv.setDrawScale(scale);
+            riv.setTexture(textureDict.get("river"));
+            riv.setType(RIVER);
+            addObject(riv);
+            grid[(int)riv.getGridLocation().x-1][(int)riv.getGridLocation().y-1] = riv;
+        }
 
 
         dwidth = textureDict.get("boulder").getRegionWidth() / scale.x;

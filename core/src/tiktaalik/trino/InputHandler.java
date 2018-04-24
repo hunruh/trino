@@ -289,7 +289,7 @@ public class InputHandler {
 		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
-		nextLevelPressed = (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)||Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT));
+		nextLevelPressed = (Gdx.input.isKeyPressed(Input.Keys.S)||Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT));
 
 		exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.E));
 		// Directional controls

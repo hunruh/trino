@@ -16,6 +16,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private AssetManager manager; // AssetManager to load game assets
 	private Canvas canvas; // Drawing context to display graphics
 	private MenuController menu; // Player mode for the asset menu screen
+	private LevelController levels; // Player mode for the asset level selection screen
 	private GameController controller; // The game controller
 
 	public GDXRoot() {
@@ -41,6 +42,7 @@ public class GDXRoot extends Game implements ScreenListener {
 
 		menu.setScreenListener(this);
 		setScreen(menu);
+
 	}
 
 	/** 
@@ -84,15 +86,50 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
 		if (screen == menu) {
-			controller.loadContent(manager);
-			controller.setScreenListener(this);
-			controller.setCanvas(canvas);
-			controller.reset();
-			setScreen(controller);
+			if (MenuController.currState == 2) {
+				levels = new LevelController(canvas, manager, 1);
+				levels.setScreenListener(this);
+				setScreen(levels);
+			}
+			else if (MenuController.currState == 1) {
+				controller.loadContent(manager);
+				controller.setScreenListener(this);
+				controller.setCanvas(canvas);
+				controller.reset();
+				setScreen(controller);
+			}
+
 			
 			menu.dispose();
 			menu = null;
-		} else if (exitCode == GameController.EXIT_NEXT) {
+		} else if (screen == levels) {
+			if (LevelController.levelNum == 1) {
+				controller.loadContent(manager);
+				controller.setScreenListener(this);
+				controller.setCanvas(canvas);
+				controller.reset();
+				setScreen(controller);
+			}
+			else if (LevelController.levelNum == 2) {
+				controller.loadContent(manager);
+				controller.setScreenListener(this);
+				controller.setCanvas(canvas);
+				controller.reset();
+				setScreen(controller);
+				controller.nextLevel();
+			}
+			else if (LevelController.levelNum == 3) {
+				controller.loadContent(manager);
+				controller.setScreenListener(this);
+				controller.setCanvas(canvas);
+				controller.reset();
+				setScreen(controller);
+				controller.nextLevel();
+				controller.nextLevel();
+
+			}
+		}
+		else if (exitCode == GameController.EXIT_NEXT) {
 			controller.reset();
 			setScreen(controller);
 		} else if (exitCode == GameController.EXIT_PREV) {

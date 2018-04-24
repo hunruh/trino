@@ -97,11 +97,11 @@ public class GameController implements ContactListener, Screen {
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
 	private static final String SWITCH_FILE = "trino/buttonRough.png";
-	private static final String RIVER_FILE = "trino/makeshiftriver.png";
-	private static final String RIVER_FILE_VERT = "trino/makeshiftriver2.png";
+	private static final String RIVER_FILE = "trino/river.png";
 	private static final String BOULDER_FILE = "trino/boulder.png";
 	private static final String VICTORY_FILE = "trino/victoryImage.png";
 	private static final String GAMEOVER_FILE = "trino/gameoverImage.png";
+	private static final String TUTORIAL_FILE = "trino/tutorialOverlay.png";
 
 	// Texture assets variables
 	private BitmapFont displayFont;
@@ -149,7 +149,7 @@ public class GameController implements ContactListener, Screen {
 	private World world;
 	private Level level;
 
-	private int currentLevel = 2;
+	private int currentLevel = 0;
 
 	private PooledList<AIController> controls = new PooledList<AIController>();
 	private PooledList<FireFlyAIController> fireFlyControls = new PooledList<FireFlyAIController>();
@@ -298,14 +298,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(SWITCH_FILE);
 		manager.load(RIVER_FILE, Texture.class);
 		assets.add(RIVER_FILE);
-		manager.load(RIVER_FILE_VERT, Texture.class);
-		assets.add(RIVER_FILE_VERT);
 		manager.load(BOULDER_FILE, Texture.class);
 		assets.add(BOULDER_FILE);
 		manager.load(VICTORY_FILE, Texture.class);
 		assets.add(VICTORY_FILE);
 		manager.load(GAMEOVER_FILE, Texture.class);
 		assets.add(GAMEOVER_FILE);
+		manager.load(TUTORIAL_FILE, Texture.class);
+		assets.add(TUTORIAL_FILE);
 
 		jsonReader = new JsonReader();
 	}
@@ -343,10 +343,10 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
 		textureDict.put("switch", createTexture(manager, SWITCH_FILE, false));
 		textureDict.put("river", createTexture(manager, RIVER_FILE, false));
-		textureDict.put("river2", createTexture(manager, RIVER_FILE_VERT, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
 		textureDict.put("gameover", createTexture(manager, GAMEOVER_FILE, false));
+		textureDict.put("tutorialOverlay", createTexture(manager, TUTORIAL_FILE, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
@@ -649,6 +649,7 @@ public class GameController implements ContactListener, Screen {
 		if (input.didReset())
 			reset();
 
+		// Temporary hardcoding
 		// Handle nightmode
 		if (input.didNight()) {
 			if (duggiLight.isActive()) {
@@ -670,8 +671,11 @@ public class GameController implements ContactListener, Screen {
 			countdown--;
 			totalTime = levelTime;
 		} else if (countdown == 0) {
-			if (failed || complete || timeOut) {
+			if (failed || timeOut) {
 				reset();
+			}
+			else if (complete) {
+				nextLevel();
 			}
 		}
 
@@ -737,6 +741,13 @@ public class GameController implements ContactListener, Screen {
 			canvas.drawTextCentered("PAUSED!", displayFont, 0.0f);
 			canvas.end();
 		}
+
+		if (currentLevel == 0) {
+			canvas.beginOverlay();
+			canvas.draw(textureDict.get("tutorialOverlay"), 779, 0);
+			canvas.end();
+		}
+
 
         if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER || state == GAME_PAUSED) {
             displayFont.setColor(Color.WHITE);

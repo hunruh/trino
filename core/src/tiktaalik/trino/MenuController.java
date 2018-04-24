@@ -63,6 +63,17 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	/** Whether or not this player mode is still active */
 	private boolean active;
 
+	public static int currState = 0;
+
+	/**
+	 * Returns true if level select.
+	 *
+	 * @return true if the player wants to go to level selection
+	 */
+	public boolean isSelect() {
+		return levelPressState == 2;
+	}
+
 	/**
 	 * Returns true if all assets are loaded and the player is ready to go.
 	 *
@@ -221,7 +232,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 			draw();
 
 			// We are are ready, notify our listener
-			if (isReady() && listener != null) {
+			if ((isReady() || isSelect()) && listener != null) {
 				listener.exitScreen(this, 0);
 			}
 		}
@@ -309,6 +320,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (playPressState == 1) {
 			playPressState = 2;
+			currState = 1;
+			return false;
+		}
+		if (levelPressState == 1) {
+			levelPressState = 2;
+			currState = 2;
 			return false;
 		}
 		return true;
