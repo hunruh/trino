@@ -144,14 +144,14 @@ public class Wall extends EdibleObject {
      */
     private void resize(float width, float height) {
         // Make the box with the center in the center
-        vertices[0] = -width/2.0f;
-        vertices[1] = -height/2.0f;
-        vertices[2] = -width/2.0f;
-        vertices[3] =  height/2.0f;
-        vertices[4] =  width/2.0f;
-        vertices[5] =  height/2.0f;
-        vertices[6] =  width/2.0f;
-        vertices[7] = -height/2.0f;
+        vertices[0] = -width/2.2f;
+        vertices[1] = -height/1.7f;
+        vertices[2] = -width/2.2f;
+        vertices[3] =  height/1.7f;
+        vertices[4] =  width/2.2f;
+        vertices[5] =  height/1.7f;
+        vertices[6] =  width/2.2f;
+        vertices[7] = -height/1.7f;
         shape.set(vertices);
     }
 
@@ -201,6 +201,6 @@ public class Wall extends EdibleObject {
      * @param canvas Drawing context
      */
     public void drawDebug(Canvas canvas) {
-        canvas.drawPhysics(shape,Color.RED,getX(),getY(),0,drawScale.x,drawScale.y);
+        canvas.drawPhysics(shape,Color.RED,getX(),getY()/2,0,drawScale.x,drawScale.y);
     }
 }

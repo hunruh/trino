@@ -365,6 +365,8 @@ public class Level {
         }
 
 
+        dwidth = textureDict.get("wall").getRegionWidth() / scale.x;
+        dheight = textureDict.get("wall").getRegionHeight() / scale.y;
         tmp = parser.getAssetList(currentLevel, "Walls");
         for(int i = 0; i < tmp.size(); i++){
             float x = (tmp.get(i)).x;
