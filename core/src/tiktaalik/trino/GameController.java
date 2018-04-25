@@ -965,10 +965,12 @@ public class GameController implements ContactListener, Screen {
 
 			// Process avatar updates
 			int direction = avatar.getDirection();
-			if (avatar.getActionReady() || avatar.getActionLoadValue() > 0) {
+			if (avatar.getActionReady() || avatar.getActionLoadValue() > 0 ||
+					(avatar.getForm() == Dinosaur.DOLL_FORM && avatar.getActionAnimating())) {
 				avatar.setLeftRight(0);
 				avatar.setUpDown(0);
-			} else {
+			}
+			else{
 				avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
 				avatar.setUpDown(InputHandler.getInstance().getVertical());
 			}

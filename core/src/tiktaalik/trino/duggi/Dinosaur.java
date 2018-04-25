@@ -219,6 +219,7 @@ public abstract class Dinosaur extends GameObject {
 
     public float getActionLoadValue(){return actionLoad;}
     public boolean getActionReady(){return actionReady;}
+    public boolean getActionAnimating(){return actionAnimating;}
 
     /**
      * Returns left/right movement of this character.
