@@ -17,6 +17,7 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
 
     private static final String LEVEL_FILE = "trino/levelScreen.png";
     private static final String OVERLAY_FILE = "trino/levelOverlay.png";
+    private static final String MENU_FILE = "trino/menuButton.png";
 
     private static int DEFAULT_BUDGET = 15; // Default budget for asset loader (do nothing but load 60 fps)
     private static int STANDARD_WIDTH  = 1280; // Standard window size (for scaling)
@@ -33,6 +34,7 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
 
     private Texture background;
     private Texture overlay;
+    private Texture menu;
     /** The y-coordinate of the center of the progress bar */
     private int centerY;
     /** The x-coordinate of the center of the progress bar */
@@ -58,6 +60,12 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
     /** Level hovered */
     public static int levelHover = 0;
 
+    /** Menu selected */
+    public int menuState;
+    /** Menu hovered */
+    public int menuHover;
+    public static int menuPress = 0;
+
 
 
     /**
@@ -67,6 +75,15 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
      */
     public boolean isReady() {
         return selectState == 2;
+    }
+
+    /**
+     * Returns true if menu button is clicked
+     *
+     * @return true if the player wants to go to the menu
+     */
+    public boolean isMenu() {
+        return menuState == 2;
     }
 
     /**
@@ -99,6 +116,7 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
 
         background = null;
         overlay = null;
+        menu = null;
         // No progress so far.
         progress   = 0;
         active = false;
@@ -111,11 +129,20 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
      * Called when this screen should release all resources.
      */
     public void dispose() {
+        if (background != null) {
+            background.dispose();
+            background = null;
+        }
 
-        background.dispose();
-        background = null;
-        overlay.dispose();
-        overlay = null;
+        if (overlay != null) {
+            overlay.dispose();
+            overlay = null;
+        }
+
+        if (menu != null) {
+            menu.dispose();
+            menu = null;
+        }
     }
 
     /**
@@ -127,6 +154,7 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
 
         background = new Texture(LEVEL_FILE);
         overlay = new Texture(OVERLAY_FILE);
+        menu = new Texture(MENU_FILE);
 
     }
 
@@ -138,6 +166,20 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
         canvas.begin();
 
             canvas.draw(background, 0,0);
+
+            Color menuTint;
+            if (menuState == 1) {
+                menuTint = selectColor;
+            }
+            else if (menuHover == 1) {
+                menuTint = hoverColor;
+            }
+            else {
+                menuTint = Color.WHITE;
+            }
+            canvas.draw(menu, menuTint, menu.getWidth()/2, menu.getHeight()/2,
+                centerX, 460, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+
             if (hoverState == 1) {
                 if (levelHover == 1) {
                     canvas.draw(overlay, 50, 37);
@@ -200,7 +242,7 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
             draw();
 
             // We are are ready, notify our listener
-            if (isReady() && listener != null) {
+            if ((isReady() || isMenu()) && listener != null) {
                 listener.exitScreen(this, 0);
             }
         }
@@ -256,7 +298,7 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
      * @return whether to hand the event to other listeners.
      */
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (background == null || selectState == 2) {
+        if (background == null || selectState == 2 || menuState == 2) {
             return true;
         }
 
@@ -281,6 +323,12 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
             levelNum = 3;
         }
 
+        else if ((screenX >= 482) && (screenX <= 798) &&
+                (screenY >= 440) && (screenY <= 486)) {
+            menuState = 1;
+            menuPress = 1;
+        }
+
         return false;
     }
 
@@ -296,6 +344,10 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (selectState == 1) {
             selectState = 2;
+            return false;
+        }
+        if (menuState == 1) {
+            menuState = 2;
             return false;
         }
 
@@ -327,6 +379,14 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
                 levelHover = 0;
             }
 
+            if ((screenX >= 482) && (screenX <= 798) &&
+                    (screenY >= 440) && (screenY <= 486)) {
+                menuHover = 1;
+            }
+            else {
+                menuHover = 0;
+            }
+
         }
 
         return true;
@@ -342,6 +402,7 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.N || keycode == Input.Keys.P) {
             selectState = 2;
+            menuState = 2;
             return false;
         }
         return true;

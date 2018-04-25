@@ -98,8 +98,6 @@ public class GDXRoot extends Game implements ScreenListener {
 				controller.reset();
 				setScreen(controller);
 			}
-
-			
 			menu.dispose();
 			menu = null;
 		} else if (screen == levels) {
@@ -128,6 +126,15 @@ public class GDXRoot extends Game implements ScreenListener {
 				controller.nextLevel();
 
 			}
+
+			else if (LevelController.menuPress == 1) {
+                menu = new MenuController(canvas,manager,1);
+                menu.setScreenListener(this);
+                setScreen(menu);
+            }
+            levels.dispose();
+			levels = null;
+
 		}
 		else if (exitCode == GameController.EXIT_NEXT) {
 			controller.reset();
