@@ -965,9 +965,13 @@ public class GameController implements ContactListener, Screen {
 
 			// Process avatar updates
 			int direction = avatar.getDirection();
-
-			avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
-			avatar.setUpDown(InputHandler.getInstance().getVertical());
+			if (avatar.getActionReady() || avatar.getActionLoadValue() > 0) {
+				avatar.setLeftRight(0);
+				avatar.setUpDown(0);
+			} else {
+				avatar.setLeftRight(InputHandler.getInstance().getHorizontal());
+				avatar.setUpDown(InputHandler.getInstance().getVertical());
+			}
 
 			if (InputHandler.getInstance().didTransform()) {
 				if (avatar.canTransform()) {
