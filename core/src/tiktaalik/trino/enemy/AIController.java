@@ -21,7 +21,7 @@ public class AIController {
     private Vector2 step;
     private int turnAngle;
 
-    private float defaultSpeed = .025f;
+    private float defaultSpeed = .035f;
     private float chargingMultiplier = 6;
 
     private Vector2 locationCache;
