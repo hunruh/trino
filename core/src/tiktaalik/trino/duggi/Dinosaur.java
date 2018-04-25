@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 import tiktaalik.util.FilmStrip;
@@ -40,7 +41,8 @@ public abstract class Dinosaur extends GameObject {
 
     protected FilmStrip[] textureSet;
 
-    protected CircleShape shape; // Shape information for this circle
+    protected PolygonShape shape; // Shape information for this ellipse
+    protected float radius;
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
     protected int numFrames[];
@@ -94,7 +96,7 @@ public abstract class Dinosaur extends GameObject {
         masseffect = d.masseffect;
         drawScale = d.drawScale;
         body = d.body;
-        shape = d.shape;
+        radius = d.radius;
         texture = d.texture;
         origin = d.origin;
         setName(d.getName());
@@ -145,8 +147,7 @@ public abstract class Dinosaur extends GameObject {
         setFriction(0.0f);
         setName("duggi");
 
-        shape = new CircleShape();
-        shape.setRadius(radius * 4/5);
+        this.radius = radius;
 
         // Gameplay attributes
         direction = RIGHT;
@@ -524,7 +525,7 @@ public abstract class Dinosaur extends GameObject {
     }
 
     public void drawShadow(Canvas canvas) {
-//        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
+        canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x,2*radius*drawScale.x*.85f, radius*drawScale.x);
     }
 
     public void drawProgressCircle(Canvas canvas, float value){
@@ -567,7 +568,7 @@ public abstract class Dinosaur extends GameObject {
      * @param canvas Drawing context
      */
     public void drawDebug(Canvas canvas) {
-        canvas.drawPhysics(shape,Color.RED,getX(),getY(),drawScale.x,drawScale.y);
+        canvas.drawPhysics(shape,Color.RED,getX(),getY()/2,0,drawScale.x,drawScale.y);
     }
 
     public abstract int getForm();

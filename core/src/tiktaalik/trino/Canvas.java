@@ -687,24 +687,14 @@ public class Canvas {
 		computeVertices(local,region.getVertices());
 	}
 
-	public void drawShadow(CircleShape shape, float x, float y, float s) {
+	public void drawShadow(float x, float y, float w, float h) {
 		if (active != DrawPass.STANDARD) {
 			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 
-		float d = shape.getRadius()*s;
-
 		shadowRender.setColor(shadow);
-		shadowRender.ellipse(x-d, y-d, 2*shape.getRadius()*s, 2*shape.getRadius()*s, 20);
-//		shadowRender.ellipse(x-d, y-d-5, 2*shape.getRadius()*s, shape.getRadius()*s, 20);
-
-//		float w = shape.getRadius()*sx;
-//		float h = shape.getRadius()*sy;
-//
-//		System.out.println("x: " + (x-w) + ", y: " + (y-h) + ", sx: " + 2*w + ", sy: " + shape.getRadius() * 2*h);
-//		shadowRender.setColor(color);
-//		shadowRender.ellipse(x-w, y-h, 2*w, 2*h, 12);
+		shadowRender.ellipse(x-w/2, y-h, w, h, 20);
 	}
 
 	public void drawProgressCircle(CircleShape shape,Color color,int type,float x, float y, float s){
