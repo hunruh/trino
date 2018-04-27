@@ -123,7 +123,7 @@ public class SoundController {
 
     public void playAlert(){
         alertSound.pause();
-        alertSound.play(0.3f);
+        alertSound.play(0.1f);
     }
 
     /** Change the music based on timestamp */

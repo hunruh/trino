@@ -365,6 +365,8 @@ public class Level {
         }
 
 
+        dwidth = textureDict.get("wall").getRegionWidth() / scale.x;
+        dheight = textureDict.get("wall").getRegionHeight() / scale.y;
         tmp = parser.getAssetList(currentLevel, "Walls");
         for(int i = 0; i < tmp.size(); i++){
             float x = (tmp.get(i)).x;
@@ -449,7 +451,7 @@ public class Level {
         }
 
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 8; i++){
             FireFly ff = new FireFly(MathUtils.random(2*bounds.width),
                     MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);

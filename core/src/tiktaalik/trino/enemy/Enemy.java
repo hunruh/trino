@@ -5,10 +5,7 @@ import static tiktaalik.trino.duggi.Dinosaur.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.EdibleObject;
 import tiktaalik.trino.GameObject;
@@ -23,7 +20,9 @@ public class Enemy extends EdibleObject {
 
     private AIController controller;
 
-    protected CircleShape shape; // Shape information for this circle
+    protected PolygonShape shape; // Shape information for this circle
+    private float vertices[];
+    private float radius;
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
     private int numFrames[];
@@ -68,8 +67,19 @@ public class Enemy extends EdibleObject {
         setFriction(0.0f);
         setName("enemy");
 
-        shape = new CircleShape();
-        shape.setRadius(radius * 1/2);
+        shape = new PolygonShape();
+        this.radius = radius;
+        shape = new PolygonShape();
+        vertices = new float[16];
+        int ctr = 0;
+        for (float theta = 0; theta < 2 * Math.PI; theta += ((2.0f * Math.PI)/(vertices.length / 2))) {
+            if (ctr >= 16)
+                break;
+
+            vertices[ctr++] = (float)(radius * Math.cos(theta) * .85); // x
+            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .5) - radius/4; // y
+        }
+        shape.set(vertices);
 
         // Gameplay attributes
         textureSet = new FilmStrip[16];
@@ -349,9 +359,9 @@ public class Enemy extends EdibleObject {
     }
 
     public void drawShadow(Canvas canvas) {
-//        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
-//        canvas.drawShadow(shape,getX()*drawScale.x,getY()*drawScale.x-9,drawScale.x);
+        canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x,2*radius*drawScale.x*.75f, radius*drawScale.x);
     }
+
     public void drawProgressCircle(Canvas canvas){
 
       if (alert) {
@@ -370,7 +380,7 @@ public class Enemy extends EdibleObject {
      * @param canvas Drawing context
      */
     public void drawDebug(Canvas canvas) {
-        canvas.drawPhysics(shape,Color.RED,getX(),getY(),drawScale.x,drawScale.y);
+        canvas.drawPhysics(shape,Color.RED,getX(),getY()/2,0,drawScale.x,drawScale.y);
     }
 }
 

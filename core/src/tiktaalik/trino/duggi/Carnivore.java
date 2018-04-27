@@ -1,5 +1,6 @@
 package tiktaalik.trino.duggi;
 
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import tiktaalik.trino.Canvas;
 
 public class Carnivore extends Dinosaur {
@@ -8,6 +9,22 @@ public class Carnivore extends Dinosaur {
     public Carnivore(Dinosaur d) {
         super(d);
         collided = false;
+
+        shape = new PolygonShape();
+        float vertices[] = new float[16];
+        int ctr = 0;
+        for (float theta = 0; theta < 2 * Math.PI; theta += ((2.0f * Math.PI)/(vertices.length / 2))) {
+            if (ctr >= 16)
+                break;
+
+            vertices[ctr++] = (float)(radius * Math.cos(theta) * .78); // x
+            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .28) - radius/4; // y
+        }
+        shape.set(vertices);
+
+        body.destroyFixture(body.getFixtureList().first());
+        fixture.shape = shape;
+        body.createFixture(fixture);
     }
 
     public int getForm() {
@@ -44,6 +61,10 @@ public class Carnivore extends Dinosaur {
             else
                 body.setLinearVelocity(0.0f, -15.0f);
         }
+    }
+
+    public void drawShadow(Canvas canvas) {
+        canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x,2*radius*drawScale.x*.75f, radius*drawScale.x);
     }
 
     public void draw(Canvas canvas) {
