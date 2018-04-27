@@ -924,7 +924,7 @@ public class GameController implements ContactListener, Screen {
 				raycamera.position.x = cameraBounds.width / 2;
 			} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > level.getLevelWidth() - halfWidth) {
 				canvas.getCamera().position.x = level.getLevelWidth() - halfWidth;
-				raycamera.position.x = cameraBounds.width * 2 - cameraBounds.width / 2;
+				raycamera.position.x = cameraBounds.width - cameraBounds.width / 2;
 			} else {
 				canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
 				raycamera.position.x = avatar.getX();
