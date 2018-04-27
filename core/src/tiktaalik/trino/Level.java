@@ -377,6 +377,7 @@ public class Level {
             iw.setTexture(textureDict.get("wall"));
             iw.setType(WALL);
             addObject(iw);
+            System.out.println(iw.getGridLocation());
             grid[(int)iw.getGridLocation().x][(int)iw.getGridLocation().y] = iw;
         }
 
