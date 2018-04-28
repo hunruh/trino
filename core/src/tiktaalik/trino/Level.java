@@ -3,6 +3,8 @@ package tiktaalik.trino;
 import static tiktaalik.trino.GameController.*;
 import static tiktaalik.trino.duggi.Dinosaur.*;
 
+import box2dLight.RayHandler;
+import com.badlogic.gdx.graphics.Color;
 import org.json.simple.JSONObject;
 import tiktaalik.trino.level_editor.LevelParser;
 import tiktaalik.trino.level_editor.LevelParser.*;
@@ -21,6 +23,7 @@ import tiktaalik.trino.duggi.Doll;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.*;
 import tiktaalik.trino.lights.LightSource;
+import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.PooledList;
 
 import java.util.Collections;
