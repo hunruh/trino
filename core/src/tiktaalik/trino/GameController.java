@@ -104,6 +104,21 @@ public class GameController implements ContactListener, Screen {
 	private static final String GAMEOVER_FILE = "trino/gameoverImage.png";
 	private static final String TUTORIAL_FILE = "trino/tutorialOverlay.png";
 
+	// Pause menu assets
+	private static final String PAUSE_MENU_FILE = "pause/pauseMenu.png";
+	private static final String GRAYOUT_FILE = "pause/greyOut.png";
+	private static final String MUSIC_OFF_FILE = "pause/musicOff.png";
+	private static final String MUSIC_ON_FILE = "pause/musicOn.png";
+	private static final String SOUND_OFF_FILE = "pause/soundOff.png";
+	private static final String SOUND_ON_FILE = "pause/soundOn.png";
+	private static final String MUSIC_OUTLINE_FILE = "pause/musicOutline.png";
+	private static final String MENU_FILE = "pause/menu.png";
+	private static final String HELP_FILE = "pause/help.png";
+	private static final String RESUME_FILE = "pause/resume.png";
+	private static final String RESTART_FILE = "pause/restart.png";
+	private static final String OUTLINE_FILE = "pause/menuOutline.png";
+
+
 	// Texture assets variables
 	private BitmapFont displayFont;
 	private Hashtable<String, TextureRegion> textureDict = new Hashtable<String, TextureRegion>();
@@ -309,6 +324,30 @@ public class GameController implements ContactListener, Screen {
 		assets.add(GAMEOVER_FILE);
 		manager.load(TUTORIAL_FILE, Texture.class);
 		assets.add(TUTORIAL_FILE);
+		manager.load(PAUSE_MENU_FILE, Texture.class);
+		assets.add(PAUSE_MENU_FILE);
+		manager.load(GRAYOUT_FILE, Texture.class);
+		assets.add(GRAYOUT_FILE);
+		manager.load(MUSIC_OFF_FILE, Texture.class);
+		assets.add(MUSIC_OFF_FILE);
+		manager.load(MUSIC_ON_FILE, Texture.class);
+		assets.add(MUSIC_ON_FILE);
+		manager.load(SOUND_OFF_FILE, Texture.class);
+		assets.add(SOUND_OFF_FILE);
+		manager.load(SOUND_ON_FILE, Texture.class);
+		assets.add(SOUND_ON_FILE);
+		manager.load(MUSIC_OUTLINE_FILE, Texture.class);
+		assets.add(MUSIC_OUTLINE_FILE);
+		manager.load(MENU_FILE, Texture.class);
+		assets.add(MENU_FILE);
+		manager.load(HELP_FILE, Texture.class);
+		assets.add(HELP_FILE);
+		manager.load(RESUME_FILE, Texture.class);
+		assets.add(RESUME_FILE);
+		manager.load(RESTART_FILE, Texture.class);
+		assets.add(RESTART_FILE);
+		manager.load(OUTLINE_FILE, Texture.class);
+		assets.add(OUTLINE_FILE);
 
 		jsonReader = new JsonReader();
 	}
@@ -350,6 +389,18 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
 		textureDict.put("gameover", createTexture(manager, GAMEOVER_FILE, false));
 		textureDict.put("tutorialOverlay", createTexture(manager, TUTORIAL_FILE, false));
+		textureDict.put("pauseMenu", createTexture(manager, PAUSE_MENU_FILE, false));
+		textureDict.put("grayOut", createTexture(manager, GRAYOUT_FILE, false));
+		textureDict.put("musicOff", createTexture(manager, MUSIC_OFF_FILE, false));
+		textureDict.put("musicOn", createTexture(manager, MUSIC_ON_FILE, false));
+		textureDict.put("soundOff", createTexture(manager, SOUND_OFF_FILE, false));
+		textureDict.put("soundOn", createTexture(manager, SOUND_ON_FILE, false));
+		textureDict.put("musicOutline", createTexture(manager, MUSIC_OUTLINE_FILE, false));
+		textureDict.put("menuText", createTexture(manager, MENU_FILE, false));
+		textureDict.put("helpText", createTexture(manager, HELP_FILE, false));
+		textureDict.put("resumeText", createTexture(manager, RESUME_FILE, false));
+		textureDict.put("restartText", createTexture(manager, RESTART_FILE, false));
+		textureDict.put("outline", createTexture(manager, OUTLINE_FILE, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
@@ -565,6 +616,7 @@ public class GameController implements ContactListener, Screen {
 			currentLevel = 0;
 		else
 			currentLevel++;
+
 		reset();
 	}
 
@@ -742,8 +794,32 @@ public class GameController implements ContactListener, Screen {
 
 		if (state == GAME_PAUSED) {
 			displayFont.setColor(Color.YELLOW);
+			int menuHeight = canvas.getHeight();
+			int outlineHeight = textureDict.get("outline").getRegionHeight()/2;
+			int musicHeight = textureDict.get("musicOutline").getRegionHeight()/2;
 			canvas.beginOverlay();
-			canvas.drawTextCentered("PAUSED!", displayFont, 0.0f);
+			canvas.draw(textureDict.get("grayOut"), -9, 0);
+			canvas.draw(textureDict.get("pauseMenu"), 430, 147);
+			canvas.draw(textureDict.get("musicOutline"), 526, menuHeight-172); // music outline
+			canvas.draw(textureDict.get("musicOutline"), 736, menuHeight-172); // sound outline
+			canvas.draw(textureDict.get("outline"), 471, menuHeight-263); // menu outline
+			canvas.draw(textureDict.get("outline"), 471, menuHeight-354); // help outline
+			canvas.draw(textureDict.get("outline"), 471, menuHeight-445); // restart outline
+			canvas.draw(textureDict.get("outline"), 471, menuHeight-536); // resume outline
+			canvas.draw(textureDict.get("musicOn"), 543, menuHeight-183+musicHeight); // music button
+			canvas.draw(textureDict.get("soundOn"), 753, menuHeight-183+musicHeight); // sound button
+			canvas.draw(textureDict.get("menuText"), 636, menuHeight-275+outlineHeight); // menu text
+			canvas.draw(textureDict.get("helpText"), 641, menuHeight-366+outlineHeight); // help text
+			canvas.draw(textureDict.get("restartText"), 613, menuHeight-457+outlineHeight); // restart text
+			canvas.draw(textureDict.get("resumeText"),619, menuHeight-548+outlineHeight); // resume text
+//			canvas.drawTextCentered("PAUSED!", displayFont, 0.0f);
+//			System.out.println("X");
+//			System.out.println(Gdx.input.getX());
+//			System.out.println("Y");
+//			System.out.println(Gdx.input.getY());
+			if (InputHandler.getInstance().didReturn()) {
+				System.out.println("TEST");
+			}
 			canvas.end();
 		}
 
@@ -926,7 +1002,7 @@ public class GameController implements ContactListener, Screen {
 				raycamera.position.x = cameraBounds.width / 2;
 			} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > level.getLevelWidth() - halfWidth) {
 				canvas.getCamera().position.x = level.getLevelWidth() - halfWidth;
-				raycamera.position.x = cameraBounds.width * 2 - cameraBounds.width / 2;
+				raycamera.position.x = cameraBounds.width - cameraBounds.width / 2;
 			} else {
 				canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
 				raycamera.position.x = avatar.getX();
@@ -1496,6 +1572,7 @@ public class GameController implements ContactListener, Screen {
 		controls.clear();
 		fireFlyControls.clear();
 
+		level = null;
 		ffLights = null;
 		controls = null;
 		fireFlyControls = null;
