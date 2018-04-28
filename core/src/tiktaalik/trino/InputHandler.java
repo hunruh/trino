@@ -196,7 +196,17 @@ public class InputHandler {
 		return (pausePressed && !pausePrevious) || (mousePressed && !mousePrevious &&
 				((Gdx.input.getX() >= 1157) && (Gdx.input.getX() <= 1216)) &&
 				((Gdx.input.getY() >= 11) && (Gdx.input.getY() <= 71))); }
-	
+
+	/**
+	 * Returns true if the return to menu button was pressed.
+	 *
+	 * @return true if the return to menu botton was pressed.
+ 	 */
+	public boolean didReturn() {
+		return ((!pausePressed && pausePrevious) || (!mousePressed && mousePrevious)) &&
+				((Gdx.input.getX() >= 471) && (Gdx.input.getX() <= 893)) &&
+				((Gdx.input.getY() >= 263) && (Gdx.input.getY() <= 325));
+	}
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.
 	 *
