@@ -793,8 +793,10 @@ public class GameController implements ContactListener, Screen {
 		if (state == GAME_PAUSED) {
 			displayFont.setColor(Color.YELLOW);
 			int menuHeight = canvas.getHeight();
-			int outlineHeight = textureDict.get("outline").getRegionHeight()/2;
-			int musicHeight = textureDict.get("musicOutline").getRegionHeight()/2;
+			int outlineHeight = textureDict.get("outline").getRegionHeight()/4;
+			int outlineWidth = textureDict.get("outline").getRegionWidth()/4;
+			int musicHeight = textureDict.get("musicOutline").getRegionHeight()/4;
+			int musicWidth = textureDict.get("musicOutline").getRegionWidth()/4;
 			canvas.beginOverlay();
 			canvas.draw(textureDict.get("grayOut"), -9, 0);
 			canvas.draw(textureDict.get("pauseMenu"), 430, 147);
@@ -806,15 +808,15 @@ public class GameController implements ContactListener, Screen {
 			canvas.draw(textureDict.get("outline"), 471, menuHeight-536); // resume outline
 			canvas.draw(textureDict.get("musicOn"), 543, menuHeight-183+musicHeight); // music button
 			canvas.draw(textureDict.get("soundOn"), 753, menuHeight-183+musicHeight); // sound button
-			canvas.draw(textureDict.get("menuText"), 636, menuHeight-275+outlineHeight); // menu text
-			canvas.draw(textureDict.get("helpText"), 641, menuHeight-366+outlineHeight); // help text
-			canvas.draw(textureDict.get("restartText"), 613, menuHeight-457+outlineHeight); // restart text
-			canvas.draw(textureDict.get("resumeText"),619, menuHeight-548+outlineHeight); // resume text
+			canvas.draw(textureDict.get("menuText"), 636, menuHeight-263+outlineHeight); // menu text
+			canvas.draw(textureDict.get("helpText"), 641, menuHeight-354+outlineHeight); // help text
+			canvas.draw(textureDict.get("restartText"), 613, menuHeight-445+outlineHeight); // restart text
+			canvas.draw(textureDict.get("resumeText"),619, menuHeight-536+outlineHeight); // resume text
 //			canvas.drawTextCentered("PAUSED!", displayFont, 0.0f);
 //			System.out.println("X");
 //			System.out.println(Gdx.input.getX());
-//			System.out.println("Y");
-//			System.out.println(Gdx.input.getY());
+			System.out.println("Y");
+			System.out.println(Gdx.input.getY());
 			if (InputHandler.getInstance().didReturn()) {
 				System.out.println("TEST");
 			}
