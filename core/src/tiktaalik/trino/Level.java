@@ -377,7 +377,6 @@ public class Level {
             iw.setTexture(textureDict.get("wall"));
             iw.setType(WALL);
             addObject(iw);
-            System.out.println(iw.getGridLocation());
             grid[(int)iw.getGridLocation().x][(int)iw.getGridLocation().y] = iw;
         }
 
@@ -415,7 +414,7 @@ public class Level {
         // Create enemy
         dwidth = filmStripDict.get("enemyFront").getWidth() / (10 * (scale.x * 2));
         tmp = parser.getAssetList(currentLevel, "Enemies");
-        PooledList<String[]> dir = parser.getEnemiesInformation(0);
+        PooledList<String[]> dir = parser.getEnemiesInformation(currentLevel);
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y-1;

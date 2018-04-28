@@ -565,6 +565,7 @@ public class GameController implements ContactListener, Screen {
 			currentLevel = 0;
 		else
 			currentLevel++;
+
 		reset();
 	}
 
@@ -612,7 +613,6 @@ public class GameController implements ContactListener, Screen {
 		// Init Enemy AI controllers
 		for (int i = 0; i < level.getEnemies().size(); i++) {
 			AIController controller = new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP, level);
-			System.out.println(level.getEnemy(i).getDirection());
 			controls.add(controller);
 			level.getEnemy(i).setController(controller);
 		}
@@ -1495,6 +1495,7 @@ public class GameController implements ContactListener, Screen {
 		controls.clear();
 		fireFlyControls.clear();
 
+		level = null;
 		ffLights = null;
 		controls = null;
 		fireFlyControls = null;
