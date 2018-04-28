@@ -621,6 +621,8 @@ public class GameController implements ContactListener, Screen {
 	}
 
 
+	public void setCurrentLevel(int l){currentLevel = l;}
+
 	/**
 	 * Resets the status of the game so that we can play again.
 	 *

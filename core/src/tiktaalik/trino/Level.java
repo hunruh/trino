@@ -413,6 +413,7 @@ public class Level {
 
         // Create enemy
         dwidth = filmStripDict.get("enemyFront").getWidth() / (10 * (scale.x * 2));
+        System.out.println("currentlevel " + currentLevel);
         tmp = parser.getAssetList(currentLevel, "Enemies");
         PooledList<String[]> dir = parser.getEnemiesInformation(currentLevel);
         for(int i = 0; i < tmp.size(); i++) {
@@ -420,12 +421,14 @@ public class Level {
             float y = (tmp.get(i)).y-1;
             Enemy en = new Enemy(screenToMaze(x), screenToMaze(y), dwidth, i+1);
             String sd = dir.get(i)[0];
+            System.out.println(sd);
             int d = 0;
             if (sd.equals("Up")) d = 2;
             else if (sd.equals("Down")) d = 3;
             else if (sd.equals("Left")) d = 0;
             else if (sd.equals("Right")) d = 1;
             else d = -1;
+            System.out.println("d is " + d);
             en.setType(ENEMY);
             en.setDrawScale(scale);
             en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
