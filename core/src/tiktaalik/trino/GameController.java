@@ -689,29 +689,29 @@ public class GameController implements ContactListener, Screen {
 					fireLight.getDirection());
 		}
 
-		enemyLights = new LightSource[level.getEnemies().size()];
-
-		for(int i = 0; i < level.getEnemies().size(); i++) {
-
-			if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
-				System.out.println("reached right enemy eyes");
-				PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
-				enemyEyes.setColor(1, 0, 0, 1);
-				enemyEyes.setXray(true);
-				enemyEyes.setActive(true);
-				enemyLights[i] = enemyEyes;
-				enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
-			} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
-				System.out.println("reached left enemy eyes");
-				PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
-				enemyEyes2.setColor(1, 0, 0, 1);
-				enemyEyes2.setXray(true);
-				enemyEyes2.setActive(true);
-				enemyLights[i] = enemyEyes2;
-				enemyEyes2.attachToBody(level.getEnemy(i).getBody(), 0f, .75f, enemyEyes2.getDirection());
-			}
-
-		}
+//		enemyLights = new LightSource[level.getEnemies().size()];
+//
+//		for(int i = 0; i < level.getEnemies().size(); i++) {
+//
+//			if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
+//				System.out.println("reached right enemy eyes");
+//				PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
+//				enemyEyes.setColor(1, 0, 0, 1);
+//				enemyEyes.setXray(true);
+//				enemyEyes.setActive(true);
+//				enemyLights[i] = enemyEyes;
+//				enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
+//			} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
+//				System.out.println("reached left enemy eyes");
+//				PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
+//				enemyEyes2.setColor(1, 0, 0, 1);
+//				enemyEyes2.setXray(true);
+//				enemyEyes2.setActive(true);
+//				enemyLights[i] = enemyEyes2;
+//				enemyEyes2.attachToBody(level.getEnemy(i).getBody(), 0f, .75f, enemyEyes2.getDirection());
+//			}
+//
+//		}
 
 	}
 
@@ -996,42 +996,42 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_OVER;
 		}
 		else {
-			// clear the old lights
-			for(LightSource l: enemyLights){
-				l.remove(true);
-			}
-
-			for(int i = 0; i < level.getEnemies().size(); i++) {
-
-				if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
-					PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
-					enemyEyes.setColor(1, 0, 0, 1);
-					enemyEyes.setXray(true);
-					if (!level.getEnemy(i).getStunned() &&
-							!level.getEnemy(i).getCharging() && !level.getEnemy(i).getCollided() && !level.getEnemy(i).getLoadingCharge()
-							&& !level.getEnemy(i).getEaten()){
-						enemyEyes.setActive(true);
-					} else {
-						enemyEyes.setActive(false);
-					}
-					enemyLights[i] = enemyEyes;
-					enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
-				} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
-					PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
-					enemyEyes2.setColor(1, 0, 0, 1);
-					enemyEyes2.setXray(true);
-					if (!level.getEnemy(i).getStunned() &&
-							!level.getEnemy(i).getCharging() && !level.getEnemy(i).getCollided() && !level.getEnemy(i).getLoadingCharge()
-							&& !level.getEnemy(i).getEaten()){
-						enemyEyes2.setActive(true);
-					} else {
-						enemyEyes2.setActive(false);
-					}
-					enemyLights[i] = enemyEyes2;
-					enemyEyes2.attachToBody(level.getEnemy(i).getBody(), 0f, .75f, enemyEyes2.getDirection());
-				}
-
-			}
+//			// clear the old lights
+//			for(LightSource l: enemyLights){
+//
+//			}
+//
+//			for(int i = 0; i < level.getEnemies().size(); i++) {
+//
+//				if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
+//					PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
+//					enemyEyes.setColor(1, 0, 0, 1);
+//					enemyEyes.setXray(true);
+//					if (!level.getEnemy(i).getStunned() &&
+//							!level.getEnemy(i).getCharging() && !level.getEnemy(i).getCollided() && !level.getEnemy(i).getLoadingCharge()
+//							&& !level.getEnemy(i).getEaten()){
+//						enemyEyes.setActive(true);
+//					} else {
+//						enemyEyes.setActive(false);
+//					}
+//					enemyLights[i] = enemyEyes;
+//					enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
+//				} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
+//					PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
+//					enemyEyes2.setColor(1, 0, 0, 1);
+//					enemyEyes2.setXray(true);
+//					if (!level.getEnemy(i).getStunned() &&
+//							!level.getEnemy(i).getCharging() && !level.getEnemy(i).getCollided() && !level.getEnemy(i).getLoadingCharge()
+//							&& !level.getEnemy(i).getEaten()){
+//						enemyEyes2.setActive(true);
+//					} else {
+//						enemyEyes2.setActive(false);
+//					}
+//					enemyLights[i] = enemyEyes2;
+//					enemyEyes2.attachToBody(level.getEnemy(i).getBody(), 0f, .75f, enemyEyes2.getDirection());
+//				}
+//
+//			}
 
 		    if (level.getClone() != null){
 		        if (Math.abs(level.getClone().getX() - level.getSwitch(0).getX()) < 1.5 &&
