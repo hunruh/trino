@@ -1503,8 +1503,10 @@ public class GameController implements ContactListener, Screen {
 						if (tmp.getStunned() && level.isInFrontOfAvatar(tmp)
 								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
 							SoundController.getInstance().playEat();
+							if (!tmp.getEatInProgress()){
+								avatar.incrementResources();
+							}
 							tmp.beginEating();
-							avatar.incrementResources();
 							ate = true;
 							break;
 						}
@@ -1540,8 +1542,10 @@ public class GameController implements ContactListener, Screen {
 					GameObject tmp = level.objectInFrontOfAvatar();
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
 						SoundController.getInstance().playEat();
+						if (!((EdibleObject) tmp).getEatInProgress()){
+							avatar.incrementResources();
+						}
 						((EdibleObject) tmp).beginEating();
-						avatar.incrementResources();
 					}
 				}
 

@@ -23,6 +23,7 @@ public abstract class EdibleObject extends GameObject {
         eatInProgress = true;
         animeframe = 0;
     }
+    public boolean getEatInProgress() {return eatInProgress;}
 
     public boolean getEaten() {
         return eaten;
