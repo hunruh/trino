@@ -65,6 +65,7 @@ public class LevelParser {
         JSONArray enemies = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Enemies");
         for (int i = 0; i < enemies.size(); i++){
             JSONObject e = (JSONObject)(enemies.get(i));
+            System.out.println("direction " + (String)e.get("direction") + " " + (Long)e.get("x") + " " + (Long)e.get("y"));
             tmp.add(new String[]{(String)e.get("direction"), (String)e.get("type"), (String)e.get("movement")});
         }
         return tmp;
