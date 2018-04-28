@@ -66,6 +66,8 @@ public class Level {
     private int levelWidth;
     private int levelHeight;
 
+    private boolean isNight;
+
     private int currentLevel;
 
     public Level(World world, int lvl) {
@@ -239,6 +241,8 @@ public class Level {
     public PooledList<GameObject> getObjects() {
         return objects;
     }
+
+    public boolean getIsNight(){return isNight;}
 
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
@@ -464,6 +468,7 @@ public class Level {
             ff.setDrawScale(scale);
             addObject(ff);
         }
+        isNight = parser.isNightLevel(currentLevel);
     }
 
     public void draw(Canvas canvas) {

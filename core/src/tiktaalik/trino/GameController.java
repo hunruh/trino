@@ -661,6 +661,15 @@ public class GameController implements ContactListener, Screen {
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
 		collisionHandler.setLevel(level);
 
+		// Set the lighting
+		if (level.getIsNight()){
+			duggiLight.setActive(true);
+			rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
+		}else {
+			duggiLight.setActive(false);
+			rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
+		}
+
 		// This should be set before init lighting - should be moved when we load in the json
 		cameraBounds = new Rectangle(0,0,32,18);
 
@@ -734,6 +743,7 @@ public class GameController implements ContactListener, Screen {
 
 		// Temporary hardcoding
 		// Handle nightmode
+		
 		if (input.didNight()) {
 			if (duggiLight.isActive()) {
 				duggiLight.setActive(false);
@@ -1617,13 +1627,14 @@ public class GameController implements ContactListener, Screen {
 		RayHandler.useDiffuseLight(light.getBoolean("diffuse"));
 		rayhandler = new RayHandler(world, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
 		rayhandler.setCombinedMatrix(raycamera);
-
 		rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
+
 
 		duggiLight = new PointSource(rayhandler, 256, Color.WHITE, 8, 0, 0.4f);
 		duggiLight.setColor(0.85f,0.85f,0.95f,0.85f);
 		duggiLight.setXray(true);
 		duggiLight.setActive(false);
+
 	}
 
 	/**
