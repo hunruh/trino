@@ -39,6 +39,17 @@ public class AIController {
         locationCache = new Vector2();
     }
 
+    public AIController(int id, Dinosaur duggi, PooledList<Enemy> enemies, int turnAngle, int type, Level level) {
+        this.enemy = enemies.get(id);
+
+        target = duggi;
+        step = new Vector2();
+        this.turnAngle = turnAngle;
+        this.level = level;
+        locationCache = new Vector2();
+        this.enemy.setEnemyType(type);
+    }
+
     public void step(boolean obstacle) {
         if (enemy.getStunned())
             return;
@@ -187,4 +198,6 @@ public class AIController {
 
         return false;
     }
+
+
 }

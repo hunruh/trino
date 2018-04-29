@@ -46,11 +46,17 @@ public class Enemy extends EdibleObject {
     private float timeElapsed;
     private float totalTime = 1.0f;
     private boolean alert = false;
+    private int enemyType = CARNIVORE_ENEMY;
 
     private static final int STUNNED_LEFT = 12;
     private static final int STUNNED_RIGHT = 13;
     private static final int STUNNED_UP = 14;
     private static final int STUNNED_DOWN = 15;
+
+    private static final int CARNIVORE_ENEMY = 16;
+    private static final int HERBIVORE_ENEMY = 17;
+    private static final int UNKILLABLE_ENEMY = 18;
+    private static final int SHADOW_DUGGI = 19;
 
     private float offset = -0.5f;
 
@@ -100,6 +106,8 @@ public class Enemy extends EdibleObject {
         }
         alert = assignment;
     }
+
+    public void setEnemyType(int type){enemyType = type;}
 
     public void setController(AIController controller) {
         this.controller = controller;

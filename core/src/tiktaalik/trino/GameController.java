@@ -612,6 +612,11 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	public void nextLevel(){
+	    //lol just putting some testing code here bc im the worst
+        AStar help = new AStar(5, 5, 0, 0, 3, 2, new int[][]{{0,4},{2,2},{3,1},{3,3}});
+        help.computePath();
+        help.printResults();
+
 		if (currentLevel == 2)
 			currentLevel = 0;
 		else
