@@ -24,13 +24,13 @@ public class LevelParser {
 
     public boolean isNightLevel(int level){
         String tmp = (String)((JSONObject)(levels.get(level))).get("Night");
-        if (tmp == "yes") return true;
+        if (tmp.equals("yes")) return true;
         else return false;
     }
 
     public boolean isPanningLevel(int level){
         String tmp = (String)((JSONObject)(levels.get(level))).get("Panning");
-        if (tmp == "yes") return true;
+        if (tmp.equals("yes")) return true;
         else return false;
     }
 

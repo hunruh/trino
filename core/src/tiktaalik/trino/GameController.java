@@ -159,6 +159,7 @@ public class GameController implements ContactListener, Screen {
 	protected RayHandler rayhandler; // The rayhandler for storing lights, and drawing them
 	private LightSource duggiLight; // Duggi's light
 	private LightSource[] ffLights; // FireFly lights
+	private LightSource[] enemyLights; // Enemy lights
 	private float ffLightDsts[];
 	private float ffLightChanges[];
 
@@ -660,6 +661,15 @@ public class GameController implements ContactListener, Screen {
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
 		collisionHandler.setLevel(level);
 
+		// Set the lighting
+		if (level.getIsNight()){
+			duggiLight.setActive(true);
+			rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
+		}else {
+			duggiLight.setActive(false);
+			rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
+		}
+
 		// This should be set before init lighting - should be moved when we load in the json
 		cameraBounds = new Rectangle(0,0,32,18);
 
@@ -687,6 +697,31 @@ public class GameController implements ContactListener, Screen {
 			fireLight.attachToBody(level.getFirefly(i).getBody(), fireLight.getX(), fireLight.getY(),
 					fireLight.getDirection());
 		}
+
+//		enemyLights = new LightSource[level.getEnemies().size()];
+//
+//		for(int i = 0; i < level.getEnemies().size(); i++) {
+//
+//			if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
+//				System.out.println("reached right enemy eyes");
+//				PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
+//				enemyEyes.setColor(1, 0, 0, 1);
+//				enemyEyes.setXray(true);
+//				enemyEyes.setActive(true);
+//				enemyLights[i] = enemyEyes;
+//				enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
+//			} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
+//				System.out.println("reached left enemy eyes");
+//				PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
+//				enemyEyes2.setColor(1, 0, 0, 1);
+//				enemyEyes2.setXray(true);
+//				enemyEyes2.setActive(true);
+//				enemyLights[i] = enemyEyes2;
+//				enemyEyes2.attachToBody(level.getEnemy(i).getBody(), 0f, .75f, enemyEyes2.getDirection());
+//			}
+//
+//		}
+
 	}
 
 	/**
@@ -708,6 +743,7 @@ public class GameController implements ContactListener, Screen {
 
 		// Temporary hardcoding
 		// Handle nightmode
+		
 		if (input.didNight()) {
 			if (duggiLight.isActive()) {
 				duggiLight.setActive(false);
@@ -972,6 +1008,43 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_OVER;
 		}
 		else {
+//			// clear the old lights
+//			for(LightSource l: enemyLights){
+//
+//			}
+//
+//			for(int i = 0; i < level.getEnemies().size(); i++) {
+//
+//				if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
+//					PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
+//					enemyEyes.setColor(1, 0, 0, 1);
+//					enemyEyes.setXray(true);
+//					if (!level.getEnemy(i).getStunned() &&
+//							!level.getEnemy(i).getCharging() && !level.getEnemy(i).getCollided() && !level.getEnemy(i).getLoadingCharge()
+//							&& !level.getEnemy(i).getEaten()){
+//						enemyEyes.setActive(true);
+//					} else {
+//						enemyEyes.setActive(false);
+//					}
+//					enemyLights[i] = enemyEyes;
+//					enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
+//				} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
+//					PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
+//					enemyEyes2.setColor(1, 0, 0, 1);
+//					enemyEyes2.setXray(true);
+//					if (!level.getEnemy(i).getStunned() &&
+//							!level.getEnemy(i).getCharging() && !level.getEnemy(i).getCollided() && !level.getEnemy(i).getLoadingCharge()
+//							&& !level.getEnemy(i).getEaten()){
+//						enemyEyes2.setActive(true);
+//					} else {
+//						enemyEyes2.setActive(false);
+//					}
+//					enemyLights[i] = enemyEyes2;
+//					enemyEyes2.attachToBody(level.getEnemy(i).getBody(), 0f, .75f, enemyEyes2.getDirection());
+//				}
+//
+//			}
+
 		    if (level.getClone() != null){
 		        if (Math.abs(level.getClone().getX() - level.getSwitch(0).getX()) < 1.5 &&
                         Math.abs(level.getClone().getX() - level.getSwitch(0).getX()) > 0 &&
@@ -1442,8 +1515,10 @@ public class GameController implements ContactListener, Screen {
 						if (tmp.getStunned() && level.isInFrontOfAvatar(tmp)
 								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
 							SoundController.getInstance().playEat();
+							if (!tmp.getEatInProgress()){
+								avatar.incrementResources();
+							}
 							tmp.beginEating();
-							avatar.incrementResources();
 							ate = true;
 							break;
 						}
@@ -1479,8 +1554,10 @@ public class GameController implements ContactListener, Screen {
 					GameObject tmp = level.objectInFrontOfAvatar();
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
 						SoundController.getInstance().playEat();
+						if (!((EdibleObject) tmp).getEatInProgress()){
+							avatar.incrementResources();
+						}
 						((EdibleObject) tmp).beginEating();
-						avatar.incrementResources();
 					}
 				}
 
@@ -1552,13 +1629,14 @@ public class GameController implements ContactListener, Screen {
 		RayHandler.useDiffuseLight(light.getBoolean("diffuse"));
 		rayhandler = new RayHandler(world, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
 		rayhandler.setCombinedMatrix(raycamera);
-
 		rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
+
 
 		duggiLight = new PointSource(rayhandler, 256, Color.WHITE, 8, 0, 0.4f);
 		duggiLight.setColor(0.85f,0.85f,0.95f,0.85f);
 		duggiLight.setXray(true);
 		duggiLight.setActive(false);
+
 	}
 
 	/**
@@ -1576,6 +1654,7 @@ public class GameController implements ContactListener, Screen {
 
 		level = null;
 		ffLights = null;
+		enemyLights = null;
 		controls = null;
 		fireFlyControls = null;
 		world = null;
