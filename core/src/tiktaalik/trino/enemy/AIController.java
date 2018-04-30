@@ -1,6 +1,7 @@
 package tiktaalik.trino.enemy;
 
 import com.badlogic.gdx.math.Vector2;
+import tiktaalik.trino.GameController;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.Level;
 import tiktaalik.trino.SoundController;
@@ -14,6 +15,7 @@ public class AIController {
     public static int LEFT = 0;
     public static int RIGHT = 1;
     public static int FLIP = 2;
+    private static float OFFSET = 0.03f;
 
     private Enemy enemy; // The ship being controlled by this AIController
     private Dinosaur target; // The target dinosaur
@@ -21,6 +23,9 @@ public class AIController {
     private Vector2 step;
     private int turnAngle;
 
+    private boolean justAvoided; //for shadow duggi
+
+    private static float SHADOW_DUGGI_SPEED = .05f;
     private float defaultSpeed = .035f;
     private float chargingMultiplier = 6;
 
@@ -117,6 +122,196 @@ public class AIController {
         }
 
         enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
+        enemy.setGridLocation(getEnemyGridX(), getEnemyGridY());
+    }
+
+    public boolean step(PooledList<Vector2> path, boolean obstacle, int inFront){
+        System.out.println("inFront " + inFront);
+        if (obstacle) return false;
+        if (path.size() == 0) return false;
+        //if (enemy.getCollided()) return;
+        int x = getEnemyGridX();
+        int y = getEnemyGridY();
+        System.out.println("current ["+x+","+y+"]");
+        float tmpx = enemy.getX();
+        float tmpy = enemy.getY();
+        System.out.println("current ["+tmpx+","+tmpy+"]");
+
+        float gridx = path.getHead().x*2+1;
+        float gridy = path.getHead().y*2+1;
+        System.out.println("gridx " + gridx + ", gridy " + gridy );
+        System.out.println("path head [" + path.getHead().x + "," + path.getHead().y + "]");
+        float dx = gridx - tmpx;
+        float dy = gridy - tmpy;
+
+        if (Math.abs(dx) >= Math.abs(dy)){
+            if (dx < -OFFSET)
+                enemy.setDirection(Dinosaur.LEFT);
+            else if (dx > OFFSET)
+                enemy.setDirection(Dinosaur.RIGHT);
+        }
+        else{
+            if (dy < -OFFSET)
+                enemy.setDirection(Dinosaur.DOWN);
+            else if (dy > OFFSET)
+                enemy.setDirection(Dinosaur.UP);
+        }
+
+        if (path.getHead().x == x && path.getHead().y == y){
+            if (Math.abs(dx) <= OFFSET && Math.abs(dy) <= OFFSET) {
+                path.removeHead();
+                if (justAvoided) justAvoided = false;
+            }
+            else{
+                System.out.println("adjusting stuff, dx " + dx + ", dy" + dy);
+                if (dx < -OFFSET) tmpx = tmpx - SHADOW_DUGGI_SPEED;
+                else if (dx > OFFSET) tmpx = tmpx + SHADOW_DUGGI_SPEED;
+                if (dy < -OFFSET) tmpy = tmpy - SHADOW_DUGGI_SPEED;
+                else if (dy > OFFSET) tmpy = tmpy + SHADOW_DUGGI_SPEED;
+                System.out.println("after adjust, x " + tmpx +", y" + tmpy);
+                enemy.setPosition(tmpx, tmpy);
+                return false;
+            }
+        }
+        if (path.size() == 0) return true;
+        if (inFront == -1 && !justAvoided) {
+            if (path.getHead().y == 0 &&
+                    (level.getGridObject((int)path.getHead().x, (int)path.getHead().y - 1).getType()!= GameController.EDIBLEWALL ||
+                    level.getGridObject((int)path.getHead().x, (int)path.getHead().y - 1).getType()!= GameController.WALL ||
+                    level.getGridObject((int)path.getHead().x, (int)path.getHead().y - 1).getType()!= GameController.RIVER ||
+                    level.getGridObject((int)path.getHead().x, (int)path.getHead().y - 1).getType()!= GameController.BOULDER ||
+                    level.getGridObject((int)path.getHead().x, (int)path.getHead().y - 1).getType()!= GameController.GOAL) ||
+                    level.getEnemyLocation()[(int)path.getHead().x][(int)path.getHead().y-1]){
+                if (dx > 0.5){
+                    if (path.getHead().y == 0 &&
+                            (level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.EDIBLEWALL ||
+                            level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.WALL ||
+                            level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.RIVER ||
+                            level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.BOULDER ||
+                            level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.GOAL) ||
+                            level.getEnemyLocation()[(int)path.getHead().x+1][(int)path.getHead().y-1]){
+                        path.add(0,new Vector2(path.getHead().x, path.getHead().y + 1));
+                    }
+                }
+                else{
+                    if (path.getHead().y == 0 &&
+                            (level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.EDIBLEWALL ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.WALL ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.RIVER ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.BOULDER ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.GOAL) ||
+                            level.getEnemyLocation()[(int)path.getHead().x+1][(int)path.getHead().y-1]){
+                        path.add(0,new Vector2(path.getHead().x, path.getHead().y + 1));
+                    }
+                }
+            }
+            else{
+                if (dx > 0.5){
+                    if (path.getHead().y == 0 &&
+                            (level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.EDIBLEWALL ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.WALL ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.RIVER ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.BOULDER ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.GOAL) ||
+                            level.getEnemyLocation()[(int)path.getHead().x+1][(int)path.getHead().y+1]){
+                        path.add(0,new Vector2(path.getHead().x, path.getHead().y + 1));
+                    }
+                }
+                else{
+                    if (path.getHead().y == 0 &&
+                            (level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.EDIBLEWALL ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.WALL ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.RIVER ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.BOULDER ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.GOAL) ||
+                            level.getEnemyLocation()[(int)path.getHead().x+1][(int)path.getHead().y+1]){
+                        path.add(0,new Vector2(path.getHead().x, path.getHead().y - 1));
+                    }
+                }
+            }
+            justAvoided = true;
+        }
+        else if (inFront == 1 && !justAvoided) {
+            if (path.getHead().x == 0 &&
+                    (level.getGridObject((int)path.getHead().x -1, (int)path.getHead().y).getType()!= GameController.EDIBLEWALL ||
+                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y).getType()!= GameController.WALL ||
+                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y).getType()!= GameController.RIVER ||
+                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y).getType()!= GameController.BOULDER ||
+                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y).getType()!= GameController.GOAL) ||
+                    level.getEnemyLocation()[(int)path.getHead().x-1][(int)path.getHead().y]){
+                if (dx > 0.5){
+                    if (path.getHead().y == 0 &&
+                            (level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.EDIBLEWALL ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.WALL ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.RIVER ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.BOULDER ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y + 1).getType()!= GameController.GOAL) ||
+                            level.getEnemyLocation()[(int)path.getHead().x-1][(int)path.getHead().y+1]){
+                        path.add(0,new Vector2(path.getHead().x-1, path.getHead().y ));
+                    }
+                }
+                else{
+                    if (path.getHead().y == 0 &&
+                            (level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.EDIBLEWALL ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.WALL ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.RIVER ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.BOULDER ||
+                                    level.getGridObject((int)path.getHead().x-1, (int)path.getHead().y - 1).getType()!= GameController.GOAL) ||
+                            level.getEnemyLocation()[(int)path.getHead().x+1][(int)path.getHead().y-1]){
+                        path.add(0,new Vector2(path.getHead().x-1, path.getHead().y - 1));
+                    }
+                }
+            }
+            else{
+                if (dy > 0.5){
+                    if (path.getHead().x == 0 &&
+                            (level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.EDIBLEWALL ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.WALL ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.RIVER ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.BOULDER ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y + 1).getType()!= GameController.GOAL) ||
+                            level.getEnemyLocation()[(int)path.getHead().x+1][(int)path.getHead().y+1]){
+                        path.add(0,new Vector2(path.getHead().x+1, path.getHead().y ));
+                    }
+                }
+                else{
+                    if (path.getHead().x == 0 &&
+                            (level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.EDIBLEWALL ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.WALL ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.RIVER ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.BOULDER ||
+                                    level.getGridObject((int)path.getHead().x+1, (int)path.getHead().y - 1).getType()!= GameController.GOAL) ||
+                            level.getEnemyLocation()[(int)path.getHead().x+1][(int)path.getHead().y-1]){
+                        path.add(0,new Vector2(path.getHead().x + 1, path.getHead().y ));
+                    }
+                }
+            }
+            justAvoided = true;
+        }
+
+        if (Math.abs(tmpx - gridx)<SHADOW_DUGGI_SPEED){
+            tmpx = gridx;
+        }
+        else if (path.getHead().x > x){
+            tmpx += SHADOW_DUGGI_SPEED;
+        }
+        else {
+            tmpx -= SHADOW_DUGGI_SPEED;
+        }
+        if (Math.abs(tmpy - gridy)<SHADOW_DUGGI_SPEED){
+            tmpy = gridy;
+        }
+        else if (path.getHead().y > y){
+            tmpy += SHADOW_DUGGI_SPEED;
+        }
+        else {
+            tmpy -= SHADOW_DUGGI_SPEED;
+        }
+        System.out.println("after ["+x+","+y+"]");
+        enemy.setPosition(tmpx, tmpy);
+        enemy.setGridLocation(getEnemyGridX(), getEnemyGridY());
+        return false;
+
     }
 
 

@@ -36,7 +36,7 @@ public class Enemy extends EdibleObject {
     private boolean coolingCharge;
     private boolean loadingCharge;
     private int direction;
-    private Vector2 gridLocation;
+    private Vector2 gridLocation = new Vector2();
     private boolean charging;
     private boolean chargeReady;
     private final float CHARGE_COOLDOWN_DURATION = 0.5f;
@@ -53,10 +53,10 @@ public class Enemy extends EdibleObject {
     private static final int STUNNED_UP = 14;
     private static final int STUNNED_DOWN = 15;
 
-    private static final int CARNIVORE_ENEMY = 16;
-    private static final int HERBIVORE_ENEMY = 17;
-    private static final int UNKILLABLE_ENEMY = 18;
-    private static final int SHADOW_DUGGI = 19;
+    public static final int CARNIVORE_ENEMY = 16;
+    public static final int HERBIVORE_ENEMY = 17;
+    public static final int UNKILLABLE_ENEMY = 18;
+    public static final int SHADOW_DUGGI = 19;
 
     private float offset = -0.5f;
 

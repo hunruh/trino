@@ -47,6 +47,8 @@ public class Level {
     private PooledList<Switch> switches = new PooledList<Switch>();
 
     private GameObject[][] grid;
+    private PooledList<Vector2> cottonFlowerList = new PooledList<Vector2>();//for shadow duggi
+    private boolean[][] enemyLocation;
     private Rectangle bounds;
     private Vector2 scale;
 
@@ -55,6 +57,7 @@ public class Level {
     private Dinosaur avatar;
     private Clone clone;
     private Wall goalDoor;
+    private Enemy shadowDuggi;
 
     private GameObject objectCache;
     private Vector2 locationCache;
@@ -77,6 +80,7 @@ public class Level {
         locationCache = new Vector2();
         currentLevel = lvl;
         grid = new GameObject[(int) bounds.width][(int) bounds.height];
+        enemyLocation = new boolean[(int) bounds.width][(int) bounds.height];
     }
 
     public int getCurrentLevel(){
@@ -242,7 +246,11 @@ public class Level {
         return objects;
     }
 
+    public Enemy getShadowDuggi(){return shadowDuggi;}
+
     public boolean getIsNight(){return isNight;}
+
+    public PooledList<Vector2>getCottonFlowerList(){return cottonFlowerList;}
 
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
@@ -320,6 +328,7 @@ public class Level {
             cf.setType(COTTON);
             addObject(cf);
             grid[(int)cf.getGridLocation().x][(int)cf.getGridLocation().y] = cf;
+            cottonFlowerList.add(new Vector2(cf.getGridLocation().x,cf.getGridLocation().y));
         }
 
         // Adding river
@@ -456,8 +465,46 @@ public class Level {
                     filmStripDict.get("enemyStunnedFront"), 3);
             en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
             en.setDirection(d);
+            en.setGridLocation(x,y);
             addObject(en);
+            enemyLocation[(int)x][(int)y] = true;
         }
+
+        //attempt for shadow duggi
+        Enemy en = new Enemy(screenToMaze(11), screenToMaze(7), dwidth, 99);
+        String sd = "Left";
+        System.out.println(sd);
+        int d = 0;
+        if (sd.equals("Up")) d = 2;
+        else if (sd.equals("Down")) d = 3;
+        else if (sd.equals("Left")) d = 0;
+        else if (sd.equals("Right")) d = 1;
+        else d = -1;
+        System.out.println("d is " + d);
+        en.setType(ENEMY);
+        en.setDrawScale(scale);
+        en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
+                filmStripDict.get("enemyRight"), 10,
+                filmStripDict.get("enemyBack"), 8,
+                filmStripDict.get("enemyFront"), 10);
+        en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
+                filmStripDict.get("enemyChargeRight"), 15,
+                filmStripDict.get("enemyChargeLeft"), 15,
+                filmStripDict.get("enemyChargeLeft"), 15);
+        en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
+                filmStripDict.get("enemyAttackRight"), 9,
+                filmStripDict.get("enemyAttackLeft"), 9,
+                filmStripDict.get("enemyAttackLeft"), 9);
+        en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
+                filmStripDict.get("enemyStunnedRight"), 3,
+                filmStripDict.get("enemyStunnedBack"), 3,
+                filmStripDict.get("enemyStunnedFront"), 3);
+        en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
+        en.setDirection(d);
+        en.setEnemyType(Enemy.SHADOW_DUGGI);
+        addObject(en);
+        en.setGridLocation(11,7);
+        shadowDuggi = en;
 
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
         for (int i = 0; i < 8; i++){
@@ -545,6 +592,10 @@ public class Level {
     public int getAvatarGridY() {
         return Math.round((avatar.getY() - 1) / 2);
     }
+
+    public boolean[][] getEnemyLocation() {return enemyLocation;}
+
+    public void setEnemyLocation(int x, int y, boolean value) {enemyLocation[x][y] = value;}
 
     public boolean isInFrontOfAvatar(GameObject bd) {
         int direction = avatar.getDirection();

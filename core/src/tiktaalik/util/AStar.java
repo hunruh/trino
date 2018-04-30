@@ -1,6 +1,10 @@
 //code taken from http://www.codebytes.in/2015/02/a-shortest-path-finding-algorithm.html
 
 package tiktaalik.util;
+import com.badlogic.gdx.math.Vector2;
+import tiktaalik.trino.GameController;
+import tiktaalik.trino.GameObject;
+
 import java.util.*;
 
 public class AStar {
@@ -53,7 +57,7 @@ public class AStar {
         }
     }
 
-    public AStar(int x, int y, int sx, int sy, int ex, int ey, int[][] blocked) {
+    public AStar(int x, int y, int sx, int sy, int ex, int ey, GameObject[][] blocked) {
 
         //add the start location to open list
         grid = new Cell[x][y];
@@ -68,8 +72,15 @@ public class AStar {
         }
         grid[sx][sy].finalCost = 0;
 
-        for(int i=0;i<blocked.length;++i){
-            setBlocked(blocked[i][0], blocked[i][1]);
+        for(int i = 0; i < blocked.length; i++){
+            for (int j = 0; j < blocked[i].length; j++) {
+                if (blocked[i][j] != null && blocked[i][j].getType() != GameController.COTTON &&
+                        blocked[i][j].getType() != GameController.ENEMY &&
+                        blocked[i][j].getType() != GameController.SWITCH &&
+                        blocked[i][j].getType() != GameController.FIREFLY) {
+                    setBlocked(i, j);
+                }
+            }
         }
 
         startI = sx;
@@ -119,18 +130,19 @@ public class AStar {
         }
     }
 
-    public void printResults(){
-        System.out.println(closed);
-        if(closed[endI][endJ]){
-            //Trace back the path
-            System.out.println("Path: ");
+    public PooledList<Vector2> getResults(){
+        PooledList<Vector2>coords = new PooledList<Vector2>();
+        coords.add(new Vector2(endI, endJ));
+        if(closed[endI][endJ]) {
             Cell current = grid[endI][endJ];
-            System.out.print(current);
-            while(current.parent!=null){
-                System.out.print(" -> "+current.parent);
+            while (current.parent != null) {
+                coords.add(0, new Vector2(current.parent.i, current.parent.j));
+                System.out.print(current + "<-");
                 current = current.parent;
             }
-            System.out.println();
-        }else System.out.println("No possible path");
+        }
+        System.out.println("final size is " + coords.size());
+
+        return coords;
     }
 }
