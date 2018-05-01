@@ -470,41 +470,7 @@ public class Level {
             enemyLocation[(int)x][(int)y] = true;
         }
 
-        //attempt for shadow duggi
-        Enemy en = new Enemy(screenToMaze(11), screenToMaze(7), dwidth, 99);
-        String sd = "Left";
-        System.out.println(sd);
-        int d = 0;
-        if (sd.equals("Up")) d = 2;
-        else if (sd.equals("Down")) d = 3;
-        else if (sd.equals("Left")) d = 0;
-        else if (sd.equals("Right")) d = 1;
-        else d = -1;
-        System.out.println("d is " + d);
-        en.setType(ENEMY);
-        en.setDrawScale(scale);
-        en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
-                filmStripDict.get("enemyRight"), 10,
-                filmStripDict.get("enemyBack"), 8,
-                filmStripDict.get("enemyFront"), 10);
-        en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
-                filmStripDict.get("enemyChargeRight"), 15,
-                filmStripDict.get("enemyChargeLeft"), 15,
-                filmStripDict.get("enemyChargeLeft"), 15);
-        en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
-                filmStripDict.get("enemyAttackRight"), 9,
-                filmStripDict.get("enemyAttackLeft"), 9,
-                filmStripDict.get("enemyAttackLeft"), 9);
-        en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
-                filmStripDict.get("enemyStunnedRight"), 3,
-                filmStripDict.get("enemyStunnedBack"), 3,
-                filmStripDict.get("enemyStunnedFront"), 3);
-        en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
-        en.setDirection(d);
-        en.setEnemyType(Enemy.SHADOW_DUGGI);
-        addObject(en);
-        en.setGridLocation(11,7);
-        shadowDuggi = en;
+
 
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
         for (int i = 0; i < 8; i++){
