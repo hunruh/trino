@@ -611,7 +611,7 @@ public class GameController implements ContactListener, Screen {
 		hud = new HUDController();
 		shadowDuggiGotCotton = true;
 		//cottonFlowers = level.getCottonFlowerList();
-		////System.out.println("cotton flowers "+cottonFlowers);
+		//////System.out.println("cotton flowers "+cottonFlowers);
 
 		isSwitch = false;
 		isCotton = false;
@@ -666,10 +666,11 @@ public class GameController implements ContactListener, Screen {
 
 		// Init the level
 		level = new Level(world, currentLevel);
-		//System.out.println("before populate");
+		////System.out.println("before populate");
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
-		cottonFlowers = level.getCottonFlowerList();
+		//cottonFlowers = level.getCottonFlowerList();
 		collisionHandler.setLevel(level);
+		//shadowDuggiGotCotton = true;
 
 		// Set the lighting
 		if (level.getIsNight()){
@@ -713,7 +714,7 @@ public class GameController implements ContactListener, Screen {
 //		for(int i = 0; i < level.getEnemies().size(); i++) {
 //
 //			if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
-//				//System.out.println("reached right enemy eyes");
+//				////System.out.println("reached right enemy eyes");
 //				PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
 //				enemyEyes.setColor(1, 0, 0, 1);
 //				enemyEyes.setXray(true);
@@ -721,7 +722,7 @@ public class GameController implements ContactListener, Screen {
 //				enemyLights[i] = enemyEyes;
 //				enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
 //			} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
-//				//System.out.println("reached left enemy eyes");
+//				////System.out.println("reached left enemy eyes");
 //				PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
 //				enemyEyes2.setColor(1, 0, 0, 1);
 //				enemyEyes2.setXray(true);
@@ -863,12 +864,12 @@ public class GameController implements ContactListener, Screen {
 			canvas.draw(textureDict.get("restartText"), 613, menuHeight-445+outlineHeight); // restart text
 			canvas.draw(textureDict.get("resumeText"),619, menuHeight-536+outlineHeight); // resume text
 //			canvas.drawTextCentered("PAUSED!", displayFont, 0.0f);
-//			//System.out.println("X");
-//			//System.out.println(Gdx.input.getX());
-			//System.out.println("Y");
-			//System.out.println(Gdx.input.getY());
+//			////System.out.println("X");
+//			////System.out.println(Gdx.input.getX());
+			////System.out.println("Y");
+			////System.out.println(Gdx.input.getY());
 			if (InputHandler.getInstance().didReturn()) {
-				//System.out.println("TEST");
+				////System.out.println("TEST");
 			}
 			canvas.end();
 		}
@@ -1020,16 +1021,8 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_OVER;
 		}
 		else {
-			if(shadowDuggiGotCotton) {
-				currentCotton = (int)Math.floor(Math.random()*cottonFlowers.size());
-				//System.out.println("what the fuck my buddies");
-				AStar astar = new AStar(level.getLevelWidth(), level.getLevelHeight(),
-						(int) level.getShadowDuggi().getGridLocation().x, (int) level.getShadowDuggi().getGridLocation().y,
-						(int) cottonFlowers.get(currentCotton).x, (int) cottonFlowers.get(currentCotton).y, level.getGrid());
-				astar.computePath();
-				AIPath = astar.getResults();
-			}
-			//System.out.println("path size " + AIPath.size());
+			
+			////System.out.println("path size " + AIPath.size());
 //			// clear the old lights
 //			for(LightSource l: enemyLights){
 //
@@ -1072,7 +1065,7 @@ public class GameController implements ContactListener, Screen {
                         Math.abs(level.getClone().getX() - level.getSwitch(0).getX()) > 0 &&
                         Math.abs(level.getClone().getY() - level.getSwitch(0).getY()) < 1.5 &&
                         Math.abs(level.getClone().getY() - level.getSwitch(0).getY()) > 0){
-		            ////System.out.println("success");
+		            //////System.out.println("success");
                     level.getAvatar().setCanExit(true);
                     level.getGoalDoor().setLowered(true);
                     level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
@@ -1140,16 +1133,19 @@ public class GameController implements ContactListener, Screen {
 				ffLights[i].setDistance(ffLightDsts[i]);
 			}
 
+
 			// Process enemy updates
+			for (int i = 0; i < level.getEnemies().size(); i++)
+				controls.get(i).step(level.objectInFrontOfEnemy(level.getEnemy(i)));
+
 			//this is hard coded in rn
 			//also naming stuff real bad bc im lazy
+			/*
 			int inFrontOfShadowDuggi = 0;
 			boolean block = false;
 			Enemy sd = level.getShadowDuggi();
 			Vector2 shadowDuggi = level.getShadowDuggi().getGridLocation();
-			for (int i = 0; i < level.getEnemies().size()-1; i++) {
-				Enemy etmp = level.getEnemies().get(i);
-				Vector2 tmp = level.getEnemies().get(i).getGridLocation();
+			for (int i = 0; i < level.getEnemies().size()-1; i++)
 				controls.get(i).step(level.objectInFrontOfEnemy(level.getEnemy(i)));
 
 				if (shadowDuggi.y == tmp.y && (((shadowDuggi.x - tmp.x) == 1 &&
@@ -1163,6 +1159,29 @@ public class GameController implements ContactListener, Screen {
 						shadowDuggi.y - tmp.y == 1 &&
 						(sd.getDirection() == Dinosaur.DOWN && etmp.getDirection() == Dinosaur.UP))){
 					inFrontOfShadowDuggi = 1;
+				}
+				else{
+					float dx = shadowDuggi.x - tmp.x;
+					float dy = shadowDuggi.y - tmp.y;
+					int typex = -1;
+					int typey = -1;
+					if (tmp.x-dx >= 0 && tmp.x-dx < level.getLevelWidth()) {
+						//System.out.println(level.getGrid()[(int) (tmp.x - dx)][(int) (tmp.y)]);
+						if (Math.abs(dx) <= 1 && level.getGrid()[(int) (tmp.x - dx)][(int) (tmp.y)] != null)
+							typex = level.getGrid()[(int) (tmp.x - dx)][(int) (tmp.y)].getType();
+					}
+					if (tmp.y-dy >= 0 && tmp.y-dy < level.getLevelHeight()) {
+						if (Math.abs(dy) <= 1 && level.getGrid()[(int) (tmp.x)][(int) (tmp.y - dy)] != null)
+							typey = level.getGridObject((int) (tmp.x), (int) (tmp.y - dy)).getType();
+					}
+					if (Math.abs(dx) <= 1 && (typex == WALL || typex == EDIBLEWALL || typex == RIVER ||
+							typex == BOULDER || typex == GOAL)){
+						inFrontOfShadowDuggi = -1;
+					}
+					else if (Math.abs(dy) <= 1 && (typey == WALL || typey == EDIBLEWALL || typey == RIVER ||
+							typey == BOULDER || typey == GOAL)){
+						inFrontOfShadowDuggi = 1;
+					}
 				}
 
 				if ((shadowDuggi.x - tmp.x) == -1 && shadowDuggi.y == tmp.y && sd.getDirection() == Dinosaur.RIGHT
@@ -1185,9 +1204,10 @@ public class GameController implements ContactListener, Screen {
 			}
 			shadowDuggiGotCotton = controls.get(level.getEnemies().size()-1).step(AIPath, block, inFrontOfShadowDuggi);
 			if(shadowDuggiGotCotton) {
-				System.out.println("i shouldnt be doingthe ai tbh");
+				//System.out.println("i shouldnt be doingthe ai tbh");
 				//cottonFlowers.remove(currentCotton);
 			}
+			*/
 
 			// Process avatar updates
 			int direction = avatar.getDirection();

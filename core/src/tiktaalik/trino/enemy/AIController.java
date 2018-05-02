@@ -25,7 +25,7 @@ public class AIController {
 
     private boolean justAvoided; //for shadow duggi
 
-    private static float SHADOW_DUGGI_SPEED = .05f;
+    private static float SHADOW_DUGGI_SPEED = .035f;
     private float defaultSpeed = .035f;
     private float chargingMultiplier = 6;
 
