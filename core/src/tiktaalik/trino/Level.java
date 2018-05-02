@@ -540,6 +540,13 @@ public class Level {
                 if (g2.getType() == SWITCH)
                     return 1;
 
+                if (g1.getType() == GOAL && ((Wall) g1).getLowered()) {
+                    return -1;
+                }
+                if (g2.getType() == GOAL && ((Wall) g2).getLowered()) {
+                    return 1;
+                }
+
                 if (g1.getType() == COTTON)
                     return -1;
                 if (g2.getType() == COTTON)
@@ -550,10 +557,7 @@ public class Level {
                 if (g2.getType() == FIREFLY)
                     return -1;
 
-                if ((int)(g2.getY() - g1.getY()) == 0)
-                    return (int)(g2.getX() - g1.getX());
-
-                return (int)(g2.getY() - g1.getY());
+                return (int)(g2.getY()*g2.getDrawScale().x - g1.getY()*g1.getDrawScale().x);
             }
         });
         canvas.draw(background, 0, 0);
