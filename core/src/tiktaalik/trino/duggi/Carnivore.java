@@ -17,8 +17,8 @@ public class Carnivore extends Dinosaur {
             if (ctr >= 16)
                 break;
 
-            vertices[ctr++] = (float)(radius * Math.cos(theta) * .78); // x
-            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .28) - radius/4; // y
+            vertices[ctr++] = (float)(radius * 1.4 * Math.cos(theta) * .78); // x
+            vertices[ctr++] = (float)(-radius * 1.4 * Math.sin(theta) * .28) - radius/4; // y
         }
         shape.set(vertices);
 
@@ -64,7 +64,7 @@ public class Carnivore extends Dinosaur {
     }
 
     public void drawShadow(Canvas canvas) {
-        canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x,2*radius*drawScale.x*.75f, radius*drawScale.x);
+        canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x,2*radius*1.4f*drawScale.x*.75f, radius*1.4f*drawScale.x);
     }
 
     public void draw(Canvas canvas) {
