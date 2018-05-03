@@ -627,7 +627,7 @@ public class GameController implements ContactListener, Screen {
 
 	public void nextLevel(){
 
-		if (currentLevel == 2)
+		if (currentLevel == 7)
 			currentLevel = 0;
 		else
 			currentLevel++;
@@ -1579,7 +1579,7 @@ public class GameController implements ContactListener, Screen {
 			if (InputHandler.getInstance().didAction()) {
 				if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 					GameObject cotton = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
-					if (cotton != null && cotton.getType() == COTTON) {
+					if (cotton != null && cotton.getType() == COTTON && avatar.getResources() < 3) {
 						SoundController.getInstance().playCottonPickup();
 						level.removeObject(cotton);
 						avatar.incrementResources();
@@ -1610,7 +1610,7 @@ public class GameController implements ContactListener, Screen {
 					for (int i = 0; i < level.getEnemies().size(); i++) {
 						Enemy tmp = level.getEnemy(i);
 						if (tmp.getStunned() && level.isInFrontOfAvatar(tmp)
-								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
+								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5 && avatar.getResources() < 3) {
 							SoundController.getInstance().playEat();
 							if (!tmp.getEatInProgress()){
 								avatar.incrementResources();
@@ -1649,7 +1649,8 @@ public class GameController implements ContactListener, Screen {
 
 				if (avatar.getForm() == Dinosaur.HERBIVORE_FORM && avatar.getActionLoadValue() < 0.25f && avatar.getActionLoadValue()>0) {
 					GameObject tmp = level.objectInFrontOfAvatar();
-					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
+					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5
+							&& avatar.getResources() < 3) {
 						SoundController.getInstance().playEat();
 						if (!((EdibleObject) tmp).getEatInProgress()){
 							avatar.incrementResources();
