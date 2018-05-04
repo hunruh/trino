@@ -672,6 +672,8 @@ public class GameController implements ContactListener, Screen {
 		world = new World(gravity,false);
 		world.setContactListener(this);
 
+		state = GAME_READY;
+
 		SoundController.getInstance().dispose();
 		SoundController.getInstance().init();
 		SoundController.getInstance().playBackground(Dinosaur.DOLL_FORM);
@@ -940,8 +942,14 @@ public class GameController implements ContactListener, Screen {
 				menuNum = 3;
 				// remember to remove pause menu overlay!!
 				reset();
+
+			}
+			else if (InputHandler.getInstance().didResume()) {
+				menuNum = 4;
+				state = GAME_RUNNING;
 			}
 		}
+
 	}
 
 	/**
