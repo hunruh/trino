@@ -143,13 +143,13 @@ public class River extends GameObject {
     private void resize(float width, float height) {
         // Make the box with the center in the center
         vertices[0] = -width/2.0f;
-        vertices[1] = -height/2.0f;
+        vertices[1] = -height/1.3f;
         vertices[2] = -width/2.0f;
-        vertices[3] =  height/2.0f;
+        vertices[3] =  height/1.1f;
         vertices[4] =  width/2.0f;
-        vertices[5] =  height/2.0f;
+        vertices[5] =  height/1.1f;
         vertices[6] =  width/2.0f;
-        vertices[7] = -height/2.0f;
+        vertices[7] = -height/1.3f;
         shape.set(vertices);
     }
 
@@ -181,6 +181,17 @@ public class River extends GameObject {
         if (geometry != null) {
             body.destroyFixture(geometry);
             geometry = null;
+        }
+    }
+
+    /**
+     * Draws the physics object.
+     *
+     * @param canvas Drawing context
+     */
+    public void draw(Canvas canvas) {
+        if (texture != null) {
+            canvas.draw(texture, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x + 12,0,1,1);
         }
     }
 

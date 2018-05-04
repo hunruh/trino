@@ -82,8 +82,8 @@ public class Enemy extends EdibleObject {
             if (ctr >= 16)
                 break;
 
-            vertices[ctr++] = (float)(radius * Math.cos(theta) * .85); // x
-            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .5) - radius/4; // y
+            vertices[ctr++] = (float)(radius * Math.cos(theta) * .75); // x
+            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .25) - radius/4; // y
         }
         shape.set(vertices);
 

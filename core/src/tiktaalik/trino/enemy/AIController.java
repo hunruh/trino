@@ -55,7 +55,7 @@ public class AIController {
         this.enemy.setEnemyType(type);
     }
 
-    public void step(boolean obstacle) {
+    public void step() {
         if (enemy.getStunned())
             return;
 
@@ -73,7 +73,7 @@ public class AIController {
         if (enemy.getLoadingCharge())
             return;
 
-        if (obstacle || enemy.getCollided()) {
+        if (enemy.getCollided()) {
             enemy.setCollided(false);
             if (enemy.getCharging()) {
                 SoundController.getInstance().playCrash();
