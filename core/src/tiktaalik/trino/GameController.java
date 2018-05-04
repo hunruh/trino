@@ -1021,7 +1021,7 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_OVER;
 		}
 		else {
-			
+
 			////System.out.println("path size " + AIPath.size());
 //			// clear the old lights
 //			for(LightSource l: enemyLights){
