@@ -92,6 +92,8 @@ public class GDXRoot extends Game implements ScreenListener {
 				setScreen(levels);
 			}
 			else if (MenuController.currState == 1) {
+				controller = new GameController();
+				controller.preLoadContent(manager);
 				controller.loadContent(manager);
 				controller.setScreenListener(this);
 				controller.setCanvas(canvas);
@@ -102,6 +104,8 @@ public class GDXRoot extends Game implements ScreenListener {
 			menu = null;
 		} else if (screen == levels) {
 			if (LevelController.levelNum == 1) {
+				controller = new GameController();
+				controller.preLoadContent(manager);
 				controller.loadContent(manager);
 				controller.setScreenListener(this);
 				controller.setCanvas(canvas);
@@ -109,6 +113,8 @@ public class GDXRoot extends Game implements ScreenListener {
 				setScreen(controller);
 			}
 			else if (LevelController.levelNum == 2) {
+				controller = new GameController();
+				controller.preLoadContent(manager);
 				controller.loadContent(manager);
 				controller.setScreenListener(this);
 				controller.setCanvas(canvas);
@@ -117,6 +123,8 @@ public class GDXRoot extends Game implements ScreenListener {
 				controller.nextLevel();
 			}
 			else if (LevelController.levelNum == 3) {
+				controller = new GameController();
+				controller.preLoadContent(manager);
 				controller.loadContent(manager);
 				controller.setScreenListener(this);
 				controller.setCanvas(canvas);
@@ -135,6 +143,15 @@ public class GDXRoot extends Game implements ScreenListener {
             levels.dispose();
 			levels = null;
 
+		}
+		else if (screen == controller) {
+			if (controller.menuNum == 1) {
+				menu = new MenuController(canvas,manager,1);
+				menu.setScreenListener(this);
+				setScreen(menu);
+				controller.reset();
+				controller.dispose();
+			}
 		}
 		else if (exitCode == GameController.EXIT_NEXT) {
 			controller.reset();

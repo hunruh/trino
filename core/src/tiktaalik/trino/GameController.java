@@ -52,6 +52,10 @@ public class GameController implements ContactListener, Screen {
 	private static String OVERLAY_FILE = "trino/overlay.png";
 	private static String GOAL_FILE = "trino/openExitPlaceHolder.png";
 	private static String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
+	private static String DOOR_FILE_ONE = "trino/openExitPlaceHolder1.png";
+	private static String DOOR_CLOSED_FILE_ONE = "trino/exitClosedPlaceholder1.png";
+	private static String DOOR_FILE_TWO = "trino/openExitPlaceHolder2.png";
+	private static String DOOR_CLOSED_FILE_TWO = "trino/exitClosedPlaceHolder2.png";
 	private static final String CLONE_FILE  = "trino/clone.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
@@ -188,6 +192,7 @@ public class GameController implements ContactListener, Screen {
 	float tmpx;
 	float tmpy;
 	private boolean shadowDuggiGotCotton = true;
+	public static int menuNum = 0;
 
 	/** Timer */
 	float levelTime = 300;
@@ -229,6 +234,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(GOAL_FILE);
 		manager.load(GOAL_CLOSED_FILE,Texture.class);
 		assets.add(GOAL_CLOSED_FILE);
+		manager.load(DOOR_FILE_ONE, Texture.class);
+		assets.add(DOOR_FILE_ONE);
+		manager.load(DOOR_CLOSED_FILE_ONE, Texture.class);
+		assets.add(DOOR_CLOSED_FILE_ONE);
+		manager.load(DOOR_FILE_TWO, Texture.class);
+		assets.add(DOOR_FILE_TWO);
+		manager.load(DOOR_CLOSED_FILE_TWO, Texture.class);
+		assets.add(DOOR_CLOSED_FILE_TWO);
 		manager.load(DOLL_STRIP_LEFT, Texture.class);
 		assets.add(DOLL_STRIP_LEFT);
 		manager.load(DOLL_STRIP_RIGHT, Texture.class);
@@ -389,6 +402,10 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("overlay", createTexture(manager,OVERLAY_FILE,true));
 		textureDict.put("goalOpenTile", createTexture(manager,GOAL_FILE,true));
 		textureDict.put("goalClosedTile", createTexture(manager,GOAL_CLOSED_FILE, true));
+		textureDict.put("doorOpenTileOne", createTexture(manager,DOOR_FILE_ONE,true));
+		textureDict.put("doorClosedTileOne", createTexture(manager,DOOR_CLOSED_FILE_ONE,true));
+		textureDict.put("doorOpenTileTwo", createTexture(manager,DOOR_FILE_TWO,true));
+		textureDict.put("doorClosedTileTwo", createTexture(manager,DOOR_CLOSED_FILE_TWO,true));
 		textureDict.put("clone", createTexture(manager,CLONE_FILE,false));
 		textureDict.put("fireFly", createTexture(manager, FIREFLY_FILE, false));
 		textureDict.put("wall", createTexture(manager,WALL_FILE,false));
@@ -847,39 +864,6 @@ public class GameController implements ContactListener, Screen {
 		canvas.end();
 
 
-		if (state == GAME_PAUSED) {
-			displayFont.setColor(Color.YELLOW);
-			int menuHeight = canvas.getHeight();
-			int outlineHeight = textureDict.get("outline").getRegionHeight()/4;
-			int outlineWidth = textureDict.get("outline").getRegionWidth()/4;
-			int musicHeight = textureDict.get("musicOutline").getRegionHeight()/4;
-			int musicWidth = textureDict.get("musicOutline").getRegionWidth()/4;
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("grayOut"), -9, 0);
-			canvas.draw(textureDict.get("pauseMenu"), 430, 147);
-			canvas.draw(textureDict.get("musicOutline"), 526, menuHeight-172); // music outline
-			canvas.draw(textureDict.get("musicOutline"), 736, menuHeight-172); // sound outline
-			canvas.draw(textureDict.get("outline"), 471, menuHeight-263); // menu outline
-			canvas.draw(textureDict.get("outline"), 471, menuHeight-354); // help outline
-			canvas.draw(textureDict.get("outline"), 471, menuHeight-445); // restart outline
-			canvas.draw(textureDict.get("outline"), 471, menuHeight-536); // resume outline
-			canvas.draw(textureDict.get("musicOn"), 543, menuHeight-183+musicHeight); // music button
-			canvas.draw(textureDict.get("soundOn"), 753, menuHeight-183+musicHeight); // sound button
-			canvas.draw(textureDict.get("menuText"), 636, menuHeight-263+outlineHeight); // menu text
-			canvas.draw(textureDict.get("helpText"), 641, menuHeight-354+outlineHeight); // help text
-			canvas.draw(textureDict.get("restartText"), 613, menuHeight-445+outlineHeight); // restart text
-			canvas.draw(textureDict.get("resumeText"),619, menuHeight-536+outlineHeight); // resume text
-//			canvas.drawTextCentered("PAUSED!", displayFont, 0.0f);
-//			////System.out.println("X");
-//			////System.out.println(Gdx.input.getX());
-			////System.out.println("Y");
-			////System.out.println(Gdx.input.getY());
-			if (InputHandler.getInstance().didReturn()) {
-				////System.out.println("TEST");
-			}
-			canvas.end();
-		}
-
 		if (currentLevel == 0) {
 			canvas.beginOverlay();
 			canvas.draw(textureDict.get("tutorialOverlay"), 779, 0);
@@ -930,6 +914,33 @@ public class GameController implements ContactListener, Screen {
 					textureDict.get("gameover").getRegionWidth()*.75f,textureDict.get("gameover").getRegionHeight()*.75f);
 			//canvas.drawTextCentered("TIME'S UP!", displayFont, 0.0f);
 			canvas.end();
+		}
+
+		if (state == GAME_PAUSED) {
+			displayFont.setColor(Color.YELLOW);
+			canvas.beginOverlay();
+			canvas.draw(textureDict.get("grayOut"), -9, 0);
+			canvas.draw(textureDict.get("pauseMenu"), 396, 109);
+			canvas.draw(textureDict.get("musicOn"), 725, 181); // music button
+			canvas.draw(textureDict.get("soundOn"), 782, 181); // sound button
+			canvas.draw(textureDict.get("menuText"), 573, 459); // menu text
+			canvas.draw(textureDict.get("helpText"), 583, 389); // help text
+			canvas.draw(textureDict.get("restartText"), 557, 320); // restart text
+			canvas.draw(textureDict.get("resumeText"),565, 255); // resume text
+			canvas.end();
+			if (InputHandler.getInstance().didReturn()) {
+				menuNum = 1;
+				listener.exitScreen(this, 0);
+			}
+			else if (InputHandler.getInstance().didHelp()) {
+				menuNum = 2;
+				System.out.println("hello you have reached the help button. pls leave a message after the beep");
+			}
+			else if (InputHandler.getInstance().didRestart()) {
+				menuNum = 3;
+				// remember to remove pause menu overlay!!
+				reset();
+			}
 		}
 	}
 
@@ -1086,18 +1097,43 @@ public class GameController implements ContactListener, Screen {
 								level.getAvatar().setCanExit(false);
 							}
 							level.getDoor(i).setLowered(true);
-							level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
+							if (i == 0) {
+								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
+							}
+							else if (i == 1) {
+								level.getDoor(i).setTexture(textureDict.get("doorOpenTileOne"));
+							}
+							else if (i == 2) {
+								level.getDoor(i).setTexture(textureDict.get("doorOpenTileTwo"));
+							}
 						} else {
 							level.getAvatar().setCanExit(false);
 							level.getDoor(i).setLowered(false);
-							level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
+							if (i == 0) {
+								level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
+							}
+							else if (i == 1) {
+								level.getDoor(i).setTexture(textureDict.get("doorClosedTileOne"));
+							}
+							else if (i == 2) {
+								level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
+							}
+
 						}
 					}
 				} else {
 					for (int i = 0; i < level.getDoors().size(); i++) {
 						level.getAvatar().setCanExit(false);
 						level.getDoor(i).setLowered(false);
-						level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
+						if (i == 0) {
+							level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
+						}
+						else if (i == 1) {
+							level.getDoor(i).setTexture(textureDict.get("doorClosedTileOne"));
+						}
+						else if (i == 2) {
+							level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
+						}
 					}
 				}
 			}
