@@ -45,6 +45,7 @@ public class Level {
     private PooledList<Enemy> enemies = new PooledList<Enemy>();
     private PooledList<FireFly> fireFlies = new PooledList<FireFly>();
     private PooledList<Switch> switches = new PooledList<Switch>();
+    private PooledList<Wall> doors = new PooledList<Wall>();
 
     private GameObject[][] grid;
     private PooledList<Vector2> cottonFlowerList = new PooledList<Vector2>();//for shadow duggi
@@ -56,7 +57,6 @@ public class Level {
 
     private Dinosaur avatar;
     private Clone clone;
-    private Wall goalDoor;
     private Enemy shadowDuggi;
 
     private GameObject objectCache;
@@ -118,6 +118,9 @@ public class Level {
                 break;
             case SWITCH:
                 switches.add((Switch) g);
+                break;
+            case GOAL:
+                doors.add((Wall) g);
                 break;
         }
 
@@ -210,9 +213,9 @@ public class Level {
         removeObject(clone);
     }
 
-    public Wall getGoalDoor() {
-        return goalDoor;
-    }
+    //public Wall getGoalDoor() {
+//        return goalDoor;
+//    }
 
     public Enemy getEnemy(int idx) {
         return enemies.get(idx);
@@ -237,6 +240,10 @@ public class Level {
     public Switch getSwitch(int idx) { return switches.get(idx); }
 
     public PooledList<Switch> getSwitches() { return switches; }
+
+    public Wall getDoor(int idx) { return doors.get(idx); }
+
+    public PooledList<Wall> getDoors() { return doors; }
 
     public CottonFlower getCottonFlower(int idx) { return cottonFlowers.get(idx); }
 
@@ -417,13 +424,19 @@ public class Level {
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y - 1;
-            goalDoor = new Wall((int) x, (int) y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
+            Wall goalDoor = new Wall((int) x, (int) y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
             goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
             goalDoor.setSensor(true);
             goalDoor.setDrawScale(scale);
             goalDoor.setTexture(textureDict.get("goalClosedTile"));
             goalDoor.setName("exit");
             goalDoor.setType(GOAL);
+            if (i == 0) {
+                goalDoor.setGoal(true);
+            }
+            else {
+                goalDoor.setGoal(false);
+            }
             addObject(goalDoor);
         }
 
@@ -737,6 +750,7 @@ public class Level {
         enemies.clear();
         fireFlies.clear();
         switches.clear();
+        doors.clear();
 
         objects = null;
         walls = null;
@@ -750,5 +764,6 @@ public class Level {
         locationCache = null;
         objectCache = null;
         switches = null;
+        doors = null;
     }
 }
