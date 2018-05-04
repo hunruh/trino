@@ -1142,7 +1142,7 @@ public class GameController implements ContactListener, Screen {
 
 			// Process enemy updates
 			for (int i = 0; i < level.getEnemies().size(); i++)
-				controls.get(i).step(level.objectInFrontOfEnemy(level.getEnemy(i)));
+				controls.get(i).step();
 
 			//this is hard coded in rn
 			//also naming stuff real bad bc im lazy
