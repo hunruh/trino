@@ -117,6 +117,8 @@ public class Enemy extends EdibleObject {
         return controller;
     }
 
+    public int getEnemyType() {return enemyType;}
+
     public void setTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
                               Texture down, int downFrames) {
         numFrames[LEFT] = leftFrames;
@@ -187,6 +189,11 @@ public class Enemy extends EdibleObject {
     }
 
     public void setStunned() {
+
+        if (enemyType == UNKILLABLE_ENEMY || enemyType == HERBIVORE_ENEMY) {
+            stunned = false;
+            return;
+        }
         animeframe = 0;
         stunned = true;
         setLinearDamping(11);
@@ -197,7 +204,8 @@ public class Enemy extends EdibleObject {
     }
 
     public void loadCharge() {
-        if (!coolingCharge)
+        if (!coolingCharge  &&
+                (enemyType!= UNKILLABLE_ENEMY && enemyType!= HERBIVORE_ENEMY))
             loadingCharge = true;
     }
 
@@ -372,7 +380,8 @@ public class Enemy extends EdibleObject {
 
     public void drawProgressCircle(Canvas canvas){
 
-      if (alert) {
+      if (alert  &&
+              (enemyType!= UNKILLABLE_ENEMY && enemyType!= HERBIVORE_ENEMY)) {
           Color newColor = new Color(1, 0, 0, 1);
           CircleShape progressCircle = new CircleShape();
           progressCircle.setRadius(0.075f);
