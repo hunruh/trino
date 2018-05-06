@@ -278,6 +278,9 @@ public class Level {
         levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).y));
         levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).x));
 
+        bounds.x = levelWidth/pixelFactor;
+        bounds.y = levelHeight/pixelFactor;
+
         // Set permanent textures
         background = textureDict.get("background");
         cloneTexture = textureDict.get("clone");
@@ -533,8 +536,8 @@ public class Level {
 
 
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
-        for (int i = 0; i < 8; i++){
-            FireFly ff = new FireFly(MathUtils.random(2*bounds.width),
+        for (int i = 0; i < 10; i++){
+            FireFly ff = new FireFly(MathUtils.random(bounds.width),
                     MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
             ff.setTexture(textureDict.get("fireFly"));
