@@ -49,7 +49,7 @@ public class Herbivore extends Dinosaur {
                         break;
 
                     vertices[ctr++] = (float)(radius * Math.cos(theta) * .5); // x
-                    vertices[ctr++] = (float)(radius * Math.sin(theta) * .6) - radius/4; // y
+                    vertices[ctr++] = (float)(radius * Math.sin(theta) * .8) - radius/4; // y
                 }
                 shape.set(vertices);
 

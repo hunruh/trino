@@ -448,7 +448,7 @@ public class Level {
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y-1;
-            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y), dwidth, i+1);
+            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + 0.4f, dwidth, i+1);
             String sd = dir.get(i)[0];
             System.out.println(sd);
             int d = 0;
@@ -564,6 +564,16 @@ public class Level {
             e.drawProgressCircle(canvas);
         }
         canvas.endProgressCircle();
+
+//        canvas.beginDebug();
+//        avatar.drawDebug(canvas);
+//        for(Enemy e : enemies) {
+//            e.drawDebug(canvas);
+//        }
+//        for(Wall w : walls) {
+//            w.drawDebug(canvas);
+//        }
+//        canvas.endDebug();
 
         drawObjects.clear();
     }

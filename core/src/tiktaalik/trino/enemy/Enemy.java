@@ -82,8 +82,8 @@ public class Enemy extends EdibleObject {
             if (ctr >= 16)
                 break;
 
-            vertices[ctr++] = (float)(radius * Math.cos(theta) * .75); // x
-            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .25) - radius/4; // y
+            vertices[ctr++] = (float)(radius * Math.cos(theta) * .8); // x
+            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .35) - radius/4; // y
         }
         shape.set(vertices);
 
@@ -343,7 +343,7 @@ public class Enemy extends EdibleObject {
                 return;
 
             eatenTextureSet.setFrame((int)animeframe);
-            if ( eatenTextureSet != null) {
+            if (eatenTextureSet != null) {
                 canvas.draw( eatenTextureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,
                         getY()*drawScale.x,0,1,1);
 
@@ -362,7 +362,7 @@ public class Enemy extends EdibleObject {
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {
-            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,0,1,1);
+            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x + 9,0,1,1);
         }
     }
 
