@@ -203,9 +203,42 @@ public class InputHandler {
 	 * @return true if the return to menu botton was pressed.
  	 */
 	public boolean didReturn() {
-		return ((!pausePressed && pausePrevious) || (!mousePressed && mousePrevious)) &&
-				((Gdx.input.getX() >= 471) && (Gdx.input.getX() <= 893)) &&
-				((Gdx.input.getY() >= 263) && (Gdx.input.getY() <= 325));
+		return ((!pausePressed && pausePrevious) || mousePrevious) && mousePressed &&
+				((Gdx.input.getX() >= 573) && (Gdx.input.getX() <= 676)) &&
+				((Gdx.input.getY() >= 224) && (Gdx.input.getY() <= 261));
+	}
+
+	/**
+	 * Return true if the help button was pressed.
+	 *
+	 * @return true if the help button was pressed.
+	 */
+	public boolean didHelp() {
+		return ((!pausePressed && pausePrevious) || mousePrevious) && mousePressed &&
+				((Gdx.input.getX() >= 583) && (Gdx.input.getX() <= 676)) &&
+				((Gdx.input.getY() >= 293) && (Gdx.input.getY() <= 330));
+	}
+
+	/**
+	 * Return true if the restart button was pressed.
+	 *
+	 * @return true if the restart button was pressed.
+	 */
+	public boolean didRestart() {
+		return ((!pausePressed && pausePrevious) || mousePrevious) && mousePressed &&
+				((Gdx.input.getX() >= 557) && (Gdx.input.getX() <= 718)) &&
+				((Gdx.input.getY() >= 363) && (Gdx.input.getY() <= 400));
+	}
+
+	/**
+	 * Return true if the resume button was pressed.
+	 *
+	 * @return true if the resume button was pressed.
+	 */
+	public boolean didResume() {
+		return ((!pausePressed && pausePrevious) || mousePrevious) && mousePressed &&
+				((Gdx.input.getX() >= 565) && (Gdx.input.getX() <= 714)) &&
+				((Gdx.input.getY() >= 428) && (Gdx.input.getY() <= 465));
 	}
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.

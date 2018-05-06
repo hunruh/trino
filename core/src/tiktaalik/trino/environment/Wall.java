@@ -19,6 +19,7 @@ public class Wall extends EdibleObject {
 
     private boolean edible;
     private boolean lowered;
+    private boolean goal;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -63,6 +64,9 @@ public class Wall extends EdibleObject {
 
     public boolean getLowered() { return lowered; }
     public void setLowered(boolean lowered) { this.lowered = lowered; }
+
+    public boolean getGoal() { return goal; }
+    public void setGoal(boolean goal) { this.goal = goal; }
 
     /**
      * Returns the dimensions of this box
