@@ -426,7 +426,7 @@ public class Level {
             float y = (tmp.get(i)).y - 1;
             Wall goalDoor = new Wall((int) x, (int) y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
             goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
-            goalDoor.setSensor(true);
+            //goalDoor.setSensor(true);
             goalDoor.setDrawScale(scale);
             goalDoor.setTexture(textureDict.get("goalClosedTile"));
             goalDoor.setName("exit");

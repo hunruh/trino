@@ -191,6 +191,27 @@ public class Wall extends EdibleObject {
     }
 
     /**
+     * Updates the object's physics state (NOT GAME LOGIC).
+     *
+     * @param dt Number of seconds since last animation frame
+     */
+    public void update(float dt) {
+        super.update(dt);
+        if (lowered && goal){
+            Filter filter = geometry.getFilterData();
+            filter.categoryBits = Dinosaur.goalCatBits;
+            filter.maskBits = Dinosaur.wallCatBits;
+            geometry.setFilterData(filter);
+        } else {
+            Filter filter = geometry.getFilterData();
+            filter.categoryBits = Dinosaur.wallCatBits;
+            filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
+                    Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.switchCatBits;
+            geometry.setFilterData(filter);
+        }
+    }
+
+    /**
      * Draws the physics object.
      *
      * @param canvas Drawing context
