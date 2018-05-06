@@ -30,6 +30,7 @@ public abstract class Dinosaur extends GameObject {
     public static final short switchCatBits = 0x0012;
     public static final short wallCatBits = 0x0014;
     public static final short goalCatBits = 0x0018;
+    public static final short enemyHerbCatBits = 0x0020;
 
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
