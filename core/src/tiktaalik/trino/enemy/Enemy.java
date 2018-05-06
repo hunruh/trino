@@ -68,7 +68,7 @@ public class Enemy extends EdibleObject {
      * @param radius	The object radius in physics units
      */
     public Enemy(float x, float y, float radius, int id) {
-        super(x,y);
+        super(x,y + 0.4f);
         setDensity(100.0f);
         setFriction(0.0f);
         setName("enemy");
