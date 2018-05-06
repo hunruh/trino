@@ -450,13 +450,20 @@ public class Level {
             float y = (tmp.get(i)).y-1;
             Enemy en = new Enemy(screenToMaze(x), screenToMaze(y), dwidth, i+1);
             String sd = dir.get(i)[0];
+            String et = dir.get(i)[1];
             System.out.println(sd);
             int d = 0;
+            int type = -1;
             if (sd.equals("Up")) d = 2;
             else if (sd.equals("Down")) d = 3;
             else if (sd.equals("Left")) d = 0;
             else if (sd.equals("Right")) d = 1;
             else d = -1;
+            if (et.equals("Carni")) type = Enemy.CARNIVORE_ENEMY;
+            else if (et.equals("Herbi")) type = Enemy.HERBIVORE_ENEMY;
+            else if (et.equals("Unkillable")) type = Enemy.UNKILLABLE_ENEMY;
+            System.out.println(type);
+            System.out.println(et);
             System.out.println("d is " + d);
             en.setType(ENEMY);
             en.setDrawScale(scale);
@@ -478,7 +485,9 @@ public class Level {
                     filmStripDict.get("enemyStunnedFront"), 3);
             en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
             en.setDirection(d);
+            en.setEnemyType(type);
             en.setGridLocation(x,y);
+
             addObject(en);
             enemyLocation[(int)x][(int)y] = true;
         }

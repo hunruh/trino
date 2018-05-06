@@ -72,7 +72,6 @@ public class LevelParser {
     }
 
 
-
     public PooledList<Vector2> getAssetList(int level, String key){
         JSONArray resources = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get(key);
         PooledList<Vector2> tmp = new PooledList<Vector2>();
