@@ -149,13 +149,13 @@ public class Wall extends EdibleObject {
     private void resize(float width, float height) {
         // Make the box with the center in the center
         vertices[0] = -width/2.2f;
-        vertices[1] = -height/1.7f;
+        vertices[1] = -height/2.0f;
         vertices[2] = -width/2.2f;
-        vertices[3] =  height/1.7f;
+        vertices[3] =  height/1.1f;
         vertices[4] =  width/2.2f;
-        vertices[5] =  height/1.7f;
+        vertices[5] =  height/1.1f;
         vertices[6] =  width/2.2f;
-        vertices[7] = -height/1.7f;
+        vertices[7] = -height/2.0f;
         shape.set(vertices);
     }
 

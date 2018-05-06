@@ -18,7 +18,7 @@ public class Carnivore extends Dinosaur {
                 break;
 
             vertices[ctr++] = (float)(radius * 1.15 * Math.cos(theta) * .78); // x
-            vertices[ctr++] = (float)(-radius * 1.15 * Math.sin(theta) * .28) - radius/4; // y
+            vertices[ctr++] = (float)(-radius * 1.15 * Math.sin(theta) * .5) - (radius * 1.45f)/4; // y
         }
         shape.set(vertices);
 
@@ -69,10 +69,15 @@ public class Carnivore extends Dinosaur {
 
     public void draw(Canvas canvas) {
         float offsetX = 0;
+        float offsetY = 0;
         if (eating) {
             if (direction == LEFT)
                 offsetX = -16.4f;
         }
-        super.draw(canvas, offsetX, 0);
+        else if (direction == UP || direction == DOWN) {
+            offsetX = 2.5f;
+            offsetY = 9f;
+        }
+        super.draw(canvas, offsetX, offsetY);
     }
 }

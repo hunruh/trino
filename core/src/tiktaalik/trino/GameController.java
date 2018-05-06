@@ -1288,8 +1288,7 @@ public class GameController implements ContactListener, Screen {
 			}
 
 			if (InputHandler.getInstance().didTransform()) {
-//				if (avatar.canTransform()) {
-				if (true) {
+				if (avatar.canTransform()) {
 					if (InputHandler.getInstance().didTransformDoll() &&
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 

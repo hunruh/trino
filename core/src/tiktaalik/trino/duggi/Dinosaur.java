@@ -522,7 +522,7 @@ public abstract class Dinosaur extends GameObject {
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {
             canvas.draw(textureSet[filmStripItem], tint,origin.x,origin.y,getX()*drawScale.x + offsetX,
-                    getY()*drawScale.x,0,1,1);
+                    getY()*drawScale.x + offsetY,0,1,1);
         }
     }
 

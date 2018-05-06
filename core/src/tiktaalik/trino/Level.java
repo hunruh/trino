@@ -603,6 +603,16 @@ public class Level {
         }
         canvas.endProgressCircle();
 
+//        canvas.beginDebug();
+//        avatar.drawDebug(canvas);
+//        for(Enemy e : enemies) {
+//            e.drawDebug(canvas);
+//        }
+//        for(Wall w : walls) {
+//            w.drawDebug(canvas);
+//        }
+//        canvas.endDebug();
+
         drawObjects.clear();
     }
 
