@@ -426,7 +426,7 @@ public class Level {
             float y = (tmp.get(i)).y - 1;
             Wall goalDoor = new Wall((int) x, (int) y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
             goalDoor.setBodyType(BodyDef.BodyType.StaticBody);
-            goalDoor.setSensor(true);
+            //goalDoor.setSensor(true);
             goalDoor.setDrawScale(scale);
             goalDoor.setTexture(textureDict.get("goalClosedTile"));
             goalDoor.setName("exit");
@@ -482,6 +482,44 @@ public class Level {
             addObject(en);
             enemyLocation[(int)x][(int)y] = true;
         }
+
+
+        float x = 7;
+        float y = 4;
+        Enemy en = new Enemy(screenToMaze(x), screenToMaze(y), dwidth, tmp.size());
+        String sd = "Left";
+        System.out.println(sd);
+        int d = 0;
+        if (sd.equals("Up")) d = 2;
+        else if (sd.equals("Down")) d = 3;
+        else if (sd.equals("Left")) d = 0;
+        else if (sd.equals("Right")) d = 1;
+        else d = -1;
+        System.out.println("d is " + d);
+        en.setType(ENEMY);
+        en.setDrawScale(scale);
+        en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
+                filmStripDict.get("enemyRight"), 10,
+                filmStripDict.get("enemyBack"), 8,
+                filmStripDict.get("enemyFront"), 10);
+        en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
+                filmStripDict.get("enemyChargeRight"), 15,
+                filmStripDict.get("enemyChargeLeft"), 15,
+                filmStripDict.get("enemyChargeLeft"), 15);
+        en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
+                filmStripDict.get("enemyAttackRight"), 9,
+                filmStripDict.get("enemyAttackLeft"), 9,
+                filmStripDict.get("enemyAttackLeft"), 9);
+        en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
+                filmStripDict.get("enemyStunnedRight"), 3,
+                filmStripDict.get("enemyStunnedBack"), 3,
+                filmStripDict.get("enemyStunnedFront"), 3);
+        en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
+        en.setDirection(d);
+        en.setGridLocation(x,y);
+        en.setEnemyType(Enemy.UNKILLABLE_ENEMY);
+        addObject(en);
+        enemyLocation[(int)x][(int)y] = true;
 
 
 

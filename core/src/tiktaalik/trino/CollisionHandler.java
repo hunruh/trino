@@ -102,6 +102,12 @@ public class CollisionHandler {
 
     public void handleCollision(Dinosaur d, Enemy e) {
         if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
+            if (e.getEnemyType() == Enemy.UNKILLABLE_ENEMY){
+                ((Carnivore) d).setCollided(true);
+                d.stopAction();
+                parent.setFailure(true);
+                return;
+            }
             e.setStunned();
             ((Carnivore) d).setCollided(true);
             d.stopAction();
