@@ -126,8 +126,7 @@ public class CollisionHandler {
 
     public void handleCollision(Dinosaur d, Wall w) {
         if (w.getType() == GameController.GOAL) {
-
-            if (d.canExit()) {
+            if (d.canExit() || (w.getGoal() && w.getLowered())) {
                 parent.setComplete(true);
             }
             else {
