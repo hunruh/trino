@@ -298,7 +298,7 @@ public abstract class Dinosaur extends GameObject {
     }
 
     public void loadAction() {
-        if (!loadingAction && !actionInProgress && !coolingAction && !actionReady) {
+        if (!loadingAction && !actionInProgress && !coolingAction && !actionReady && !eating) {
             animeframe = 0;
             loadingAction = true;
             actionAnimating = true;
