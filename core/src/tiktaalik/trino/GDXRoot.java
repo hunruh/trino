@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.assets.loaders.*;
 import com.badlogic.gdx.assets.loaders.resolvers.*;
 
+import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.util.*;
 
 /**
@@ -18,6 +19,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private MenuController menu; // Player mode for the asset menu screen
 	private LevelController levels; // Player mode for the asset level selection screen
 	private GameController controller; // The game controller
+	public static boolean musicScreen = true;
 
 	public GDXRoot() {
 		manager = new AssetManager();
@@ -137,6 +139,7 @@ public class GDXRoot extends Game implements ScreenListener {
 
 		}
 		else if (screen == controller) {
+			musicScreen = false;
 			if (controller.menuNum == 1) {
 				menu = new MenuController(canvas,manager,1);
 				menu.setScreenListener(this);
@@ -148,12 +151,15 @@ public class GDXRoot extends Game implements ScreenListener {
 			}
 		}
 		else if (exitCode == GameController.EXIT_NEXT) {
+			musicScreen = false;
 			controller.reset();
 			setScreen(controller);
 		} else if (exitCode == GameController.EXIT_PREV) {
+			musicScreen = false;
 			controller.reset();
 			setScreen(controller);
 		} else if (exitCode == GameController.EXIT_QUIT) {
+			musicScreen = false;
 			Gdx.app.exit();
 		}
 	}

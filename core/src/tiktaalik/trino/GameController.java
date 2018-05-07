@@ -859,7 +859,7 @@ public class GameController implements ContactListener, Screen {
 
 	public void nextLevel(){
 
-		if (currentLevel == 8)
+		if (currentLevel == 7)
 			currentLevel = 0;
 		else
 			currentLevel++;
@@ -1225,7 +1225,8 @@ public class GameController implements ContactListener, Screen {
 					else if (InputHandler.getInstance().didMusic()) {
 						menuNum = 5;
 						musicState = !musicState;
-						SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
+						int form = level.getAvatar().getForm();
+						SoundController.getInstance().changeBackground(form);
 
 					}
 					else if (InputHandler.getInstance().didSound()) {
@@ -1235,7 +1236,7 @@ public class GameController implements ContactListener, Screen {
 				}
 				if (menuNum == 2) {
 					canvas.beginOverlay();
-					canvas.draw(textureDict.get("helpMenu"), 134, 100);
+					canvas.draw(textureDict.get("helpMenu"), 127, 100);
 					canvas.draw(textureDict.get("exit"), 1100, 524);
 					canvas.draw(textureDict.get("dollForm"), 264, 173);
 					canvas.draw(textureDict.get("herbivoreForm"), 557, 173);
@@ -1245,6 +1246,9 @@ public class GameController implements ContactListener, Screen {
 					canvas.draw(textureDict.get("carnivoreIcon"), 909, 224);
 					canvas.draw(textureDict.get("selectText"), 399, 514);
 					canvas.end();
+					if (InputHandler.getInstance().didExitButton()) {
+						menuNum = 0;
+					}
 				}
 		}
 

@@ -14,6 +14,7 @@ public class SoundController {
     private static String MUSIC_FILE = "trino/doll_bg.mp3";
     private static String HERBIVORE_BG_FILE = "trino/herbivore_bg.mp3";
     private static String CARNIVORE_BG_FILE = "trino/carnivore_bg.mp3";
+    private static String MENU_FILE = "trino/mainMenu.wav";
     private static String POP_1_FILE = "trino/pop1.mp3";
     private static String POP_2_FILE = "trino/pop2.mp3";
     private static String POP_3_FILE = "trino/pop3.mp3";
@@ -27,6 +28,7 @@ public class SoundController {
     private Music bgDoll;
     private Music bgHerb;
     private Music bgCarn;
+    private Music mainMenu;
 
     private Sound cottonPickUp;
     private Sound eatWall;
@@ -56,6 +58,7 @@ public class SoundController {
         bgMusic = Gdx.audio.newMusic(Gdx.files.internal(MUSIC_FILE));
         bgHerb = Gdx.audio.newMusic(Gdx.files.internal(HERBIVORE_BG_FILE));
         bgCarn = Gdx.audio.newMusic(Gdx.files.internal(CARNIVORE_BG_FILE));
+        mainMenu = Gdx.audio.newMusic(Gdx.files.internal(MENU_FILE));
 
         cottonPickUp = Gdx.audio.newSound(Gdx.files.internal(POP_1_FILE));
         eatWall = Gdx.audio.newSound(Gdx.files.internal(POP_2_FILE));
@@ -71,37 +74,69 @@ public class SoundController {
 //            bgDoll.pause();
             bgHerb.pause();
             bgCarn.pause();
+            mainMenu.pause();
         }
-
         if (GameController.musicState) {
+            GDXRoot.musicScreen = false;
             bgMusic.setLooping(true);
             bgMusic.setVolume(0.10f);
             bgMusic.play();
             bgMusic.pause();
             bgMusic.setPosition(0f);
             bgMusic.play();
+
+            bgHerb.setLooping(true);
+            bgHerb.setVolume(0.0f);
+            bgHerb.play();
+            bgHerb.pause();
+            bgHerb.setPosition(0f);
+            bgHerb.play();
+
+            bgCarn.setLooping(true);
+            bgCarn.setVolume(0.0f);
+            bgCarn.play();
+            bgCarn.pause();
+            bgCarn.setPosition(0f);
+            bgCarn.play();
         }
         else {
+            GDXRoot.musicScreen = false;
             bgMusic.setLooping(true);
             bgMusic.setVolume(0.0f);
             bgMusic.play();
             bgMusic.pause();
             bgMusic.setPosition(0f);
             bgMusic.play();
-        }
-        bgHerb.setLooping(true);
-        bgHerb.setVolume(0.0f);
-        bgHerb.play();
-        bgHerb.pause();
-        bgHerb.setPosition(0f);
-        bgHerb.play();
 
-        bgCarn.setLooping(true);
-        bgCarn.setVolume(0.0f);
-        bgCarn.play();
-        bgCarn.pause();
-        bgCarn.setPosition(0f);
-        bgCarn.play();
+            bgHerb.setLooping(true);
+            bgHerb.setVolume(0.0f);
+            bgHerb.play();
+            bgHerb.pause();
+            bgHerb.setPosition(0f);
+            bgHerb.play();
+
+            bgCarn.setLooping(true);
+            bgCarn.setVolume(0.0f);
+            bgCarn.play();
+            bgCarn.pause();
+            bgCarn.setPosition(0f);
+            bgCarn.play();
+        }
+    }
+
+    public void mainMenu() {
+        if (mainMenu != null) {
+            mainMenu.pause();
+        }
+        if (GDXRoot.musicScreen) {
+            System.out.println("hi!");
+            mainMenu.setLooping(true);
+            mainMenu.setVolume(0.10f);
+            mainMenu.play();
+            mainMenu.pause();
+            mainMenu.setPosition(0f);
+            mainMenu.play();
+        }
     }
 
     public void playCottonPickup() {
