@@ -499,22 +499,43 @@ public class Level {
             System.out.println("d is " + d);
             en.setType(ENEMY);
             en.setDrawScale(scale);
-            en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
-                    filmStripDict.get("enemyRight"), 10,
-                    filmStripDict.get("enemyBack"), 8,
-                    filmStripDict.get("enemyFront"), 10);
-            en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
-                    filmStripDict.get("enemyChargeRight"), 15,
-                    filmStripDict.get("enemyChargeLeft"), 15,
-                    filmStripDict.get("enemyChargeLeft"), 15);
-            en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
-                    filmStripDict.get("enemyAttackRight"), 9,
-                    filmStripDict.get("enemyAttackLeft"), 9,
-                    filmStripDict.get("enemyAttackLeft"), 9);
-            en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
-                    filmStripDict.get("enemyStunnedRight"), 3,
-                    filmStripDict.get("enemyStunnedBack"), 3,
-                    filmStripDict.get("enemyStunnedFront"), 3);
+            if (type == Enemy.UNKILLABLE_ENEMY){
+                en.setTextureSet(filmStripDict.get("unkillableEnemyLeft"), 10,
+                        filmStripDict.get("unkillableEnemyRight"), 10,
+                        filmStripDict.get("enemyBack"), 8,
+                        filmStripDict.get("enemyFront"), 10);
+                en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
+                        filmStripDict.get("enemyChargeRight"), 15,
+                        filmStripDict.get("enemyChargeLeft"), 15,
+                        filmStripDict.get("enemyChargeLeft"), 15);
+                en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
+                        filmStripDict.get("enemyAttackRight"), 9,
+                        filmStripDict.get("enemyAttackLeft"), 9,
+                        filmStripDict.get("enemyAttackLeft"), 9);
+                en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
+                        filmStripDict.get("enemyStunnedRight"), 3,
+                        filmStripDict.get("enemyStunnedBack"), 3,
+                        filmStripDict.get("enemyStunnedFront"), 3);
+                en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
+            }
+            else {
+                en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
+                        filmStripDict.get("enemyRight"), 10,
+                        filmStripDict.get("enemyBack"), 8,
+                        filmStripDict.get("enemyFront"), 10);
+                en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
+                        filmStripDict.get("enemyChargeRight"), 15,
+                        filmStripDict.get("enemyChargeLeft"), 15,
+                        filmStripDict.get("enemyChargeLeft"), 15);
+                en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
+                        filmStripDict.get("enemyAttackRight"), 9,
+                        filmStripDict.get("enemyAttackLeft"), 9,
+                        filmStripDict.get("enemyAttackLeft"), 9);
+                en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
+                        filmStripDict.get("enemyStunnedRight"), 3,
+                        filmStripDict.get("enemyStunnedBack"), 3,
+                        filmStripDict.get("enemyStunnedFront"), 3);
+            }
             en.setDirection(d);
             en.setEnemyType(type);
             en.setGridLocation(x,y);
@@ -522,48 +543,7 @@ public class Level {
             addObject(en);
             enemyLocation[(int)x][(int)y] = true;
         }
-
-        /*
-        float x = 7;
-        float y = 4;
-        Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + 0.4f, dwidth, tmp.size());
-        String sd = "Left";
-        System.out.println(sd);
-        int d = 0;
-        if (sd.equals("Up")) d = 2;
-        else if (sd.equals("Down")) d = 3;
-        else if (sd.equals("Left")) d = 0;
-        else if (sd.equals("Right")) d = 1;
-        else d = -1;
-        System.out.println("d is " + d);
-        en.setType(ENEMY);
-        en.setDrawScale(scale);
-        en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
-                filmStripDict.get("enemyRight"), 10,
-                filmStripDict.get("enemyBack"), 8,
-                filmStripDict.get("enemyFront"), 10);
-        en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
-                filmStripDict.get("enemyChargeRight"), 15,
-                filmStripDict.get("enemyChargeLeft"), 15,
-                filmStripDict.get("enemyChargeLeft"), 15);
-        en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
-                filmStripDict.get("enemyAttackRight"), 9,
-                filmStripDict.get("enemyAttackLeft"), 9,
-                filmStripDict.get("enemyAttackLeft"), 9);
-        en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
-                filmStripDict.get("enemyStunnedRight"), 3,
-                filmStripDict.get("enemyStunnedBack"), 3,
-                filmStripDict.get("enemyStunnedFront"), 3);
-        en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
-        en.setDirection(d);
-        en.setGridLocation(x,y);
-        en.setEnemyType(Enemy.UNKILLABLE_ENEMY);
-        addObject(en);
-        enemyLocation[(int)x][(int)y] = true;
-        */
-
-
-
+        
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
         for (int i = 0; i < 10; i++){
             FireFly ff = new FireFly(MathUtils.random(bounds.width),
