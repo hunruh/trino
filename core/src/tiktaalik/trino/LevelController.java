@@ -15,7 +15,7 @@ import tiktaalik.util.*;
 
 public class LevelController implements Screen, InputProcessor, ControllerListener {
 
-    private static final String LEVEL_FILE = "trino/levelScreen.png";
+    private static final String LEVEL_FILE = "trino/levelSelector.png";
     private static final String OVERLAY_FILE = "trino/levelOverlay.png";
     private static final String MENU_FILE = "trino/menuButton.png";
 
@@ -167,50 +167,50 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
 
             canvas.draw(background, 0,0);
 
-            Color menuTint;
-            if (menuState == 1) {
-                menuTint = selectColor;
-            }
-            else if (menuHover == 1) {
-                menuTint = hoverColor;
-            }
-            else {
-                menuTint = Color.WHITE;
-            }
-            canvas.draw(menu, menuTint, menu.getWidth()/2, menu.getHeight()/2,
-                centerX, 460, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+//            Color menuTint;
+//            if (menuState == 1) {
+//                menuTint = selectColor;
+//            }
+//            else if (menuHover == 1) {
+//                menuTint = hoverColor;
+//            }
+//            else {
+//                menuTint = Color.WHITE;
+//            }
+//            canvas.draw(menu, menuTint, menu.getWidth()/2, menu.getHeight()/2,
+//                centerX, 460, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+//
+//            if (hoverState == 1) {
+//                if (levelHover == 1) {
+//                    canvas.draw(overlay, 50, 37);
+//                }
+//                else if (levelHover == 2) {
+//                    canvas.draw(overlay, 467, 37);
+//                }
+//                else if (levelHover == 3) {
+//                    canvas.draw(overlay, 874, 37);
+//                }
+//            }
 
-            if (hoverState == 1) {
-                if (levelHover == 1) {
-                    canvas.draw(overlay, 50, 37);
-                }
-                else if (levelHover == 2) {
-                    canvas.draw(overlay, 467, 37);
-                }
-                else if (levelHover == 3) {
-                    canvas.draw(overlay, 874, 37);
-                }
-            }
-
-            else {
-                overlay.dispose();
-                overlay = null;
-            }
-            Color playTint;
-            if (selectState == 1)
-                playTint = selectColor;
-            else if (hoverState == 1)
-                playTint = hoverColor;
-            else
-                playTint = Color.WHITE;
-
-            Color levelTint;
-            if (selectState == 1)
-                levelTint = selectColor;
-            else if (hoverState == 1)
-                levelTint = hoverColor;
-            else
-                levelTint = Color.WHITE;
+//            else {
+//                overlay.dispose();
+//                overlay = null;
+//            }
+//            Color playTint;
+//            if (selectState == 1)
+//                playTint = selectColor;
+//            else if (hoverState == 1)
+//                playTint = hoverColor;
+//            else
+//                playTint = Color.WHITE;
+//
+//            Color levelTint;
+//            if (selectState == 1)
+//                levelTint = selectColor;
+//            else if (hoverState == 1)
+//                levelTint = hoverColor;
+//            else
+//                levelTint = Color.WHITE;
 
         canvas.end();
     }
@@ -306,9 +306,9 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
         screenY = heightY-screenY;
 
 
-        // Play button is a circle.
-        if ((screenX >=  49) && (screenX <= 260) &&
-                (screenY >= 36) && (screenY <= 165)) {
+        // level one
+        if ((screenX >=  26) && (screenX <= 360) &&
+                (screenY >= 370) && (screenY <= 534)) {
             selectState = 1;
             levelNum = 1;
         }
@@ -323,8 +323,8 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
             levelNum = 3;
         }
 
-        else if ((screenX >= 482) && (screenX <= 798) &&
-                (screenY >= 440) && (screenY <= 486)) {
+        else if ((screenX >= 914) && (screenX <= 1248) &&
+                (screenY >= 638) && (screenY <= 1280)) {
             menuState = 1;
             menuPress = 1;
         }

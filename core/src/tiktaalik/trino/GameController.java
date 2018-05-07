@@ -166,6 +166,19 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARNIVORE_SPECIAL_TEXT_FILE = "help/text_carnivore_special.png";
 	private static final String EAT_FILE = "help/text_eat.png";
 
+	// Tutorial menus
+	private static final String TUT_ONE_A = "tutorial/tutorial1a.png";
+	private static final String TUT_ONE_B = "tutorial/tutorial1b.png";
+	private static final String TUT_ONE_C = "tutorial/tutorial1c.png";
+	private static final String TUT_ONE_D = "tutorial/tutorial1d.png";
+	private static final String TUT_TWO_A = "tutorial/tutorial2a.png";
+	private static final String TUT_TWO_B = "tutorial/tutorial2b.png";
+	private static final String TUT_TWO_C = "tutorial/tutorial2c.png";
+	private static final String TUT_TWO_D = "tutorial/tutorial2d.png";
+	private static final String TUT_THREE_A = "tutorial/tutorial3a.png";
+	private static final String TUT_THREE_B = "tutorial/tutorial3b.png";
+	private static final String TUT_FOUR_A = "tutorial/tutorial4a.png";
+	private static final String TUT_FOUR_B = "tutorial/tutorial4b.png";
 
 	// Texture assets variables
 	private BitmapFont displayFont;
@@ -238,6 +251,8 @@ public class GameController implements ContactListener, Screen {
 	public static boolean musicState = true;
 	public static boolean soundState = true;
 	public static int mouseCooldown = 0;
+	public static int tutSwitch = 0;
+	public static int tenSec;
 
 	/** Timer */
 	float levelTime = 300;
@@ -497,6 +512,30 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_SPECIAL_TEXT_FILE);
 		manager.load(EAT_FILE, Texture.class);
 		assets.add(EAT_FILE);
+		manager.load(TUT_ONE_A, Texture.class);
+		assets.add(TUT_ONE_A);
+		manager.load(TUT_ONE_B, Texture.class);
+		assets.add(TUT_ONE_B);
+		manager.load(TUT_ONE_C, Texture.class);
+		assets.add(TUT_ONE_C);
+		manager.load(TUT_ONE_D, Texture.class);
+		assets.add(TUT_ONE_D);
+		manager.load(TUT_TWO_A, Texture.class);
+		assets.add(TUT_TWO_A);
+		manager.load(TUT_TWO_B, Texture.class);
+		assets.add(TUT_TWO_B);
+		manager.load(TUT_TWO_C, Texture.class);
+		assets.add(TUT_TWO_C);
+		manager.load(TUT_TWO_D, Texture.class);
+		assets.add(TUT_TWO_D);
+		manager.load(TUT_THREE_A, Texture.class);
+		assets.add(TUT_THREE_A);
+		manager.load(TUT_THREE_B, Texture.class);
+		assets.add(TUT_THREE_B);
+		manager.load(TUT_FOUR_A, Texture.class);
+		assets.add(TUT_FOUR_A);
+		manager.load(TUT_FOUR_B, Texture.class);
+		assets.add(TUT_FOUR_B);
 
 		jsonReader = new JsonReader();
 	}
@@ -589,6 +628,18 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("herbivoreText", createTexture(manager, HERBIVORE_SPECIAL_TEXT_FILE, false));
 		textureDict.put("carnivoreText", createTexture(manager, CARNIVORE_SPECIAL_TEXT_FILE, false));
 		textureDict.put("eat", createTexture(manager, EAT_FILE, false));
+		textureDict.put("1a", createTexture(manager, TUT_ONE_A, false));
+		textureDict.put("1b", createTexture(manager, TUT_ONE_B, false));
+		textureDict.put("1c", createTexture(manager, TUT_ONE_C, false));
+		textureDict.put("1d", createTexture(manager, TUT_ONE_D, false));
+		textureDict.put("2a", createTexture(manager, TUT_TWO_A, false));
+		textureDict.put("2b", createTexture(manager, TUT_TWO_B, false));
+		textureDict.put("2c", createTexture(manager, TUT_TWO_C, false));
+		textureDict.put("2d", createTexture(manager, TUT_TWO_D, false));
+		textureDict.put("3a", createTexture(manager, TUT_THREE_A, false));
+		textureDict.put("3b", createTexture(manager, TUT_THREE_B, false));
+		textureDict.put("4a", createTexture(manager, TUT_FOUR_A, false));
+		textureDict.put("4b", createTexture(manager, TUT_FOUR_B, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
@@ -808,7 +859,7 @@ public class GameController implements ContactListener, Screen {
 
 	public void nextLevel(){
 
-		if (currentLevel == 9)
+		if (currentLevel == 8)
 			currentLevel = 0;
 		else
 			currentLevel++;
@@ -1036,10 +1087,51 @@ public class GameController implements ContactListener, Screen {
 		canvas.draw(textureDict.get("overlay"),0,0);
 		canvas.end();
 
-
 		if (currentLevel == 0) {
 			canvas.beginOverlay();
-			canvas.draw(textureDict.get("tutorialOverlay"), 779, 0);
+			if ((seconds % 4 >= 2)) {
+				canvas.draw(textureDict.get("1a"), 126, 292);
+				canvas.draw(textureDict.get("1c"), 957, 292);
+			}
+			else {
+				canvas.draw(textureDict.get("1b"), 126, 292);
+				canvas.draw(textureDict.get("1d"), 957, 292);
+			}
+			canvas.end();
+		}
+
+		else if (currentLevel == 1) {
+			canvas.beginOverlay();
+			if ((seconds % 4 >= 2)) {
+				canvas.draw(textureDict.get("2a"), 126, 292);
+				canvas.draw(textureDict.get("2c"), 957, 292);
+			}
+			else {
+				canvas.draw(textureDict.get("2b"), 126, 292);
+				canvas.draw(textureDict.get("2d"), 957, 292);
+			}
+			canvas.end();
+		}
+
+		else if (currentLevel == 2) {
+			canvas.beginOverlay();
+			if ((seconds % 4 >= 2)) {
+				canvas.draw(textureDict.get("3a"), 126, 292);
+			}
+			else {
+				canvas.draw(textureDict.get("3b"), 126, 292);
+			}
+			canvas.end();
+		}
+
+		else if (currentLevel == 3) {
+			canvas.beginOverlay();
+			if ((seconds % 4 >= 2)) {
+				canvas.draw(textureDict.get("4a"), 126, 292);
+			}
+			else {
+				canvas.draw(textureDict.get("4b"), 126, 292);
+			}
 			canvas.end();
 		}
 
