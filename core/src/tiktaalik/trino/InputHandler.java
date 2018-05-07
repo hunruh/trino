@@ -262,6 +262,17 @@ public class InputHandler {
 				((Gdx.input.getX() >= 782) && (Gdx.input.getX() <= 829)) &&
 				((Gdx.input.getY() >= 511) && (Gdx.input.getY() <= 540));
 	}
+
+	/**
+	 * Return true if the exit button was pressed.
+	 *
+	 * @return true if the exit  button was pressed.
+	 */
+	public boolean didExitButton() {
+		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
+				((Gdx.input.getX() >= 1100) && (Gdx.input.getX() <= 1141)) &&
+				((Gdx.input.getY() >= 156) && (Gdx.input.getY() <= 197));
+	}
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.
 	 *
