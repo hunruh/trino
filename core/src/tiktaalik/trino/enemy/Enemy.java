@@ -269,9 +269,9 @@ public class Enemy extends EdibleObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = Dinosaur.enemyCatBits;
-        filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
-                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.wallCatBits;
+        filter.categoryBits = Dinosaur.enemyHerbCatBits;
+        filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|Dinosaur.enemyHerbCatBits|
+                Dinosaur.dollCatBits|Dinosaur.cloneCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
@@ -300,7 +300,6 @@ public class Enemy extends EdibleObject {
 
         // Change the collision filter for herbivore enemy
         if (enemyType == HERBIVORE_ENEMY){
-            System.out.println("herbivore enemy");
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.herbCatBits;
             filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|Dinosaur.enemyHerbCatBits|
