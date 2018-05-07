@@ -16,7 +16,7 @@ public class FireFlyAIController {
         this.firefly = fireFlies.get(id);
 
         // Choose a random location
-        goal = new Vector2(MathUtils.random(2*bounds.width),MathUtils.random(2*bounds.height));
+        goal = new Vector2(MathUtils.random(bounds.width),MathUtils.random(2*bounds.height));
         step = new Vector2();
         gameBounds = bounds;
     }
@@ -29,7 +29,7 @@ public class FireFlyAIController {
     public void getMoveAlongPath() {
         // If firefly is close to goal, pick a new goal
         if (Vector2.dst(firefly.getX(),firefly.getY(),goal.x,goal.y) < 1){
-            goal.set(MathUtils.random(gameBounds.width),MathUtils.random(gameBounds.height));
+            goal.set(MathUtils.random(gameBounds.width),MathUtils.random(2*gameBounds.height));
         }
 
         step = goal.cpy().sub(firefly.getPosition()).nor().scl(.025f);

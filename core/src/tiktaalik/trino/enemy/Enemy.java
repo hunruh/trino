@@ -298,6 +298,23 @@ public class Enemy extends EdibleObject {
             alert = false;
         }
 
+        // Change the collision filter for herbivore enemy
+        if (enemyType == HERBIVORE_ENEMY){
+            System.out.println("herbivore enemy");
+            Filter filter = geometry.getFilterData();
+            filter.categoryBits = Dinosaur.herbCatBits;
+            filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|Dinosaur.enemyHerbCatBits|
+                    Dinosaur.dollCatBits|Dinosaur.cloneCatBits;
+            geometry.setFilterData(filter);
+        } else {
+            Filter filter = geometry.getFilterData();
+            filter.categoryBits = Dinosaur.enemyCatBits;
+            filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
+                    Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.wallCatBits;
+            geometry.setFilterData(filter);
+
+        }
+
         if (collideCooldown > 0)
             collideCooldown += dt;
 

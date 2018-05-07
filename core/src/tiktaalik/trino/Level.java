@@ -22,6 +22,7 @@ import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.trino.duggi.Doll;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.*;
+import tiktaalik.trino.level_editor.SaveFileParser;
 import tiktaalik.trino.lights.LightSource;
 import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.PooledList;
@@ -263,6 +264,23 @@ public class Level {
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
 
+        SaveFileParser savefileparser = new SaveFileParser();
+        try {
+            savefileparser.parse("jsons/save.json");
+        } catch(Exception e){
+            System.out.println("fuck me");
+        }
+        savefileparser.printObj();
+        savefileparser.changeLevelCompletion(0, true);
+        savefileparser.printObj();
+        try {
+            savefileparser.writeToFile("jsons/save.json");
+        } catch(Exception e){
+            System.out.println("fuck me");
+        }
+
+
+
         LevelParser parser = new LevelParser();
         try {
 //            parser.parse("/trino/example.json");
@@ -277,6 +295,9 @@ public class Level {
         //System.out.println("rdjgheks"+parser.getLevelDimension(0).y);
         levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).y));
         levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).x));
+
+        bounds.x = levelWidth/pixelFactor;
+        bounds.y = levelHeight/pixelFactor;
 
         // Set permanent textures
         background = textureDict.get("background");
@@ -450,13 +471,20 @@ public class Level {
             float y = (tmp.get(i)).y-1;
             Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + 0.4f, dwidth, i+1);
             String sd = dir.get(i)[0];
+            String et = dir.get(i)[1];
             System.out.println(sd);
             int d = 0;
+            int type = -1;
             if (sd.equals("Up")) d = 2;
             else if (sd.equals("Down")) d = 3;
             else if (sd.equals("Left")) d = 0;
             else if (sd.equals("Right")) d = 1;
             else d = -1;
+            if (et.equals("Carni")) type = Enemy.CARNIVORE_ENEMY;
+            else if (et.equals("Herbi")) type = Enemy.HERBIVORE_ENEMY;
+            else if (et.equals("Unkillable")) type = Enemy.UNKILLABLE_ENEMY;
+            System.out.println(type);
+            System.out.println(et);
             System.out.println("d is " + d);
             en.setType(ENEMY);
             en.setDrawScale(scale);
@@ -477,12 +505,14 @@ public class Level {
                     filmStripDict.get("enemyStunnedBack"), 3,
                     filmStripDict.get("enemyStunnedFront"), 3);
             en.setDirection(d);
+            en.setEnemyType(type);
             en.setGridLocation(x,y);
+
             addObject(en);
             enemyLocation[(int)x][(int)y] = true;
         }
 
-
+        /*
         float x = 7;
         float y = 4;
         Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + 0.4f, dwidth, tmp.size());
@@ -519,12 +549,13 @@ public class Level {
         en.setEnemyType(Enemy.UNKILLABLE_ENEMY);
         addObject(en);
         enemyLocation[(int)x][(int)y] = true;
+        */
 
 
 
         dwidth = textureDict.get("fireFly").getRegionWidth() / (scale.x * 2);
-        for (int i = 0; i < 8; i++){
-            FireFly ff = new FireFly(MathUtils.random(2*bounds.width),
+        for (int i = 0; i < 10; i++){
+            FireFly ff = new FireFly(MathUtils.random(bounds.width),
                     MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
             ff.setTexture(textureDict.get("fireFly"));

@@ -18,7 +18,7 @@ public class LevelParser {
         FileReader reader = new FileReader(path);
         //System.out.println("read file");
         obj = (JSONObject)parser.parse(reader);
-        //System.out.println("parsed");
+        //System.out.println(obj);
         levels = (JSONArray)obj.get("Levels");
     }
 
@@ -70,7 +70,6 @@ public class LevelParser {
         }
         return tmp;
     }
-
 
 
     public PooledList<Vector2> getAssetList(int level, String key){

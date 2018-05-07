@@ -73,6 +73,10 @@ public class AIController {
         if (enemy.getLoadingCharge())
             return;
 
+        if ((enemy.getEnemyType() == enemy.HERBIVORE_ENEMY && !riverInFrontOfEnemy())){
+            enemy.setCollided(true); // if no river and is herbivore enemy set to true
+        }
+
         if (enemy.getCollided()) {
             enemy.setCollided(false);
             if (enemy.getCharging()) {
@@ -388,6 +392,40 @@ public class AIController {
                     }
                 }
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean riverInFrontOfEnemy(){
+        locationCache.set(getEnemyGridX(), getEnemyGridY());
+        if (enemy.getDirection() == Dinosaur.UP){
+            GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y + 1];
+            if (g != null) {
+                if (g.getType() == RIVER )
+                    return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.DOWN){
+            GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y-1];
+            if (g != null) {
+                if (g.getType() == RIVER )
+                    return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.LEFT){
+            GameObject g = level.getGrid()[(int) locationCache.x-1][(int) locationCache.y];
+            if (g != null) {
+                if (g.getType() == RIVER )
+                    return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.RIGHT){
+            GameObject g = level.getGrid()[(int) locationCache.x+1][(int) locationCache.y];
+            if (g != null) {
+                if (g.getType() == RIVER )
+                    return true;
             }
         }
 
