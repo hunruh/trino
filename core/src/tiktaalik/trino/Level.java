@@ -513,7 +513,7 @@ public class Level {
             enemyLocation[(int)x][(int)y] = true;
         }
 
-        /*
+
         float x = 7;
         float y = 4;
         Enemy en = new Enemy(screenToMaze(x), screenToMaze(y), dwidth, tmp.size());
@@ -528,8 +528,8 @@ public class Level {
         System.out.println("d is " + d);
         en.setType(ENEMY);
         en.setDrawScale(scale);
-        en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
-                filmStripDict.get("enemyRight"), 10,
+        en.setTextureSet(filmStripDict.get("unkillableEnemyLeft"), 10,
+                filmStripDict.get("unkillableEnemyRight"), 10,
                 filmStripDict.get("enemyBack"), 8,
                 filmStripDict.get("enemyFront"), 10);
         en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
@@ -550,7 +550,7 @@ public class Level {
         en.setEnemyType(Enemy.UNKILLABLE_ENEMY);
         addObject(en);
         enemyLocation[(int)x][(int)y] = true;
-        */
+
 
 
 

@@ -88,6 +88,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
 	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
 	private static final String ENEMY_STRIP_BACK = "trino/enemy_back_strip.png";
+	private static final String UNKILLABLE_ENEMY_STRIP_LEFT = "trino/unkillable_enemy_left.png";
+	private static final String UNKILLABLE_ENEMY_STRIP_RIGHT = "trino/unkillable_enemy_right.png";
 	private static final String ENEMY_STUNNED_STRIP_FRONT = "trino/enemy_front_stunned_strip.png";
 	private static final String ENEMY_STUNNED_STRIP_LEFT = "trino/enemy_left_stunned_strip.png";
 	private static final String ENEMY_STUNNED_STRIP_RIGHT = "trino/enemy_right_stunned_strip.png";
@@ -332,6 +334,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_ATTACK_STRIP_RIGHT);
 		manager.load(ENEMY_LEFT_EATING_STRIP, Texture.class);
 		assets.add(ENEMY_LEFT_EATING_STRIP);
+		manager.load(UNKILLABLE_ENEMY_STRIP_LEFT, Texture.class);
+		assets.add(UNKILLABLE_ENEMY_STRIP_LEFT);
+		manager.load(UNKILLABLE_ENEMY_STRIP_RIGHT, Texture.class);
+		assets.add(UNKILLABLE_ENEMY_STRIP_RIGHT);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
 		manager.load(PATH_FILE, Texture.class);
@@ -463,6 +469,8 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("enemyRight", createFilmTexture(manager,ENEMY_STRIP_RIGHT));
 		filmStripDict.put("enemyFront", createFilmTexture(manager,ENEMY_STRIP_FRONT));
 		filmStripDict.put("enemyBack", createFilmTexture(manager,ENEMY_STRIP_BACK));
+		filmStripDict.put("unkillableEnemyLeft", createFilmTexture(manager, UNKILLABLE_ENEMY_STRIP_LEFT));
+		filmStripDict.put("unkillableEnemyRight", createFilmTexture(manager, UNKILLABLE_ENEMY_STRIP_RIGHT));
 		filmStripDict.put("enemyStunnedLeft", createFilmTexture(manager,ENEMY_STUNNED_STRIP_LEFT));
 		filmStripDict.put("enemyStunnedRight", createFilmTexture(manager,ENEMY_STUNNED_STRIP_RIGHT));
 		filmStripDict.put("enemyStunnedFront", createFilmTexture(manager,ENEMY_STUNNED_STRIP_FRONT));
