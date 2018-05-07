@@ -14,7 +14,7 @@ public class Doll extends Dinosaur {
                 break;
 
             vertices[ctr++] = (float)(radius * Math.cos(theta) * .85); // x
-            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .25) - radius/4; // y
+            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .5) - radius/4; // y
         }
         shape.set(vertices);
 
@@ -33,7 +33,7 @@ public class Doll extends Dinosaur {
                 break;
 
             vertices[ctr++] = (float)(radius * Math.cos(theta) * .85); // x
-            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .25) - radius/4; // y
+            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .5) - radius/4; // y
         }
         shape.set(vertices);
     }
