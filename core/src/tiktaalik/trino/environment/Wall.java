@@ -175,7 +175,7 @@ public class Wall extends EdibleObject {
         Filter filter = geometry.getFilterData();
         filter.categoryBits = Dinosaur.wallCatBits;
         filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
-                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.switchCatBits;
+                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.switchCatBits|Dinosaur.enemyHerbCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
