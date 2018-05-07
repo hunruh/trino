@@ -133,10 +133,10 @@ public class CollisionHandler {
                 parent.setComplete(false);
             }
         }
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
-            ((Carnivore) d).setCollided(true);
-            d.stopAction();
-        }
+//        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
+//            ((Carnivore) d).setCollided(true);
+//            d.stopAction();
+//        }
 
         if (level.isInFrontOfAvatar(w)) {
             SoundController.getInstance().playCollide();

@@ -168,6 +168,15 @@ public class Enemy extends EdibleObject {
         textureSet[ACTION_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
     }
 
+    public void beginEating() {
+        eatInProgress = true;
+        animeframe = 0;
+
+        if (numEatenFrames == 0) {
+            numEatenFrames = numFrames[direction];
+        }
+    }
+
     public void setCollided(boolean collided) {
         if ((collided && collideCooldown <= 0) || !collided)
             this.collided = collided;
@@ -346,16 +355,13 @@ public class Enemy extends EdibleObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-        if (eatInProgress) {
+        if (eatInProgress && eatenTextureSet != null) {
             if (animeframe >= numEatenFrames)
                 return;
 
             eatenTextureSet.setFrame((int)animeframe);
-            if (eatenTextureSet != null) {
-                canvas.draw( eatenTextureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,
-                        getY()*drawScale.x,0,1,1);
-
-            }
+            canvas.draw( eatenTextureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,
+                    getY()*drawScale.x,0,1,1);
 
             return;
         }

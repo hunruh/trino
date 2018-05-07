@@ -151,9 +151,9 @@ public class Wall extends EdibleObject {
         vertices[0] = -width/2.2f;
         vertices[1] = -height/2.0f;
         vertices[2] = -width/2.2f;
-        vertices[3] =  height/1.1f;
+        vertices[3] =  height/1.2f;
         vertices[4] =  width/2.2f;
-        vertices[5] =  height/1.1f;
+        vertices[5] =  height/1.2f;
         vertices[6] =  width/2.2f;
         vertices[7] = -height/2.0f;
         shape.set(vertices);

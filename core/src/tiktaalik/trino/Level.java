@@ -448,7 +448,7 @@ public class Level {
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y-1;
-            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y), dwidth, i+1);
+            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + 0.4f, dwidth, i+1);
             String sd = dir.get(i)[0];
             System.out.println(sd);
             int d = 0;
@@ -476,7 +476,6 @@ public class Level {
                     filmStripDict.get("enemyStunnedRight"), 3,
                     filmStripDict.get("enemyStunnedBack"), 3,
                     filmStripDict.get("enemyStunnedFront"), 3);
-            en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
             en.setDirection(d);
             en.setGridLocation(x,y);
             addObject(en);
@@ -486,7 +485,7 @@ public class Level {
 
         float x = 7;
         float y = 4;
-        Enemy en = new Enemy(screenToMaze(x), screenToMaze(y), dwidth, tmp.size());
+        Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + 0.4f, dwidth, tmp.size());
         String sd = "Left";
         System.out.println(sd);
         int d = 0;
