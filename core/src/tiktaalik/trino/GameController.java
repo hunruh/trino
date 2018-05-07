@@ -125,12 +125,44 @@ public class GameController implements ContactListener, Screen {
 	private static final String MUSIC_ON_FILE = "pause/musicOn.png";
 	private static final String SOUND_OFF_FILE = "pause/soundOff.png";
 	private static final String SOUND_ON_FILE = "pause/soundOn.png";
-	private static final String MUSIC_OUTLINE_FILE = "pause/musicOutline.png";
 	private static final String MENU_FILE = "pause/menu.png";
 	private static final String HELP_FILE = "pause/help.png";
 	private static final String RESUME_FILE = "pause/resume.png";
 	private static final String RESTART_FILE = "pause/restart.png";
-	private static final String OUTLINE_FILE = "pause/menuOutline.png";
+
+	// Help menu assets
+	private static final String HELP_MENU_FILE = "help/help.png";
+	private static final String OUTLINE_FILE = "help/outline.png";
+	private static final String EXIT_FILE = "help/exit.png";
+	private static final String ICON_DOLL_FILE = "help/sprite_doll.png";
+	private static final String ICON_HERBIVORE_FILE = "help/sprite_herbivore.png";
+	private static final String ICON_CARNIVORE_FILE = "help/sprite_carnivore.png";
+	private static final String ONE_FILE = "help/key_one.png";
+	private static final String TWO_FILE = "help/key_two.png";
+	private static final String THREE_FILE = "help/key_three.png";
+	private static final String SPACE_FILE = "help/key_space.png";
+	private static final String DOLL_SPECIAL_FILE = "help/doll_clone.png";
+	private static final String HERBIVORE_SPECIAL_FILE = "help/herbivore_camouflage.png";
+	private static final String CARNIVORE_SPECIAL_FILE = "help/carnivore_charge.png";
+	private static final String DOLL_RESOURCE_FILE = "help/doll_cotton.png";
+	private static final String HERBIVORE_RESOURCE_FILE = "help/herbivore_wall.png";
+	private static final String CARNIVORE_RESOURCE_FILE = "help/carnivore_stun.png";
+	private static final String DOLL_HEADER_FILE = "help/doll_header.png";
+	private static final String HERBIVORE_HEADER_FILE = "help/herbivore_header.png";
+	private static final String CARNIVORE_HEADER_FILE = "help/carnivore_header.png";
+	private static final String DOLL_FORM_FILE = "help/form_doll.png";
+	private static final String HERBIVORE_FORM_FILE = "help/form_herbivore.png";
+	private static final String CARNIVORE_FORM_FILE = "help/form_carnivore.png";
+	private static final String HOLD_FILE = "help/key_hold.png";
+	private static final String PRESS_FILE = "help/text_press.png";
+	private static final String SELECT_FILE = "help/text_select.png";
+	private static final String DOLL_TRANSFORM_FILE = "help/text_doll_transform.png";
+	private static final String HERBIVORE_TRANSFORM_FILE = "help/text_herbivore_transform.png";
+	private static final String CARNIVORE_TRANSFORM_FILE = "help/text_carnivore_transform.png";
+	private static final String DOLL_SPECIAL_TEXT_FILE = "help/text_doll_special.png";
+	private static final String HERBIVORE_SPECIAL_TEXT_FILE = "help/text_herbivore_special.png";
+	private static final String CARNIVORE_SPECIAL_TEXT_FILE = "help/text_carnivore_special.png";
+	private static final String EAT_FILE = "help/text_eat.png";
 
 
 	// Texture assets variables
@@ -387,8 +419,6 @@ public class GameController implements ContactListener, Screen {
 		assets.add(SOUND_OFF_FILE);
 		manager.load(SOUND_ON_FILE, Texture.class);
 		assets.add(SOUND_ON_FILE);
-		manager.load(MUSIC_OUTLINE_FILE, Texture.class);
-		assets.add(MUSIC_OUTLINE_FILE);
 		manager.load(MENU_FILE, Texture.class);
 		assets.add(MENU_FILE);
 		manager.load(HELP_FILE, Texture.class);
@@ -397,8 +427,70 @@ public class GameController implements ContactListener, Screen {
 		assets.add(RESUME_FILE);
 		manager.load(RESTART_FILE, Texture.class);
 		assets.add(RESTART_FILE);
+		manager.load(HELP_MENU_FILE, Texture.class);
+		assets.add(HELP_MENU_FILE);
 		manager.load(OUTLINE_FILE, Texture.class);
 		assets.add(OUTLINE_FILE);
+		manager.load(EXIT_FILE, Texture.class);
+		assets.add(EXIT_FILE);
+		manager.load(ICON_DOLL_FILE, Texture.class);
+		assets.add(ICON_DOLL_FILE);
+		manager.load(ICON_HERBIVORE_FILE, Texture.class);
+		assets.add(ICON_HERBIVORE_FILE);
+		manager.load(ICON_CARNIVORE_FILE, Texture.class);
+		assets.add(ICON_CARNIVORE_FILE);
+		manager.load(ONE_FILE, Texture.class);
+		assets.add(ONE_FILE);
+		manager.load(TWO_FILE, Texture.class);
+		assets.add(TWO_FILE);
+		manager.load(THREE_FILE, Texture.class);
+		assets.add(THREE_FILE);
+		manager.load(SPACE_FILE, Texture.class);
+		assets.add(SPACE_FILE);
+		manager.load(DOLL_SPECIAL_FILE, Texture.class);
+		assets.add(DOLL_SPECIAL_FILE);
+		manager.load(HERBIVORE_SPECIAL_FILE, Texture.class);
+		assets.add(HERBIVORE_SPECIAL_FILE);
+		manager.load(CARNIVORE_SPECIAL_FILE, Texture.class);
+		assets.add(CARNIVORE_SPECIAL_FILE);
+		manager.load(DOLL_RESOURCE_FILE, Texture.class);
+		assets.add(DOLL_RESOURCE_FILE);
+		manager.load(HERBIVORE_RESOURCE_FILE, Texture.class);
+		assets.add(HERBIVORE_RESOURCE_FILE);
+		manager.load(CARNIVORE_RESOURCE_FILE, Texture.class);
+		assets.add(CARNIVORE_RESOURCE_FILE);
+		manager.load(DOLL_HEADER_FILE, Texture.class);
+		assets.add(DOLL_HEADER_FILE);
+		manager.load(HERBIVORE_HEADER_FILE, Texture.class);
+		assets.add(HERBIVORE_HEADER_FILE);
+		manager.load(CARNIVORE_HEADER_FILE, Texture.class);
+		assets.add(CARNIVORE_HEADER_FILE);
+		manager.load(DOLL_FORM_FILE, Texture.class);
+		assets.add(DOLL_FORM_FILE);
+		manager.load(HERBIVORE_FORM_FILE, Texture.class);
+		assets.add(HERBIVORE_FORM_FILE);
+		manager.load(CARNIVORE_FORM_FILE, Texture.class);
+		assets.add(CARNIVORE_FORM_FILE);
+		manager.load(HOLD_FILE, Texture.class);
+		assets.add(HOLD_FILE);
+		manager.load(PRESS_FILE, Texture.class);
+		assets.add(PRESS_FILE);
+		manager.load(SELECT_FILE, Texture.class);
+		assets.add(SELECT_FILE);
+		manager.load(DOLL_TRANSFORM_FILE, Texture.class);
+		assets.add(DOLL_TRANSFORM_FILE);
+		manager.load(HERBIVORE_TRANSFORM_FILE, Texture.class);
+		assets.add(HERBIVORE_TRANSFORM_FILE);
+		manager.load(CARNIVORE_TRANSFORM_FILE, Texture.class);
+		assets.add(CARNIVORE_TRANSFORM_FILE);
+		manager.load(DOLL_SPECIAL_TEXT_FILE, Texture.class);
+		assets.add(DOLL_SPECIAL_TEXT_FILE);
+		manager.load(HERBIVORE_SPECIAL_TEXT_FILE, Texture.class);
+		assets.add(HERBIVORE_SPECIAL_TEXT_FILE);
+		manager.load(CARNIVORE_SPECIAL_TEXT_FILE, Texture.class);
+		assets.add(CARNIVORE_SPECIAL_TEXT_FILE);
+		manager.load(EAT_FILE, Texture.class);
+		assets.add(EAT_FILE);
 
 		jsonReader = new JsonReader();
 	}
@@ -455,12 +547,42 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("musicOn", createTexture(manager, MUSIC_ON_FILE, false));
 		textureDict.put("soundOff", createTexture(manager, SOUND_OFF_FILE, false));
 		textureDict.put("soundOn", createTexture(manager, SOUND_ON_FILE, false));
-		textureDict.put("musicOutline", createTexture(manager, MUSIC_OUTLINE_FILE, false));
 		textureDict.put("menuText", createTexture(manager, MENU_FILE, false));
 		textureDict.put("helpText", createTexture(manager, HELP_FILE, false));
 		textureDict.put("resumeText", createTexture(manager, RESUME_FILE, false));
 		textureDict.put("restartText", createTexture(manager, RESTART_FILE, false));
+		textureDict.put("helpMenu", createTexture(manager, HELP_MENU_FILE, false));
 		textureDict.put("outline", createTexture(manager, OUTLINE_FILE, false));
+		textureDict.put("exit", createTexture(manager, EXIT_FILE, false));
+		textureDict.put("dollIcon", createTexture(manager, ICON_DOLL_FILE, false));
+		textureDict.put("herbivoreIcon", createTexture(manager, ICON_HERBIVORE_FILE, false));
+		textureDict.put("carnivoreIcon", createTexture(manager, ICON_CARNIVORE_FILE, false));
+		textureDict.put("oneKey", createTexture(manager, ONE_FILE, false));
+		textureDict.put("twoKey", createTexture(manager, TWO_FILE, false));
+		textureDict.put("threeKey", createTexture(manager, THREE_FILE, false));
+		textureDict.put("spaceKey", createTexture(manager, SPACE_FILE, false));
+		textureDict.put("dollSpecial", createTexture(manager, DOLL_SPECIAL_FILE, false));
+		textureDict.put("herbivoreSpecial", createTexture(manager, HERBIVORE_SPECIAL_FILE, false));
+		textureDict.put("carnivoreSpecial", createTexture(manager, CARNIVORE_SPECIAL_FILE, false));
+		textureDict.put("dollResource", createTexture(manager, DOLL_RESOURCE_FILE, false));
+		textureDict.put("herbivoreResource", createTexture(manager, HERBIVORE_RESOURCE_FILE, false));
+		textureDict.put("carnivoreResource", createTexture(manager, CARNIVORE_RESOURCE_FILE, false));
+		textureDict.put("dollHeader", createTexture(manager, DOLL_HEADER_FILE, false));
+		textureDict.put("herbivoreHeader", createTexture(manager, HERBIVORE_HEADER_FILE, false));
+		textureDict.put("carnivoreHeader", createTexture(manager, CARNIVORE_HEADER_FILE, false));
+		textureDict.put("dollForm", createTexture(manager, DOLL_FORM_FILE, false));
+		textureDict.put("herbivoreForm", createTexture(manager, HERBIVORE_FORM_FILE, false));
+		textureDict.put("carnivoreForm", createTexture(manager, CARNIVORE_FORM_FILE, false));
+		textureDict.put("holdText", createTexture(manager, HOLD_FILE, false));
+		textureDict.put("pressText", createTexture(manager, PRESS_FILE, false));
+		textureDict.put("selectText", createTexture(manager, SELECT_FILE, false));
+		textureDict.put("dollTransform", createTexture(manager, DOLL_TRANSFORM_FILE, false));
+		textureDict.put("herbivoreTransform", createTexture(manager, HERBIVORE_TRANSFORM_FILE, false));
+		textureDict.put("carnivoreTransform", createTexture(manager, CARNIVORE_TRANSFORM_FILE, false));
+		textureDict.put("dollText", createTexture(manager, DOLL_SPECIAL_TEXT_FILE, false));
+		textureDict.put("herbivoreText", createTexture(manager, HERBIVORE_SPECIAL_TEXT_FILE, false));
+		textureDict.put("carnivoreText", createTexture(manager, CARNIVORE_SPECIAL_TEXT_FILE, false));
+		textureDict.put("eat", createTexture(manager, EAT_FILE, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
@@ -961,52 +1083,68 @@ public class GameController implements ContactListener, Screen {
 
 		if (state == GAME_PAUSED) {
 				displayFont.setColor(Color.YELLOW);
-				canvas.beginOverlay();
-				canvas.draw(textureDict.get("grayOut"), -9, 0);
-				canvas.draw(textureDict.get("pauseMenu"), 396, 109);
-				if (musicState) {
-					canvas.draw(textureDict.get("musicOn"), 725, 181); // music button
-				}
-				else {
-					canvas.draw(textureDict.get("musicOff"), 725, 181); // music button
-				}
-				if (soundState) {
-					canvas.draw(textureDict.get("soundOn"), 782, 181); // sound button
-				}
-				else {
-					canvas.draw(textureDict.get("soundOff"), 782, 181); // sound button
-				}
-				canvas.draw(textureDict.get("menuText"), 573, 459); // menu text
-				canvas.draw(textureDict.get("helpText"), 583, 389); // help text
-				canvas.draw(textureDict.get("restartText"), 557, 320); // restart text
-				canvas.draw(textureDict.get("resumeText"),565, 255); // resume text
-				canvas.end();
-				if (InputHandler.getInstance().didReturn()) {
-					menuNum = 1;
-					listener.exitScreen(this, 0);
-				}
-				else if (InputHandler.getInstance().didHelp()) {
-					menuNum = 2;
-					System.out.println("hello you have reached the help button. pls leave a message after the beep");
-				}
-				else if (InputHandler.getInstance().didRestart()) {
-					menuNum = 3;
-					reset();
+				if (menuNum != 2) {
+					canvas.beginOverlay();
+					canvas.draw(textureDict.get("grayOut"), -9, 0);
+					canvas.draw(textureDict.get("pauseMenu"), 396, 109);
+					if (musicState) {
+						canvas.draw(textureDict.get("musicOn"), 725, 181); // music button
+					}
+					else {
+						canvas.draw(textureDict.get("musicOff"), 725, 181); // music button
+					}
+					if (soundState) {
+						canvas.draw(textureDict.get("soundOn"), 782, 181); // sound button
+					}
+					else {
+						canvas.draw(textureDict.get("soundOff"), 782, 181); // sound button
+					}
+					canvas.draw(textureDict.get("menuText"), 573, 459); // menu text
+					canvas.draw(textureDict.get("helpText"), 583, 389); // help text
+					canvas.draw(textureDict.get("restartText"), 557, 320); // restart text
+					canvas.draw(textureDict.get("resumeText"),565, 255); // resume text
+					canvas.end();
 
-				}
-				else if (InputHandler.getInstance().didResume()) {
-					menuNum = 4;
-					state = GAME_RUNNING;
-				}
-				else if (InputHandler.getInstance().didMusic()) {
-					menuNum = 5;
-					musicState = !musicState;
-					SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
+					if (InputHandler.getInstance().didReturn()) {
+						menuNum = 1;
+						listener.exitScreen(this, 0);
+					}
+					else if (InputHandler.getInstance().didHelp()) {
+						menuNum = 2;
+						System.out.println("hello you have reached the help button. pls leave a message after the beep");
+					}
+					else if (InputHandler.getInstance().didRestart()) {
+						menuNum = 3;
+						reset();
 
+					}
+					else if (InputHandler.getInstance().didResume()) {
+						menuNum = 4;
+						state = GAME_RUNNING;
+					}
+					else if (InputHandler.getInstance().didMusic()) {
+						menuNum = 5;
+						musicState = !musicState;
+						SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
+
+					}
+					else if (InputHandler.getInstance().didSound()) {
+						menuNum = 6;
+						soundState = !soundState;
+					}
 				}
-				else if (InputHandler.getInstance().didSound()) {
-					menuNum = 6;
-					soundState = !soundState;
+				if (menuNum == 2) {
+					canvas.beginOverlay();
+					canvas.draw(textureDict.get("helpMenu"), 134, 100);
+					canvas.draw(textureDict.get("exit"), 1100, 524);
+					canvas.draw(textureDict.get("dollForm"), 264, 173);
+					canvas.draw(textureDict.get("herbivoreForm"), 557, 173);
+					canvas.draw(textureDict.get("carnivoreForm"), 889, 173);
+					canvas.draw(textureDict.get("dollIcon"), 213, 223);
+					canvas.draw(textureDict.get("herbivoreIcon"), 595, 226);
+					canvas.draw(textureDict.get("carnivoreIcon"), 909, 224);
+					canvas.draw(textureDict.get("selectText"), 399, 514);
+					canvas.end();
 				}
 		}
 
