@@ -627,26 +627,26 @@ public class Level {
 
     public void setEnemyLocation(int x, int y, boolean value) {enemyLocation[x][y] = value;}
 
+    public float getStraightDist(int direction, GameObject bd1, GameObject bd2) {
+        if (bd1 == null || bd2 == null)
+            return -1;
+
+        if (direction == UP || direction == DOWN)
+            return Math.abs(bd1.getPosition().y - bd2.getPosition().y);
+        else
+            return Math.abs(bd1.getPosition().x - bd2.getPosition().x);
+    }
+
     public boolean isInFrontOfAvatar(GameObject bd) {
         int direction = avatar.getDirection();
         locationCache.set(getAvatarGridX(), getAvatarGridY());
 
         if (bd.getType() != WALL && bd.getType() != COTTON && bd.getType() != EDIBLEWALL){
-            if (isAlignedHorizontally(avatar, bd, 0.7)){
-                if (direction == LEFT)
-                    return bd.getX() <= avatar.getX();
-                else if (direction == RIGHT)
-                    return bd.getX() >= avatar.getX();
-                else return false;
-            }
-            else if (isAlignedVertically(avatar, bd, 0.7)){
-                if (direction == UP) {
-                    return bd.getY() >= avatar.getY();
-                }
-                else if (direction == DOWN) {
-                    return bd.getY() <= avatar.getY();
-                }
-                else return false;
+            if ((direction == LEFT && bd.getX() <= avatar.getX()) ||
+                    (direction == RIGHT && bd.getX() >= avatar.getX()) ||
+                    (direction == UP && bd.getY() >= avatar.getY()) ||
+                    (direction == DOWN && bd.getY() <= avatar.getY())) {
+                return bd.getPosition().dst2(avatar.getPosition()) < 2.5;
             }
         }
         else {

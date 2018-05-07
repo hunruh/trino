@@ -1299,8 +1299,7 @@ public class GameController implements ContactListener, Screen {
 			}
 
 			if (InputHandler.getInstance().didTransform()) {
-//				if (avatar.canTransform()) {
-				if (true) {
+				if (avatar.canTransform()) {
 					if (InputHandler.getInstance().didTransformDoll() &&
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 
@@ -1660,8 +1659,9 @@ public class GameController implements ContactListener, Screen {
 					}
 				} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 					GameObject tmp = level.objectInFrontOfAvatar();
-					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
-
+					System.out.println(tmp != null);
+					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
+					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
 						if (!avatar.inActionCycle()){
 							avatar.loadAction();
 						}
@@ -1717,10 +1717,11 @@ public class GameController implements ContactListener, Screen {
 
 
 			if (InputHandler.getInstance().didActionRelease()) {
-
 				if (avatar.getForm() == Dinosaur.HERBIVORE_FORM && avatar.getActionLoadValue() < 0.25f && avatar.getActionLoadValue()>0) {
 					GameObject tmp = level.objectInFrontOfAvatar();
-					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5
+
+					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
+					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5
 							&& avatar.getResources() < 3) {
 						SoundController.getInstance().playEat();
 						if (!((EdibleObject) tmp).getEatInProgress()){
