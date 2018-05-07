@@ -1365,7 +1365,7 @@ public class GameController implements ContactListener, Screen {
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
 						filter.categoryBits = Dinosaur.herbCatBits;
-						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits;
+						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits|Dinosaur.enemyHerbCatBits;
 						avatar.setFilterData(filter);
 						avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
 								filmStripDict.get("herbivoreRight"), 7,
