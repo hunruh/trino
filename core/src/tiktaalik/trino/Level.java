@@ -22,6 +22,7 @@ import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.trino.duggi.Doll;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.*;
+import tiktaalik.trino.level_editor.SaveFileParser;
 import tiktaalik.trino.lights.LightSource;
 import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.PooledList;
@@ -262,6 +263,23 @@ public class Level {
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
+
+        SaveFileParser savefileparser = new SaveFileParser();
+        try {
+            savefileparser.parse("jsons/save.json");
+        } catch(Exception e){
+            System.out.println("fuck me");
+        }
+        savefileparser.printObj();
+        savefileparser.changeLevelCompletion(0, true);
+        savefileparser.printObj();
+        try {
+            savefileparser.writeToFile("jsons/save.json");
+        } catch(Exception e){
+            System.out.println("fuck me");
+        }
+
+
 
         LevelParser parser = new LevelParser();
         try {

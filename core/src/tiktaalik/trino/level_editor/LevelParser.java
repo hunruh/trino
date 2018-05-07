@@ -18,7 +18,7 @@ public class LevelParser {
         FileReader reader = new FileReader(path);
         //System.out.println("read file");
         obj = (JSONObject)parser.parse(reader);
-        //System.out.println("parsed");
+        //System.out.println(obj);
         levels = (JSONArray)obj.get("Levels");
     }
 
