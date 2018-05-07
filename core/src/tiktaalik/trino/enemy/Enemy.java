@@ -269,9 +269,9 @@ public class Enemy extends EdibleObject {
         fixture.shape = shape;
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
-        filter.categoryBits = Dinosaur.enemyCatBits;
-        filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
-                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.wallCatBits;
+        filter.categoryBits = Dinosaur.enemyHerbCatBits;
+        filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|Dinosaur.enemyHerbCatBits|
+                Dinosaur.dollCatBits|Dinosaur.cloneCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
@@ -300,10 +300,9 @@ public class Enemy extends EdibleObject {
 
         // Change the collision filter for herbivore enemy
         if (enemyType == HERBIVORE_ENEMY){
-            System.out.println("herbivore enemy");
             Filter filter = geometry.getFilterData();
-            filter.categoryBits = Dinosaur.herbCatBits;
-            filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|Dinosaur.enemyHerbCatBits|
+            filter.categoryBits = Dinosaur.enemyHerbCatBits;
+            filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|
                     Dinosaur.dollCatBits|Dinosaur.cloneCatBits;
             geometry.setFilterData(filter);
         } else {
@@ -372,13 +371,20 @@ public class Enemy extends EdibleObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
+        float offsetX = 0;
+        float offsetY = 9;
+        if (direction == UP || direction == DOWN) {
+            offsetX = 3.5f;
+            offsetY = 13f;
+        }
+
         if (eatInProgress && eatenTextureSet != null) {
             if (animeframe >= numEatenFrames)
                 return;
 
             eatenTextureSet.setFrame((int)animeframe);
-            canvas.draw( eatenTextureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,
-                    getY()*drawScale.x,0,1,1);
+            canvas.draw(eatenTextureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,
+                    getY()*drawScale.x + offsetY,0,1,1);
 
             return;
         }
@@ -393,7 +399,8 @@ public class Enemy extends EdibleObject {
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {
-            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x + 9,0,1,1);
+            canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,
+                    getY()*drawScale.x + offsetY,0,1,1);
         }
     }
 

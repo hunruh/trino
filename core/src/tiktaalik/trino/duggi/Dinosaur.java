@@ -30,7 +30,7 @@ public abstract class Dinosaur extends GameObject {
     public static final short switchCatBits = 0x0012;
     public static final short wallCatBits = 0x0014;
     public static final short goalCatBits = 0x0018;
-    public static final short enemyHerbCatBits = 0x0020;
+    public static final short enemyHerbCatBits = 0x0100;
 
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
@@ -298,7 +298,7 @@ public abstract class Dinosaur extends GameObject {
     }
 
     public void loadAction() {
-        if (!loadingAction && !actionInProgress && !coolingAction && !actionReady) {
+        if (!loadingAction && !actionInProgress && !coolingAction && !actionReady && !eating) {
             animeframe = 0;
             loadingAction = true;
             actionAnimating = true;
