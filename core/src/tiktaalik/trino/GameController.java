@@ -56,6 +56,8 @@ public class GameController implements ContactListener, Screen {
 	private static String DOOR_CLOSED_FILE_ONE = "trino/exitClosedPlaceholder1.png";
 	private static String DOOR_FILE_TWO = "trino/openExitPlaceHolder2.png";
 	private static String DOOR_CLOSED_FILE_TWO = "trino/exitClosedPlaceHolder2.png";
+	private static String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
+	private static String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
 	private static final String CLONE_FILE  = "trino/clone.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
@@ -108,7 +110,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String EDIBLE_WALL_EATING_STRIP = "trino/ediblewall_decay_strip.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
-	private static final String SWITCH_FILE = "trino/buttonRough.png";
+	private static final String SWITCH_FILE = "trino/button.png";
+	private static final String SWITCH_FILE_ONE = "trino/button1.png";
+	private static final String SWITCH_FILE_TWO = "trino/button2.png";
+	private static final String SWITCH_FILE_THREE = "trino/button3.png";
 	private static final String RIVER_FILE = "trino/river.png";
 	private static final String BOULDER_FILE = "trino/boulder.png";
 	private static final String VICTORY_FILE = "trino/victoryImage.png";
@@ -250,6 +255,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOOR_FILE_TWO);
 		manager.load(DOOR_CLOSED_FILE_TWO, Texture.class);
 		assets.add(DOOR_CLOSED_FILE_TWO);
+		manager.load(DOOR_FILE_THREE, Texture.class);
+		assets.add(DOOR_FILE_THREE);
+		manager.load(DOOR_CLOSED_FILE_THREE, Texture.class);
+		assets.add(DOOR_CLOSED_FILE_THREE);
 		manager.load(DOLL_STRIP_LEFT, Texture.class);
 		assets.add(DOLL_STRIP_LEFT);
 		manager.load(DOLL_STRIP_RIGHT, Texture.class);
@@ -356,6 +365,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
 		assets.add(SWITCH_FILE);
+		manager.load(SWITCH_FILE_ONE, Texture.class);
+		assets.add(SWITCH_FILE_ONE);
+		manager.load(SWITCH_FILE_TWO, Texture.class);
+		assets.add(SWITCH_FILE_TWO);
+		manager.load(SWITCH_FILE_THREE, Texture.class);
+		assets.add(SWITCH_FILE_THREE);
 		manager.load(RIVER_FILE, Texture.class);
 		assets.add(RIVER_FILE);
 		manager.load(BOULDER_FILE, Texture.class);
@@ -416,20 +431,25 @@ public class GameController implements ContactListener, Screen {
 			displayFont = null;
 
 		// Allocate the textures
-		textureDict.put("background", createTexture(manager,BACKGROUND_FILE,true));
-		textureDict.put("overlay", createTexture(manager,OVERLAY_FILE,true));
-		textureDict.put("goalOpenTile", createTexture(manager,GOAL_FILE,true));
-		textureDict.put("goalClosedTile", createTexture(manager,GOAL_CLOSED_FILE, true));
-		textureDict.put("doorOpenTileOne", createTexture(manager,DOOR_FILE_ONE,true));
-		textureDict.put("doorClosedTileOne", createTexture(manager,DOOR_CLOSED_FILE_ONE,true));
-		textureDict.put("doorOpenTileTwo", createTexture(manager,DOOR_FILE_TWO,true));
-		textureDict.put("doorClosedTileTwo", createTexture(manager,DOOR_CLOSED_FILE_TWO,true));
+		textureDict.put("background", createTexture(manager,BACKGROUND_FILE,false));
+		textureDict.put("overlay", createTexture(manager,OVERLAY_FILE,false));
+		textureDict.put("goalOpenTile", createTexture(manager,GOAL_FILE,false));
+		textureDict.put("goalClosedTile", createTexture(manager,GOAL_CLOSED_FILE, false));
+		textureDict.put("doorOpenTileOne", createTexture(manager,DOOR_FILE_ONE,false));
+		textureDict.put("doorClosedTileOne", createTexture(manager,DOOR_CLOSED_FILE_ONE,false));
+		textureDict.put("doorOpenTileTwo", createTexture(manager,DOOR_FILE_TWO,false));
+		textureDict.put("doorClosedTileTwo", createTexture(manager,DOOR_CLOSED_FILE_TWO,false));
+		textureDict.put("doorOpenTileThree", createTexture(manager,DOOR_FILE_THREE, false));
+		textureDict.put("doorClosedTileThree", createTexture(manager,DOOR_CLOSED_FILE_THREE, false));
 		textureDict.put("clone", createTexture(manager,CLONE_FILE,false));
 		textureDict.put("fireFly", createTexture(manager, FIREFLY_FILE, false));
 		textureDict.put("wall", createTexture(manager,WALL_FILE,false));
 		textureDict.put("edibleWall", createTexture(manager, EDIBLE_WALL_FILE, false));
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
 		textureDict.put("switch", createTexture(manager, SWITCH_FILE, false));
+		textureDict.put("switchone", createTexture(manager, SWITCH_FILE_ONE, false));
+		textureDict.put("switchtwo", createTexture(manager, SWITCH_FILE_TWO, false));
+		textureDict.put("switchthree", createTexture(manager, SWITCH_FILE_THREE, false));
 		textureDict.put("river", createTexture(manager, RIVER_FILE, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
@@ -1162,6 +1182,9 @@ public class GameController implements ContactListener, Screen {
 							else if (i == 2) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileTwo"));
 							}
+							else if (i == 3) {
+                                level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
+                            }
 						} else {
 							level.getAvatar().setCanExit(false);
 							level.getDoor(i).setLowered(false);
@@ -1174,6 +1197,9 @@ public class GameController implements ContactListener, Screen {
 							else if (i == 2) {
 								level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
 							}
+							else if (i == 3) {
+                                level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
+                            }
 
 						}
 					}
@@ -1190,6 +1216,9 @@ public class GameController implements ContactListener, Screen {
 						else if (i == 2) {
 							level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
 						}
+						else if (i == 3) {
+                            level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
+                        }
 					}
 				}
 			}
