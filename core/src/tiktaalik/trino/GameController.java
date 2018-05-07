@@ -1688,7 +1688,6 @@ public class GameController implements ContactListener, Screen {
 					}
 				} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 					GameObject tmp = level.objectInFrontOfAvatar();
-					System.out.println(tmp != null);
 					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
 					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
 						if (!avatar.inActionCycle()){
