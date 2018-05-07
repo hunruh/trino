@@ -106,7 +106,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String EDIBLE_WALL_EATING_STRIP = "trino/ediblewall_decay_strip.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
 	private static final String PATH_FILE = "trino/path.png";
-	private static final String SWITCH_FILE = "trino/buttonRough.png";
+	private static final String SWITCH_FILE = "trino/button.png";
+	private static final String SWITCH_FILE_ONE = "trino/button1.png";
+	private static final String SWITCH_FILE_TWO = "trino/button2.png";
+	private static final String SWITCH_FILE_THREE = "trino/button3.png";
 	private static final String RIVER_FILE = "trino/river.png";
 	private static final String BOULDER_FILE = "trino/boulder.png";
 	private static final String VICTORY_FILE = "trino/victoryImage.png";
@@ -350,6 +353,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
 		assets.add(SWITCH_FILE);
+		manager.load(SWITCH_FILE_ONE, Texture.class);
+		assets.add(SWITCH_FILE_ONE);
+		manager.load(SWITCH_FILE_TWO, Texture.class);
+		assets.add(SWITCH_FILE_TWO);
+		manager.load(SWITCH_FILE_THREE, Texture.class);
+		assets.add(SWITCH_FILE_THREE);
 		manager.load(RIVER_FILE, Texture.class);
 		assets.add(RIVER_FILE);
 		manager.load(BOULDER_FILE, Texture.class);
@@ -424,6 +433,9 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("edibleWall", createTexture(manager, EDIBLE_WALL_FILE, false));
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
 		textureDict.put("switch", createTexture(manager, SWITCH_FILE, false));
+		textureDict.put("switchone", createTexture(manager, SWITCH_FILE_ONE, false));
+		textureDict.put("switchtwo", createTexture(manager, SWITCH_FILE_TWO, false));
+		textureDict.put("switchthree", createTexture(manager, SWITCH_FILE_THREE, false));
 		textureDict.put("river", createTexture(manager, RIVER_FILE, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));

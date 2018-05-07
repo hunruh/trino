@@ -402,7 +402,18 @@ public class Level {
             Switch switches = new Switch((int)x, (int)y, screenToMaze(x), screenToMaze(y), dwidth, dheight);
             switches.setBodyType(BodyDef.BodyType.StaticBody);
             switches.setDrawScale(scale);
-            switches.setTexture(textureDict.get("switch"));
+            if (i == 0) {
+                switches.setTexture(textureDict.get("switch"));
+            }
+            else if (i == 1) {
+                switches.setTexture(textureDict.get("switchone"));
+            }
+            else if (i == 2) {
+                switches.setTexture(textureDict.get("switchtwo"));
+            }
+            else if (i == 3) {
+                switches.setTexture(textureDict.get("switchthree"));
+            }
             switches.setType(SWITCH);
             addObject(switches);
             grid[(int)switches.getGridLocation().x][(int)switches.getGridLocation().y] = switches;
