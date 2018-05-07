@@ -153,13 +153,13 @@ public class Boulder extends GameObject {
     private void resize(float width, float height) {
         // Make the box with the center in the center
         vertices[0] = -width/2.0f;
-        vertices[1] = -height/1.4f;
+        vertices[1] = -height/1.8f;
         vertices[2] = -width/2.0f;
-        vertices[3] =  height/1.2f;
+        vertices[3] =  height/1.4f;
         vertices[4] =  width/2.0f;
-        vertices[5] =  height/1.2f;
+        vertices[5] =  height/1.4f;
         vertices[6] =  width/2.0f;
-        vertices[7] = -height/1.4f;
+        vertices[7] = -height/1.8f;
         shape.set(vertices);
     }
 

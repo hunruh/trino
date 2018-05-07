@@ -1,15 +1,24 @@
 package tiktaalik.trino.duggi;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import tiktaalik.trino.Canvas;
+import tiktaalik.util.FilmStrip;
 
 public class Herbivore extends Dinosaur {
     protected boolean actionLoop = false;
     private boolean upDown = false;
     private float vertices[] = new float[16];
 
+    protected FilmStrip[] swimmingTextureSet;
+    protected int numSwimmingFrames[];
+
     public Herbivore(Dinosaur d) {
         super(d);
+        swimmingTextureSet = new FilmStrip[8];
+        numSwimmingFrames = new int[8];
         upDown = false;
         shape = new PolygonShape();
 
@@ -34,6 +43,32 @@ public class Herbivore extends Dinosaur {
 
     protected boolean loopAction() {
         return false;
+    }
+
+    public void setSwimmingTextureSet(Texture leftDiving, int leftDivingFrames,
+                                      Texture leftSwimming, int leftSwimmingFrames,
+                                      Texture rightDiving, int rightDivingFrames,
+                                      Texture rightSwimming, int rightSwimmingFrames,
+                                      Texture upDiving, int upDivingFrames,
+                                      Texture upSwimming, int upSwimmingFrames,
+                                      Texture downDiving, int downDivingFrames,
+                                      Texture downSwimming, int downSwimmingFrames) {
+        numSwimmingFrames[LEFT] = leftDivingFrames;
+        swimmingTextureSet[LEFT] = new FilmStrip(leftDiving,1,leftDivingFrames,leftDivingFrames);
+        numSwimmingFrames[LEFT + 4] = leftSwimmingFrames;
+        swimmingTextureSet[LEFT + 4] = new FilmStrip(leftSwimming,1,leftSwimmingFrames,leftSwimmingFrames);
+        numSwimmingFrames[RIGHT] = rightDivingFrames;
+        swimmingTextureSet[RIGHT] = new FilmStrip(rightDiving,1,rightDivingFrames,rightDivingFrames);
+        numSwimmingFrames[RIGHT + 4] = rightSwimmingFrames;
+        swimmingTextureSet[RIGHT + 4] = new FilmStrip(rightSwimming,1,rightSwimmingFrames,rightSwimmingFrames);
+        numSwimmingFrames[UP] = upDivingFrames;
+        swimmingTextureSet[UP] = new FilmStrip(upDiving,1,upDivingFrames,upDivingFrames);
+        numSwimmingFrames[UP + 4] = upSwimmingFrames;
+        swimmingTextureSet[UP + 4] = new FilmStrip(upSwimming,1,upSwimmingFrames,upSwimmingFrames);
+        numSwimmingFrames[DOWN] = downDivingFrames;
+        swimmingTextureSet[DOWN] = new FilmStrip(downDiving,1,downDivingFrames,downDivingFrames);
+        numSwimmingFrames[DOWN + 4] = downSwimmingFrames;
+        swimmingTextureSet[DOWN + 4] = new FilmStrip(downSwimming,1,downSwimmingFrames,downSwimmingFrames);
     }
 
     public void update(float dt) {

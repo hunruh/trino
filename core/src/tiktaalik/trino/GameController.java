@@ -70,6 +70,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_STRIP_LEFT  = "trino/herbivore_left_strip.png";
 	private static final String HERBIVORE_STRIP_RIGHT  = "trino/herbivore_right_strip.png";
 	private static final String HERBIVORE_STRIP_BACK  = "trino/herbivore_back_strip.png";
+	private static final String HERBIVORE_DIVING_STRIP_LEFT  = "trino/herbivore_left_diving_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_LEFT  = "trino/herbivore_left_swimming_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_FRONT  = "trino/herbivore_front_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_LEFT  = "trino/herbivore_left_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_RIGHT  = "trino/herbivore_right_eating_strip.png";
@@ -276,6 +278,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_STRIP_FRONT);
 		manager.load(HERBIVORE_STRIP_BACK, Texture.class);
 		assets.add(HERBIVORE_STRIP_BACK);
+		manager.load(HERBIVORE_DIVING_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_DIVING_STRIP_LEFT);
+		manager.load(HERBIVORE_SWIMMING_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_SWIMMING_STRIP_LEFT);
 		manager.load(HERBIVORE_EATING_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_EATING_STRIP_FRONT);
 		manager.load(HERBIVORE_EATING_STRIP_LEFT, Texture.class);
@@ -469,6 +475,8 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreRight", createFilmTexture(manager,HERBIVORE_STRIP_RIGHT));
 		filmStripDict.put("herbivoreFront", createFilmTexture(manager,HERBIVORE_STRIP_FRONT));
 		filmStripDict.put("herbivoreBack", createFilmTexture(manager,HERBIVORE_STRIP_BACK));
+		filmStripDict.put("herbivoreDivingLeft", createFilmTexture(manager,HERBIVORE_DIVING_STRIP_LEFT));
+		filmStripDict.put("herbivoreSwimmingLeft", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_LEFT));
 		filmStripDict.put("herbivoreEatingLeft", createFilmTexture(manager,HERBIVORE_EATING_STRIP_LEFT));
 		filmStripDict.put("herbivoreEatingRight", createFilmTexture(manager,HERBIVORE_EATING_STRIP_RIGHT));
 		filmStripDict.put("herbivoreEatingFront", createFilmTexture(manager,HERBIVORE_EATING_STRIP_FRONT));

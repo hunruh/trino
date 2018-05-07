@@ -66,8 +66,6 @@ public class AIController {
                 enemy.setAlert(true);
                 enemy.loadCharge();
             }
-
-
         }
 
         if (enemy.getLoadingCharge())
@@ -398,7 +396,7 @@ public class AIController {
         return false;
     }
 
-    public boolean riverInFrontOfEnemy(){
+    public boolean riverInFrontOfEnemy() {
         locationCache.set(getEnemyGridX(), getEnemyGridY());
         if (enemy.getDirection() == Dinosaur.UP){
             GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y+1];
@@ -417,15 +415,21 @@ public class AIController {
         else if (enemy.getDirection() == Dinosaur.LEFT){
             GameObject g = level.getGrid()[(int) locationCache.x-1][(int) locationCache.y];
             if (g != null) {
-                if (g.getType() == RIVER)
+                if (g.getType() == RIVER) {
                     return true;
+                } else {
+                    System.out.println("No river at (" + ((int) locationCache.x-1) + ", " + ((int) locationCache.y) + ")");
+                }
             }
         }
         else if (enemy.getDirection() == Dinosaur.RIGHT){
             GameObject g = level.getGrid()[(int) locationCache.x+1][(int) locationCache.y];
             if (g != null) {
-                if (g.getType() == RIVER)
+                if (g.getType() == RIVER) {
                     return true;
+                } else {
+                    System.out.println("No river at (" + ((int) locationCache.x+1) + ", " + ((int) locationCache.y) + ")");
+                }
             }
         }
 

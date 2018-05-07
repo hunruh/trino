@@ -372,7 +372,7 @@ public class Level {
             riv.setTexture(textureDict.get("river"));
             riv.setType(RIVER);
             addObject(riv);
-            grid[(int)riv.getGridLocation().x-1][(int)riv.getGridLocation().y-1] = riv;
+            grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
         }
 
 

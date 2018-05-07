@@ -299,7 +299,7 @@ public class Enemy extends EdibleObject {
         }
 
         // Change the collision filter for herbivore enemy
-        if (enemyType == HERBIVORE_ENEMY){
+        if (enemyType == HERBIVORE_ENEMY) {
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.enemyHerbCatBits;
             filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|
@@ -409,16 +409,12 @@ public class Enemy extends EdibleObject {
     }
 
     public void drawProgressCircle(Canvas canvas){
-
-      if (alert  &&
-              (enemyType!= UNKILLABLE_ENEMY && enemyType!= HERBIVORE_ENEMY)) {
+      if (alert && (enemyType!= UNKILLABLE_ENEMY && enemyType!= HERBIVORE_ENEMY)) {
           Color newColor = new Color(1, 0, 0, 1);
           CircleShape progressCircle = new CircleShape();
           progressCircle.setRadius(0.075f);
           canvas.drawProgressCircle(progressCircle, newColor, 3, getX() * drawScale.x, getY() * drawScale.x, drawScale.x);
       }
-
-
     }
 
     /**
