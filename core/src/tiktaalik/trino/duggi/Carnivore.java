@@ -5,9 +5,11 @@ import tiktaalik.trino.Canvas;
 
 public class Carnivore extends Dinosaur {
     private boolean collided;
+    private boolean chargeActive;
 
     public Carnivore(Dinosaur d) {
         super(d);
+        chargeActive = false;
         collided = false;
 
         shape = new PolygonShape();
@@ -52,6 +54,7 @@ public class Carnivore extends Dinosaur {
             collided = false;
         }
         else {
+            chargeActive = true;
             if (actionDirection == LEFT)
                 body.setLinearVelocity(-15.0f, 0.0f);
             else if (actionDirection == RIGHT)
@@ -60,6 +63,16 @@ public class Carnivore extends Dinosaur {
                 body.setLinearVelocity(0.0f, 15.0f);
             else
                 body.setLinearVelocity(0.0f, -15.0f);
+        }
+    }
+
+    public void update(float dt) {
+        super.update(dt);
+
+        if (chargeActive && this.getLinearVelocity().len2() < 0.2f) {
+            setCollided(true);
+            stopAction();
+            chargeActive = false;
         }
     }
 

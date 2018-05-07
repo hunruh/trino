@@ -73,14 +73,22 @@ public class SoundController {
             bgCarn.pause();
         }
 
-
-        bgMusic.setLooping(true);
-        bgMusic.setVolume(0.10f);
-        bgMusic.play();
-        bgMusic.pause();
-        bgMusic.setPosition(0f);
-        bgMusic.play();
-
+        if (GameController.musicState) {
+            bgMusic.setLooping(true);
+            bgMusic.setVolume(0.10f);
+            bgMusic.play();
+            bgMusic.pause();
+            bgMusic.setPosition(0f);
+            bgMusic.play();
+        }
+        else {
+            bgMusic.setLooping(true);
+            bgMusic.setVolume(0.0f);
+            bgMusic.play();
+            bgMusic.pause();
+            bgMusic.setPosition(0f);
+            bgMusic.play();
+        }
         bgHerb.setLooping(true);
         bgHerb.setVolume(0.0f);
         bgHerb.play();
@@ -98,49 +106,87 @@ public class SoundController {
 
     public void playCottonPickup() {
         cottonPickUp.pause();
-        cottonPickUp.play(1.0f);
+        if (GameController.soundState) {
+            cottonPickUp.play(1.0f);
+        }
+        else {
+            cottonPickUp.play(0.0f);
+        }
     }
 
     public void playCollide() {
         collideWall.pause();
-        collideWall.play(1.0f);
+        if (GameController.soundState) {
+            collideWall.play(1.0f);
+        }
+        else {
+            collideWall.play(0.0f);
+        }
     }
 
     public void playEat() {
         eatWall.pause();
-        eatWall.play(1.0f);
+        if (GameController.soundState) {
+            eatWall.play(1.0f);
+        }
+        else {
+            eatWall.play(0.0f);
+        }
     }
 
     public void playTransform() {
         transformSound.pause();
-        transformSound.play(1.0f);
+        if (GameController.soundState) {
+            transformSound.play(1.0f);
+        }
+        else {
+            transformSound.play(0.0f);
+        }
     }
 
     public void playCrash(){
         crashSound.pause();
-        crashSound.play(0.1f);
+        if (GameController.soundState) {
+            crashSound.play(0.1f);
+        }
+        else {
+            crashSound.play(0.0f);
+        }
     }
 
     public void playAlert(){
         alertSound.pause();
-        alertSound.play(0.1f);
+        if (GameController.soundState) {
+            alertSound.play(0.1f);
+        }
+        else {
+            alertSound.play(0.0f);
+        }
     }
 
     /** Change the music based on timestamp */
     public void changeBackground(int form){
-        if (form == Dinosaur.DOLL_FORM){
-            bgMusic.setVolume(0.10f);
-            bgHerb.setVolume(0.0f);
-            bgCarn.setVolume(0.0f);
-        } else if (form == Dinosaur.HERBIVORE_FORM){
-            bgHerb.setVolume(0.10f);
-            bgMusic.setVolume(0.0f);
-            bgCarn.setVolume(0.0f);
-        } else {
-            bgHerb.setVolume(0.0f);
-            bgMusic.setVolume(0.0f);
-            bgCarn.setVolume(0.10f);
+        if (GameController.musicState) {
+            if (form == Dinosaur.DOLL_FORM){
+                bgMusic.setVolume(0.10f);
+                bgHerb.setVolume(0.0f);
+                bgCarn.setVolume(0.0f);
+            } else if (form == Dinosaur.HERBIVORE_FORM){
+                bgHerb.setVolume(0.10f);
+                bgMusic.setVolume(0.0f);
+                bgCarn.setVolume(0.0f);
+            } else {
+                bgHerb.setVolume(0.0f);
+                bgMusic.setVolume(0.0f);
+                bgCarn.setVolume(0.10f);
+            }
         }
+        else {
+            bgMusic.setVolume(0.0f);
+            bgHerb.setVolume(0.0f);
+            bgCarn.setVolume(0.0f);
+        }
+        currentForm = form;
 //        bgMusic.pause();
 //        float seconds = bgMusic.getPosition();
 //        seconds = formToSeconds(currentForm, seconds);
@@ -149,7 +195,6 @@ public class SoundController {
 //        bgMusic.pause();
 //        bgMusic.setPosition(newMusicPosition(form,seconds));
 //        bgMusic.play();
-        currentForm = form;
     }
 
     private Music formToMusic(int form) {

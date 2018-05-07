@@ -72,7 +72,8 @@ public class CollisionHandler {
                 handleCollision((Enemy) g1, (River) g2);
             }
 
-            else if (g2.getType() == GameController.WALL || g2.getType() == GameController.EDIBLEWALL) {
+            else if (g2.getType() == GameController.WALL || g2.getType() == GameController.EDIBLEWALL || g2.getType() ==
+                    GameController.GOAL) {
                 handleCollision((Enemy) g1, (Wall) g2);
             }
 
@@ -96,6 +97,11 @@ public class CollisionHandler {
         else if (g1.getType() == GameController.BOULDER) {
             if (g2.getType() == GameController.ENEMY) {
                 handleCollision((Enemy) g2, (Boulder) g1);
+            }
+        }
+        else if (g1.getType() == GameController.GOAL){
+            if (g2.getType() == GameController.ENEMY){
+                handleCollision((Enemy)g2, (Wall)g1);
             }
         }
     }
@@ -133,10 +139,10 @@ public class CollisionHandler {
                 parent.setComplete(false);
             }
         }
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
-            ((Carnivore) d).setCollided(true);
-            d.stopAction();
-        }
+//        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
+//            ((Carnivore) d).setCollided(true);
+//            d.stopAction();
+//        }
 
         if (level.isInFrontOfAvatar(w)) {
             SoundController.getInstance().playCollide();

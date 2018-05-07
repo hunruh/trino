@@ -151,9 +151,9 @@ public class Wall extends EdibleObject {
         vertices[0] = -width/2.2f;
         vertices[1] = -height/2.0f;
         vertices[2] = -width/2.2f;
-        vertices[3] =  height/1.1f;
+        vertices[3] =  height/1.2f;
         vertices[4] =  width/2.2f;
-        vertices[5] =  height/1.1f;
+        vertices[5] =  height/1.2f;
         vertices[6] =  width/2.2f;
         vertices[7] = -height/2.0f;
         shape.set(vertices);
@@ -175,7 +175,7 @@ public class Wall extends EdibleObject {
         Filter filter = geometry.getFilterData();
         filter.categoryBits = Dinosaur.wallCatBits;
         filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
-                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.switchCatBits;
+                Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.switchCatBits|Dinosaur.enemyHerbCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
@@ -197,7 +197,7 @@ public class Wall extends EdibleObject {
      */
     public void update(float dt) {
         super.update(dt);
-        if (lowered && goal){
+        if (lowered){
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.goalCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits;
