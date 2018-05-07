@@ -48,6 +48,7 @@ public abstract class Dinosaur extends GameObject {
     private Fixture geometry; // A cache value for the fixture (for resizing)
 
     protected int numFrames[];
+    protected int numLoopFrames[];
     protected float animeframe;
     protected boolean actionAnimating;
     private boolean canExit;
@@ -111,6 +112,7 @@ public abstract class Dinosaur extends GameObject {
 
         textureSet = new FilmStrip[16];
         numFrames = new int[16];
+        numLoopFrames = new int[4];
         animeframe = 0;
         resourceCnt = 0;
         eating = false;
@@ -155,6 +157,7 @@ public abstract class Dinosaur extends GameObject {
         direction = RIGHT;
         textureSet = new FilmStrip[16];
         numFrames = new int[16];
+        numLoopFrames = new int[4];
         animeframe = 0;
         resourceCnt = 0;
         canExit = false;
@@ -184,15 +187,21 @@ public abstract class Dinosaur extends GameObject {
         origin = new Vector2(textureSet[LEFT].getRegionWidth()/2.0f, textureSet[LEFT].getRegionHeight()/2.0f);
     }
 
-    public void setActionLoadingTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
-                                    Texture down, int downFrames) {
+    public void setActionLoadingTextureSet(Texture left, int leftFrames, int leftLoopFrames,
+                                           Texture right, int rightFrames, int rightLoopFrames,
+                                           Texture up, int upFrames, int upLoopFrames,
+                                           Texture down, int downFrames, int downLoopFrames) {
         numFrames[ACTION_LOADING_LEFT] = leftFrames;
+        numLoopFrames[LEFT] = leftLoopFrames;
         textureSet[ACTION_LOADING_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
         numFrames[ACTION_LOADING_RIGHT] = rightFrames;
+        numLoopFrames[RIGHT] = rightLoopFrames;
         textureSet[ACTION_LOADING_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
         numFrames[ACTION_LOADING_UP] = upFrames;
+        numLoopFrames[UP] = upLoopFrames;
         textureSet[ACTION_LOADING_UP] = new FilmStrip(up,1,upFrames,upFrames);
         numFrames[ACTION_LOADING_DOWN] = downFrames;
+        numLoopFrames[DOWN] = downLoopFrames;
         textureSet[ACTION_LOADING_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
     }
 
@@ -451,10 +460,14 @@ public abstract class Dinosaur extends GameObject {
         if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 4]) {
-                animeframe -= (numFrames[direction + 4] - 3);
+                animeframe -= (numLoopFrames[direction]);
             }
         } else if (actionInProgress) {
-            animeframe += ANIMATION_SPEED;
+            if (this.getForm() == CARNIVORE_FORM && direction == DOWN)
+                animeframe += 0.35f;
+            else
+                animeframe += ANIMATION_SPEED;
+
             if (animeframe >= numFrames[direction + 8]) {
                 if (loopAction())
                     animeframe -= (numFrames[direction + 8]);

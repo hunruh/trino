@@ -78,10 +78,13 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARNIVORE_STRIP_LEFT  = "trino/carnivore_left_strip.png";
 	private static final String CARNIVORE_STRIP_RIGHT  = "trino/carnivore_right_strip.png";
 	private static final String CARNIVORE_STRIP_BACK  = "trino/carnivore_back_strip.png";
+	private static final String CARNIVORE_EATING_STRIP_FRONT  = "trino/carnivore_front_eating_strip.png";
 	private static final String CARNIVORE_EATING_STRIP_LEFT  = "trino/carnivore_left_eating_strip.png";
 	private static final String CARNIVORE_EATING_STRIP_RIGHT  = "trino/carnivore_right_eating_strip.png";
+	private static final String CARNIVORE_CHARGE_STRIP_FRONT = "trino/carnivore_front_charge_strip.png";
 	private static final String CARNIVORE_CHARGE_STRIP_LEFT = "trino/carnivore_left_charge_strip.png";
 	private static final String CARNIVORE_CHARGE_STRIP_RIGHT = "trino/carnivore_right_charge_strip.png";
+	private static final String CARNIVORE_ATTACK_STRIP_FRONT = "trino/carnivore_front_attack_strip.png";
     private static final String CARNIVORE_ATTACK_STRIP_LEFT = "trino/carnivore_left_attack_strip.png";
 	private static final String CARNIVORE_ATTACK_STRIP_RIGHT = "trino/carnivore_right_attack_strip.png";
 	private static final String ENEMY_STRIP_FRONT = "trino/enemy_front_strip.png";
@@ -193,6 +196,9 @@ public class GameController implements ContactListener, Screen {
 	float tmpy;
 	private boolean shadowDuggiGotCotton = true;
 	public static int menuNum = 0;
+	public static boolean musicState = true;
+	public static boolean soundState = true;
+	public static int mouseCooldown = 0;
 
 	/** Timer */
 	float levelTime = 300;
@@ -286,14 +292,20 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_STRIP_FRONT);
 		manager.load(CARNIVORE_STRIP_BACK, Texture.class);
 		assets.add(CARNIVORE_STRIP_BACK);
+		manager.load(CARNIVORE_EATING_STRIP_FRONT, Texture.class);
+		assets.add(CARNIVORE_EATING_STRIP_FRONT);
 		manager.load(CARNIVORE_EATING_STRIP_LEFT, Texture.class);
 		assets.add(CARNIVORE_EATING_STRIP_LEFT);
 		manager.load(CARNIVORE_EATING_STRIP_RIGHT, Texture.class);
 		assets.add(CARNIVORE_EATING_STRIP_RIGHT);
+		manager.load(CARNIVORE_CHARGE_STRIP_FRONT, Texture.class);
+		assets.add(CARNIVORE_CHARGE_STRIP_FRONT);
         manager.load(CARNIVORE_CHARGE_STRIP_LEFT, Texture.class);
         assets.add(CARNIVORE_CHARGE_STRIP_LEFT);
 		manager.load(CARNIVORE_CHARGE_STRIP_RIGHT, Texture.class);
 		assets.add(CARNIVORE_CHARGE_STRIP_RIGHT);
+		manager.load(CARNIVORE_ATTACK_STRIP_FRONT, Texture.class);
+		assets.add(CARNIVORE_ATTACK_STRIP_FRONT);
         manager.load(CARNIVORE_ATTACK_STRIP_LEFT, Texture.class);
         assets.add(CARNIVORE_ATTACK_STRIP_LEFT);
 		manager.load(CARNIVORE_ATTACK_STRIP_RIGHT, Texture.class);
@@ -445,10 +457,12 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("carnivoreBack", createFilmTexture(manager,CARNIVORE_STRIP_BACK));
 		filmStripDict.put("carnivoreEatingLeft", createFilmTexture(manager,CARNIVORE_EATING_STRIP_LEFT));
 		filmStripDict.put("carnivoreEatingRight", createFilmTexture(manager,CARNIVORE_EATING_STRIP_RIGHT));
-		filmStripDict.put("carnivoreEatingFront", createFilmTexture(manager,CARNIVORE_EATING_STRIP_LEFT));
+		filmStripDict.put("carnivoreEatingFront", createFilmTexture(manager,CARNIVORE_EATING_STRIP_FRONT));
 		filmStripDict.put("carnivoreEatingBack", createFilmTexture(manager,CARNIVORE_EATING_STRIP_LEFT));
+		filmStripDict.put("carnivoreChargeFront", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_FRONT));
         filmStripDict.put("carnivoreChargeLeft", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_LEFT));
 		filmStripDict.put("carnivoreChargeRight", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_RIGHT));
+		filmStripDict.put("carnivoreAttackFront", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_FRONT));
         filmStripDict.put("carnivoreAttackLeft", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_LEFT));
 		filmStripDict.put("carnivoreAttackRight", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_RIGHT));
 		filmStripDict.put("herbivoreLeft", createFilmTexture(manager,HERBIVORE_STRIP_LEFT));
@@ -674,9 +688,16 @@ public class GameController implements ContactListener, Screen {
 
 		state = GAME_READY;
 
-		SoundController.getInstance().dispose();
-		SoundController.getInstance().init();
-		SoundController.getInstance().playBackground(Dinosaur.DOLL_FORM);
+		if (musicState) {
+			SoundController.getInstance().dispose();
+			SoundController.getInstance().init();
+			SoundController.getInstance().playBackground(Dinosaur.DOLL_FORM);
+		}
+		else {
+			SoundController.getInstance().dispose();
+			SoundController.getInstance().init();
+			SoundController.getInstance().playBackground(Dinosaur.DOLL_FORM);
+		}
 
 		setComplete(false);
 		setFailure(false);
@@ -919,35 +940,54 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		if (state == GAME_PAUSED) {
-			displayFont.setColor(Color.YELLOW);
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("grayOut"), -9, 0);
-			canvas.draw(textureDict.get("pauseMenu"), 396, 109);
-			canvas.draw(textureDict.get("musicOn"), 725, 181); // music button
-			canvas.draw(textureDict.get("soundOn"), 782, 181); // sound button
-			canvas.draw(textureDict.get("menuText"), 573, 459); // menu text
-			canvas.draw(textureDict.get("helpText"), 583, 389); // help text
-			canvas.draw(textureDict.get("restartText"), 557, 320); // restart text
-			canvas.draw(textureDict.get("resumeText"),565, 255); // resume text
-			canvas.end();
-			if (InputHandler.getInstance().didReturn()) {
-				menuNum = 1;
-				listener.exitScreen(this, 0);
-			}
-			else if (InputHandler.getInstance().didHelp()) {
-				menuNum = 2;
-				System.out.println("hello you have reached the help button. pls leave a message after the beep");
-			}
-			else if (InputHandler.getInstance().didRestart()) {
-				menuNum = 3;
-				// remember to remove pause menu overlay!!
-				reset();
+				displayFont.setColor(Color.YELLOW);
+				canvas.beginOverlay();
+				canvas.draw(textureDict.get("grayOut"), -9, 0);
+				canvas.draw(textureDict.get("pauseMenu"), 396, 109);
+				if (musicState) {
+					canvas.draw(textureDict.get("musicOn"), 725, 181); // music button
+				}
+				else {
+					canvas.draw(textureDict.get("musicOff"), 725, 181); // music button
+				}
+				if (soundState) {
+					canvas.draw(textureDict.get("soundOn"), 782, 181); // sound button
+				}
+				else {
+					canvas.draw(textureDict.get("soundOff"), 782, 181); // sound button
+				}
+				canvas.draw(textureDict.get("menuText"), 573, 459); // menu text
+				canvas.draw(textureDict.get("helpText"), 583, 389); // help text
+				canvas.draw(textureDict.get("restartText"), 557, 320); // restart text
+				canvas.draw(textureDict.get("resumeText"),565, 255); // resume text
+				canvas.end();
+				if (InputHandler.getInstance().didReturn()) {
+					menuNum = 1;
+					listener.exitScreen(this, 0);
+				}
+				else if (InputHandler.getInstance().didHelp()) {
+					menuNum = 2;
+					System.out.println("hello you have reached the help button. pls leave a message after the beep");
+				}
+				else if (InputHandler.getInstance().didRestart()) {
+					menuNum = 3;
+					reset();
 
-			}
-			else if (InputHandler.getInstance().didResume()) {
-				menuNum = 4;
-				state = GAME_RUNNING;
-			}
+				}
+				else if (InputHandler.getInstance().didResume()) {
+					menuNum = 4;
+					state = GAME_RUNNING;
+				}
+				else if (InputHandler.getInstance().didMusic()) {
+					menuNum = 5;
+					musicState = !musicState;
+					SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
+
+				}
+				else if (InputHandler.getInstance().didSound()) {
+					menuNum = 6;
+					soundState = !soundState;
+				}
 		}
 
 	}
@@ -1356,15 +1396,15 @@ public class GameController implements ContactListener, Screen {
 						avatar.setEatingTextureSet(filmStripDict.get("carnivoreEatingLeft"), 8,
 								filmStripDict.get("carnivoreEatingRight"), 8,
 								filmStripDict.get("carnivoreEatingBack"), 8,
-								filmStripDict.get("carnivoreEatingFront"), 8);
-						avatar.setActionLoadingTextureSet(filmStripDict.get("carnivoreChargeLeft"), 15,
-								filmStripDict.get("carnivoreChargeRight"), 15,
-								filmStripDict.get("carnivoreChargeLeft"), 15,
-								filmStripDict.get("carnivoreChargeLeft"), 15);
+								filmStripDict.get("carnivoreEatingFront"), 12);
+						avatar.setActionLoadingTextureSet(filmStripDict.get("carnivoreChargeLeft"), 15, 12,
+								filmStripDict.get("carnivoreChargeRight"), 15, 12,
+								filmStripDict.get("carnivoreChargeLeft"), 15, 12,
+								filmStripDict.get("carnivoreChargeFront"),  9, 4);
 						avatar.setActionTextureSet(filmStripDict.get("carnivoreAttackLeft"), 9,
 								filmStripDict.get("carnivoreAttackRight"), 9,
 								filmStripDict.get("carnivoreAttackLeft"), 9,
-								filmStripDict.get("carnivoreAttackLeft"), 9);
+								filmStripDict.get("carnivoreAttackFront"), 10);
 
 						level.setAvatar(avatar);
 
@@ -1648,8 +1688,9 @@ public class GameController implements ContactListener, Screen {
 					}
 				} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 					GameObject tmp = level.objectInFrontOfAvatar();
-					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
-
+					System.out.println(tmp != null);
+					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
+					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
 						if (!avatar.inActionCycle()){
 							avatar.loadAction();
 						}
@@ -1705,10 +1746,11 @@ public class GameController implements ContactListener, Screen {
 
 
 			if (InputHandler.getInstance().didActionRelease()) {
-
 				if (avatar.getForm() == Dinosaur.HERBIVORE_FORM && avatar.getActionLoadValue() < 0.25f && avatar.getActionLoadValue()>0) {
 					GameObject tmp = level.objectInFrontOfAvatar();
-					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5
+
+					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
+					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5
 							&& avatar.getResources() < 3) {
 						SoundController.getInstance().playEat();
 						if (!((EdibleObject) tmp).getEatInProgress()){
