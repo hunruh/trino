@@ -193,6 +193,9 @@ public class GameController implements ContactListener, Screen {
 	float tmpy;
 	private boolean shadowDuggiGotCotton = true;
 	public static int menuNum = 0;
+	public static boolean musicState = true;
+	public static boolean soundState = true;
+	public static int mouseCooldown = 0;
 
 	/** Timer */
 	float levelTime = 300;
@@ -674,9 +677,16 @@ public class GameController implements ContactListener, Screen {
 
 		state = GAME_READY;
 
-		SoundController.getInstance().dispose();
-		SoundController.getInstance().init();
-		SoundController.getInstance().playBackground(Dinosaur.DOLL_FORM);
+		if (musicState) {
+			SoundController.getInstance().dispose();
+			SoundController.getInstance().init();
+			SoundController.getInstance().playBackground(Dinosaur.DOLL_FORM);
+		}
+		else {
+			SoundController.getInstance().dispose();
+			SoundController.getInstance().init();
+			SoundController.getInstance().playBackground(Dinosaur.DOLL_FORM);
+		}
 
 		setComplete(false);
 		setFailure(false);
@@ -919,35 +929,54 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		if (state == GAME_PAUSED) {
-			displayFont.setColor(Color.YELLOW);
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("grayOut"), -9, 0);
-			canvas.draw(textureDict.get("pauseMenu"), 396, 109);
-			canvas.draw(textureDict.get("musicOn"), 725, 181); // music button
-			canvas.draw(textureDict.get("soundOn"), 782, 181); // sound button
-			canvas.draw(textureDict.get("menuText"), 573, 459); // menu text
-			canvas.draw(textureDict.get("helpText"), 583, 389); // help text
-			canvas.draw(textureDict.get("restartText"), 557, 320); // restart text
-			canvas.draw(textureDict.get("resumeText"),565, 255); // resume text
-			canvas.end();
-			if (InputHandler.getInstance().didReturn()) {
-				menuNum = 1;
-				listener.exitScreen(this, 0);
-			}
-			else if (InputHandler.getInstance().didHelp()) {
-				menuNum = 2;
-				System.out.println("hello you have reached the help button. pls leave a message after the beep");
-			}
-			else if (InputHandler.getInstance().didRestart()) {
-				menuNum = 3;
-				// remember to remove pause menu overlay!!
-				reset();
+				displayFont.setColor(Color.YELLOW);
+				canvas.beginOverlay();
+				canvas.draw(textureDict.get("grayOut"), -9, 0);
+				canvas.draw(textureDict.get("pauseMenu"), 396, 109);
+				if (musicState) {
+					canvas.draw(textureDict.get("musicOn"), 725, 181); // music button
+				}
+				else {
+					canvas.draw(textureDict.get("musicOff"), 725, 181); // music button
+				}
+				if (soundState) {
+					canvas.draw(textureDict.get("soundOn"), 782, 181); // sound button
+				}
+				else {
+					canvas.draw(textureDict.get("soundOff"), 782, 181); // sound button
+				}
+				canvas.draw(textureDict.get("menuText"), 573, 459); // menu text
+				canvas.draw(textureDict.get("helpText"), 583, 389); // help text
+				canvas.draw(textureDict.get("restartText"), 557, 320); // restart text
+				canvas.draw(textureDict.get("resumeText"),565, 255); // resume text
+				canvas.end();
+				if (InputHandler.getInstance().didReturn()) {
+					menuNum = 1;
+					listener.exitScreen(this, 0);
+				}
+				else if (InputHandler.getInstance().didHelp()) {
+					menuNum = 2;
+					System.out.println("hello you have reached the help button. pls leave a message after the beep");
+				}
+				else if (InputHandler.getInstance().didRestart()) {
+					menuNum = 3;
+					reset();
 
-			}
-			else if (InputHandler.getInstance().didResume()) {
-				menuNum = 4;
-				state = GAME_RUNNING;
-			}
+				}
+				else if (InputHandler.getInstance().didResume()) {
+					menuNum = 4;
+					state = GAME_RUNNING;
+				}
+				else if (InputHandler.getInstance().didMusic()) {
+					menuNum = 5;
+					musicState = !musicState;
+					SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
+
+				}
+				else if (InputHandler.getInstance().didSound()) {
+					menuNum = 6;
+					soundState = !soundState;
+				}
 		}
 
 	}

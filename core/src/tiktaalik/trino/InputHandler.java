@@ -203,7 +203,7 @@ public class InputHandler {
 	 * @return true if the return to menu botton was pressed.
  	 */
 	public boolean didReturn() {
-		return ((!pausePressed && pausePrevious) || mousePrevious) && mousePressed &&
+		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
 				((Gdx.input.getX() >= 573) && (Gdx.input.getX() <= 676)) &&
 				((Gdx.input.getY() >= 224) && (Gdx.input.getY() <= 261));
 	}
@@ -214,7 +214,7 @@ public class InputHandler {
 	 * @return true if the help button was pressed.
 	 */
 	public boolean didHelp() {
-		return ((!pausePressed && pausePrevious) || mousePrevious) && mousePressed &&
+		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
 				((Gdx.input.getX() >= 583) && (Gdx.input.getX() <= 676)) &&
 				((Gdx.input.getY() >= 293) && (Gdx.input.getY() <= 330));
 	}
@@ -225,7 +225,7 @@ public class InputHandler {
 	 * @return true if the restart button was pressed.
 	 */
 	public boolean didRestart() {
-		return ((!pausePressed && pausePrevious) || mousePrevious) && mousePressed &&
+		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
 				((Gdx.input.getX() >= 557) && (Gdx.input.getX() <= 718)) &&
 				((Gdx.input.getY() >= 363) && (Gdx.input.getY() <= 400));
 	}
@@ -236,9 +236,31 @@ public class InputHandler {
 	 * @return true if the resume button was pressed.
 	 */
 	public boolean didResume() {
-		return ((!pausePressed && pausePrevious) || mousePrevious) && mousePressed &&
+		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
 				((Gdx.input.getX() >= 565) && (Gdx.input.getX() <= 714)) &&
 				((Gdx.input.getY() >= 428) && (Gdx.input.getY() <= 465));
+	}
+
+	/**
+	 * Return true if the music button was pressed.
+	 *
+	 * @return true if the music button was pressed.
+	 */
+	public boolean didMusic() {
+		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
+				((Gdx.input.getX() >= 725) && (Gdx.input.getX() <= 764)) &&
+				((Gdx.input.getY() >= 499) && (Gdx.input.getY() <= 540));
+	}
+
+	/**
+	 * Return true if the sound button was pressed.
+	 *
+	 * @return true if the sound button was pressed.
+	 */
+	public boolean didSound() {
+		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
+				((Gdx.input.getX() >= 782) && (Gdx.input.getX() <= 829)) &&
+				((Gdx.input.getY() >= 511) && (Gdx.input.getY() <= 540));
 	}
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.
