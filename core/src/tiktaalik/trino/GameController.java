@@ -1679,7 +1679,7 @@ public class GameController implements ContactListener, Screen {
 						avatar.setActionLoadingTextureSet(filmStripDict.get("carnivoreChargeLeft"), 15, 12,
 								filmStripDict.get("carnivoreChargeRight"), 15, 12,
 								filmStripDict.get("carnivoreChargeLeft"), 15, 12,
-								filmStripDict.get("carnivoreChargeFront"),  9, 4);
+								filmStripDict.get("carnivoreChargeFront"),  11, 5);
 						avatar.setActionTextureSet(filmStripDict.get("carnivoreAttackLeft"), 9,
 								filmStripDict.get("carnivoreAttackRight"), 9,
 								filmStripDict.get("carnivoreAttackLeft"), 9,
