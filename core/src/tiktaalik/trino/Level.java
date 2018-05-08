@@ -323,7 +323,7 @@ public class Level {
                     filmStripDict.get("dollFront"), 8);
             avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
                     filmStripDict.get("dollEatingRight"), 7,
-                    filmStripDict.get("dollEatingBack"), 7,
+                    filmStripDict.get("dollEatingBack"), 6,
                     filmStripDict.get("dollEatingFront"), 7);
             avatar.setActionTextureSet(filmStripDict.get("dollCloningFront"), 12,
                     filmStripDict.get("dollCloningFront"), 12,

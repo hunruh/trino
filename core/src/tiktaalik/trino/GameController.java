@@ -66,7 +66,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_EATING_STRIP_FRONT  = "trino/doll_front_eating_strip.png";
 	private static final String DOLL_EATING_STRIP_LEFT  = "trino/doll_left_eating_strip.png";
 	private static final String DOLL_EATING_STRIP_RIGHT  = "trino/doll_right_eating_strip.png";
-	private static final String DOLL_EATING_STRIP_BACK  = "trino/doll_front_eating_strip.png";
+	private static final String DOLL_EATING_STRIP_BACK  = "trino/doll_back_eating_strip.png";
 	private static final String DOLL_CLONING_STRIP_FRONT  = "trino/doll_front_cloning_strip.png";
 	private static final String HERBIVORE_STRIP_FRONT  = "trino/herbivore_front_strip.png";
 	private static final String HERBIVORE_STRIP_LEFT  = "trino/herbivore_left_strip.png";
@@ -1625,7 +1625,7 @@ public class GameController implements ContactListener, Screen {
 								filmStripDict.get("dollFront"), 8);
 						avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
 								filmStripDict.get("dollEatingRight"), 7,
-								filmStripDict.get("dollEatingBack"), 7,
+								filmStripDict.get("dollEatingBack"), 6,
 								filmStripDict.get("dollEatingFront"), 7);
 						avatar.setActionTextureSet(filmStripDict.get("dollCloningFront"), 12,
 								filmStripDict.get("dollCloningFront"), 12,
