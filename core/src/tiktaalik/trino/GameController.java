@@ -175,18 +175,27 @@ public class GameController implements ContactListener, Screen {
 	private static final String EAT_FILE = "help/text_eat.png";
 
 	// Tutorial menus
-	private static final String TUT_ONE_A = "tutorial/tutorial1a.png";
-	private static final String TUT_ONE_B = "tutorial/tutorial1b.png";
-	private static final String TUT_ONE_C = "tutorial/tutorial1c.png";
-	private static final String TUT_ONE_D = "tutorial/tutorial1d.png";
-	private static final String TUT_TWO_A = "tutorial/tutorial2a.png";
-	private static final String TUT_TWO_B = "tutorial/tutorial2b.png";
-	private static final String TUT_TWO_C = "tutorial/tutorial2c.png";
-	private static final String TUT_TWO_D = "tutorial/tutorial2d.png";
-	private static final String TUT_THREE_A = "tutorial/tutorial3a.png";
-	private static final String TUT_THREE_B = "tutorial/tutorial3b.png";
-	private static final String TUT_FOUR_A = "tutorial/tutorial4a.png";
-	private static final String TUT_FOUR_B = "tutorial/tutorial4b.png";
+	private static final String TUT_ONE_A = "tutorial/move1.png";
+	private static final String TUT_ONE_B = "tutorial/move2.png";
+	private static final String TUT_ONE_C = "tutorial/cloneDrop1.png";
+	private static final String TUT_ONE_D = "tutorial/cloneDrop2.png";
+	private static final String TUT_TWO_A = "tutorial/dollPickUpCotton1.png";
+	private static final String TUT_TWO_B = "tutorial/dollPickUpCotton2.png";
+	private static final String TUT_TWO_C = "tutorial/herbRiver1.png";
+	private static final String TUT_TWO_D = "tutorial/herbRiver2.png";
+	private static final String TUT_THREE_A = "tutorial/herbEating1.png";
+    private static final String TUT_THREE_B = "tutorial/herbEating2.png";
+	private static final String TUT_FOUR_A = "tutorial/camo1.png";
+	private static final String TUT_FOUR_B = "tutorial/camo2.png";
+	private static final String TUT_SIX_A = "tutorial/stun1.png";
+	private static final String TUT_SIX_B = "tutorial/stun2.png";
+	private static final String TUT_SIX_C = "tutorial/carnEating1.png";
+	private static final String TUT_SIX_D = "tutorial/carnEating2.png";
+	private static final String TUT_SEVEN_A = "tutorial/moveBoulder1.png";
+	private static final String TUT_SEVEN_B = "tutorial/moveBoulder2.png";
+	private static final String TUT_EIGHT_A = "tutorial/unkillableWarning.png";
+	private static final String TUT_NINE_A = "tutorial/multiSwitch1.png";
+	private static final String TUT_NINE_B = "tutorial/multiSwitch2.png";
 
 	// Texture assets variables
 	private BitmapFont displayFont;
@@ -560,6 +569,24 @@ public class GameController implements ContactListener, Screen {
 		assets.add(TUT_FOUR_A);
 		manager.load(TUT_FOUR_B, Texture.class);
 		assets.add(TUT_FOUR_B);
+		manager.load(TUT_SIX_A, Texture.class);
+		assets.add(TUT_SIX_A);
+		manager.load(TUT_SIX_B, Texture.class);
+		assets.add(TUT_SIX_B);
+		manager.load(TUT_SIX_C, Texture.class);
+		assets.add(TUT_SIX_C);
+		manager.load(TUT_SIX_D, Texture.class);
+		assets.add(TUT_SIX_D);
+		manager.load(TUT_SEVEN_A, Texture.class);
+		assets.add(TUT_SEVEN_A);
+		manager.load(TUT_SEVEN_B, Texture.class);
+		assets.add(TUT_SEVEN_B);
+		manager.load(TUT_EIGHT_A, Texture.class);
+		assets.add(TUT_EIGHT_A);
+		manager.load(TUT_NINE_A, Texture.class);
+		assets.add(TUT_NINE_A);
+        manager.load(TUT_NINE_B, Texture.class);
+        assets.add(TUT_NINE_B);
 
 		jsonReader = new JsonReader();
 	}
@@ -664,6 +691,15 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("3b", createTexture(manager, TUT_THREE_B, false));
 		textureDict.put("4a", createTexture(manager, TUT_FOUR_A, false));
 		textureDict.put("4b", createTexture(manager, TUT_FOUR_B, false));
+        textureDict.put("6a", createTexture(manager, TUT_SIX_A, false));
+        textureDict.put("6b", createTexture(manager, TUT_SIX_B, false));
+        textureDict.put("6c", createTexture(manager, TUT_SIX_C, false));
+        textureDict.put("6d", createTexture(manager, TUT_SIX_D, false));
+        textureDict.put("7a", createTexture(manager, TUT_SEVEN_A, false));
+        textureDict.put("7b", createTexture(manager, TUT_SEVEN_B, false));
+        textureDict.put("8a", createTexture(manager, TUT_EIGHT_A, false));
+        textureDict.put("9a", createTexture(manager, TUT_NINE_A, false));
+        textureDict.put("9b", createTexture(manager, TUT_NINE_B, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
@@ -1165,7 +1201,43 @@ public class GameController implements ContactListener, Screen {
 			}
 			canvas.end();
 		}
-
+        else if (currentLevel == 5) {
+            canvas.beginOverlay();
+            if ((seconds % 4 >= 2)) {
+                canvas.draw(textureDict.get("6a"), 126, 292);
+                canvas.draw(textureDict.get("6c"), 957, 292);
+            }
+            else {
+                canvas.draw(textureDict.get("6b"), 126, 292);
+                canvas.draw(textureDict.get("6d"), 957, 292);
+            }
+            canvas.end();
+        }
+        else if (currentLevel == 6) {
+            canvas.beginOverlay();
+            if ((seconds % 4 >= 2)) {
+                canvas.draw(textureDict.get("7a"), 126, 292);
+            }
+            else {
+                canvas.draw(textureDict.get("7b"), 126, 292);
+            }
+            canvas.end();
+        }
+        else if (currentLevel == 7) {
+            canvas.beginOverlay();
+            canvas.draw(textureDict.get("8a"), 126, 292);
+            canvas.end();
+        }
+        else if (currentLevel == 8) {
+            canvas.beginOverlay();
+            if ((seconds % 4 >= 2)) {
+                canvas.draw(textureDict.get("9a"), 126, 292);
+            }
+            else {
+                canvas.draw(textureDict.get("9b"), 126, 292);
+            }
+            canvas.end();
+        }
 
 		if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER || state == GAME_PAUSED) {
 			displayFont.setColor(Color.WHITE);
