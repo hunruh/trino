@@ -202,7 +202,7 @@ public class Level {
     }
 
     public void placeClone() {
-        clone = new Clone(avatar.getX(), avatar.getY(), cloneTexture.getRegionWidth() / (scale.x * 2));
+        clone = new Clone(avatar.getX(), avatar.getY(), 40 / (scale.x * 2));
         clone.setGridLocation(getAvatarGridX(), getAvatarGridY());
         clone.setDrawScale(scale);
         clone.setType(CLONE);
@@ -615,6 +615,8 @@ public class Level {
         for(Enemy e : enemies) {
             e.drawShadow(canvas);
         }
+        if (clone != null)
+            clone.drawShadow(canvas);
         canvas.endShadows();
 
         canvas.begin();
