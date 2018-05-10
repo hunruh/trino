@@ -139,10 +139,6 @@ public class CollisionHandler {
                 parent.setComplete(false);
             }
         }
-//        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
-//            ((Carnivore) d).setCollided(true);
-//            d.stopAction();
-//        }
 
         if (level.isInFrontOfAvatar(w)) {
             SoundController.getInstance().playCollide();
@@ -150,10 +146,7 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Dinosaur d, River r) {
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
-            ((Carnivore) d).setCollided(true);
-            d.stopAction();
-        }
+
     }
 
     public void handleCollision(Clone c, Enemy e) {
