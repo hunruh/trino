@@ -37,7 +37,8 @@ public class Level {
     private static final float DEFAULT_HEIGHT = 9.0f; // Height of the game world in Box2d units
 
     protected PooledList<GameObject> objects  = new PooledList<GameObject>(); // All the objects in the world
-    protected PooledList<GameObject> drawObjects  = new PooledList<GameObject>(); // Sortable list of objects for draw
+    protected PooledList<GameObject> groundObjects  = new PooledList<GameObject>(); // List of ground-level draw objects
+    protected PooledList<GameObject> blockObjects = new PooledList<GameObject>(); // Sortable list of objects for draw
 
     private PooledList<Wall> walls = new PooledList<Wall>();
     private PooledList<CottonFlower> cottonFlowers = new PooledList<CottonFlower>();
@@ -569,10 +570,15 @@ public class Level {
         Iterator<PooledList<GameObject>.Entry> iterator = objects.entryIterator();
         while (iterator.hasNext()) {
             PooledList<GameObject>.Entry entry = iterator.next();
-            drawObjects.add(entry.getValue());
+            GameObject g = entry.getValue();
+            if (g.getType() == COTTON || g.getType() == SWITCH ||
+                    (g.getType() == GOAL && ((Wall) g).getLowered()))
+                groundObjects.add(entry.getValue());
+            else
+                blockObjects.add(entry.getValue());
         }
 
-        Collections.sort(drawObjects, new Comparator<GameObject>() {
+        Collections.sort(blockObjects, new Comparator<GameObject>() {
             @Override
             public int compare(GameObject g1, GameObject g2) {
                 if (g1.getType() == RIVER)
@@ -580,21 +586,11 @@ public class Level {
                 if (g2.getType() == RIVER)
                     return 1;
 
-                if (g1.getType() == SWITCH)
+                if (((g1.getType() == WALL || g1.getType() == GOAL || g1.getType() == EDIBLEWALL) &&
+                        (g2.getType() == DUGGI || g2.getType() == CLONE)) && Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
                     return -1;
-                if (g2.getType() == SWITCH)
-                    return 1;
-
-                if (g1.getType() == GOAL && ((Wall) g1).getLowered()) {
-                    return -1;
-                }
-                if (g2.getType() == GOAL && ((Wall) g2).getLowered()) {
-                    return 1;
-                }
-
-                if (g1.getType() == COTTON)
-                    return -1;
-                if (g2.getType() == COTTON)
+                if (((g2.getType() == WALL || g2.getType() == GOAL || g2.getType() == EDIBLEWALL) &&
+                        (g1.getType() == DUGGI || g1.getType() == CLONE)) && Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
                     return 1;
 
                 if (g1.getType() == FIREFLY)
@@ -609,6 +605,11 @@ public class Level {
         canvas.draw(background, 1270, 0);
         canvas.end();
 
+        canvas.begin();
+        for(GameObject g : groundObjects)
+            g.draw(canvas);
+        canvas.end();
+
         canvas.beginShadows();
         avatar.drawShadow(canvas);
         for(Enemy e : enemies) {
@@ -617,7 +618,7 @@ public class Level {
         canvas.endShadows();
 
         canvas.begin();
-        for(GameObject g : drawObjects)
+        for(GameObject g : blockObjects)
             g.draw(canvas);
         canvas.end();
 
@@ -631,17 +632,8 @@ public class Level {
         }
         canvas.endProgressCircle();
 
-//        canvas.beginDebug();
-//        avatar.drawDebug(canvas);
-//        for(Enemy e : enemies) {
-//            e.drawDebug(canvas);
-//        }
-//        for(Wall w : walls) {
-//            w.drawDebug(canvas);
-//        }
-//        canvas.endDebug();
-
-        drawObjects.clear();
+        groundObjects.clear();
+        blockObjects.clear();
     }
 
     public int getAvatarGridX() {
