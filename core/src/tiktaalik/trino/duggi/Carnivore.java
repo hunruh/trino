@@ -29,6 +29,16 @@ public class Carnivore extends Dinosaur {
         body.createFixture(fixture);
     }
 
+    public void setLeftRight(float value) {
+        if (!actionInProgress)
+            super.setLeftRight(value);
+    }
+
+    public void setUpDown(float value) {
+        if (!actionInProgress)
+            super.setUpDown(value);
+    }
+
     public int getForm() {
         return CARNIVORE_FORM;
     }

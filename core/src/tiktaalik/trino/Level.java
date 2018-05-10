@@ -587,10 +587,12 @@ public class Level {
                     return 1;
 
                 if (((g1.getType() == WALL || g1.getType() == GOAL || g1.getType() == EDIBLEWALL) &&
-                        (g2.getType() == DUGGI || g2.getType() == CLONE)) && Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
+                        (g2.getType() == DUGGI || g2.getType() == CLONE || g2.getType() == ENEMY)) &&
+                        Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
                     return -1;
                 if (((g2.getType() == WALL || g2.getType() == GOAL || g2.getType() == EDIBLEWALL) &&
-                        (g1.getType() == DUGGI || g1.getType() == CLONE)) && Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
+                        (g1.getType() == DUGGI || g1.getType() == CLONE || g1.getType() == ENEMY)) &&
+                        Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
                     return 1;
 
                 if (g1.getType() == FIREFLY)
@@ -666,8 +668,9 @@ public class Level {
 
         if (bd.getType() != WALL && bd.getType() != COTTON && bd.getType() != EDIBLEWALL){
             if ((direction == LEFT && bd.getX() <= avatar.getX()) ||
-                    (direction == RIGHT && bd.getX() >= avatar.getX()) ||
-                    (direction == UP && bd.getY() >= avatar.getY()) ||
+                    (direction == RIGHT && bd.getX() >= avatar.getX()))
+                return bd.getPosition().dst2(avatar.getPosition()) < 4.5;
+            if ((direction == UP && bd.getY() >= avatar.getY()) ||
                     (direction == DOWN && bd.getY() <= avatar.getY())) {
                 return bd.getPosition().dst2(avatar.getPosition()) < 2.5;
             }
