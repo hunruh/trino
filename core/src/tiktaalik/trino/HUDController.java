@@ -4,8 +4,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
+import tiktaalik.trino.duggi.Clone;
 import tiktaalik.trino.duggi.Dinosaur;
+import tiktaalik.util.FilmStrip;
 
 public class HUDController  {
     private GameController.AssetState hudAssetState = GameController.AssetState.EMPTY;
@@ -30,6 +37,8 @@ public class HUDController  {
     private static final String CARNIVORE_SECONDARY_FILE = "hud/carn_secondary.png";
     private static final String HERBIVORE_PRIMARY_FILE = "hud/herb_primary.png";
     private static final String HERBIVORE_SECONDARY_FILE = "hud/herb_secondary.png";
+    private static final String CLONE_CIRCLE_FILE = "trino/chargedowncircle.png";
+    private static final String CLONE_FILE = "trino/clone.png";
 
     private TextureRegion dinometerBackground;
     private TextureRegion cotton;
@@ -49,11 +58,15 @@ public class HUDController  {
     private TextureRegion carnivoreSecondary;
     private TextureRegion herbivorePrimary;
     private TextureRegion herbivoreSecondary;
+    private TextureRegion cloneImage;
+
+    private Texture cloneCircle;
 
     private Canvas canvas; // Reference to Canvas created by the root
 
     private int numResources;
     private int transformation;
+    private float cloneTime;
 
     public HUDController() {
         assets = new Array<String>();
@@ -105,6 +118,10 @@ public class HUDController  {
         assets.add(HERBIVORE_PRIMARY_FILE);
         manager.load(HERBIVORE_SECONDARY_FILE,Texture.class);
         assets.add(HERBIVORE_SECONDARY_FILE);
+        manager.load(CLONE_CIRCLE_FILE, Texture.class);
+        assets.add(CLONE_CIRCLE_FILE);
+        manager.load(CLONE_FILE, Texture.class);
+        assets.add(CLONE_FILE);
     }
 
     public void loadContent(AssetManager manager) {
@@ -130,6 +147,9 @@ public class HUDController  {
         carnivoreSecondary = createTexture(manager,CARNIVORE_SECONDARY_FILE,true);
         herbivorePrimary = createTexture(manager,HERBIVORE_PRIMARY_FILE,true);
         herbivoreSecondary = createTexture(manager,HERBIVORE_SECONDARY_FILE,true);
+        cloneImage = createTexture(manager, CLONE_FILE, true);
+
+        cloneCircle = createFilmTexture(manager,CLONE_CIRCLE_FILE);
 
         hudAssetState = GameController.AssetState.COMPLETE;
     }
@@ -142,6 +162,15 @@ public class HUDController  {
                 region.getTexture().setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
             }
             return region;
+        }
+        return null;
+    }
+
+    private Texture createFilmTexture(AssetManager manager, String file) {
+        if (manager.isLoaded(file)) {
+            Texture texture = manager.get(file, Texture.class);
+            texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            return texture;
         }
         return null;
     }
@@ -177,11 +206,18 @@ public class HUDController  {
         carnivoreSecondary = null;
         herbivorePrimary = null;
         herbivoreSecondary = null;
+        cloneCircle = null;
+        cloneImage = null;
     }
 
-    public void update(int numResources, int transformation) {
+    public void update(int numResources, int transformation, Clone clone) {
         this.numResources = numResources;
         this.transformation = transformation;
+        if (clone != null){
+            this.cloneTime = clone.getCloneTime();
+        } else {
+            this.cloneTime = 60.0f;
+        }
     }
 
     public void draw() {
@@ -189,6 +225,7 @@ public class HUDController  {
         drawForm(canvas);
         drawDinoMeter(canvas);
         drawPause(canvas);
+        drawCloneCircle(canvas);
         canvas.end();
     }
 
@@ -252,5 +289,23 @@ public class HUDController  {
     private void drawPause(Canvas canvas) {
         canvas.draw(pauseBackground, 1213, canvas.getHeight() - 67);
         canvas.draw(pauseLight, 1229, canvas.getHeight() - 54);
+    }
+
+    private void drawCloneCircle(Canvas canvas){
+        System.out.println("drawCloneCircle called");
+        FilmStrip fs = new FilmStrip(cloneCircle,1,12,12);
+        Vector2 origin = new Vector2(fs.getRegionWidth()/2.0f, fs.getRegionHeight()/2.0f);
+        System.out.println("clone time is " + cloneTime);
+        int frame =  (int) ((cloneTime / 60.0f) * (float) 11);
+        System.out.println("frame is " + frame);
+        fs.setFrame(frame);
+        canvas.draw(fs, Color.WHITE,origin.x,origin.y, 45.0f,
+              canvas.getHeight()/2.0f + 225.0f,0,0.15f,0.15f);
+        origin = new Vector2(cloneImage.getRegionWidth()/2.0f, cloneImage.getRegionHeight()/2.0f);
+        canvas.draw(cloneImage, Color.WHITE, origin.x, origin.y, 45.0f,canvas.getHeight()/2.0f + 245.0f
+        ,0,1f,1f);
+
+
+
     }
 }

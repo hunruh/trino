@@ -2246,7 +2246,7 @@ public class GameController implements ContactListener, Screen {
 
 			avatar.applyForce();
 
-			hud.update(avatar.getResources(), avatar.getForm());
+			hud.update(avatar.getResources(), avatar.getForm(), level.getClone());
 		}
 	}
 
