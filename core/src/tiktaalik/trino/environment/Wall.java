@@ -17,13 +17,7 @@ public class Wall extends EdibleObject {
 
     private boolean edible;
     private boolean lowered = false;
-    private int loweredFlag = 0;
-    private int upFlag = 0;
     private boolean goal;
-    private int callToLowered = 0;
-    private int ticks;
-    private boolean firstBooleanFlip = false;
-    private Level level;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -67,9 +61,8 @@ public class Wall extends EdibleObject {
     }
 
     public boolean getLowered() { return lowered; }
-    public void setLowered(boolean lowered, Level level) {
+    public void setLowered(boolean lowered) {
         this.lowered = lowered;
-        this.level = level;
 
     }
 
@@ -205,16 +198,7 @@ public class Wall extends EdibleObject {
      */
     public void update(float dt) {
         super.update(dt);
-        ticks++;
         if (lowered){
-            upFlag = 0;
-            if (loweredFlag == 0 && level != null){
-                if (level.getClone() != null){
-                    //SoundController.getInstance().playDoorOpen();
-                    loweredFlag++;
-                }
-            }
-
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.goalCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits;
@@ -222,14 +206,6 @@ public class Wall extends EdibleObject {
             this.setSensor(true);
 
         } else {
-            loweredFlag = 0;
-            if (upFlag == 0 && level != null){
-                if (level.getClone() != null){
-                    //SoundController.getInstance().playDoorOpen();
-                    upFlag++;
-                }
-            }
-
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.wallCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|

@@ -1025,6 +1025,9 @@ public class GameController implements ContactListener, Screen {
 					fireLight.getDirection());
 		}
 
+		playDoorDown = 0;
+		playDoorUp = 1;
+
 //		enemyLights = new LightSource[level.getEnemies().size()];
 //
 //		for(int i = 0; i < level.getEnemies().size(); i++) {
@@ -1573,7 +1576,7 @@ public class GameController implements ContactListener, Screen {
 
 			if (level.getSwitches().size() == 0) {
 				level.getAvatar().setCanExit(true);
-				level.getDoor(0).setLowered(true,level);
+				level.getDoor(0).setLowered(true);
 				level.getDoor(0).setTexture(textureDict.get("goalOpenTile"));
 			}
 			else {
@@ -1595,7 +1598,7 @@ public class GameController implements ContactListener, Screen {
 							else {
 								level.getAvatar().setCanExit(false);
 							}
-							level.getDoor(i).setLowered(true, level);
+							level.getDoor(i).setLowered(true);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
 							}
@@ -1615,7 +1618,7 @@ public class GameController implements ContactListener, Screen {
 								playDoorUp++;
 							}
 							level.getAvatar().setCanExit(false);
-							level.getDoor(i).setLowered(false, level);
+							level.getDoor(i).setLowered(false);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
 							}
@@ -1639,7 +1642,7 @@ public class GameController implements ContactListener, Screen {
 					playDoorDown = 0;
 					for (int i = 0; i < level.getDoors().size(); i++) {
 						level.getAvatar().setCanExit(false);
-						level.getDoor(i).setLowered(false,level);
+						level.getDoor(i).setLowered(false);
 						if (i == 0) {
 							level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
 						}
