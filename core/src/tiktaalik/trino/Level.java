@@ -666,8 +666,9 @@ public class Level {
 
         if (bd.getType() != WALL && bd.getType() != COTTON && bd.getType() != EDIBLEWALL){
             if ((direction == LEFT && bd.getX() <= avatar.getX()) ||
-                    (direction == RIGHT && bd.getX() >= avatar.getX()) ||
-                    (direction == UP && bd.getY() >= avatar.getY()) ||
+                    (direction == RIGHT && bd.getX() >= avatar.getX()))
+                return bd.getPosition().dst2(avatar.getPosition()) < 4.5;
+            if ((direction == UP && bd.getY() >= avatar.getY()) ||
                     (direction == DOWN && bd.getY() <= avatar.getY())) {
                 return bd.getPosition().dst2(avatar.getPosition()) < 2.5;
             }
