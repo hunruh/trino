@@ -525,12 +525,12 @@ public class Level {
                         filmStripDict.get("enemyFront"), 10);
                 en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
                         filmStripDict.get("enemyChargeRight"), 15,
-                        filmStripDict.get("enemyChargeLeft"), 15,
-                        filmStripDict.get("enemyChargeLeft"), 15);
+                        filmStripDict.get("enemyChargeBack"), 8,
+                        filmStripDict.get("enemyChargeFront"), 9);
                 en.setActionTextureSet(filmStripDict.get("enemyAttackLeft"), 9,
                         filmStripDict.get("enemyAttackRight"), 9,
-                        filmStripDict.get("enemyAttackLeft"), 9,
-                        filmStripDict.get("enemyAttackLeft"), 9);
+                        filmStripDict.get("enemyAttackBack"), 6,
+                        filmStripDict.get("enemyAttackFront"), 10);
                 en.setStunnedTextureSet(filmStripDict.get("enemyStunnedLeft"), 3,
                         filmStripDict.get("enemyStunnedRight"), 3,
                         filmStripDict.get("enemyStunnedBack"), 3,
