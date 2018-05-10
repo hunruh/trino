@@ -587,10 +587,12 @@ public class Level {
                     return 1;
 
                 if (((g1.getType() == WALL || g1.getType() == GOAL || g1.getType() == EDIBLEWALL) &&
-                        (g2.getType() == DUGGI || g2.getType() == CLONE)) && Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
+                        (g2.getType() == DUGGI || g2.getType() == CLONE || g2.getType() == ENEMY)) &&
+                        Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
                     return -1;
                 if (((g2.getType() == WALL || g2.getType() == GOAL || g2.getType() == EDIBLEWALL) &&
-                        (g1.getType() == DUGGI || g1.getType() == CLONE)) && Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
+                        (g1.getType() == DUGGI || g1.getType() == CLONE || g1.getType() == ENEMY)) &&
+                        Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
                     return 1;
 
                 if (g1.getType() == FIREFLY)

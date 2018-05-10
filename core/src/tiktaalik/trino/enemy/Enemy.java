@@ -378,6 +378,11 @@ public class Enemy extends EdibleObject {
             offsetY = 13f;
         }
 
+        if (enemyType == UNKILLABLE_ENEMY) {
+            offsetX = -9f;
+            offsetY = 5;
+        }
+
         if (eatInProgress && eatenTextureSet != null) {
             if (animeframe >= numEatenFrames)
                 return;
