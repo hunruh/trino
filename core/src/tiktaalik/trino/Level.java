@@ -268,7 +268,7 @@ public class Level {
         try {
             savefileparser.parse("jsons/save.json");
         } catch(Exception e){
-            System.out.println("fuck me");
+            System.out.println("oops");
         }
         savefileparser.printObj();
         savefileparser.changeLevelCompletion(0, true);
@@ -276,7 +276,7 @@ public class Level {
         try {
             savefileparser.writeToFile("jsons/save.json");
         } catch(Exception e){
-            System.out.println("fuck me");
+            System.out.println("oops");
         }
 
 
@@ -518,7 +518,7 @@ public class Level {
                         filmStripDict.get("enemyStunnedFront"), 3);
                 en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
             }
-            else {
+            else if (type == Enemy.CARNIVORE_ENEMY){
                 en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
                         filmStripDict.get("enemyRight"), 10,
                         filmStripDict.get("enemyBack"), 8,
@@ -535,6 +535,12 @@ public class Level {
                         filmStripDict.get("enemyStunnedRight"), 3,
                         filmStripDict.get("enemyStunnedBack"), 3,
                         filmStripDict.get("enemyStunnedFront"), 3);
+            }
+            else {
+                en.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
+                        filmStripDict.get("herbivoreRight"), 7,
+                        filmStripDict.get("herbivoreBack"), 8,
+                        filmStripDict.get("herbivoreFront"), 8);
             }
             en.setDirection(d);
             en.setEnemyType(type);
