@@ -2107,19 +2107,27 @@ public class GameController implements ContactListener, Screen {
 			if (InputHandler.getInstance().didAction()) {
 				if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 					GameObject cotton = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
-					if (cotton != null && cotton.getType() == COTTON && avatar.getResources() < 3) {
-						SoundController.getInstance().playCottonPickup();
-						level.removeObject(cotton);
-						avatar.incrementResources();
+					if (cotton != null && cotton.getType() == COTTON) {
+						if (avatar.getResources() < 3){
+							SoundController.getInstance().playCottonPickup();
+							level.removeObject(cotton);
+							avatar.incrementResources();
+						} else {
+							SoundController.getInstance().playFull();
+						}
+
 					} else {
-						if (!avatar.inActionCycle())
+						if (!avatar.inActionCycle()) {
+							SoundController.getInstance().playChargeSound();
 							avatar.loadAction();
+						}
 					}
 				} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 					GameObject tmp = level.objectInFrontOfAvatar();
 					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
 					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
 						if (!avatar.inActionCycle()){
+							SoundController.getInstance().playChargeSound();
 							avatar.loadAction();
 						}
 //						if (avatar.getActionLoadValue() == 0){
@@ -2129,8 +2137,6 @@ public class GameController implements ContactListener, Screen {
 //						} else if (!avatar.inActionCycle()){
 //							avatar.loadAction();
 //						}
-					} else {
-//					    avatar.setCanBeSeen(!avatar.getCanBeSeen());
 					}
 				} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 					boolean ate = false;
@@ -2138,19 +2144,28 @@ public class GameController implements ContactListener, Screen {
 					for (int i = 0; i < level.getEnemies().size(); i++) {
 						Enemy tmp = level.getEnemy(i);
 						if (tmp.getStunned() && level.isInFrontOfAvatar(tmp)
-								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5 && avatar.getResources() < 3) {
-							SoundController.getInstance().playEat();
-							if (!tmp.getEatInProgress()){
-								avatar.incrementResources();
+								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
+							if (avatar.getResources() < 3){
+								SoundController.getInstance().playCrunch();
+								if (!tmp.getEatInProgress()){
+									avatar.incrementResources();
+								}
+								tmp.beginEating();
+								ate = true;
+								break;
+							} else {
+								SoundController.getInstance().playFull();
+								break;
 							}
-							tmp.beginEating();
-							ate = true;
-							break;
+
 						}
 					}
 
-					if (!ate && !avatar.inActionCycle())
+					if (!ate && !avatar.inActionCycle()) {
+						SoundController.getInstance().playFootDrag();
 						avatar.loadAction();
+					}
+
 				}
 			}
 
@@ -2160,30 +2175,42 @@ public class GameController implements ContactListener, Screen {
 						level.removeClone();
 					}
 					level.getAvatar().useAction();
+					SoundController.getInstance().playPlop();
 					level.placeClone();
 				} else if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
 					level.getAvatar().useAction();
 					GameObject tmp = level.objectInFrontOfAvatar();
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
-						SoundController.getInstance().playEat();
+						SoundController.getInstance().playMunch();
 						avatar.setCanBeSeen(false);
 					}
 				}
 			}
 
+			// Charge Sounds
+			if (avatar.getActionLoadValue() > 0.25f){
+				SoundController.getInstance().playChargeSound();
+			}
+			if (avatar.getActionReady()){
+				SoundController.getInstance().playChargeSound();
+
+			}
 
 			if (InputHandler.getInstance().didActionRelease()) {
 				if (avatar.getForm() == Dinosaur.HERBIVORE_FORM && avatar.getActionLoadValue() < 0.25f && avatar.getActionLoadValue()>0) {
 					GameObject tmp = level.objectInFrontOfAvatar();
 
 					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
-					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5
-							&& avatar.getResources() < 3) {
-						SoundController.getInstance().playEat();
-						if (!((EdibleObject) tmp).getEatInProgress()){
-							avatar.incrementResources();
+					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
+						if (avatar.getResources() < 3){
+							SoundController.getInstance().playMunch();
+							if (!((EdibleObject) tmp).getEatInProgress()){
+								avatar.incrementResources();
+							}
+							((EdibleObject) tmp).beginEating();
+						} else {
+							SoundController.getInstance().playFull();
 						}
-						((EdibleObject) tmp).beginEating();
 					}
 				}
 

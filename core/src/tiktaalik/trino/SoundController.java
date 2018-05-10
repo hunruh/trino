@@ -23,6 +23,17 @@ public class SoundController {
     private static String POOF_FILE = "trino/poof.mp3";
     private static String CRASH_FILE = "trino/enemyCrash.mp3";
     private static String ALERT_FILE = "trino/alert.mp3";
+    private static String MUNCH_FILE = "trino/munch.mp3";
+    private static String CRUNCH_FILE = "trino/crunch.mp3";
+    private static String FULL_FILE = "trino/resourceFull.mp3";
+    private static String CLONE_PLOP_FILE = "trino/plop.mp3";
+    private static String TRANSFORM_FILE = "trino/transform.mp3";
+    private static String CARN_CHARGE_FILE = "trino/footDrag.mp3";
+    private static String DOOR_FILE = "trino/doorOpen.mp3";
+    private static String BUBBLE_1_FILE = "trino/bubble1.mp3";
+    private static String BUBBLE_2_FILE = "trino/bubble2.mp3";
+    private static String BUBBLE_3_FILE = "trino/bubble3.mp3";
+    private static String BUBBLE_4_FILE = "trino/bubble4.mp3";
 
     private Music bgMusic;
     private Music bgDoll;
@@ -36,6 +47,14 @@ public class SoundController {
     private Sound transformSound;
     private Sound crashSound;
     private Sound alertSound;
+    private Sound munchSound;
+    private Sound crunchSound;
+    private Sound fullSound;
+    private Sound plopSound;
+    private Sound footDragSound;
+    private Sound doorOpenSound;
+    private Sound bubbleSound;
+    private Sound chargeSound;
 
     private float dollStartTime = 9.056f;
     private float herbivoreStartTime = 131.387f;
@@ -63,9 +82,18 @@ public class SoundController {
         cottonPickUp = Gdx.audio.newSound(Gdx.files.internal(POP_1_FILE));
         eatWall = Gdx.audio.newSound(Gdx.files.internal(POP_2_FILE));
         collideWall = Gdx.audio.newSound(Gdx.files.internal(POP_5_FILE));
-        transformSound = Gdx.audio.newSound(Gdx.files.internal(POOF_FILE));
+        transformSound = Gdx.audio.newSound(Gdx.files.internal(TRANSFORM_FILE));
         crashSound = Gdx.audio.newSound(Gdx.files.internal(CRASH_FILE));
         alertSound = Gdx.audio.newSound(Gdx.files.internal(ALERT_FILE));
+        munchSound = Gdx.audio.newSound(Gdx.files.internal(MUNCH_FILE));
+        crunchSound = Gdx.audio.newSound(Gdx.files.internal(CRUNCH_FILE));
+        fullSound = Gdx.audio.newSound(Gdx.files.internal(FULL_FILE));
+        plopSound = Gdx.audio.newSound(Gdx.files.internal(CLONE_PLOP_FILE));
+        footDragSound = Gdx.audio.newSound(Gdx.files.internal(CARN_CHARGE_FILE));
+        doorOpenSound = Gdx.audio.newSound(Gdx.files.internal(DOOR_FILE));
+        bubbleSound = Gdx.audio.newSound(Gdx.files.internal(BUBBLE_1_FILE));
+        chargeSound =  Gdx.audio.newSound(Gdx.files.internal(POP_3_FILE));
+
     }
 
     public void playBackground(int form) {
@@ -199,6 +227,88 @@ public class SoundController {
         }
     }
 
+    public void playMunch(){
+        munchSound.pause();
+        if (GameController.soundState) {
+            munchSound.play(0.5f);
+        }
+        else {
+            munchSound.play(0.0f);
+        }
+    }
+
+    public void playPlop(){
+        plopSound.pause();
+        if (GameController.soundState) {
+            plopSound.play(0.5f);
+        }
+        else {
+            plopSound.play(0.0f);
+        }
+    }
+
+    public void playFull(){
+        fullSound.pause();
+        if (GameController.soundState) {
+            fullSound.play(1f);
+        }
+        else {
+            fullSound.play(0.0f);
+        }
+    }
+
+    public void playCrunch(){
+        crunchSound.pause();
+        if (GameController.soundState) {
+            crunchSound.play(1f);
+        }
+        else {
+            crunchSound.play(0.0f);
+        }
+    }
+
+    public void playFootDrag(){
+        footDragSound.pause();
+        if (GameController.soundState) {
+            footDragSound.play(1f);
+        }
+        else {
+            footDragSound.play(0.0f);
+        }
+    }
+    public void playChargeSound(){
+        chargeSound.pause();
+        if (GameController.soundState) {
+            chargeSound.play(1f);
+        }
+        else {
+            chargeSound.play(0.0f);
+        }
+    }
+
+    public void playDoorOpen(){
+        doorOpenSound.pause();
+        if (GameController.soundState) {
+            doorOpenSound.play(1f);
+        }
+        else {
+            doorOpenSound.play(0.0f);
+        }
+    }
+
+    public void playBubbleLoop(){
+        bubbleSound.pause();
+        if (GameController.soundState) {
+            bubbleSound.play(1.0f);
+        }
+        else {
+            bubbleSound.stop();
+        }
+    }
+    public void stopBubbleLoop(){
+        bubbleSound.stop();
+    }
+
     /** Change the music based on timestamp */
     public void changeBackground(int form){
         if (GameController.musicState) {
@@ -272,6 +382,14 @@ public class SoundController {
             transformSound.dispose();
             crashSound.dispose();
             alertSound.dispose();
+            munchSound.dispose();
+            crunchSound.dispose();
+            fullSound.dispose();
+            plopSound.dispose();
+            footDragSound.dispose();
+            doorOpenSound.dispose();
+            bubbleSound.dispose();
+            chargeSound.dispose();
         }
     }
 
