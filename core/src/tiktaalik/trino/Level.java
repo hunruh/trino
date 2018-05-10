@@ -470,6 +470,7 @@ public class Level {
                 goalDoor.setGoal(false);
             }
             addObject(goalDoor);
+            grid[(int) goalDoor.getGridLocation().x][(int) goalDoor.getGridLocation().y] = goalDoor;
         }
 
         // Create enemy

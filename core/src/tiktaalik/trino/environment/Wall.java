@@ -3,10 +3,7 @@ package tiktaalik.trino.environment;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import tiktaalik.trino.Canvas;
-import tiktaalik.trino.EdibleObject;
-import tiktaalik.trino.GameObject;
-import tiktaalik.trino.SoundController;
+import tiktaalik.trino.*;
 import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.util.FilmStrip;
 
@@ -19,13 +16,14 @@ public class Wall extends EdibleObject {
     private Vector2 gridLocation;
 
     private boolean edible;
-    private boolean lowered;
+    private boolean lowered = false;
     private int loweredFlag = 0;
     private int upFlag = 0;
     private boolean goal;
     private int callToLowered = 0;
     private int ticks;
     private boolean firstBooleanFlip = false;
+    private Level level;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -69,8 +67,10 @@ public class Wall extends EdibleObject {
     }
 
     public boolean getLowered() { return lowered; }
-    public void setLowered(boolean lowered) {
+    public void setLowered(boolean lowered, Level level) {
         this.lowered = lowered;
+        this.level = level;
+
     }
 
     public boolean getGoal() { return goal; }
@@ -208,21 +208,30 @@ public class Wall extends EdibleObject {
         ticks++;
         if (lowered){
             upFlag = 0;
-            if (loweredFlag == 0){
-                SoundController.getInstance().playDoorOpen();
-                loweredFlag++;
+            if (loweredFlag == 0 && level != null){
+                if (level.getClone() != null){
+                    //SoundController.getInstance().playDoorOpen();
+                    loweredFlag++;
+                }
             }
 
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.goalCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits;
             geometry.setFilterData(filter);
-            this.setSensor(true);
+            if (goal){
+                this.setSensor(true);
+            } else {
+                this.setSensor(false);
+            }
+
         } else {
             loweredFlag = 0;
-            if (upFlag == 0){
-                SoundController.getInstance().playDoorOpen();
-                upFlag++;
+            if (upFlag == 0 && level != null){
+                if (level.getClone() != null){
+                    //SoundController.getInstance().playDoorOpen();
+                    upFlag++;
+                }
             }
 
             Filter filter = geometry.getFilterData();

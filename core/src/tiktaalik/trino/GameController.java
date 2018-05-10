@@ -270,6 +270,8 @@ public class GameController implements ContactListener, Screen {
 	public static int mouseCooldown = 0;
 	public static int tutSwitch = 0;
 	public static int tenSec;
+	private int playDoorDown = 0;
+	private int playDoorUp = 0;
 
 	/** Timer */
 	float levelTime = 300;
@@ -1547,7 +1549,7 @@ public class GameController implements ContactListener, Screen {
 
 			if (level.getSwitches().size() == 0) {
 				level.getAvatar().setCanExit(true);
-				level.getDoor(0).setLowered(true);
+				level.getDoor(0).setLowered(true,level);
 				level.getDoor(0).setTexture(textureDict.get("goalOpenTile"));
 			}
 			else {
@@ -1558,13 +1560,18 @@ public class GameController implements ContactListener, Screen {
 								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.5 &&
 								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) > 0){
 							//////System.out.println("success");
+							playDoorUp = 0;
+							if (playDoorDown == 0){
+								SoundController.getInstance().playDoorOpen();
+								playDoorDown++;
+							}
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
 							}
 							else {
 								level.getAvatar().setCanExit(false);
 							}
-							level.getDoor(i).setLowered(true);
+							level.getDoor(i).setLowered(true, level);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
 							}
@@ -1578,8 +1585,13 @@ public class GameController implements ContactListener, Screen {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
 							}
 						} else {
+							playDoorDown = 0;
+							if (playDoorUp == 0){
+								SoundController.getInstance().playDoorOpen();
+								playDoorUp++;
+							}
 							level.getAvatar().setCanExit(false);
-							level.getDoor(i).setLowered(false);
+							level.getDoor(i).setLowered(false, level);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
 							}
@@ -1596,9 +1608,14 @@ public class GameController implements ContactListener, Screen {
 						}
 					}
 				} else {
+					if (playDoorUp == 0 && playDoorDown > 0){
+						SoundController.getInstance().playDoorOpen();
+						playDoorUp++;
+					}
+					playDoorDown = 0;
 					for (int i = 0; i < level.getDoors().size(); i++) {
 						level.getAvatar().setCanExit(false);
-						level.getDoor(i).setLowered(false);
+						level.getDoor(i).setLowered(false,level);
 						if (i == 0) {
 							level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
 						}
@@ -1614,6 +1631,7 @@ public class GameController implements ContactListener, Screen {
 					}
 				}
 			}
+
 			if (rayhandler != null) {
 				SoundController.getInstance().checkMusicEnd();
 				if (rayhandler != null)
