@@ -61,7 +61,7 @@ public class AIController {
 
         if (playerInFrontOfEnemy() && !enemy.getCharging()){
 
-            if (level.getAvatar().getCanBeSeen()){
+            if (level.getAvatar().getCanBeSeen() && enemy.getEnemyType() == Enemy.CARNIVORE_ENEMY){
                 SoundController.getInstance().playAlert();
                 enemy.setAlert(true);
                 enemy.loadCharge();
@@ -342,7 +342,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y + i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -356,7 +356,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y - i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -371,7 +371,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x - i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -385,7 +385,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x + i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
