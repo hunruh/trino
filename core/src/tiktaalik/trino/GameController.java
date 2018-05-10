@@ -203,7 +203,7 @@ public class GameController implements ContactListener, Screen {
 	private Hashtable<String, Texture> filmStripDict = new Hashtable<String, Texture>();
 
 	// GAME CONSTANTS
-	private static final int EXIT_COUNT = 60; // How many frames after winning/losing do we continue?
+	private static final int EXIT_COUNT = 0; // How many frames after winning/losing do we continue?
 	public static final int EXIT_QUIT = 0; // Exit code for quitting the game
 	public static final int EXIT_NEXT = 1; // Exit code for advancing to next level
 	public static final int EXIT_PREV = 2; // Exit code for jumping back to previous level
@@ -1092,10 +1092,11 @@ public class GameController implements ContactListener, Screen {
 			totalTime = levelTime;
 		} else if (countdown == 0) {
 			if (failed || timeOut) {
-				reset();
+				state = GAME_OVER;
 			}
 			else if (complete) {
-				nextLevel();
+//				nextLevel();
+				state = GAME_OVER;
 			}
 		}
 
@@ -1257,33 +1258,53 @@ public class GameController implements ContactListener, Screen {
 			canvas.end();
 		}
 
-		// Final message
-		if (complete && !failed) {
+		if (state == GAME_OVER) {
 			displayFont.setColor(Color.YELLOW);
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("victory"),Color.WHITE,canvas.getWidth()/2 - textureDict.get("victory").getRegionWidth()*.75f/2,
-					canvas.getHeight()/2 - textureDict.get("victory").getRegionHeight()*.75f/2,
-					textureDict.get("victory").getRegionWidth()*.75f,textureDict.get("victory").getRegionHeight()*.75f);
-//			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
-			canvas.end();
-		} else if (failed) {
-			state = GAME_OVER;
-			displayFont.setColor(Color.RED);
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("gameover"), Color.WHITE,canvas.getWidth()/2 - textureDict.get("gameover").getRegionWidth()*.75f/2,
-					canvas.getHeight()/2 - textureDict.get("gameover").getRegionHeight()*.75f/2,
-					textureDict.get("gameover").getRegionWidth()*.75f,textureDict.get("gameover").getRegionHeight()*.75f);
-			//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
-			canvas.end();
-		} else if (timeOut) {
-			state = GAME_OVER;
-			displayFont.setColor(Color.RED);
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("gameover"),Color.WHITE,canvas.getWidth()/2 - textureDict.get("gameover").getRegionWidth()*.75f/2,
-					canvas.getHeight()/2 - textureDict.get("gameover").getRegionHeight()*.75f/2,
-					textureDict.get("gameover").getRegionWidth()*.75f,textureDict.get("gameover").getRegionHeight()*.75f);
-			//canvas.drawTextCentered("TIME'S UP!", displayFont, 0.0f);
-			canvas.end();
+			if (complete && !failed) {
+				displayFont.setColor(Color.RED);
+				canvas.beginOverlay();
+				canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("victory").getRegionWidth() * .75f / 2,
+						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
+						textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
+				if (totalTime >= 280) {
+					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
+							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
+							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+					canvas.draw(textureDict.get("victory"), Color.WHITE, 3*canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() *3 * .75f / 4,
+							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * 3 * .75f / 4,
+							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+				}
+				else if (totalTime >= 60) {
+					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
+							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
+							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+				}
+//				else {
+//					//one star here!
+//				}
+
+				canvas.end();
+
+			}
+			else if (failed && !complete) {
+				displayFont.setColor(Color.RED);
+				canvas.beginOverlay();
+				canvas.draw(textureDict.get("gameover"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("gameover").getRegionWidth() * .75f / 2,
+						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
+						textureDict.get("gameover").getRegionWidth() * .75f, textureDict.get("gameover").getRegionHeight() * .75f);
+				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
+				canvas.end();
+			}
+			else if (timeOut) {
+				displayFont.setColor(Color.RED);
+				canvas.beginOverlay();
+				canvas.draw(textureDict.get("gameover"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("gameover").getRegionWidth() * .75f / 2,
+						canvas.getHeight() / 2 - textureDict.get("gameover").getRegionHeight() * .75f / 2,
+						textureDict.get("gameover").getRegionWidth() * .75f, textureDict.get("gameover").getRegionHeight() * .75f);
+				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
+				canvas.end();
+			}
 		}
 
 		if (state == GAME_PAUSED) {
@@ -1504,7 +1525,10 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	private void updateRunning(float dt) {
-		if (failed) {
+		if (failed && !complete) {
+			state = GAME_OVER;
+		}
+		else if (complete && !failed) {
 			state = GAME_OVER;
 		}
 		else {
@@ -2262,7 +2286,26 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	private void updateGameOver() {
-		state = GAME_READY;
+		if (failed && !complete) {
+			if (InputHandler.getInstance().didPause()) {
+				state = GAME_RUNNING;
+				nextLevel();
+			}
+		} else if (timeOut) {
+			if (InputHandler.getInstance().didPause()) {
+				state = GAME_RUNNING;
+				nextLevel();
+			}
+		}
+
+		if (complete && !failed) {
+
+			if (InputHandler.getInstance().didPause()) {
+				state = GAME_RUNNING;
+				nextLevel();
+			}
+		}
+
 	}
 	/**
 	 * Callback method for the start of a collision

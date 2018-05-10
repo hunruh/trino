@@ -292,12 +292,9 @@ public class HUDController  {
     }
 
     private void drawCloneCircle(Canvas canvas){
-        System.out.println("drawCloneCircle called");
         FilmStrip fs = new FilmStrip(cloneCircle,1,12,12);
         Vector2 origin = new Vector2(fs.getRegionWidth()/2.0f, fs.getRegionHeight()/2.0f);
-        System.out.println("clone time is " + cloneTime);
         int frame =  (int) ((cloneTime / 60.0f) * (float) 11);
-        System.out.println("frame is " + frame);
         fs.setFrame(frame);
         canvas.draw(fs, Color.WHITE,origin.x,origin.y, 45.0f,
               canvas.getHeight()/2.0f + 225.0f,0,0.15f,0.15f);
