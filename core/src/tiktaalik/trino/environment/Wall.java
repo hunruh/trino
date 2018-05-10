@@ -219,11 +219,7 @@ public class Wall extends EdibleObject {
             filter.categoryBits = Dinosaur.goalCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits;
             geometry.setFilterData(filter);
-            if (goal){
-                this.setSensor(true);
-            } else {
-                this.setSensor(false);
-            }
+            this.setSensor(true);
 
         } else {
             loweredFlag = 0;

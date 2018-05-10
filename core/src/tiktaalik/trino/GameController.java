@@ -931,7 +931,7 @@ public class GameController implements ContactListener, Screen {
 
 	public void nextLevel(){
 
-		if (currentLevel == 13)
+		if (currentLevel == 14)
 			currentLevel = 0;
 		else
 			currentLevel++;
