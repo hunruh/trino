@@ -38,6 +38,8 @@ public class Clone extends GameObject {
         gridLocation = new Vector2();
     }
 
+    public float getCloneTime(){return timeElapsed;}
+
     public boolean getAlive() {
         return alive;
     }
