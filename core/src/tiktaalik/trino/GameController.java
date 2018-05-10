@@ -2166,7 +2166,6 @@ public class GameController implements ContactListener, Screen {
 					GameObject tmp = level.objectInFrontOfAvatar();
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
 						SoundController.getInstance().playEat();
-						((EdibleObject) tmp).beginEating();
 						avatar.setCanBeSeen(false);
 					}
 				}
