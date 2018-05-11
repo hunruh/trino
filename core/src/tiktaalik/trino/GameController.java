@@ -1241,7 +1241,7 @@ public class GameController implements ContactListener, Screen {
             }
             canvas.end();
         }
-        
+
 		if (state == GAME_OVER) {
 			displayFont.setColor(Color.YELLOW);
 			if (complete && !failed) {
