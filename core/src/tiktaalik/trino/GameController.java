@@ -1018,7 +1018,7 @@ public class GameController implements ContactListener, Screen {
 			fireFlyControls.add(new FireFlyAIController(i, level.getFireFlies(), level.getBounds()));
 
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
-			fireLight.setColor(0.85f,0.85f,0.95f,0.85f);
+			fireLight.setColor(0.96f,0.67f,0.10f,0.15f);
 			fireLight.setXray(true);
 			fireLight.setActive(true);
 			ffLights[i] = fireLight;
@@ -1689,12 +1689,12 @@ public class GameController implements ContactListener, Screen {
 				ffAI.getMoveAlongPath();
 
 			for (int i = 0; i < ffLights.length; i++) {
-				if (ffLightDsts[i] > 2) {
+				if (ffLightDsts[i] > 2.5f) {
 					ffLightChanges[i] *= -1;
-					ffLightDsts[i] = 2;
-				} else if (ffLightDsts[i] < 0.5f) {
+					ffLightDsts[i] = 2.5f;
+				} else if (ffLightDsts[i] < 1.0f) {
 					ffLightChanges[i] *= -1;
-					ffLightDsts[i] = 0.5f;
+					ffLightDsts[i] = 1.0f;
 				}
 
 				ffLightDsts[i] += ffLightChanges[i];
@@ -2143,7 +2143,7 @@ public class GameController implements ContactListener, Screen {
 
 
 		duggiLight = new PointSource(rayhandler, 256, Color.WHITE, 8, 0, 0.4f);
-		duggiLight.setColor(0.85f,0.85f,0.95f,0.85f);
+		duggiLight.setColor(0.96f,0.85f,0.03f,0.55f);
 		duggiLight.setXray(true);
 		duggiLight.setActive(false);
 
