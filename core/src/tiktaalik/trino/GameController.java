@@ -865,6 +865,29 @@ public class GameController implements ContactListener, Screen {
 		state = GAME_READY;
 	}
 
+	protected GameController(int l) {
+		assets = new Array<String>();
+		world = new World(new Vector2(0, DEFAULT_GRAVITY),false);
+		currentLevel = l;
+		level = new Level(world, currentLevel);
+		complete = false;
+		failed = false;
+		timeOut = false;
+		active = false;
+		countdown = -1;
+		cameraBounds = new Rectangle(0,0, 32.0f,18.0f);
+		collisionHandler = new CollisionHandler(this);
+		hud = new HUDController();
+		shadowDuggiGotCotton = true;
+		//cottonFlowers = level.getCottonFlowerList();
+		//////System.out.println("cotton flowers "+cottonFlowers);
+
+		isSwitch = false;
+		isCotton = false;
+
+		state = GAME_READY;
+	}
+
 	public void nextLevel(){
 
 		if (currentLevel == 7)
