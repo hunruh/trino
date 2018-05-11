@@ -1657,7 +1657,7 @@ public class GameController implements ContactListener, Screen {
 				raycamera.position.x = cameraBounds.width / 2;
 			} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > level.getLevelWidth() - halfWidth) {
 				canvas.getCamera().position.x = level.getLevelWidth() - halfWidth;
-				raycamera.position.x = cameraBounds.width - cameraBounds.width / 2;
+				raycamera.position.x = 2*(level.getLevelWidth()/80.0f) - cameraBounds.width / 2;
 			} else {
 				canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
 				raycamera.position.x = avatar.getX();
@@ -1668,7 +1668,7 @@ public class GameController implements ContactListener, Screen {
 				raycamera.position.y = cameraBounds.height / 2;
 			} else if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight > level.getLevelHeight() - halfHeight) {
 				canvas.getCamera().position.y = level.getLevelHeight() - halfHeight;
-				raycamera.position.y = cameraBounds.height - cameraBounds.height / 2;
+				raycamera.position.y = 2*(level.getLevelHeight()/80f) - cameraBounds.height / 2;
 			} else {
 				canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
 				raycamera.position.y = avatar.getY();
@@ -1677,6 +1677,7 @@ public class GameController implements ContactListener, Screen {
 			canvas.getCamera().update();
 			raycamera.update();
 			rayhandler.setCombinedMatrix(raycamera);
+			//System.out.println("raycamera position is " + raycamera.position);
 
 			// Process FireFly updates
 			for (FireFlyAIController ffAI : fireFlyControls)
