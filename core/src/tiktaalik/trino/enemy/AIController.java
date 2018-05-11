@@ -31,10 +31,11 @@ public class AIController {
 
     private Vector2 locationCache;
     private Level level;
+    private GameController gc;
 
     private int chargeDetectionDistance = 5;
 
-    public AIController(int id, Dinosaur duggi, PooledList<Enemy> enemies, int turnAngle, Level level) {
+    public AIController(int id, Dinosaur duggi, PooledList<Enemy> enemies, int turnAngle, Level level, GameController gc) {
         this.enemy = enemies.get(id);
 
         target = duggi;
@@ -42,6 +43,7 @@ public class AIController {
         this.turnAngle = turnAngle;
         this.level = level;
         locationCache = new Vector2();
+        this.gc = gc;
     }
 
     public AIController(int id, Dinosaur duggi, PooledList<Enemy> enemies, int turnAngle, int type, Level level) {
@@ -84,6 +86,7 @@ public class AIController {
             if (enemy.getCharging()) {
                 SoundController.getInstance().playCrash();
                 enemy.setStunned();
+                gc.shake(500,500,10);
                 enemy.setCharging(false);
                 return;
             }

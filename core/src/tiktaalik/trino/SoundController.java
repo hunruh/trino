@@ -179,7 +179,7 @@ public class SoundController {
     public void playCottonPickup() {
         cottonPickUp.pause();
         if (GameController.soundState) {
-            cottonPickUp.play(1.0f);
+            cottonPickUp.play(0.1f);
         }
         else {
             cottonPickUp.play(0.0f);
@@ -189,7 +189,7 @@ public class SoundController {
     public void playCollide() {
         collideWall.pause();
         if (GameController.soundState) {
-            collideWall.play(1.0f);
+            collideWall.play(0.1f);
         }
         else {
             collideWall.play(0.0f);
@@ -199,7 +199,7 @@ public class SoundController {
     public void playEat() {
         eatWall.pause();
         if (GameController.soundState) {
-            eatWall.play(1.0f);
+            eatWall.play(0.1f);
         }
         else {
             eatWall.play(0.0f);
@@ -209,7 +209,7 @@ public class SoundController {
     public void playTransform() {
         transformSound.pause();
         if (GameController.soundState) {
-            transformSound.play(1.0f);
+            transformSound.play(0.1f);
         }
         else {
             transformSound.play(0.0f);
@@ -239,7 +239,7 @@ public class SoundController {
     public void playMunch(){
         munchSound.pause();
         if (GameController.soundState) {
-            munchSound.play(0.5f);
+            munchSound.play(0.1f);
         }
         else {
             munchSound.play(0.0f);
@@ -249,7 +249,7 @@ public class SoundController {
     public void playPlop(){
         plopSound.pause();
         if (GameController.soundState) {
-            plopSound.play(0.5f);
+            plopSound.play(0.1f);
         }
         else {
             plopSound.play(0.0f);
@@ -259,7 +259,7 @@ public class SoundController {
     public void playFull(){
         fullSound.pause();
         if (GameController.soundState) {
-            fullSound.play(1f);
+            fullSound.play(0.1f);
         }
         else {
             fullSound.play(0.0f);
@@ -269,7 +269,7 @@ public class SoundController {
     public void playCrunch(){
         crunchSound.pause();
         if (GameController.soundState) {
-            crunchSound.play(1f);
+            crunchSound.play(0.1f);
         }
         else {
             crunchSound.play(0.0f);
@@ -279,7 +279,7 @@ public class SoundController {
     public void playFootDrag(){
         footDragSound.pause();
         if (GameController.soundState) {
-            footDragSound.play(1f);
+            footDragSound.play(0.1f);
         }
         else {
             footDragSound.play(0.0f);
@@ -288,7 +288,7 @@ public class SoundController {
     public void playChargeSound(){
         chargeSound.pause();
         if (GameController.soundState) {
-            chargeSound.play(1f);
+            chargeSound.play(0.1f);
         }
         else {
             chargeSound.play(0.0f);
@@ -298,7 +298,7 @@ public class SoundController {
     public void playDoorOpen(){
         doorOpenSound.pause();
         if (GameController.soundState) {
-            doorOpenSound.play(1f);
+            doorOpenSound.play(0.1f);
         }
         else {
             doorOpenSound.play(0.0f);
@@ -307,7 +307,7 @@ public class SoundController {
     public void playLevelWin(){
         levelWin.pause();
         if (GameController.soundState) {
-            levelWin.play(1f);
+            levelWin.play(0.1f);
         }
         else {
             levelWin.play(0.0f);
@@ -317,7 +317,7 @@ public class SoundController {
     public void playBubbleLoop(){
         bubbleSound.pause();
         if (GameController.soundState) {
-            bubbleSound.play(1.0f);
+            bubbleSound.play(0.1f);
         }
         else {
             bubbleSound.stop();
