@@ -21,6 +21,8 @@ import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.*;
 import tiktaalik.trino.duggi.Dinosaur;
 
+import static com.badlogic.gdx.math.MathUtils.random;
+
 /**
  * Base class for the game controller.
  */
@@ -273,6 +275,11 @@ public class GameController implements ContactListener, Screen {
 	public static int tenSec;
 	private int playDoorDown = 0;
 	private int playDoorUp = 0;
+	private float elapsed;
+	private float duration;
+	private float radius;
+	private float randomAngle;
+	private float intensity;
 
 	/** Timer */
 	float levelTime = 300;
@@ -1005,7 +1012,7 @@ public class GameController implements ContactListener, Screen {
 
 		// Init Enemy AI controllers
 		for (int i = 0; i < level.getEnemies().size(); i++) {
-			AIController controller = new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP, level);
+			AIController controller = new AIController(i, level.getAvatar(), level.getEnemies(), AIController.FLIP, level,this);
 			controls.add(controller);
 			level.getEnemy(i).setController(controller);
 		}
@@ -1022,8 +1029,8 @@ public class GameController implements ContactListener, Screen {
 			fireLight.setXray(true);
 			fireLight.setActive(true);
 			ffLights[i] = fireLight;
-			ffLightDsts[i] = MathUtils.random(2.0f);
-			ffLightChanges[i] = MathUtils.random(0.005f, 0.015f);
+			ffLightDsts[i] = random(2.0f);
+			ffLightChanges[i] = random(0.005f, 0.015f);
 			fireLight.attachToBody(level.getFirefly(i).getBody(), fireLight.getX(), fireLight.getY(),
 					fireLight.getDirection());
 		}
@@ -1679,6 +1686,23 @@ public class GameController implements ContactListener, Screen {
 				raycamera.position.y = avatar.getY();
 			}
 
+			// Only shake when required. Thank you smilne for the code.
+			// Code used from https://www.netprogs.com/libgdx-screen-shaking/
+			if (elapsed < duration) {
+				System.out.println("shaking");
+
+				// Calculate the amount of shake based on how long it has been shaking already
+				float currentPower = intensity * canvas.getCamera().zoom * ((duration - elapsed) / duration);
+				float x = (random.nextFloat() - 0.5f) * currentPower;
+				float y = (random.nextFloat() - 0.5f) * currentPower;
+				canvas.getCamera().translate(-x, -y);
+
+				// Increase the elapsed time by the delta provided.
+				elapsed += dt;
+			}
+
+
+
 			canvas.getCamera().update();
 			raycamera.update();
 			rayhandler.setCombinedMatrix(raycamera);
@@ -1882,17 +1906,20 @@ public class GameController implements ContactListener, Screen {
 						avatar.getForm() != Dinosaur.DOLL_FORM && level.getAvatar().getResources() < 3){
 					SoundController.getInstance().playFull();
 					hud.flashResourceBar();
+					shake(500f,500f,5f);
 
 
 				} else if (InputHandler.getInstance().didTransformHerbi() &&
 						avatar.getForm() != Dinosaur.HERBIVORE_FORM && level.getAvatar().getResources() < 3){
 					SoundController.getInstance().playFull();
 					hud.flashResourceBar();
+					shake(500f,500f,5f);
 				}
 				else if (InputHandler.getInstance().didTransformCarni() &&
 						avatar.getForm() != Dinosaur.CARNIVORE_FORM && level.getAvatar().getResources() < 3){
 					SoundController.getInstance().playFull();
 					hud.flashResourceBar();
+					shake(500f,500f,5f);
 				}
 
 			}
@@ -1922,6 +1949,7 @@ public class GameController implements ContactListener, Screen {
 						} else {
 							SoundController.getInstance().playFull();
 							hud.flashResourceBar();
+							shake(500f,500f,5f);
 						}
 
 					} else {
@@ -1964,6 +1992,7 @@ public class GameController implements ContactListener, Screen {
 							} else {
 								SoundController.getInstance().playFull();
 								hud.flashResourceBar();
+								shake(500f,500f,5f);
 								break;
 							}
 
@@ -2020,6 +2049,7 @@ public class GameController implements ContactListener, Screen {
 						} else {
 							SoundController.getInstance().playFull();
 							hud.flashResourceBar();
+							shake(500f,500f,5f);
 						}
 					}
 				}
@@ -2147,6 +2177,16 @@ public class GameController implements ContactListener, Screen {
 		duggiLight.setXray(true);
 		duggiLight.setActive(false);
 
+	}
+
+
+	// Set shake fields. Thank you smilne for the code. Code used from https://www.netprogs.com/libgdx-screen-shaking/
+	public void shake(float radius, float duration, float intensity){
+		this.elapsed = 0;
+		this.duration = duration / 1000f;
+		this.radius = radius;
+		this.randomAngle = random.nextFloat() % 360f;
+		this.intensity = intensity;
 	}
 
 	/**
