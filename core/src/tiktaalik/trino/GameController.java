@@ -44,7 +44,7 @@ public class GameController implements ContactListener, Screen {
 	private Array<String> assets; // Track all loaded assets (for unloading purposes)
 
 	// Sounds files
-	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
+	private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
 	private static int FONT_SIZE = 64;
 
 	// Texture files
@@ -989,13 +989,10 @@ public class GameController implements ContactListener, Screen {
 		//shadowDuggiGotCotton = true;
 
 		// Set the lighting
-		if (level.getIsNight()){
-			duggiLight.setActive(true);
-			rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
-		}else {
-			duggiLight.setActive(false);
-			rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
-		}
+		float value = 1.0f - level.getCurrentLevel()/40.0f;
+		duggiLight.setActive(true);
+		rayhandler.setAmbientLight(1.0f, value, value, value);
+
 
 		// This should be set before init lighting - should be moved when we load in the json
 		cameraBounds = new Rectangle(0,0,32,18);
@@ -1244,22 +1241,6 @@ public class GameController implements ContactListener, Screen {
             }
             canvas.end();
         }
-
-		if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER || state == GAME_PAUSED) {
-			displayFont.setColor(Color.WHITE);
-			canvas.beginOverlay();
-			if (seconds < 10) {
-				canvas.drawTextCorner(Integer.toString(minutes)+":0"+Integer.toString(seconds), displayFont, 0.0f);
-			}
-			else if (seconds == 60) {
-				canvas.drawTextCorner(Integer.toString(minutes+1)+":00", displayFont, 0.0f);
-			}
-			else {
-				canvas.drawTextCorner(Integer.toString(minutes)+":"+Integer.toString(seconds), displayFont, 0.0f);
-			}
-			//canvas.drawTextCorner(Float.toString(totalTime), displayFont, 0.0f);
-			canvas.end();
-		}
 
 		if (state == GAME_OVER) {
 			displayFont.setColor(Color.YELLOW);
@@ -2273,7 +2254,7 @@ public class GameController implements ContactListener, Screen {
 
 			avatar.applyForce();
 
-			hud.update(avatar.getResources(), avatar.getForm(), level.getClone());
+			hud.update(avatar.getResources(), avatar.getForm(), level.getClone(), totalTime);
 		}
 	}
 

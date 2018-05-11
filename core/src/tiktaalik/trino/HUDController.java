@@ -18,6 +18,10 @@ public class HUDController  {
     private GameController.AssetState hudAssetState = GameController.AssetState.EMPTY;
     private Array<String> assets;
 
+    // FONT FILES
+    private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
+    private static int FONT_SIZE = 32;
+
     // Textures necessary to support the loading screen
     private static final String DINOMETER_BACKGROUND_FILE = "hud/dinometer_background.png";
     private static final String COTTON_FILE = "hud/cotton.png";
@@ -39,6 +43,10 @@ public class HUDController  {
     private static final String HERBIVORE_SECONDARY_FILE = "hud/herb_secondary.png";
     private static final String CLONE_CIRCLE_FILE = "trino/chargedowncircle.png";
     private static final String CLONE_FILE = "trino/clone.png";
+    private static final String WOOD_FILE = "trino/wood.png";
+    private static final String CLOCK_FILE = "hud/clockImage.png";
+
+    private BitmapFont displayFont;
 
     private TextureRegion dinometerBackground;
     private TextureRegion cotton;
@@ -59,6 +67,8 @@ public class HUDController  {
     private TextureRegion herbivorePrimary;
     private TextureRegion herbivoreSecondary;
     private TextureRegion cloneImage;
+    private TextureRegion wood;
+    private TextureRegion clock;
 
     private Texture cloneCircle;
 
@@ -67,6 +77,7 @@ public class HUDController  {
     private int numResources;
     private int transformation;
     private float cloneTime;
+    private float levelTimerCount;
 
     public HUDController() {
         assets = new Array<String>();
@@ -79,6 +90,13 @@ public class HUDController  {
         if (hudAssetState != GameController.AssetState.EMPTY) {
             return;
         }
+
+        // Load the font
+        FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        size2Params.fontFileName = FONT_FILE;
+        size2Params.fontParameters.size = FONT_SIZE;
+        manager.load(FONT_FILE, BitmapFont.class, size2Params);
+        assets.add(FONT_FILE);
 
         hudAssetState = GameController.AssetState.LOADING;
 
@@ -122,12 +140,21 @@ public class HUDController  {
         assets.add(CLONE_CIRCLE_FILE);
         manager.load(CLONE_FILE, Texture.class);
         assets.add(CLONE_FILE);
+        manager.load(WOOD_FILE, Texture.class);
+        assets.add(WOOD_FILE);
+        manager.load(CLOCK_FILE, Texture.class);
+        assets.add(CLOCK_FILE);
     }
 
     public void loadContent(AssetManager manager) {
         if (hudAssetState != GameController.AssetState.LOADING) {
             return;
         }
+        // Allocate the font
+        if (manager.isLoaded(FONT_FILE))
+            displayFont = manager.get(FONT_FILE,BitmapFont.class);
+        else
+            displayFont = null;
 
         dinometerBackground = createTexture(manager,DINOMETER_BACKGROUND_FILE,true);
         cotton = createTexture(manager,COTTON_FILE,true);
@@ -148,6 +175,8 @@ public class HUDController  {
         herbivorePrimary = createTexture(manager,HERBIVORE_PRIMARY_FILE,true);
         herbivoreSecondary = createTexture(manager,HERBIVORE_SECONDARY_FILE,true);
         cloneImage = createTexture(manager, CLONE_FILE, true);
+        wood = createTexture(manager, WOOD_FILE, true);
+        clock = createTexture(manager, CLOCK_FILE, true);
 
         cloneCircle = createFilmTexture(manager,CLONE_CIRCLE_FILE);
 
@@ -208,9 +237,11 @@ public class HUDController  {
         herbivoreSecondary = null;
         cloneCircle = null;
         cloneImage = null;
+        wood = null;
+        clock = null;
     }
 
-    public void update(int numResources, int transformation, Clone clone) {
+    public void update(int numResources, int transformation, Clone clone, float levelTimerCount) {
         this.numResources = numResources;
         this.transformation = transformation;
         if (clone != null){
@@ -218,18 +249,23 @@ public class HUDController  {
         } else {
             this.cloneTime = 60.0f;
         }
+        this.levelTimerCount = levelTimerCount;
     }
 
     public void draw() {
         canvas.beginOverlay();
         drawForm(canvas);
         drawDinoMeter(canvas);
-        drawPause(canvas);
         drawCloneCircle(canvas);
+        drawLevelTimer(canvas,levelTimerCount);
+        drawPause(canvas);
         canvas.end();
     }
 
     private void drawForm(Canvas canvas) {
+        Vector2 origin = new Vector2(wood.getRegionWidth()/2.0f, wood.getRegionHeight()/2.0f);
+        canvas.draw(wood, Color.WHITE, origin.x, origin.y, 160.0f,canvas.getHeight() - 20.0f
+                ,0,0.80f,0.80f);
         if (transformation == Dinosaur.DOLL_FORM) {
             canvas.draw(dollPrimary, 7, canvas.getHeight() - 82);
             canvas.draw(outlinePrimary, 7, canvas.getHeight() - 82);
@@ -276,18 +312,21 @@ public class HUDController  {
         }
 
         int offsetY = 67 - (dinometerBackground.getRegionHeight() - resource.getRegionHeight())/2;
-        canvas.draw(dinometerBackground, 120, canvas.getHeight() - 67);
+        //canvas.draw(dinometerBackground, 120, canvas.getHeight() - 67);
         for (int i = 0; i < numResources; i++)
             canvas.draw(resource, rootX + (1 + i * 2) * width/6 - resource.getRegionWidth()/2,
-                    canvas.getHeight() - offsetY);
+                    canvas.getHeight() - offsetY + 5f);
         for (int i = numResources; i < Dinosaur.MAX_RESOURCES; i++)
             canvas.draw(lightResource, rootX + (1 + i * 2) * width/6 - lightResource.getRegionWidth()/2,
-                    canvas.getHeight() - offsetY);
+                    canvas.getHeight() - offsetY + 5f);
 
     }
 
     private void drawPause(Canvas canvas) {
-        canvas.draw(pauseBackground, 1213, canvas.getHeight() - 67);
+        //canvas.draw(pauseBackground, 1213, canvas.getHeight() - 67);
+        Vector2 origin = new Vector2(wood.getRegionWidth()/2.0f, wood.getRegionHeight()/2.0f);
+        canvas.draw(wood, Color.WHITE, origin.x, origin.y, canvas.getWidth() + 80.0f,canvas.getHeight() - 5.0f
+                ,0,0.75f,0.75f);
         canvas.draw(pauseLight, 1229, canvas.getHeight() - 54);
     }
 
@@ -297,12 +336,29 @@ public class HUDController  {
         int frame =  (int) ((cloneTime / 60.0f) * (float) 11);
         fs.setFrame(frame);
         canvas.draw(fs, Color.WHITE,origin.x,origin.y, 45.0f,
-              canvas.getHeight()/2.0f + 225.0f,0,0.15f,0.15f);
+              canvas.getHeight()/2.0f + 215.0f,0,0.15f,0.15f);
         origin = new Vector2(cloneImage.getRegionWidth()/2.0f, cloneImage.getRegionHeight()/2.0f);
-        canvas.draw(cloneImage, Color.WHITE, origin.x, origin.y, 45.0f,canvas.getHeight()/2.0f + 245.0f
+        canvas.draw(cloneImage, Color.WHITE, origin.x, origin.y, 45.0f,canvas.getHeight()/2.0f + 235.0f
         ,0,1f,1f);
+    }
 
+    private void drawLevelTimer(Canvas canvas, float totalTime ) {
+        Vector2 origin = new Vector2(clock.getRegionWidth()/2.0f, clock.getRegionHeight()/2.0f);
+        canvas.draw(clock, Color.WHITE, origin.x, origin.y, 165.0f,canvas.getHeight() - 78.0f
+                ,0,0.20f,0.20f);
 
-
+        int minutes = (int) totalTime / 60;
+        int seconds = (int) (totalTime % 60);
+        displayFont.setColor(Color.WHITE);
+        if (seconds < 10) {
+            canvas.drawText(Integer.toString(minutes) + ":0" + Integer.toString(seconds), displayFont,
+                    190f, canvas.getHeight() - 62f);
+        } else if (seconds == 60) {
+            canvas.drawText(Integer.toString(minutes + 1) + ":00", displayFont,190f,
+                    canvas.getHeight() - 65f);
+        } else {
+            canvas.drawText(Integer.toString(minutes) + ":" + Integer.toString(seconds), displayFont,
+                    190f, canvas.getHeight() - 65f);
+        }
     }
 }
