@@ -989,13 +989,10 @@ public class GameController implements ContactListener, Screen {
 		//shadowDuggiGotCotton = true;
 
 		// Set the lighting
-		if (level.getIsNight()){
-			duggiLight.setActive(true);
-			rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
-		}else {
-			duggiLight.setActive(false);
-			rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
-		}
+		float value = 1.0f - level.getCurrentLevel()/40.0f;
+		duggiLight.setActive(true);
+		rayhandler.setAmbientLight(1.0f, value, value, value);
+
 
 		// This should be set before init lighting - should be moved when we load in the json
 		cameraBounds = new Rectangle(0,0,32,18);
