@@ -86,7 +86,7 @@ public class AIController {
             if (enemy.getCharging()) {
                 SoundController.getInstance().playCrash();
                 enemy.setStunned();
-                gc.shake(500,500,10);
+                gc.shake(500,500,5f);
                 enemy.setCharging(false);
                 return;
             }
