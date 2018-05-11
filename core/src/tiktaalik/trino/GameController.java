@@ -838,8 +838,11 @@ public class GameController implements ContactListener, Screen {
 	 * @param value whether the level is completed.
 	 */
 	public void setComplete(boolean value) {
-		if (value)
+		if (value) {
 			countdown = EXIT_COUNT;
+			SoundController.getInstance().playLevelWin();
+		}
+
 
 		complete = value;
 	}
@@ -991,7 +994,9 @@ public class GameController implements ContactListener, Screen {
 
 		// Set the lighting
 		float value = 1.0f - level.getCurrentLevel()/40.0f;
-		duggiLight.setActive(true);
+		if (level.getCurrentLevel() > 5){
+			duggiLight.setActive(true);
+		}
 		rayhandler.setAmbientLight(1.0f, value, value, value);
 
 
@@ -2067,7 +2072,6 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		if (complete && !failed) {
-
 			if (InputHandler.getInstance().didPause()) {
 				state = GAME_RUNNING;
 				nextLevel();

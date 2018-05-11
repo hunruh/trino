@@ -34,6 +34,7 @@ public class SoundController {
     private static String BUBBLE_2_FILE = "trino/bubble2.mp3";
     private static String BUBBLE_3_FILE = "trino/bubble3.mp3";
     private static String BUBBLE_4_FILE = "trino/bubble4.mp3";
+    private static String LEVEL_WIN_FILE = "trino/levelWin.mp3";
 
     private Music bgMusic;
     private Music bgDoll;
@@ -55,6 +56,7 @@ public class SoundController {
     private Sound doorOpenSound;
     private Sound bubbleSound;
     private Sound chargeSound;
+    private Sound levelWin;
 
     private float dollStartTime = 9.056f;
     private float herbivoreStartTime = 131.387f;
@@ -94,6 +96,7 @@ public class SoundController {
         doorOpenSound = Gdx.audio.newSound(Gdx.files.internal(DOOR_FILE));
         bubbleSound = Gdx.audio.newSound(Gdx.files.internal(BUBBLE_1_FILE));
         chargeSound =  Gdx.audio.newSound(Gdx.files.internal(POP_3_FILE));
+        levelWin = Gdx.audio.newSound(Gdx.files.internal(LEVEL_WIN_FILE));
 
     }
 
@@ -301,6 +304,15 @@ public class SoundController {
             doorOpenSound.play(0.0f);
         }
     }
+    public void playLevelWin(){
+        levelWin.pause();
+        if (GameController.soundState) {
+            levelWin.play(1f);
+        }
+        else {
+            levelWin.play(0.0f);
+        }
+    }
 
     public void playBubbleLoop(){
         bubbleSound.pause();
@@ -397,6 +409,7 @@ public class SoundController {
             bubbleSound.dispose();
             chargeSound.dispose();
             mainMenu.dispose();
+            levelWin.dispose();
         }
     }
 
@@ -438,5 +451,16 @@ public class SoundController {
             }
         }
 
+    }
+
+    public void muteBG(){
+        if (bgMusic != null && bgCarn != null && bgHerb != null){
+            bgMusic.pause();
+            bgHerb.pause();
+            bgCarn.pause();
+            bgMusic.setVolume(0);
+            bgCarn.setVolume(0);
+            bgHerb.setVolume(0);
+        }
     }
 }
