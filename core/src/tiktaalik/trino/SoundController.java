@@ -24,7 +24,7 @@ public class SoundController {
     private static String CRASH_FILE = "trino/enemyCrash.mp3";
     private static String ALERT_FILE = "trino/alert.mp3";
     private static String MUNCH_FILE = "trino/munch.mp3";
-    private static String CRUNCH_FILE = "trino/crunch.mp3";
+    private static String CRUNCH_FILE = "trino/pop2.mp3";
     private static String FULL_FILE = "trino/resourceFull.mp3";
     private static String CLONE_PLOP_FILE = "trino/plop.mp3";
     private static String TRANSFORM_FILE = "trino/transform.wav";
