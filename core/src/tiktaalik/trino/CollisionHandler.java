@@ -152,7 +152,7 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Clone c, Enemy e) {
-        c.setRemoved(true);
+        c.startCountDown();
     }
 
     public void handleCollision(Enemy e1, Enemy e2) {

@@ -63,6 +63,7 @@ public class SoundController {
     private float herbivoreEndTime = 240.066f;
     private float carnivoreEndTime = 362.397f;
     private int currentForm = Dinosaur.DOLL_FORM;
+    public boolean playing = true;
 
     private static SoundController theController = null;
 
@@ -157,13 +158,18 @@ public class SoundController {
             mainMenu.pause();
         }
         if (GDXRoot.musicScreen) {
-            System.out.println("hi!");
             mainMenu.setLooping(true);
             mainMenu.setVolume(0.10f);
             mainMenu.play();
             mainMenu.pause();
             mainMenu.setPosition(0f);
             mainMenu.play();
+            playing = false;
+        }
+        else if (!GDXRoot.musicScreen) {
+            mainMenu.stop();
+            mainMenu.dispose();
+            playing = true;
         }
     }
 
@@ -390,6 +396,7 @@ public class SoundController {
             doorOpenSound.dispose();
             bubbleSound.dispose();
             chargeSound.dispose();
+            mainMenu.dispose();
         }
     }
 
