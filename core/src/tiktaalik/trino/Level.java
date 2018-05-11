@@ -761,7 +761,7 @@ public class Level {
                 return bd.getPosition().dst2(avatar.getPosition()) < 4.5;
             if ((direction == UP && bd.getY() >= avatar.getY()) ||
                     (direction == DOWN && bd.getY() <= avatar.getY())) {
-                return bd.getPosition().dst2(avatar.getPosition()) < 2.5;
+                return bd.getPosition().dst2(avatar.getPosition()) < 3.5;
             }
         }
         else {
