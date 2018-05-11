@@ -88,66 +88,118 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
 		if (screen == menu) {
+			//SoundController.getInstance().dispose();
+			if (SoundController.getInstance().playing) {
+				SoundController.getInstance().init();
+				SoundController.getInstance().mainMenu();
+			}
 			if (MenuController.currState == 2) {
+//				menu.dispose();
+//				System.out.println("3");
+//				menu = null;
 				levels = new LevelController(canvas, manager, 1);
 				levels.setScreenListener(this);
+				setScreen(null);
+				screen = levels;
 				setScreen(levels);
+				System.out.println(screen);
+				MenuController.currState = 0;
+
 			}
 			else if (MenuController.currState == 1) {
 				controller.loadContent(manager);
 				controller.setScreenListener(this);
 				controller.setCanvas(canvas);
 				controller.reset();
+				setScreen(null);
+				screen = controller;
 				setScreen(controller);
+				MenuController.currState = 0;
+				SoundController.getInstance().playing = false;
+//				menu.dispose();
+//				System.out.println("3");
+//				menu = null;
+
 			}
-			menu.dispose();
-			menu = null;
-		} else if (screen == levels) {
-			if (LevelController.levelNum == 1) {
+		}
+		else if (screen == levels) {
+			if (LevelController.menuPress == 1) {
+				menu = new MenuController(canvas,manager,1);
+				menu.setScreenListener(this);
+				screen = null;
+				screen = menu;
+				setScreen(menu);
+			}
+			else {
+				if (LevelController.levelNum == 1) {
+					controller.setCurrentLevel(0);
+				}
+				else if (LevelController.levelNum == 2) {
+					controller.setCurrentLevel(1);
+				}
+				else if (LevelController.levelNum == 3) {
+					controller.setCurrentLevel(2);
+				}
+				else if (LevelController.levelNum == 4) {
+					controller.setCurrentLevel(3);
+
+				}
+				else if (LevelController.levelNum == 5) {
+					controller.setCurrentLevel(4);
+				}
+				else if (LevelController.levelNum == 6) {
+					controller.setCurrentLevel(5);
+				}
+				else if (LevelController.levelNum == 7) {
+					controller.setCurrentLevel(6);
+				}
+				else if (LevelController.levelNum == 8) {
+					controller.setCurrentLevel(7);
+				}
+				else if (LevelController.levelNum == 9) {
+					controller.setCurrentLevel(8);
+				}
+				else if (LevelController.levelNum == 10) {
+					controller.setCurrentLevel(9);
+				}
+				else if (LevelController.levelNum == 11) {
+					controller.setCurrentLevel(10);
+				}
+				else if (LevelController.levelNum == 12) {
+					controller.setCurrentLevel(11);
+				}
+				else if (LevelController.levelNum == 13) {
+					controller.setCurrentLevel(12);
+				}
+				else if (LevelController.levelNum == 14) {
+					controller.setCurrentLevel(13);
+				}
 				controller.loadContent(manager);
 				controller.setScreenListener(this);
 				controller.setCanvas(canvas);
 				controller.reset();
+				setScreen(null);
+				screen = controller;
 				setScreen(controller);
 			}
-			else if (LevelController.levelNum == 2) {
-				controller.loadContent(manager);
-				controller.setScreenListener(this);
-				controller.setCanvas(canvas);
-				controller.reset();
-				setScreen(controller);
-				controller.nextLevel();
-			}
-			else if (LevelController.levelNum == 3) {
-				controller.loadContent(manager);
-				controller.setScreenListener(this);
-				controller.setCanvas(canvas);
-				controller.reset();
-				setScreen(controller);
-				controller.nextLevel();
-				controller.nextLevel();
 
-			}
-
-			else if (LevelController.menuPress == 1) {
-                menu = new MenuController(canvas,manager,1);
-                menu.setScreenListener(this);
-                setScreen(menu);
-            }
-            levels.dispose();
-			levels = null;
-
+            LevelController.levelNum = 0;
 		}
 		else if (screen == controller) {
 			musicScreen = false;
 			if (controller.menuNum == 1) {
 				menu = new MenuController(canvas,manager,1);
 				menu.setScreenListener(this);
+				screen = null;
+				screen = menu;
 				setScreen(menu);
-				controller.reset();
-				controller.dispose();
-				controller = new GameController();
-				controller.preLoadContent(manager);
+				SoundController.getInstance().playing = true;
+//				controller.reset();
+//				controller.dispose();
+//				controller = new GameController();
+//				controller.preLoadContent(manager);
+				SoundController.getInstance().dispose();
+				musicScreen = true;
 			}
 		}
 		else if (exitCode == GameController.EXIT_NEXT) {

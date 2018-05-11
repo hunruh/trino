@@ -5,19 +5,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.duggi.Carnivore;
 import tiktaalik.trino.duggi.Dinosaur;
 
 public class Boulder extends GameObject {
-    private final float PUSH_DURATION = 5.0f;
-    private float pushCooldown;
     protected PolygonShape shape; // Shape information for this box
     private Vector2 dimension; // The width and height of the box
     private Vector2 sizeCache; // A cache value for when the user wants to access the dimensions
     private Fixture geometry; // A cache value for the fixture (for resizing)
     private float[] vertices; // Cache of the polygon vertices (for resizing)
     private Vector2 gridLocation;
+    private Carnivore pusher;
 
-    private boolean pushed;
+    private boolean inMotion;
+    private float targetX, targetY;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -54,17 +55,21 @@ public class Boulder extends GameObject {
 
         gridLocation = new Vector2(gx, gy);
 
-        pushed = false;
+        inMotion = false;
     }
 
-    public void setPushed(){
-        pushed = true;
-        setLinearDamping(5);
-        pushCooldown = 0;
+    public boolean getInMotion() {
+        return inMotion;
     }
 
-    public boolean getPushed() {
-        return pushed;
+    public void setInMotion(boolean inMotion, Carnivore pusher) {
+        this.inMotion = inMotion;
+        this.pusher = pusher;
+    }
+
+    public void setTargetDestination(float x, float y) {
+        targetX = x;
+        targetY = y;
     }
 
     /**
@@ -201,18 +206,49 @@ public class Boulder extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
-        if (pushed) {
-//            if (pushCooldown <= PUSH_DURATION) {
-//                setBodyType(BodyDef.BodyType.DynamicBody);
-//                setLinearDamping(0);;
-//            }
-//
-//            if (pushCooldown > PUSH_DURATION) {
-//                setBodyType(BodyDef.BodyType.StaticBody);
-//                setLinearDamping(0);
-//                pushed = false;
-//            }
-            pushCooldown += dt;
+
+        if (inMotion) {
+            if (targetX < getX()) {
+                if (getX() - targetX < .07f) {
+                    inMotion = false;
+                    pusher.setPushing(false);
+                    pusher.stopAction();
+                    gridLocation.x -= 1;
+                    setX(targetX);
+                } else {
+                    setX(getX() - .07f);
+                }
+            } else if (targetX > getX()) {
+                if (targetX - getX() < .07f) {
+                    inMotion = false;
+                    pusher.setPushing(false);
+                    pusher.stopAction();
+                    gridLocation.x += 1;
+                    setX(targetX);
+                } else {
+                    setX(getX() + .07f);
+                }
+            } else if (targetY < getY()) {
+                if (getY() - targetY < .07f) {
+                    inMotion = false;
+                    pusher.setPushing(false);
+                    pusher.stopAction();
+                    gridLocation.y -= 1;
+                    setY(targetY);
+                } else {
+                    setY(getY() - .07f);
+                }
+            } else if (targetY > getY()) {
+                if (targetY - getY() < .07f) {
+                    inMotion = false;
+                    pusher.setPushing(false);
+                    pusher.stopAction();
+                    gridLocation.y += 1;
+                    setY(targetY);
+                } else {
+                    setY(getY() + .07f);
+                }
+            }
         }
     }
 

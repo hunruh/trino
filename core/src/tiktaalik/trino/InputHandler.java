@@ -81,6 +81,8 @@ public class InputHandler {
 	private boolean mousePressed;
 	private boolean mousePrevious;
 	private boolean nextLevelPressed;
+	private boolean helpPressed;
+	private boolean helpPrevious;
 	
 	/** How much did we move horizontally? */
 	private float horizontal;
@@ -266,12 +268,34 @@ public class InputHandler {
 	/**
 	 * Return true if the exit button was pressed.
 	 *
-	 * @return true if the exit  button was pressed.
+	 * @return true if the exit button was pressed.
 	 */
 	public boolean didExitButton() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
 				((Gdx.input.getX() >= 1100) && (Gdx.input.getX() <= 1141)) &&
 				((Gdx.input.getY() >= 156) && (Gdx.input.getY() <= 197));
+	}
+
+	/**
+	 * Return true if the doll button was pressed.
+	 *
+	 * @return true if the doll button was pressed.
+	 */
+	public boolean didDollHelp() {
+		return (!helpPrevious && !mousePrevious && mousePressed && !actionPrevious
+				&& ((Gdx.input.getX() >= 213) && (Gdx.input.getX() <= 379)) &&
+				((Gdx.input.getY() >= 221) && (Gdx.input.getY() <= 414)));
+	}
+
+	/**
+	 * Return true if the herbivore button was pressed.
+	 *
+	 * @return true if the herbivore button was pressed.
+	 */
+	public boolean didHerbivoreHelp() {
+		return (!helpPrevious && !mousePressed
+				&& ((Gdx.input.getX() >= 597) && (Gdx.input.getX() <= 684)) &&
+				((Gdx.input.getY() >= 226) && (Gdx.input.getY() <= 421)));
 	}
 	/**
 	 * Returns true if the player wants to go toggle the debug mode.
@@ -346,6 +370,7 @@ public class InputHandler {
 		actionPrevious = actionPressed;
 		pausePrevious = pausePressed;
 		mousePrevious = mousePressed;
+		helpPrevious = helpPressed;
 
 		readKeyboard();
 	}
@@ -362,6 +387,7 @@ public class InputHandler {
 		actionPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
 		pausePressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
 		mousePressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+		helpPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
 		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));

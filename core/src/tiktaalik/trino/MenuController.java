@@ -71,7 +71,14 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @return true if the player wants to go to level selection
 	 */
 	public boolean isSelect() {
-		return levelPressState == 2;
+		if (levelPressState == 2) {
+			levelPressState = 0;
+			levelHoverState = 0;
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -80,7 +87,14 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @return true if the player is ready to go
 	 */
 	public boolean isReady() {
-		return playPressState == 2;
+		if (playPressState == 2) {
+			playPressState = 0;
+			playHoverState = 0;
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -169,6 +183,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				playButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				levelSelectButton = new Texture(LEVEL_SELECT_BTN_FILE);
 				levelSelectButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+				listener.exitScreen(this, 0);
 			}
 		}
 	}

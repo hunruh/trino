@@ -59,12 +59,16 @@ public class AIController {
         if (enemy.getStunned())
             return;
 
-        if (playerInFrontOfEnemy() && !enemy.getCharging()){
-
-            if (level.getAvatar().getCanBeSeen()){
+        if (!enemy.getCharging() && enemy.getEnemyType() == Enemy.CARNIVORE_ENEMY){
+            if (cloneInFrontOfEnemy()){
                 SoundController.getInstance().playAlert();
-                enemy.setAlert(true);
                 enemy.loadCharge();
+            }
+            else if (playerInFrontOfEnemy()){
+                if (level.getAvatar().getCanBeSeen()){
+                    SoundController.getInstance().playAlert();
+                    enemy.loadCharge();
+                }
             }
         }
 
@@ -342,7 +346,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y + i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -356,7 +360,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y - i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -371,7 +375,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x - i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -385,7 +389,73 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x + i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean cloneInFrontOfEnemy() {
+        if (level.getClone() == null){
+            return false;
+        }
+        locationCache.set(level.getClone().getGridLocation().x, level.getClone().getGridLocation().y);
+        if (enemy.getDirection() == Dinosaur.UP){
+            if(level.getClone().getGridLocation().x == getEnemyGridX() && (level.getClone().getGridLocation().y - getEnemyGridY() < chargeDetectionDistance) &&
+                    (level.getClone().getGridLocation().y - getEnemyGridY() > 0)) {
+                for(int i = 1; i < Math.abs(getEnemyGridY() - level.getClone().getGridLocation().y); i++) {
+                    GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y + i];
+                    if (g != null) {
+                        if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
+                                g.getType() == BOULDER || g.getType() == GOAL)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.DOWN){
+            if(level.getClone().getGridLocation().x == getEnemyGridX() && (getEnemyGridY() - level.getClone().getGridLocation().y < chargeDetectionDistance) &&
+                    (getEnemyGridY() - level.getClone().getGridLocation().y > 0)){
+                for(int i = 1; i < Math.abs(getEnemyGridY() - level.getClone().getGridLocation().y); i++) {
+                    GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y - i];
+                    if (g != null) {
+                        if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
+                                g.getType() == BOULDER || g.getType() == GOAL)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.LEFT){
+            if(level.getClone().getGridLocation().y == getEnemyGridY() && (getEnemyGridX() - level.getClone().getGridLocation().x < chargeDetectionDistance) &&
+                    (getEnemyGridX() - level.getClone().getGridLocation().x > 0)){
+
+                for(int i = 1; i < Math.abs(getEnemyGridX() - level.getClone().getGridLocation().x); i++) {
+                    GameObject g = level.getGrid()[(int) locationCache.x - i][(int) locationCache.y];
+                    if (g != null) {
+                        if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
+                                g.getType() == BOULDER || g.getType() == GOAL)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.RIGHT){
+            if(level.getClone().getGridLocation().y == getEnemyGridY() && (level.getClone().getGridLocation().x - getEnemyGridX() < chargeDetectionDistance) &&
+                    (level.getClone().getGridLocation().x - getEnemyGridX() > 0)){
+                for(int i = 1; i < Math.abs(getEnemyGridX() - level.getClone().getGridLocation().x); i++) {
+                    GameObject g = level.getGrid()[(int) locationCache.x + i][(int) locationCache.y];
+                    if (g != null) {
+                        if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }

@@ -102,7 +102,7 @@ public class Enemy extends EdibleObject {
 
     public void setAlert(boolean assignment){
         if (assignment){
-            timeElapsed = 0;
+            totalTime = timeElapsed + 1;
         }
         alert = assignment;
     }
@@ -321,6 +321,7 @@ public class Enemy extends EdibleObject {
             chargeLoad += dt;
             if (chargeLoad >= CHARGE_LOAD_DURATION) {
                 setCharging(true);
+                setAlert(true);
                 loadingCharge = false;
                 chargeLoad = 0;
             }
@@ -376,6 +377,11 @@ public class Enemy extends EdibleObject {
         if (direction == UP || direction == DOWN) {
             offsetX = 3.5f;
             offsetY = 13f;
+        }
+
+        if (enemyType == UNKILLABLE_ENEMY) {
+            offsetX = -9f;
+            offsetY = 5;
         }
 
         if (eatInProgress && eatenTextureSet != null) {

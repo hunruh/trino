@@ -4,6 +4,7 @@ import java.util.*;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -44,7 +45,7 @@ public class GameController implements ContactListener, Screen {
 	private Array<String> assets; // Track all loaded assets (for unloading purposes)
 
 	// Sounds files
-	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
+	private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
 	private static int FONT_SIZE = 64;
 
 	// Texture files
@@ -66,7 +67,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_EATING_STRIP_FRONT  = "trino/doll_front_eating_strip.png";
 	private static final String DOLL_EATING_STRIP_LEFT  = "trino/doll_left_eating_strip.png";
 	private static final String DOLL_EATING_STRIP_RIGHT  = "trino/doll_right_eating_strip.png";
-	private static final String DOLL_EATING_STRIP_BACK  = "trino/doll_front_eating_strip.png";
+	private static final String DOLL_EATING_STRIP_BACK  = "trino/doll_back_eating_strip.png";
 	private static final String DOLL_CLONING_STRIP_FRONT  = "trino/doll_front_cloning_strip.png";
 	private static final String HERBIVORE_STRIP_FRONT  = "trino/herbivore_front_strip.png";
 	private static final String HERBIVORE_STRIP_LEFT  = "trino/herbivore_left_strip.png";
@@ -88,9 +89,11 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARNIVORE_CHARGE_STRIP_FRONT = "trino/carnivore_front_charge_strip.png";
 	private static final String CARNIVORE_CHARGE_STRIP_LEFT = "trino/carnivore_left_charge_strip.png";
 	private static final String CARNIVORE_CHARGE_STRIP_RIGHT = "trino/carnivore_right_charge_strip.png";
+	private static final String CARNIVORE_CHARGE_STRIP_BACK = "trino/carnivore_back_charge_strip.png";
 	private static final String CARNIVORE_ATTACK_STRIP_FRONT = "trino/carnivore_front_attack_strip.png";
-    private static final String CARNIVORE_ATTACK_STRIP_LEFT = "trino/carnivore_left_attack_strip.png";
+	private static final String CARNIVORE_ATTACK_STRIP_LEFT = "trino/carnivore_left_attack_strip.png";
 	private static final String CARNIVORE_ATTACK_STRIP_RIGHT = "trino/carnivore_right_attack_strip.png";
+	private static final String CARNIVORE_ATTACK_STRIP_BACK = "trino/carnivore_back_attack_strip.png";
 	private static final String ENEMY_STRIP_FRONT = "trino/enemy_front_strip.png";
 	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
 	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
@@ -103,8 +106,12 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_STUNNED_STRIP_BACK = "trino/enemy_back_stunned_strip.png";
 	private static final String ENEMY_CHARGE_STRIP_LEFT = "trino/enemy_left_charge_strip.png";
 	private static final String ENEMY_CHARGE_STRIP_RIGHT = "trino/enemy_right_charge_strip.png";
+	private static final String ENEMY_CHARGE_STRIP_FRONT = "trino/enemy_front_charge_strip.png";
+	private static final String ENEMY_CHARGE_STRIP_BACK = "trino/enemy_back_charge_strip.png";
 	private static final String ENEMY_ATTACK_STRIP_LEFT = "trino/enemy_left_attack_strip.png";
 	private static final String ENEMY_ATTACK_STRIP_RIGHT = "trino/enemy_right_attack_strip.png";
+	private static final String ENEMY_ATTACK_STRIP_FRONT = "trino/enemy_front_attack_strip.png";
+	private static final String ENEMY_ATTACK_STRIP_BACK = "trino/enemy_back_attack_strip.png";
 	private static final String ENEMY_LEFT_EATING_STRIP = "trino/enemy_left_eaten_strip.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
@@ -169,18 +176,27 @@ public class GameController implements ContactListener, Screen {
 	private static final String EAT_FILE = "help/text_eat.png";
 
 	// Tutorial menus
-	private static final String TUT_ONE_A = "tutorial/tutorial1a.png";
-	private static final String TUT_ONE_B = "tutorial/tutorial1b.png";
-	private static final String TUT_ONE_C = "tutorial/tutorial1c.png";
-	private static final String TUT_ONE_D = "tutorial/tutorial1d.png";
-	private static final String TUT_TWO_A = "tutorial/tutorial2a.png";
-	private static final String TUT_TWO_B = "tutorial/tutorial2b.png";
-	private static final String TUT_TWO_C = "tutorial/tutorial2c.png";
-	private static final String TUT_TWO_D = "tutorial/tutorial2d.png";
-	private static final String TUT_THREE_A = "tutorial/tutorial3a.png";
-	private static final String TUT_THREE_B = "tutorial/tutorial3b.png";
-	private static final String TUT_FOUR_A = "tutorial/tutorial4a.png";
-	private static final String TUT_FOUR_B = "tutorial/tutorial4b.png";
+	private static final String TUT_ONE_A = "tutorial/move1.png";
+	private static final String TUT_ONE_B = "tutorial/move2.png";
+	private static final String TUT_ONE_C = "tutorial/cloneDrop1.png";
+	private static final String TUT_ONE_D = "tutorial/cloneDrop2.png";
+	private static final String TUT_TWO_A = "tutorial/dollPickUpCotton1.png";
+	private static final String TUT_TWO_B = "tutorial/dollPickUpCotton2.png";
+	private static final String TUT_TWO_C = "tutorial/herbRiver1.png";
+	private static final String TUT_TWO_D = "tutorial/herbRiver2.png";
+	private static final String TUT_THREE_A = "tutorial/herbEating1.png";
+    private static final String TUT_THREE_B = "tutorial/herbEating2.png";
+	private static final String TUT_FOUR_A = "tutorial/camo1.png";
+	private static final String TUT_FOUR_B = "tutorial/camo2.png";
+	private static final String TUT_SIX_A = "tutorial/stun1.png";
+	private static final String TUT_SIX_B = "tutorial/stun2.png";
+	private static final String TUT_SIX_C = "tutorial/carnEating1.png";
+	private static final String TUT_SIX_D = "tutorial/carnEating2.png";
+	private static final String TUT_SEVEN_A = "tutorial/moveBoulder1.png";
+	private static final String TUT_SEVEN_B = "tutorial/moveBoulder2.png";
+	private static final String TUT_EIGHT_A = "tutorial/unkillableWarning.png";
+	private static final String TUT_NINE_A = "tutorial/multiSwitch1.png";
+	private static final String TUT_NINE_B = "tutorial/multiSwitch2.png";
 
 	// Texture assets variables
 	private BitmapFont displayFont;
@@ -188,7 +204,7 @@ public class GameController implements ContactListener, Screen {
 	private Hashtable<String, Texture> filmStripDict = new Hashtable<String, Texture>();
 
 	// GAME CONSTANTS
-	private static final int EXIT_COUNT = 60; // How many frames after winning/losing do we continue?
+	private static final int EXIT_COUNT = 0; // How many frames after winning/losing do we continue?
 	public static final int EXIT_QUIT = 0; // Exit code for quitting the game
 	public static final int EXIT_NEXT = 1; // Exit code for advancing to next level
 	public static final int EXIT_PREV = 2; // Exit code for jumping back to previous level
@@ -229,7 +245,7 @@ public class GameController implements ContactListener, Screen {
 	private World world;
 	private Level level;
 
-	private int currentLevel = 0;
+	private int currentLevel;
 	private int currentCotton = 0; //for shadow duggi
 	private PooledList<Vector2> cottonFlowers= new PooledList<Vector2>();
 
@@ -255,6 +271,8 @@ public class GameController implements ContactListener, Screen {
 	public static int mouseCooldown = 0;
 	public static int tutSwitch = 0;
 	public static int tenSec;
+	private int playDoorDown = 0;
+	private int playDoorUp = 0;
 
 	/** Timer */
 	float levelTime = 300;
@@ -364,16 +382,20 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_EATING_STRIP_RIGHT);
 		manager.load(CARNIVORE_CHARGE_STRIP_FRONT, Texture.class);
 		assets.add(CARNIVORE_CHARGE_STRIP_FRONT);
-        manager.load(CARNIVORE_CHARGE_STRIP_LEFT, Texture.class);
-        assets.add(CARNIVORE_CHARGE_STRIP_LEFT);
+		manager.load(CARNIVORE_CHARGE_STRIP_LEFT, Texture.class);
+		assets.add(CARNIVORE_CHARGE_STRIP_LEFT);
 		manager.load(CARNIVORE_CHARGE_STRIP_RIGHT, Texture.class);
 		assets.add(CARNIVORE_CHARGE_STRIP_RIGHT);
+		manager.load(CARNIVORE_CHARGE_STRIP_BACK, Texture.class);
+		assets.add(CARNIVORE_CHARGE_STRIP_BACK);
 		manager.load(CARNIVORE_ATTACK_STRIP_FRONT, Texture.class);
 		assets.add(CARNIVORE_ATTACK_STRIP_FRONT);
-        manager.load(CARNIVORE_ATTACK_STRIP_LEFT, Texture.class);
-        assets.add(CARNIVORE_ATTACK_STRIP_LEFT);
+		manager.load(CARNIVORE_ATTACK_STRIP_LEFT, Texture.class);
+		assets.add(CARNIVORE_ATTACK_STRIP_LEFT);
 		manager.load(CARNIVORE_ATTACK_STRIP_RIGHT, Texture.class);
 		assets.add(CARNIVORE_ATTACK_STRIP_RIGHT);
+		manager.load(CARNIVORE_ATTACK_STRIP_BACK, Texture.class);
+		assets.add(CARNIVORE_ATTACK_STRIP_BACK);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
 		manager.load(EDIBLE_WALL_FILE, Texture.class);
@@ -402,10 +424,18 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_CHARGE_STRIP_LEFT);
 		manager.load(ENEMY_CHARGE_STRIP_RIGHT, Texture.class);
 		assets.add(ENEMY_CHARGE_STRIP_RIGHT);
+		manager.load(ENEMY_CHARGE_STRIP_BACK, Texture.class);
+		assets.add(ENEMY_CHARGE_STRIP_BACK);
+		manager.load(ENEMY_CHARGE_STRIP_FRONT, Texture.class);
+		assets.add(ENEMY_CHARGE_STRIP_FRONT);
 		manager.load(ENEMY_ATTACK_STRIP_LEFT, Texture.class);
 		assets.add(ENEMY_ATTACK_STRIP_LEFT);
 		manager.load(ENEMY_ATTACK_STRIP_RIGHT, Texture.class);
 		assets.add(ENEMY_ATTACK_STRIP_RIGHT);
+		manager.load(ENEMY_ATTACK_STRIP_FRONT, Texture.class);
+		assets.add(ENEMY_ATTACK_STRIP_FRONT);
+		manager.load(ENEMY_ATTACK_STRIP_BACK, Texture.class);
+		assets.add(ENEMY_ATTACK_STRIP_BACK);
 		manager.load(ENEMY_LEFT_EATING_STRIP, Texture.class);
 		assets.add(ENEMY_LEFT_EATING_STRIP);
 		manager.load(UNKILLABLE_ENEMY_STRIP_LEFT, Texture.class);
@@ -542,6 +572,24 @@ public class GameController implements ContactListener, Screen {
 		assets.add(TUT_FOUR_A);
 		manager.load(TUT_FOUR_B, Texture.class);
 		assets.add(TUT_FOUR_B);
+		manager.load(TUT_SIX_A, Texture.class);
+		assets.add(TUT_SIX_A);
+		manager.load(TUT_SIX_B, Texture.class);
+		assets.add(TUT_SIX_B);
+		manager.load(TUT_SIX_C, Texture.class);
+		assets.add(TUT_SIX_C);
+		manager.load(TUT_SIX_D, Texture.class);
+		assets.add(TUT_SIX_D);
+		manager.load(TUT_SEVEN_A, Texture.class);
+		assets.add(TUT_SEVEN_A);
+		manager.load(TUT_SEVEN_B, Texture.class);
+		assets.add(TUT_SEVEN_B);
+		manager.load(TUT_EIGHT_A, Texture.class);
+		assets.add(TUT_EIGHT_A);
+		manager.load(TUT_NINE_A, Texture.class);
+		assets.add(TUT_NINE_A);
+        manager.load(TUT_NINE_B, Texture.class);
+        assets.add(TUT_NINE_B);
 
 		jsonReader = new JsonReader();
 	}
@@ -646,6 +694,15 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("3b", createTexture(manager, TUT_THREE_B, false));
 		textureDict.put("4a", createTexture(manager, TUT_FOUR_A, false));
 		textureDict.put("4b", createTexture(manager, TUT_FOUR_B, false));
+        textureDict.put("6a", createTexture(manager, TUT_SIX_A, false));
+        textureDict.put("6b", createTexture(manager, TUT_SIX_B, false));
+        textureDict.put("6c", createTexture(manager, TUT_SIX_C, false));
+        textureDict.put("6d", createTexture(manager, TUT_SIX_D, false));
+        textureDict.put("7a", createTexture(manager, TUT_SEVEN_A, false));
+        textureDict.put("7b", createTexture(manager, TUT_SEVEN_B, false));
+        textureDict.put("8a", createTexture(manager, TUT_EIGHT_A, false));
+        textureDict.put("9a", createTexture(manager, TUT_NINE_A, false));
+        textureDict.put("9b", createTexture(manager, TUT_NINE_B, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
@@ -665,11 +722,13 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("carnivoreEatingFront", createFilmTexture(manager,CARNIVORE_EATING_STRIP_FRONT));
 		filmStripDict.put("carnivoreEatingBack", createFilmTexture(manager,CARNIVORE_EATING_STRIP_LEFT));
 		filmStripDict.put("carnivoreChargeFront", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_FRONT));
-        filmStripDict.put("carnivoreChargeLeft", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_LEFT));
+		filmStripDict.put("carnivoreChargeLeft", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_LEFT));
 		filmStripDict.put("carnivoreChargeRight", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_RIGHT));
+		filmStripDict.put("carnivoreChargeBack", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_BACK));
 		filmStripDict.put("carnivoreAttackFront", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_FRONT));
-        filmStripDict.put("carnivoreAttackLeft", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_LEFT));
+		filmStripDict.put("carnivoreAttackLeft", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_LEFT));
 		filmStripDict.put("carnivoreAttackRight", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_RIGHT));
+		filmStripDict.put("carnivoreAttackBack", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_BACK));
 		filmStripDict.put("herbivoreLeft", createFilmTexture(manager,HERBIVORE_STRIP_LEFT));
 		filmStripDict.put("herbivoreRight", createFilmTexture(manager,HERBIVORE_STRIP_RIGHT));
 		filmStripDict.put("herbivoreFront", createFilmTexture(manager,HERBIVORE_STRIP_FRONT));
@@ -692,8 +751,12 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("enemyStunnedBack", createFilmTexture(manager,ENEMY_STUNNED_STRIP_BACK));
 		filmStripDict.put("enemyChargeLeft", createFilmTexture(manager,ENEMY_CHARGE_STRIP_LEFT));
 		filmStripDict.put("enemyChargeRight", createFilmTexture(manager,ENEMY_CHARGE_STRIP_RIGHT));
+		filmStripDict.put("enemyChargeBack", createFilmTexture(manager,ENEMY_CHARGE_STRIP_BACK));
+		filmStripDict.put("enemyChargeFront", createFilmTexture(manager,ENEMY_CHARGE_STRIP_FRONT));
 		filmStripDict.put("enemyAttackLeft", createFilmTexture(manager,ENEMY_ATTACK_STRIP_LEFT));
 		filmStripDict.put("enemyAttackRight", createFilmTexture(manager,ENEMY_ATTACK_STRIP_RIGHT));
+		filmStripDict.put("enemyAttackFront", createFilmTexture(manager,ENEMY_ATTACK_STRIP_FRONT));
+		filmStripDict.put("enemyAttackBack", createFilmTexture(manager,ENEMY_ATTACK_STRIP_BACK));
 		filmStripDict.put("enemyLeftEating", createFilmTexture(manager,ENEMY_LEFT_EATING_STRIP));
 		filmStripDict.put("edibleWallEating", createFilmTexture(manager, EDIBLE_WALL_EATING_STRIP));
 
@@ -775,8 +838,11 @@ public class GameController implements ContactListener, Screen {
 	 * @param value whether the level is completed.
 	 */
 	public void setComplete(boolean value) {
-		if (value)
+		if (value) {
 			countdown = EXIT_COUNT;
+			SoundController.getInstance().playLevelWin();
+		}
+
 
 		complete = value;
 	}
@@ -838,6 +904,8 @@ public class GameController implements ContactListener, Screen {
 
 	}
 
+	public void setCurrentLevel(int l){currentLevel = l;}
+
 	/**
 	 * Creates a new game world
 	 *
@@ -846,7 +914,7 @@ public class GameController implements ContactListener, Screen {
 	protected GameController(Vector2 gravity) {
 		assets = new Array<String>();
 		world = new World(gravity,false);
-		level = new Level(world, currentLevel);
+		level = new Level(world, 0);
 		complete = false;
 		failed = false;
 		timeOut = false;
@@ -890,7 +958,7 @@ public class GameController implements ContactListener, Screen {
 
 	public void nextLevel(){
 
-		if (currentLevel == 7)
+		if (currentLevel == 14)
 			currentLevel = 0;
 		else
 			currentLevel++;
@@ -898,16 +966,13 @@ public class GameController implements ContactListener, Screen {
 		reset();
 	}
 
-
-	public void setCurrentLevel(int l){currentLevel = l;}
-
 	/**
 	 * Resets the status of the game so that we can play again.
 	 *
 	 * This method disposes of the world and creates a new one.
 	 */
 	public void reset() {
-        totalTime = levelTime;
+		totalTime = levelTime;
 		Vector2 gravity = new Vector2(world.getGravity() );
 
 		level.dispose();
@@ -951,13 +1016,12 @@ public class GameController implements ContactListener, Screen {
 		//shadowDuggiGotCotton = true;
 
 		// Set the lighting
-		if (level.getIsNight()){
+		float value = 1.0f - level.getCurrentLevel()/40.0f;
+		if (level.getCurrentLevel() > 5){
 			duggiLight.setActive(true);
-			rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
-		}else {
-			duggiLight.setActive(false);
-			rayhandler.setAmbientLight(1.0f,1.0f,1.0f,1.0f);
 		}
+		rayhandler.setAmbientLight(1.0f, value, value, value);
+
 
 		// This should be set before init lighting - should be moved when we load in the json
 		cameraBounds = new Rectangle(0,0,32,18);
@@ -986,6 +1050,9 @@ public class GameController implements ContactListener, Screen {
 			fireLight.attachToBody(level.getFirefly(i).getBody(), fireLight.getX(), fireLight.getY(),
 					fireLight.getDirection());
 		}
+
+		playDoorDown = 0;
+		playDoorUp = 1;
 
 //		enemyLights = new LightSource[level.getEnemies().size()];
 //
@@ -1032,7 +1099,7 @@ public class GameController implements ContactListener, Screen {
 
 		// Temporary hardcoding
 		// Handle nightmode
-		
+
 		if (input.didNight()) {
 			if (duggiLight.isActive()) {
 				duggiLight.setActive(false);
@@ -1054,10 +1121,11 @@ public class GameController implements ContactListener, Screen {
 			totalTime = levelTime;
 		} else if (countdown == 0) {
 			if (failed || timeOut) {
-				reset();
+				state = GAME_OVER;
 			}
 			else if (complete) {
-				nextLevel();
+//				nextLevel();
+				state = GAME_OVER;
 			}
 		}
 
@@ -1165,56 +1233,96 @@ public class GameController implements ContactListener, Screen {
 			}
 			canvas.end();
 		}
-
-
-        if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER || state == GAME_PAUSED) {
-            displayFont.setColor(Color.WHITE);
+        else if (currentLevel == 5) {
             canvas.beginOverlay();
-            if (seconds < 10) {
-                canvas.drawTextCorner(Integer.toString(minutes)+":0"+Integer.toString(seconds), displayFont, 0.0f);
-            }
-            else if (seconds == 60) {
-                canvas.drawTextCorner(Integer.toString(minutes+1)+":00", displayFont, 0.0f);
+            if ((seconds % 4 >= 2)) {
+                canvas.draw(textureDict.get("6a"), 126, 292);
+                canvas.draw(textureDict.get("6c"), 957, 292);
             }
             else {
-                canvas.drawTextCorner(Integer.toString(minutes)+":"+Integer.toString(seconds), displayFont, 0.0f);
+                canvas.draw(textureDict.get("6b"), 126, 292);
+                canvas.draw(textureDict.get("6d"), 957, 292);
             }
-            //canvas.drawTextCorner(Float.toString(totalTime), displayFont, 0.0f);
+            canvas.end();
+        }
+        else if (currentLevel == 6) {
+            canvas.beginOverlay();
+            if ((seconds % 4 >= 2)) {
+                canvas.draw(textureDict.get("7a"), 126, 292);
+            }
+            else {
+                canvas.draw(textureDict.get("7b"), 126, 292);
+            }
+            canvas.end();
+        }
+        else if (currentLevel == 7) {
+            canvas.beginOverlay();
+            canvas.draw(textureDict.get("8a"), 126, 292);
+            canvas.end();
+        }
+        else if (currentLevel == 8) {
+            canvas.beginOverlay();
+            if ((seconds % 4 >= 2)) {
+                canvas.draw(textureDict.get("9a"), 126, 292);
+            }
+            else {
+                canvas.draw(textureDict.get("9b"), 126, 292);
+            }
             canvas.end();
         }
 
-		// Final message
-		if (complete && !failed) {
+		if (state == GAME_OVER) {
 			displayFont.setColor(Color.YELLOW);
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("victory"),Color.WHITE,canvas.getWidth()/2 - textureDict.get("victory").getRegionWidth()*.75f/2,
-					canvas.getHeight()/2 - textureDict.get("victory").getRegionHeight()*.75f/2,
-					textureDict.get("victory").getRegionWidth()*.75f,textureDict.get("victory").getRegionHeight()*.75f);
-//			canvas.drawTextCentered("DUGGI ESCAPED!", displayFont, 0.0f);
-			canvas.end();
-		} else if (failed) {
-			state = GAME_OVER;
-			displayFont.setColor(Color.RED);
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("gameover"), Color.WHITE,canvas.getWidth()/2 - textureDict.get("gameover").getRegionWidth()*.75f/2,
-					canvas.getHeight()/2 - textureDict.get("gameover").getRegionHeight()*.75f/2,
-					textureDict.get("gameover").getRegionWidth()*.75f,textureDict.get("gameover").getRegionHeight()*.75f);
-			//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
-			canvas.end();
-		} else if (timeOut) {
-			state = GAME_OVER;
-			displayFont.setColor(Color.RED);
-			canvas.beginOverlay();
-			canvas.draw(textureDict.get("gameover"),Color.WHITE,canvas.getWidth()/2 - textureDict.get("gameover").getRegionWidth()*.75f/2,
-					canvas.getHeight()/2 - textureDict.get("gameover").getRegionHeight()*.75f/2,
-					textureDict.get("gameover").getRegionWidth()*.75f,textureDict.get("gameover").getRegionHeight()*.75f);
-			//canvas.drawTextCentered("TIME'S UP!", displayFont, 0.0f);
-			canvas.end();
+			if (complete && !failed) {
+				displayFont.setColor(Color.RED);
+				canvas.beginOverlay();
+				canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("victory").getRegionWidth() * .75f / 2,
+						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
+						textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
+				if (totalTime >= 280) {
+					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
+							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
+							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+					canvas.draw(textureDict.get("victory"), Color.WHITE, 3*canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() *3 * .75f / 4,
+							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * 3 * .75f / 4,
+							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+				}
+				else if (totalTime >= 60) {
+					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
+							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
+							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+				}
+//				else {
+//					//one star here!
+//				}
+
+				canvas.end();
+
+			}
+			else if (failed && !complete) {
+				displayFont.setColor(Color.RED);
+				canvas.beginOverlay();
+				canvas.draw(textureDict.get("gameover"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("gameover").getRegionWidth() * .75f / 2,
+						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
+						textureDict.get("gameover").getRegionWidth() * .75f, textureDict.get("gameover").getRegionHeight() * .75f);
+				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
+				canvas.end();
+			}
+			else if (timeOut) {
+				displayFont.setColor(Color.RED);
+				canvas.beginOverlay();
+				canvas.draw(textureDict.get("gameover"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("gameover").getRegionWidth() * .75f / 2,
+						canvas.getHeight() / 2 - textureDict.get("gameover").getRegionHeight() * .75f / 2,
+						textureDict.get("gameover").getRegionWidth() * .75f, textureDict.get("gameover").getRegionHeight() * .75f);
+				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
+				canvas.end();
+			}
 		}
 
 		if (state == GAME_PAUSED) {
 				displayFont.setColor(Color.YELLOW);
-				if (menuNum != 2) {
+				if (menuNum == 0) {
 					canvas.beginOverlay();
 					canvas.draw(textureDict.get("grayOut"), -9, 0);
 					canvas.draw(textureDict.get("pauseMenu"), 396, 109);
@@ -1239,29 +1347,30 @@ public class GameController implements ContactListener, Screen {
 					if (InputHandler.getInstance().didReturn()) {
 						menuNum = 1;
 						listener.exitScreen(this, 0);
+						menuNum = 0;
 					}
 					else if (InputHandler.getInstance().didHelp()) {
 						menuNum = 2;
 						System.out.println("hello you have reached the help button. pls leave a message after the beep");
 					}
 					else if (InputHandler.getInstance().didRestart()) {
-						menuNum = 3;
+						menuNum = 0;
 						reset();
 
 					}
 					else if (InputHandler.getInstance().didResume()) {
-						menuNum = 4;
+						menuNum = 0;
 						state = GAME_RUNNING;
 					}
 					else if (InputHandler.getInstance().didMusic()) {
-						menuNum = 5;
+//						menuNum = 5;
 						musicState = !musicState;
 						int form = level.getAvatar().getForm();
 						SoundController.getInstance().changeBackground(form);
 
 					}
 					else if (InputHandler.getInstance().didSound()) {
-						menuNum = 6;
+//						menuNum = 6;
 						soundState = !soundState;
 					}
 				}
@@ -1280,7 +1389,61 @@ public class GameController implements ContactListener, Screen {
 					if (InputHandler.getInstance().didExitButton()) {
 						menuNum = 0;
 					}
+					else if (InputHandler.getInstance().didDollHelp()) {
+						menuNum = 7;
+						System.out.println("PRESSED THE DOLL!!!!");
+					}
+					else if (InputHandler.getInstance().didHerbivoreHelp()) {
+						menuNum = 8;
+						System.out.println("PRESSED THE HERBIVORE!!!!");
+					}
 				}
+				if (menuNum == 7) {
+					canvas.beginOverlay();
+					canvas.draw(textureDict.get("helpMenu"), 127, 100);
+					canvas.draw(textureDict.get("exit"), 1100, 524);
+					canvas.draw(textureDict.get("dollIcon"), 215, 222);
+					canvas.draw(textureDict.get("dollHeader"),496, 532);
+					canvas.draw(textureDict.get("pressText"), 480, 424);
+					canvas.draw(textureDict.get("pressText"), 480, 297);
+					canvas.draw(textureDict.get("holdText"), 480, 172);
+					canvas.draw(textureDict.get("oneKey"), 611, 379);
+					canvas.draw(textureDict.get("spaceKey"), 588, 267);
+					canvas.draw(textureDict.get("spaceKey"), 577, 146);
+					canvas.draw(textureDict.get("dollTransform"), 723, 402);
+					canvas.draw(textureDict.get("eat"), 823, 298);
+					canvas.draw(textureDict.get("dollResource"), 951, 280);
+					canvas.draw(textureDict.get("dollText"), 796, 150);
+					canvas.draw(textureDict.get("dollSpecial"), 992, 141);
+					canvas.end();
+
+					if (InputHandler.getInstance().didExitButton()) {
+						menuNum = 0;
+					}
+				}
+				if (menuNum == 8) {
+					canvas.beginOverlay();
+					canvas.draw(textureDict.get("helpMenu"), 127, 100);
+					canvas.draw(textureDict.get("exit"), 1100, 524);
+					canvas.draw(textureDict.get("herbivoreIcon"), 215, 222);
+					canvas.draw(textureDict.get("herbivoreHeader"),496, 532);
+					canvas.draw(textureDict.get("pressText"), 480, 424);
+					canvas.draw(textureDict.get("pressText"), 480, 297);
+					canvas.draw(textureDict.get("holdText"), 480, 172);
+					canvas.draw(textureDict.get("twoKey"), 611, 379);
+					canvas.draw(textureDict.get("spaceKey"), 588, 267);
+					canvas.draw(textureDict.get("spaceKey"), 577, 146);
+					canvas.draw(textureDict.get("herbivoreTransform"), 723, 402);
+					canvas.draw(textureDict.get("eat"), 823, 298);
+					canvas.draw(textureDict.get("herbivoreResource"), 964, 254);
+					canvas.draw(textureDict.get("herbivoreText"), 796, 150);
+					canvas.draw(textureDict.get("herbivoreSpecial"), 992, 141);
+					canvas.end();
+
+					if (InputHandler.getInstance().didExitButton()) {
+						menuNum = 0;
+				}
+			}
 		}
 
 	}
@@ -1307,8 +1470,8 @@ public class GameController implements ContactListener, Screen {
 
 					timeout();
 				}
-					draw(delta);
-					hud.draw();
+				draw(delta);
+				hud.draw();
 			}
 		}
 	}
@@ -1375,7 +1538,10 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	private void updateRunning(float dt) {
-		if (failed) {
+		if (failed && !complete) {
+			state = GAME_OVER;
+		}
+		else if (complete && !failed) {
 			state = GAME_OVER;
 		}
 		else {
@@ -1431,6 +1597,11 @@ public class GameController implements ContactListener, Screen {
 								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.5 &&
 								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) > 0){
 							//////System.out.println("success");
+							playDoorUp = 0;
+							if (playDoorDown == 0){
+								SoundController.getInstance().playDoorOpen();
+								playDoorDown++;
+							}
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
 							}
@@ -1448,9 +1619,14 @@ public class GameController implements ContactListener, Screen {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileTwo"));
 							}
 							else if (i == 3) {
-                                level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
-                            }
+								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
+							}
 						} else {
+							playDoorDown = 0;
+							if (playDoorUp == 0){
+								SoundController.getInstance().playDoorOpen();
+								playDoorUp++;
+							}
 							level.getAvatar().setCanExit(false);
 							level.getDoor(i).setLowered(false);
 							if (i == 0) {
@@ -1463,12 +1639,17 @@ public class GameController implements ContactListener, Screen {
 								level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
 							}
 							else if (i == 3) {
-                                level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
-                            }
+								level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
+							}
 
 						}
 					}
 				} else {
+					if (playDoorUp == 0 && playDoorDown > 0){
+						SoundController.getInstance().playDoorOpen();
+						playDoorUp++;
+					}
+					playDoorDown = 0;
 					for (int i = 0; i < level.getDoors().size(); i++) {
 						level.getAvatar().setCanExit(false);
 						level.getDoor(i).setLowered(false);
@@ -1482,11 +1663,12 @@ public class GameController implements ContactListener, Screen {
 							level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
 						}
 						else if (i == 3) {
-                            level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
-                        }
+							level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
+						}
 					}
 				}
 			}
+
 			if (rayhandler != null) {
 				SoundController.getInstance().checkMusicEnd();
 				if (rayhandler != null)
@@ -1503,7 +1685,7 @@ public class GameController implements ContactListener, Screen {
 				raycamera.position.x = cameraBounds.width / 2;
 			} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > level.getLevelWidth() - halfWidth) {
 				canvas.getCamera().position.x = level.getLevelWidth() - halfWidth;
-				raycamera.position.x = cameraBounds.width - cameraBounds.width / 2;
+				raycamera.position.x = 2*(level.getLevelWidth()/80.0f) - cameraBounds.width / 2;
 			} else {
 				canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
 				raycamera.position.x = avatar.getX();
@@ -1514,7 +1696,7 @@ public class GameController implements ContactListener, Screen {
 				raycamera.position.y = cameraBounds.height / 2;
 			} else if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight > level.getLevelHeight() - halfHeight) {
 				canvas.getCamera().position.y = level.getLevelHeight() - halfHeight;
-				raycamera.position.y = cameraBounds.height - cameraBounds.height / 2;
+				raycamera.position.y = 2*(level.getLevelHeight()/80f) - cameraBounds.height / 2;
 			} else {
 				canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
 				raycamera.position.y = avatar.getY();
@@ -1523,6 +1705,7 @@ public class GameController implements ContactListener, Screen {
 			canvas.getCamera().update();
 			raycamera.update();
 			rayhandler.setCombinedMatrix(raycamera);
+			//System.out.println("raycamera position is " + raycamera.position);
 
 			// Process FireFly updates
 			for (FireFlyAIController ffAI : fireFlyControls)
@@ -1635,7 +1818,7 @@ public class GameController implements ContactListener, Screen {
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 
 						avatar = avatar.transformToDoll();
-                        avatar.setCanBeSeen(true);
+						avatar.setCanBeSeen(true);
 
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
@@ -1648,7 +1831,7 @@ public class GameController implements ContactListener, Screen {
 								filmStripDict.get("dollFront"), 8);
 						avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
 								filmStripDict.get("dollEatingRight"), 7,
-								filmStripDict.get("dollEatingBack"), 7,
+								filmStripDict.get("dollEatingBack"), 6,
 								filmStripDict.get("dollEatingFront"), 7);
 						avatar.setActionTextureSet(filmStripDict.get("dollCloningFront"), 12,
 								filmStripDict.get("dollCloningFront"), 12,
@@ -1662,7 +1845,7 @@ public class GameController implements ContactListener, Screen {
 					} else if (InputHandler.getInstance().didTransformHerbi() &&
 							avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
 						avatar = avatar.transformToHerbivore();
-                        avatar.setCanBeSeen(true);
+						avatar.setCanBeSeen(true);
 
 						//Change the filter data
 						Filter filter = avatar.getFilterData();
@@ -1685,7 +1868,7 @@ public class GameController implements ContactListener, Screen {
 					} else if (InputHandler.getInstance().didTransformCarni() &&
 							avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
 						avatar = avatar.transformToCarnivore();
-                        avatar.setCanBeSeen(true);
+						avatar.setCanBeSeen(true);
 
 						Filter filter = avatar.getFilterData();
 						filter.categoryBits = Dinosaur.carnCatBits;
@@ -1701,11 +1884,11 @@ public class GameController implements ContactListener, Screen {
 								filmStripDict.get("carnivoreEatingFront"), 12);
 						avatar.setActionLoadingTextureSet(filmStripDict.get("carnivoreChargeLeft"), 15, 12,
 								filmStripDict.get("carnivoreChargeRight"), 15, 12,
-								filmStripDict.get("carnivoreChargeLeft"), 15, 12,
-								filmStripDict.get("carnivoreChargeFront"),  9, 4);
+								filmStripDict.get("carnivoreChargeBack"), 8, 4,
+								filmStripDict.get("carnivoreChargeFront"),  11, 5);
 						avatar.setActionTextureSet(filmStripDict.get("carnivoreAttackLeft"), 9,
 								filmStripDict.get("carnivoreAttackRight"), 9,
-								filmStripDict.get("carnivoreAttackLeft"), 9,
+								filmStripDict.get("carnivoreAttackBack"), 6,
 								filmStripDict.get("carnivoreAttackFront"), 10);
 
 						level.setAvatar(avatar);
@@ -1716,251 +1899,25 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 
-			GameObject b = level.objectInFrontOfAvatar();
-			for (int i = 0; i < level.getBoulders().size(); i++) {
-				if (b != null && b.getType() == BOULDER &&
-						Math.abs(level.getBoulder(i).getGridLocation().x - level.getAvatarGridX()) <= 1
-						&& Math.abs(level.getBoulder(i).getGridLocation().y - level.getAvatarGridY()) <= 1 &&
-						b == level.getBoulder(i) && avatar.getForm() == Dinosaur.CARNIVORE_FORM &&
-						((Carnivore) avatar).getActionInProgress()) {
-					level.getBoulder(i).setBodyType(BodyDef.BodyType.DynamicBody);
+			// Sound for transformation
+			if(InputHandler.getInstance().didTransform()){
+				if (InputHandler.getInstance().didTransformDoll() &&
+						avatar.getForm() != Dinosaur.DOLL_FORM && level.getAvatar().getResources() < 3){
+					SoundController.getInstance().playFull();
+					hud.flashResourceBar();
 
-					if (direction == Dinosaur.RIGHT) {
-						if (level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
-								(int) (((Boulder) b).getGridLocation().y)) != null &&
-								level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
-										(int) (((Boulder) b).getGridLocation().y)).getType() != SWITCH) {
-						} else {
-							for (int k = 0; k < level.getSwitches().size(); k++) {
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
-									isSwitch = true;
-									tmp = level.getSwitch(k);
-									tmpx = ((Switch) tmp).getGridLocation().x;
-									tmpy = ((Switch) tmp).getGridLocation().y;
-								}
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
-									tmp = level.getSwitch(k);
-								}
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
-									tmp = level.getSwitch(k);
-								}
-							}
-							for (int m = 0; m < level.getCottonFlowers().size(); m++) {
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getCottonFlower(m)) {
-									isCotton = true;
-									tmp = level.getCottonFlower(m);
-									tmpx = ((CottonFlower) tmp).getGridLocation().x;
-									tmpy = ((CottonFlower) tmp).getGridLocation().y;
-								}
-							}
 
-							level.getBoulder(i).setVX(125);
-							level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
-									[(int) (((Boulder) b).getGridLocation().y)] = b;
-
-							level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y)] = null;
-							((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x + 1.0f, ((Boulder) b).getGridLocation().y);
-							if (isSwitch == true && ((Boulder) b).getGridLocation().x != tmpx) {
-								((Switch) tmp).setGridLocation(tmpx, tmpy);
-								level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
-								isSwitch = false;
-							} else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
-								((CottonFlower) tmp).setGridLocation(tmpx, tmpy);
-								level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
-								isCotton = false;
-							}
-
-							for (int n = 0; n < level.getEnemies().size(); n++) {
-								if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX() - 1) / 2) <= 1
-										&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY() - 1) / 2) <= 1) {
-									level.getEnemy(n).setVX(1);
-								}
-							}
-						}
-
-					} else if (direction == Dinosaur.LEFT) {
-						if (level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
-								(int) (((Boulder) b).getGridLocation().y)) != null &&
-								level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
-										(int) (((Boulder) b).getGridLocation().y)).getType() != SWITCH &&
-								level.getGridObject((int) (((Boulder) b).getGridLocation().x + 1),
-										(int) (((Boulder) b).getGridLocation().y)).getType() != COTTON) {
-						} else {
-							for (int k = 0; k < level.getSwitches().size(); k++) {
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
-									isSwitch = true;
-									tmp = level.getSwitch(k);
-									tmpx = ((Switch) tmp).getGridLocation().x;
-									tmpy = ((Switch) tmp).getGridLocation().y;
-								}
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
-									tmp = level.getSwitch(k);
-								}
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x + 1)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
-									tmp = level.getSwitch(k);
-								}
-							}
-							for (int m = 0; m < level.getCottonFlowers().size(); m++) {
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getCottonFlower(m)) {
-									isCotton = true;
-									tmp = level.getCottonFlower(m);
-									tmpx = ((CottonFlower) tmp).getGridLocation().x;
-									tmpy = ((CottonFlower) tmp).getGridLocation().y;
-								}
-							}
-							level.getBoulder(i).setVX(-125);
-							level.getGrid()[(int) (((Boulder) b).getGridLocation().x - 1)]
-									[(int) (((Boulder) b).getGridLocation().y)] = b;
-
-							level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y)] = null;
-							((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x - 1.0f, ((Boulder) b).getGridLocation().y);
-							if (isSwitch == true && ((Boulder) b).getGridLocation().x != tmpx) {
-								((Switch) tmp).setGridLocation(tmpx, tmpy);
-								level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
-								isSwitch = false;
-							} else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
-								((CottonFlower) tmp).setGridLocation(tmpx, tmpy);
-								level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
-								isCotton = false;
-							}
-
-							for (int n = 0; n < level.getEnemies().size(); n++) {
-								if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX() - 1) / 2) <= 1
-										&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY() - 1) / 2) <= 1) {
-									level.getEnemy(n).setVX(-1);
-								}
-							}
-
-						}
-					} else if (direction == Dinosaur.UP) {
-						if (level.getGridObject((int) (((Boulder) b).getGridLocation().x),
-								(int) (((Boulder) b).getGridLocation().y + 1)) != null &&
-								level.getGridObject((int) (((Boulder) b).getGridLocation().x),
-										(int) (((Boulder) b).getGridLocation().y + 1)).getType() != SWITCH) {
-						} else {
-							for (int k = 0; k < level.getSwitches().size(); k++) {
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y + 1)] == level.getSwitch(k)) {
-									isSwitch = true;
-									tmp = level.getSwitch(k);
-									tmpx = ((Switch) tmp).getGridLocation().x;
-									tmpy = ((Switch) tmp).getGridLocation().y;
-								}
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
-									tmp = level.getSwitch(k);
-								}
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y - 1)] == level.getSwitch(k)) {
-									tmp = level.getSwitch(k);
-								}
-							}
-							for (int m = 0; m < level.getCottonFlowers().size(); m++) {
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y + 1)] == level.getCottonFlower(m)) {
-									isCotton = true;
-									tmp = level.getCottonFlower(m);
-									tmpx = ((CottonFlower) tmp).getGridLocation().x;
-									tmpy = ((CottonFlower) tmp).getGridLocation().y;
-								}
-							}
-							level.getBoulder(i).setVY(125);
-							level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y + 1)] = b;
-
-							level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y)] = null;
-							((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y + 1.0f);
-							if (isSwitch == true && ((Boulder) b).getGridLocation().y != tmpy) {
-								((Switch) tmp).setGridLocation(tmpx, tmpy);
-								level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
-								isSwitch = false;
-							} else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
-								((CottonFlower) tmp).setGridLocation(tmpx, tmpy);
-								level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
-								isCotton = false;
-							}
-
-							for (int n = 0; n < level.getEnemies().size(); n++) {
-								if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX() - 1) / 2) <= 1
-										&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY() - 1) / 2) <= 1) {
-									level.getEnemy(n).setVY(1);
-								}
-							}
-
-						}
-					} else if (direction == Dinosaur.DOWN) {
-						if (level.getGridObject((int) (((Boulder) b).getGridLocation().x),
-								(int) (((Boulder) b).getGridLocation().y - 1)) != null &&
-								level.getGridObject((int) (((Boulder) b).getGridLocation().x),
-										(int) (((Boulder) b).getGridLocation().y - 1)).getType() != SWITCH) {
-						} else {
-							for (int k = 0; k < level.getSwitches().size(); k++) {
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y - 1)] == level.getSwitch(k)) {
-									isSwitch = true;
-									tmp = level.getSwitch(k);
-									tmpx = ((Switch) tmp).getGridLocation().x;
-									tmpy = ((Switch) tmp).getGridLocation().y;
-								}
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y)] == level.getSwitch(k)) {
-									tmp = level.getSwitch(k);
-								}
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y + 1)] == level.getSwitch(k)) {
-									tmp = level.getSwitch(k);
-								}
-							}
-							for (int m = 0; m < level.getCottonFlowers().size(); m++) {
-								if (level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-										[(int) (((Boulder) b).getGridLocation().y - 1)] == level.getCottonFlower(m)) {
-									isCotton = true;
-									tmp = level.getCottonFlower(m);
-									tmpx = ((CottonFlower) tmp).getGridLocation().x;
-									tmpy = ((CottonFlower) tmp).getGridLocation().y;
-								}
-							}
-							level.getBoulder(i).setVY(-125);
-							level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y - 1)] = b;
-
-							level.getGrid()[(int) (((Boulder) b).getGridLocation().x)]
-									[(int) (((Boulder) b).getGridLocation().y)] = null;
-							((Boulder) b).setGridLocation(((Boulder) b).getGridLocation().x, ((Boulder) b).getGridLocation().y - 1.0f);
-							if (isSwitch == true && ((Boulder) b).getGridLocation().y != tmpy) {
-								((Switch) tmp).setGridLocation(tmpx, tmpy);
-								level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
-								isSwitch = false;
-							} else if (isCotton == true && ((Boulder) b).getGridLocation().x != tmpx) {
-								((CottonFlower) tmp).setGridLocation(tmpx, tmpy);
-								level.getGrid()[(int) tmpx][(int) tmpy] = tmp;
-								isCotton = false;
-							}
-
-							for (int n = 0; n < level.getEnemies().size(); n++) {
-								if (Math.abs(level.getBoulder(i).getGridLocation().x - (level.getEnemy(n).getX() - 1) / 2) <= 1
-										&& Math.abs(level.getBoulder(i).getGridLocation().y - (level.getEnemy(n).getY() - 1) / 2) <= 1) {
-									level.getEnemy(n).setVY(-1);
-								}
-							}
-
-						}
-					}
-					avatar.stopAction();
-				} else {
-					level.getBoulder(i).setBodyType(BodyDef.BodyType.StaticBody);
+				} else if (InputHandler.getInstance().didTransformHerbi() &&
+						avatar.getForm() != Dinosaur.HERBIVORE_FORM && level.getAvatar().getResources() < 3){
+					SoundController.getInstance().playFull();
+					hud.flashResourceBar();
 				}
+				else if (InputHandler.getInstance().didTransformCarni() &&
+						avatar.getForm() != Dinosaur.CARNIVORE_FORM && level.getAvatar().getResources() < 3){
+					SoundController.getInstance().playFull();
+					hud.flashResourceBar();
+				}
+
 			}
 
 			if (level.getClone() != null && (removeClone || level.getClone().getRemoved())) {
@@ -1980,19 +1937,28 @@ public class GameController implements ContactListener, Screen {
 			if (InputHandler.getInstance().didAction()) {
 				if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 					GameObject cotton = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
-					if (cotton != null && cotton.getType() == COTTON && avatar.getResources() < 3) {
-						SoundController.getInstance().playCottonPickup();
-						level.removeObject(cotton);
-						avatar.incrementResources();
+					if (cotton != null && cotton.getType() == COTTON) {
+						if (avatar.getResources() < 3){
+							SoundController.getInstance().playCottonPickup();
+							level.removeObject(cotton);
+							avatar.incrementResources();
+						} else {
+							SoundController.getInstance().playFull();
+							hud.flashResourceBar();
+						}
+
 					} else {
-						if (!avatar.inActionCycle())
+						if (!avatar.inActionCycle()) {
+							SoundController.getInstance().playChargeSound();
 							avatar.loadAction();
+						}
 					}
 				} else if (avatar.getForm() == Dinosaur.HERBIVORE_FORM) {
 					GameObject tmp = level.objectInFrontOfAvatar();
 					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
 					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
 						if (!avatar.inActionCycle()){
+							SoundController.getInstance().playChargeSound();
 							avatar.loadAction();
 						}
 //						if (avatar.getActionLoadValue() == 0){
@@ -2002,67 +1968,92 @@ public class GameController implements ContactListener, Screen {
 //						} else if (!avatar.inActionCycle()){
 //							avatar.loadAction();
 //						}
-					} else {
-//					    avatar.setCanBeSeen(!avatar.getCanBeSeen());
-                    }
+					}
 				} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 					boolean ate = false;
 
 					for (int i = 0; i < level.getEnemies().size(); i++) {
 						Enemy tmp = level.getEnemy(i);
 						if (tmp.getStunned() && level.isInFrontOfAvatar(tmp)
-								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5 && avatar.getResources() < 3) {
-							SoundController.getInstance().playEat();
-							if (!tmp.getEatInProgress()){
-								avatar.incrementResources();
+								&& tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
+							if (avatar.getResources() < 3){
+								SoundController.getInstance().playCrunch();
+								if (!tmp.getEatInProgress()){
+									avatar.incrementResources();
+								}
+								tmp.beginEating();
+								ate = true;
+								break;
+							} else {
+								SoundController.getInstance().playFull();
+								hud.flashResourceBar();
+								break;
 							}
-							tmp.beginEating();
-							ate = true;
-							break;
+
 						}
 					}
 
-					if (!ate && !avatar.inActionCycle())
+					if (!ate && !avatar.inActionCycle()) {
+						SoundController.getInstance().playFootDrag();
 						avatar.loadAction();
+					}
+
 				}
 			}
 
 			if (level.getAvatar().getActionComplete()) {
 				if (level.getAvatar().getForm() == Dinosaur.DOLL_FORM) {
-                    if (level.getClone() != null) {
-                        level.removeClone();
-                    }
+					if (level.getClone() != null) {
+						level.removeClone();
+					}
 					level.getAvatar().useAction();
+					SoundController.getInstance().playPlop();
 					level.placeClone();
 				} else if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
 					level.getAvatar().useAction();
 					GameObject tmp = level.objectInFrontOfAvatar();
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
-						SoundController.getInstance().playEat();
-						((EdibleObject) tmp).beginEating();
+						SoundController.getInstance().playMunch();
 						avatar.setCanBeSeen(false);
 					}
 				}
 			}
 
+			// Charge Sounds
+			if (avatar.getActionLoadValue() > 0.25f){
+				SoundController.getInstance().playChargeSound();
+			}
+			if (avatar.getActionReady()){
+				SoundController.getInstance().playChargeSound();
+
+			}
 
 			if (InputHandler.getInstance().didActionRelease()) {
 				if (avatar.getForm() == Dinosaur.HERBIVORE_FORM && avatar.getActionLoadValue() < 0.25f && avatar.getActionLoadValue()>0) {
 					GameObject tmp = level.objectInFrontOfAvatar();
 
 					float dist = level.getStraightDist(avatar.getDirection(), tmp, avatar);
-					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5
-							&& avatar.getResources() < 3) {
-						SoundController.getInstance().playEat();
-						if (!((EdibleObject) tmp).getEatInProgress()){
-							avatar.incrementResources();
+					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
+						if (avatar.getResources() < 3){
+							SoundController.getInstance().playMunch();
+							if (!((EdibleObject) tmp).getEatInProgress()){
+								avatar.incrementResources();
+							}
+							((EdibleObject) tmp).beginEating();
+						} else {
+							SoundController.getInstance().playFull();
+							hud.flashResourceBar();
 						}
-						((EdibleObject) tmp).beginEating();
 					}
 				}
 
 				if (avatar.actionReady()) {
 					avatar.beginAction();
+					if (avatar.getForm() == Dinosaur.CARNIVORE_FORM &&
+							((Carnivore) avatar).getAdjacentBoulder() != null &&
+							level.isInFrontOfAvatar(((Carnivore) avatar).getAdjacentBoulder())) {
+						level.pushBoulder(avatar, ((Carnivore) avatar).getAdjacentBoulder());
+					}
 				} else {
 					avatar.stopAction();
 				}
@@ -2075,7 +2066,7 @@ public class GameController implements ContactListener, Screen {
 
 			avatar.applyForce();
 
-			hud.update(avatar.getResources(), avatar.getForm());
+			hud.update(avatar.getResources(), avatar.getForm(), level.getClone(), totalTime);
 		}
 	}
 
@@ -2091,7 +2082,25 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	private void updateGameOver() {
-		state = GAME_READY;
+		if (failed && !complete) {
+			if (InputHandler.getInstance().didPause()) {
+				state = GAME_RUNNING;
+				nextLevel();
+			}
+		} else if (timeOut) {
+			if (InputHandler.getInstance().didPause()) {
+				state = GAME_RUNNING;
+				nextLevel();
+			}
+		}
+
+		if (complete && !failed) {
+			if (InputHandler.getInstance().didPause()) {
+				state = GAME_RUNNING;
+				nextLevel();
+			}
+		}
+
 	}
 	/**
 	 * Callback method for the start of a collision
@@ -2112,7 +2121,31 @@ public class GameController implements ContactListener, Screen {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
 
+	/** Unused ContactListener method */
+	public void endContact(Contact contact) {
+		Fixture fix1 = contact.getFixtureA();
+		Fixture fix2 = contact.getFixtureB();
+
+		Body body1 = fix1.getBody();
+		Body body2 = fix2.getBody();
+
+		try {
+			GameObject bd1 = (GameObject)body1.getUserData();
+			GameObject bd2 = (GameObject)body2.getUserData();
+
+			if (bd1.getType() == DUGGI && ((Dinosaur) bd1).getForm() == Dinosaur.CARNIVORE_FORM
+					&& bd2.getType() == BOULDER) {
+				((Carnivore) bd1).setNextToBoulder(null);
+			}
+			if (bd2.getType() == DUGGI && ((Dinosaur) bd2).getForm() == Dinosaur.CARNIVORE_FORM
+					&& bd1.getType() == BOULDER) {
+				((Carnivore) bd2).setNextToBoulder(null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -2167,9 +2200,6 @@ public class GameController implements ContactListener, Screen {
 	public void pause() {}
 	/** Unused Screen method */
 	public void resume() {}
-
-	/** Unused ContactListener method */
-	public void endContact(Contact contact) {}
 	/** Unused ContactListener method */
 	public void postSolve(Contact contact, ContactImpulse impulse) {}
 	/** Unused ContactListener method */
