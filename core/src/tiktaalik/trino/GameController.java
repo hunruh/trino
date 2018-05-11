@@ -44,7 +44,7 @@ public class GameController implements ContactListener, Screen {
 	private Array<String> assets; // Track all loaded assets (for unloading purposes)
 
 	// Sounds files
-	private static String FONT_FILE = "shared/Montserrat/Montserrat-Bold.ttf";
+	private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
 	private static int FONT_SIZE = 64;
 
 	// Texture files
