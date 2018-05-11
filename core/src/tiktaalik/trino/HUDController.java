@@ -264,6 +264,15 @@ public class HUDController  {
 
     private void drawForm(Canvas canvas) {
         Vector2 origin = new Vector2(wood.getRegionWidth()/2.0f, wood.getRegionHeight()/2.0f);
+        Color color = Color.WHITE;
+
+        if (cloneTime >= 60.0f){
+            color = new Color(0.75f,0.75f,0.75f,1);
+        }
+
+        canvas.draw(wood, color, origin.x, origin.y, -75f,canvas.getHeight() - 105.0f
+                ,0,-0.80f,0.80f);
+
         canvas.draw(wood, Color.WHITE, origin.x, origin.y, 160.0f,canvas.getHeight() - 20.0f
                 ,0,0.80f,0.80f);
         if (transformation == Dinosaur.DOLL_FORM) {
@@ -335,11 +344,19 @@ public class HUDController  {
         Vector2 origin = new Vector2(fs.getRegionWidth()/2.0f, fs.getRegionHeight()/2.0f);
         int frame =  (int) ((cloneTime / 60.0f) * (float) 11);
         fs.setFrame(frame);
-        canvas.draw(fs, Color.WHITE,origin.x,origin.y, 45.0f,
-              canvas.getHeight()/2.0f + 215.0f,0,0.15f,0.15f);
+
+        Color color = Color.WHITE;
+
+        if (cloneTime >= 60.0f){
+            color = new Color(0.75f,0.75f,0.75f,1);
+        }
+
+        canvas.draw(fs, color,origin.x,origin.y, 45.0f,
+                canvas.getHeight()/2.0f + 215.0f,0,0.10f,0.10f);
         origin = new Vector2(cloneImage.getRegionWidth()/2.0f, cloneImage.getRegionHeight()/2.0f);
-        canvas.draw(cloneImage, Color.WHITE, origin.x, origin.y, 45.0f,canvas.getHeight()/2.0f + 235.0f
-        ,0,1f,1f);
+        canvas.draw(cloneImage, color, origin.x, origin.y, 45.0f,canvas.getHeight()/2.0f + 230.0f
+                ,0,.75f,.75f);
+
     }
 
     private void drawLevelTimer(Canvas canvas, float totalTime ) {
