@@ -4,6 +4,7 @@ import java.util.*;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -1869,6 +1870,27 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 
+			// Sound for transformation
+			if(InputHandler.getInstance().didTransform()){
+				if (InputHandler.getInstance().didTransformDoll() &&
+						avatar.getForm() != Dinosaur.DOLL_FORM && level.getAvatar().getResources() < 3){
+					SoundController.getInstance().playFull();
+					hud.flashResourceBar();
+
+
+				} else if (InputHandler.getInstance().didTransformHerbi() &&
+						avatar.getForm() != Dinosaur.HERBIVORE_FORM && level.getAvatar().getResources() < 3){
+					SoundController.getInstance().playFull();
+					hud.flashResourceBar();
+				}
+				else if (InputHandler.getInstance().didTransformCarni() &&
+						avatar.getForm() != Dinosaur.CARNIVORE_FORM && level.getAvatar().getResources() < 3){
+					SoundController.getInstance().playFull();
+					hud.flashResourceBar();
+				}
+
+			}
+
 			if (level.getClone() != null && (removeClone || level.getClone().getRemoved())) {
 				removeClone = false;
 				level.removeClone();
@@ -1893,6 +1915,7 @@ public class GameController implements ContactListener, Screen {
 							avatar.incrementResources();
 						} else {
 							SoundController.getInstance().playFull();
+							hud.flashResourceBar();
 						}
 
 					} else {
@@ -1934,6 +1957,7 @@ public class GameController implements ContactListener, Screen {
 								break;
 							} else {
 								SoundController.getInstance().playFull();
+								hud.flashResourceBar();
 								break;
 							}
 
@@ -1989,6 +2013,7 @@ public class GameController implements ContactListener, Screen {
 							((EdibleObject) tmp).beginEating();
 						} else {
 							SoundController.getInstance().playFull();
+							hud.flashResourceBar();
 						}
 					}
 				}

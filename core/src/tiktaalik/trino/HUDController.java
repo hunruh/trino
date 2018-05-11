@@ -78,6 +78,8 @@ public class HUDController  {
     private int transformation;
     private float cloneTime;
     private float levelTimerCount;
+    private boolean flashResourceRed;
+    private float stopFlashTime;
 
     public HUDController() {
         assets = new Array<String>();
@@ -250,6 +252,9 @@ public class HUDController  {
             this.cloneTime = 60.0f;
         }
         this.levelTimerCount = levelTimerCount;
+        if (levelTimerCount <= stopFlashTime){
+            flashResourceRed = false;
+        }
     }
 
     public void draw() {
@@ -273,7 +278,21 @@ public class HUDController  {
         canvas.draw(wood, color, origin.x, origin.y, -75f,canvas.getHeight() - 105.0f
                 ,0,-0.80f,0.80f);
 
-        canvas.draw(wood, Color.WHITE, origin.x, origin.y, 160.0f,canvas.getHeight() - 20.0f
+
+        if (numResources == 3){
+            if ((int) levelTimerCount % 2 == 0){
+                color = Color.GREEN;
+            } else {
+                color = Color.WHITE;
+            }
+
+        }
+        else if (flashResourceRed){
+            color = new Color(1f,0.5f,0.5f,1f);
+        } else {
+            color = Color.WHITE;
+        }
+        canvas.draw(wood, color, origin.x, origin.y, 160.0f,canvas.getHeight() - 20.0f
                 ,0,0.80f,0.80f);
         if (transformation == Dinosaur.DOLL_FORM) {
             canvas.draw(dollPrimary, 7, canvas.getHeight() - 82);
@@ -377,5 +396,14 @@ public class HUDController  {
             canvas.drawText(Integer.toString(minutes) + ":" + Integer.toString(seconds), displayFont,
                     190f, canvas.getHeight() - 65f);
         }
+    }
+
+    public void flashResourceBar(){
+        if (levelTimerCount > 0){
+            stopFlashTime = levelTimerCount - 1f;
+        } else {
+            stopFlashTime = 0;
+        }
+        flashResourceRed = true;
     }
 }
