@@ -1241,23 +1241,7 @@ public class GameController implements ContactListener, Screen {
             }
             canvas.end();
         }
-
-		if (state == GAME_READY || state == GAME_RUNNING || state == GAME_OVER || state == GAME_PAUSED) {
-			displayFont.setColor(Color.WHITE);
-			canvas.beginOverlay();
-			if (seconds < 10) {
-				canvas.drawTextCorner(Integer.toString(minutes)+":0"+Integer.toString(seconds), displayFont, 0.0f);
-			}
-			else if (seconds == 60) {
-				canvas.drawTextCorner(Integer.toString(minutes+1)+":00", displayFont, 0.0f);
-			}
-			else {
-				canvas.drawTextCorner(Integer.toString(minutes)+":"+Integer.toString(seconds), displayFont, 0.0f);
-			}
-			//canvas.drawTextCorner(Float.toString(totalTime), displayFont, 0.0f);
-			canvas.end();
-		}
-
+        
 		if (state == GAME_OVER) {
 			displayFont.setColor(Color.YELLOW);
 			if (complete && !failed) {
@@ -2270,7 +2254,7 @@ public class GameController implements ContactListener, Screen {
 
 			avatar.applyForce();
 
-			hud.update(avatar.getResources(), avatar.getForm(), level.getClone());
+			hud.update(avatar.getResources(), avatar.getForm(), level.getClone(), totalTime);
 		}
 	}
 

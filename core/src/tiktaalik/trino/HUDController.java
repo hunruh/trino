@@ -18,6 +18,10 @@ public class HUDController  {
     private GameController.AssetState hudAssetState = GameController.AssetState.EMPTY;
     private Array<String> assets;
 
+    // FONT FILES
+    private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
+    private static int FONT_SIZE = 64;
+
     // Textures necessary to support the loading screen
     private static final String DINOMETER_BACKGROUND_FILE = "hud/dinometer_background.png";
     private static final String COTTON_FILE = "hud/cotton.png";
@@ -39,6 +43,8 @@ public class HUDController  {
     private static final String HERBIVORE_SECONDARY_FILE = "hud/herb_secondary.png";
     private static final String CLONE_CIRCLE_FILE = "trino/chargedowncircle.png";
     private static final String CLONE_FILE = "trino/clone.png";
+
+    private BitmapFont displayFont;
 
     private TextureRegion dinometerBackground;
     private TextureRegion cotton;
@@ -67,6 +73,7 @@ public class HUDController  {
     private int numResources;
     private int transformation;
     private float cloneTime;
+    private float levelTimerCount;
 
     public HUDController() {
         assets = new Array<String>();
@@ -79,6 +86,13 @@ public class HUDController  {
         if (hudAssetState != GameController.AssetState.EMPTY) {
             return;
         }
+
+        // Load the font
+        FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        size2Params.fontFileName = FONT_FILE;
+        size2Params.fontParameters.size = FONT_SIZE;
+        manager.load(FONT_FILE, BitmapFont.class, size2Params);
+        assets.add(FONT_FILE);
 
         hudAssetState = GameController.AssetState.LOADING;
 
@@ -128,6 +142,11 @@ public class HUDController  {
         if (hudAssetState != GameController.AssetState.LOADING) {
             return;
         }
+        // Allocate the font
+        if (manager.isLoaded(FONT_FILE))
+            displayFont = manager.get(FONT_FILE,BitmapFont.class);
+        else
+            displayFont = null;
 
         dinometerBackground = createTexture(manager,DINOMETER_BACKGROUND_FILE,true);
         cotton = createTexture(manager,COTTON_FILE,true);
@@ -210,7 +229,7 @@ public class HUDController  {
         cloneImage = null;
     }
 
-    public void update(int numResources, int transformation, Clone clone) {
+    public void update(int numResources, int transformation, Clone clone, float levelTimerCount) {
         this.numResources = numResources;
         this.transformation = transformation;
         if (clone != null){
@@ -218,6 +237,7 @@ public class HUDController  {
         } else {
             this.cloneTime = 60.0f;
         }
+        this.levelTimerCount = levelTimerCount;
     }
 
     public void draw() {
@@ -226,6 +246,7 @@ public class HUDController  {
         drawDinoMeter(canvas);
         drawPause(canvas);
         drawCloneCircle(canvas);
+        drawLevelTimer(canvas,levelTimerCount);
         canvas.end();
     }
 
@@ -301,8 +322,18 @@ public class HUDController  {
         origin = new Vector2(cloneImage.getRegionWidth()/2.0f, cloneImage.getRegionHeight()/2.0f);
         canvas.draw(cloneImage, Color.WHITE, origin.x, origin.y, 45.0f,canvas.getHeight()/2.0f + 245.0f
         ,0,1f,1f);
+    }
 
-
-
+    private void drawLevelTimer(Canvas canvas, float totalTime ) {
+        int minutes = (int) totalTime / 60;
+        int seconds = (int) (totalTime % 60);
+        displayFont.setColor(Color.WHITE);
+        if (seconds < 10) {
+            canvas.drawTextCorner(Integer.toString(minutes) + ":0" + Integer.toString(seconds), displayFont, 0.0f);
+        } else if (seconds == 60) {
+            canvas.drawTextCorner(Integer.toString(minutes + 1) + ":00", displayFont, 0.0f);
+        } else {
+            canvas.drawTextCorner(Integer.toString(minutes) + ":" + Integer.toString(seconds), displayFont, 0.0f);
+        }
     }
 }
