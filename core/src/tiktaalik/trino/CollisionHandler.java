@@ -1,5 +1,6 @@
 package tiktaalik.trino;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.audio.Sound;
 import tiktaalik.trino.duggi.Carnivore;
 import tiktaalik.trino.duggi.Clone;
@@ -123,10 +124,11 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Dinosaur d, Boulder b) {
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
-            b.setPushed();
-            ((Carnivore) d).setCollided(true);
-            d.stopAction();
+        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress() && !((Carnivore) d).getPushing() &&
+                level.isInFrontOfAvatar(b)) {
+            level.pushBoulder(d, b);
+        } else if (d.getForm() == Dinosaur.CARNIVORE_FORM && !d.getActionInProgress()) {
+            ((Carnivore) d).setNextToBoulder(b);
         }
     }
 
@@ -170,7 +172,6 @@ public class CollisionHandler {
         e.setCollided(true);
         if (e.getCharging()) {
             e.setStunned();
-            b.setPushed();
         }
     }
 

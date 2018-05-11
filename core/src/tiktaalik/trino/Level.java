@@ -6,6 +6,7 @@ import static tiktaalik.trino.duggi.Dinosaur.*;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Color;
 import org.json.simple.JSONObject;
+import tiktaalik.trino.duggi.Carnivore;
 import tiktaalik.trino.level_editor.LevelParser;
 import tiktaalik.trino.level_editor.LevelParser.*;
 
@@ -182,6 +183,14 @@ public class Level {
         return grid[x][y];
     }
 
+    public boolean setGridObject(int x, int y, GameObject g, boolean overwrite) {
+        if (grid[x][y] != null && !overwrite)
+            return false;
+
+        grid[x][y] = g;
+        return true;
+    }
+
     public GameObject[][] getGrid() { return grid; }
 
     public Dinosaur getAvatar() {
@@ -213,6 +222,75 @@ public class Level {
 
     public void removeClone() {
         removeObject(clone);
+    }
+
+    public void pushBoulder(Dinosaur d, Boulder b) {
+        if (!b.getInMotion()) {
+            float targetX = b.getX();
+            float targetY = b.getY();
+            int gridX = (int)b.getGridLocation().x;
+            int gridY = (int)b.getGridLocation().y;
+            int targetGridX = gridX;
+            int targetGridY = gridY;
+
+            if (d.getDirection() == Dinosaur.LEFT) {
+                if (getGridObject(gridX - 1, gridY) != null) {
+                    if (getGridObject(gridX - 1, gridY).getType() != GameController.COTTON)
+                        return;
+                }
+
+                if (isEnemyOnSquare(gridX - 1, gridY))
+                    return;
+
+                targetX = 1 + 2 * (gridX - 1);
+                targetGridX = gridX - 1;
+            }
+            else if (d.getDirection() == Dinosaur.RIGHT) {
+                if (getGridObject(gridX + 1, gridY) != null) {
+                    if (getGridObject(gridX + 1, gridY).getType() != GameController.COTTON)
+                        return;
+                }
+
+                if (isEnemyOnSquare(gridX + 1, gridY))
+                    return;
+
+                targetX = 1 + 2 * (gridX + 1);
+                targetGridX = gridX + 1;
+            }
+            else if (d.getDirection() == Dinosaur.UP) {
+                if (getGridObject(gridX, gridY + 1) != null) {
+                    if (getGridObject(gridX, gridY + 1).getType() != GameController.COTTON)
+                        return;
+                }
+
+                if (isEnemyOnSquare(gridX, gridY + 1))
+                    return;
+
+                targetY = 1 + 2 * (gridY + 1);
+                targetGridY = gridY + 1;
+            }
+            else if (d.getDirection() == Dinosaur.DOWN) {
+                if (getGridObject(gridX, gridY - 1) != null) {
+                    if (getGridObject(gridX, gridY - 1).getType() != GameController.COTTON)
+                        return;
+                }
+
+                if (isEnemyOnSquare(gridX, gridY - 1))
+                    return;
+
+                targetY = 1 + 2 * (gridY - 1);
+                targetGridY = gridY - 1;
+            }
+
+            // Move the boulder on the grid. Do not null the grid tile if it is a cotton flower
+            if (getGridObject(gridX, gridY).getType() == GameController.BOULDER)
+                setGridObject(gridX, gridY, null, true);
+            setGridObject(targetGridX, targetGridY, b, false);
+
+            b.setTargetDestination(targetX, targetY);
+            b.setInMotion(true, ((Carnivore) d));
+            ((Carnivore) d).setPushing(true);
+        }
     }
 
     //public Wall getGoalDoor() {
@@ -652,6 +730,17 @@ public class Level {
 
     public void setEnemyLocation(int x, int y, boolean value) {enemyLocation[x][y] = value;}
 
+    public boolean isEnemyOnSquare(int gridX, int gridY) {
+        for (Enemy e : enemies) {
+            float dx = ((e.getX() - 1) / 2) - gridX;
+            float dy = ((e.getY() - 1) / 2) - gridY;
+            if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5)
+                return true;
+        }
+
+        return false;
+    }
+
     public float getStraightDist(int direction, GameObject bd1, GameObject bd2) {
         if (bd1 == null || bd2 == null)
             return -1;
@@ -732,79 +821,6 @@ public class Level {
                 return grid[(int)locationCache.x + 1][(int)locationCache.y];
         }
         return null;
-    }
-
-    public Vector2 objectInFrontofAvatarLocation() {
-        int direction = avatar.getDirection();
-        locationCache.set(getAvatarGridX(), getAvatarGridY());
-
-        if (direction == UP) {
-            if ((int)locationCache.y == getHeight())
-                return null;
-            else
-                return new Vector2((int)locationCache.x,(int)locationCache.y + 1);
-        }
-        else if (direction == DOWN) {
-            if ((int)locationCache.y == 0)
-                return null;
-            else
-                return new Vector2((int)locationCache.x, (int)locationCache.y - 1);
-        }
-        else if (direction == LEFT) {
-            if ((int)locationCache.x == 0)
-                return null;
-            else
-                return new Vector2((int)locationCache.x - 1, (int)locationCache.y);
-        }
-        else if (direction == RIGHT) {
-            if ((int)locationCache.x == getWidth())
-                return null;
-            else
-                return new Vector2((int)locationCache.x + 1, (int)locationCache.y);
-        }
-        return null;
-    }
-
-    public boolean objectInFrontOfEnemy(Enemy e) {
-        int direction = e.getDirection();
-
-        objectCache = null;
-        if (direction == UP) {
-            locationCache.set(Math.round((e.getX() - 1) / 2), (float)Math.floor((e.getY() - 1) / 2));
-            objectCache = grid[(int)locationCache.x][(int)locationCache.y + 1];
-        }
-        else if (direction == DOWN) {
-            locationCache.set(Math.round((e.getX() - 1) / 2), (float)Math.ceil((e.getY() - 1) / 2));
-            objectCache = grid[(int)locationCache.x][(int)locationCache.y - 1];
-        }
-        else if (direction == LEFT) {
-            locationCache.set((float)Math.ceil((e.getX() - 1) / 2), Math.round((e.getY() - 1) / 2));
-            objectCache = grid[(int)locationCache.x - 1][(int)locationCache.y];
-        }
-        else {
-            locationCache.set((float)Math.floor((e.getX() - 1) / 2), Math.round((e.getY() - 1) / 2));
-            objectCache = grid[(int)locationCache.x + 1][(int)locationCache.y];
-        }
-
-        if (objectCache == null)
-            return false;
-
-        return objectCache.getType() == WALL || objectCache.getType() == EDIBLEWALL ||
-                objectCache.getType() == RIVER || objectCache.getType() == BOULDER;
-    }
-
-    public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){
-        return (Math.abs(bd1.getY() - bd2.getY()) <= offset);
-    }
-
-    public boolean isAlignedVertically(GameObject bd1, GameObject bd2, double offset){
-        return (Math.abs(bd1.getX() - bd2.getX()) <= offset);
-    }
-
-    public boolean isOnGrid(double x, double y){
-        float gridx = screenToMaze(Math.round((avatar.getX() - 1) / 2));
-        float gridy = screenToMaze(Math.round((avatar.getY() - 1) / 2));
-        return (Math.abs(avatar.getX() - gridx) <= x) && (Math.abs(avatar.getY() - gridy) <= y);
     }
 
     /** drawing on screen */
