@@ -51,16 +51,16 @@ public class GameController implements ContactListener, Screen {
 	private static int FONT_SIZE = 64;
 
 	// Texture files
-	private static String BACKGROUND_FILE = "trino/background.png";
-	private static String OVERLAY_FILE = "trino/overlay.png";
-	private static String GOAL_FILE = "trino/openExitPlaceHolder.png";
-	private static String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
-	private static String DOOR_FILE_ONE = "trino/openExitPlaceHolder1.png";
-	private static String DOOR_CLOSED_FILE_ONE = "trino/exitClosedPlaceholder1.png";
-	private static String DOOR_FILE_TWO = "trino/openExitPlaceHolder2.png";
-	private static String DOOR_CLOSED_FILE_TWO = "trino/exitClosedPlaceHolder2.png";
-	private static String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
-	private static String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
+	private static final String BACKGROUND_FILE = "trino/background.png";
+	private static final String OVERLAY_FILE = "trino/overlay.png";
+	private static final String GOAL_FILE = "trino/openExitPlaceHolder.png";
+	private static final String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
+	private static final String DOOR_FILE_ONE = "trino/openExitPlaceHolder1.png";
+	private static final String DOOR_CLOSED_FILE_ONE = "trino/exitClosedPlaceholder1.png";
+	private static final String DOOR_FILE_TWO = "trino/openExitPlaceHolder2.png";
+	private static final String DOOR_CLOSED_FILE_TWO = "trino/exitClosedPlaceHolder2.png";
+	private static final String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
+	private static final String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
 	private static final String CLONE_FILE  = "trino/clone.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
