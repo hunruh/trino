@@ -131,6 +131,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			}
 			else {
 				if (LevelController.levelNum == 1) {
+					controller.setCurrentLevel(0);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -138,9 +139,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(0);
 				}
 				else if (LevelController.levelNum == 2) {
+					controller.setCurrentLevel(1);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -148,9 +149,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(1);
 				}
 				else if (LevelController.levelNum == 3) {
+					controller.setCurrentLevel(2);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -158,9 +159,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(2);
 				}
 				else if (LevelController.levelNum == 4) {
+					controller.setCurrentLevel(3);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -168,10 +169,10 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(3);
 
 				}
 				else if (LevelController.levelNum == 5) {
+					controller.setCurrentLevel(4);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -179,9 +180,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(4);
 				}
 				else if (LevelController.levelNum == 6) {
+					controller.setCurrentLevel(5);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -189,9 +190,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(5);
 				}
 				else if (LevelController.levelNum == 7) {
+					controller.setCurrentLevel(6);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -199,9 +200,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(6);
 				}
 				else if (LevelController.levelNum == 8) {
+					controller.setCurrentLevel(7);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -209,9 +210,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(7);
 				}
 				else if (LevelController.levelNum == 9) {
+					controller.setCurrentLevel(8);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -219,9 +220,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(8);
 				}
 				else if (LevelController.levelNum == 10) {
+					controller.setCurrentLevel(9);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -229,9 +230,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(9);
 				}
 				else if (LevelController.levelNum == 11) {
+					controller.setCurrentLevel(10);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -239,9 +240,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(10);
 				}
 				else if (LevelController.levelNum == 12) {
+					controller.setCurrentLevel(11);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -249,9 +250,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(11);
 				}
 				else if (LevelController.levelNum == 13) {
+					controller.setCurrentLevel(12);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -259,9 +260,9 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(12);
 				}
 				else if (LevelController.levelNum == 14) {
+					controller.setCurrentLevel(13);
 					controller.loadContent(manager);
 					controller.setScreenListener(this);
 					controller.setCanvas(canvas);
@@ -269,7 +270,6 @@ public class GDXRoot extends Game implements ScreenListener {
 					setScreen(null);
 					screen = controller;
 					setScreen(controller);
-					controller.setCurrentLevel(13);
 				}
 			}
 			LevelController.levelNum = 0;
