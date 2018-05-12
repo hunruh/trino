@@ -357,7 +357,6 @@ public class Enemy extends EdibleObject {
             chargeLoad += dt;
             if (chargeLoad >= CHARGE_LOAD_DURATION) {
                 setCharging(true);
-                setAlert(true);
                 loadingCharge = false;
                 chargeLoad = 0;
             }

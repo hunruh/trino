@@ -63,11 +63,13 @@ public class AIController {
 
         if (!enemy.getCharging() && enemy.getEnemyType() == Enemy.CARNIVORE_ENEMY){
             if (cloneInFrontOfEnemy()){
+                enemy.setAlert(true);
                 SoundController.getInstance().playAlert();
                 enemy.loadCharge();
             }
             else if (playerInFrontOfEnemy()){
                 if (level.getAvatar().getCanBeSeen()){
+                    enemy.setAlert(true);
                     SoundController.getInstance().playAlert();
                     enemy.loadCharge();
                 }
