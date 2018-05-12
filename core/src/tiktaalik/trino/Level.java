@@ -646,7 +646,7 @@ public class Level {
                     MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
             int random = MathUtils.random(4);
-            if (random == 0){
+            if (random <2){
                 random = MathUtils.random(3);
                 if (random == 0){
                     ff.setTexture(textureDict.get("fireFlyPurple"));

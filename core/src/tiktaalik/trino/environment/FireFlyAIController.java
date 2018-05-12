@@ -33,6 +33,7 @@ public class FireFlyAIController {
      * @return a movement direction that moves towards a goal tile.
      */
     public void getMoveAlongPath() {
+        this.firefly.setLinearVelocity(Vector2.Zero);
         // If firefly is close to goal, pick a new goal
         if (Vector2.dst(firefly.getX(),firefly.getY(),goal.x,goal.y) < 1){
             goal.set(MathUtils.random(gameBounds.width),MathUtils.random(2*gameBounds.height));
