@@ -412,7 +412,7 @@ public class AIController {
         if (level.getClone() == null){
             return false;
         }
-        locationCache.set(level.getClone().getGridLocation().x, level.getClone().getGridLocation().y);
+        locationCache.set(getEnemyGridX(), getEnemyGridY());
         if (enemy.getDirection() == Dinosaur.UP){
             if(level.getClone().getGridLocation().x == getEnemyGridX() && (level.getClone().getGridLocation().y - getEnemyGridY() < chargeDetectionDistance) &&
                     (level.getClone().getGridLocation().y - getEnemyGridY() > 0)) {
