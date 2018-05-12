@@ -285,6 +285,7 @@ public class GameController implements ContactListener, Screen {
 	private float radius;
 	private float randomAngle;
 	private float intensity;
+	private int fireflyToGoalTime = 0;
 
 	/** Timer */
 	float levelTime = 300;
@@ -1071,6 +1072,7 @@ public class GameController implements ContactListener, Screen {
 
 		playDoorDown = 0;
 		playDoorUp = 1;
+		fireflyToGoalTime = 0;
 
 //		enemyLights = new LightSource[level.getEnemies().size()];
 //
@@ -1607,6 +1609,16 @@ public class GameController implements ContactListener, Screen {
 				level.getAvatar().setCanExit(true);
 				level.getDoor(0).setLowered(true);
 				level.getDoor(0).setTexture(textureDict.get("goalOpenTile"));
+
+				// Set the goal for the fireflies
+				if (fireflyToGoalTime == 0){
+					System.out.println("reached increment for ff");
+					for (int i = 0; i < fireFlyControls.size(); i++){
+						fireFlyControls.get(i).setGoal(level.getDoor(0).getPosition());
+					}
+					fireflyToGoalTime++;
+				}
+
 			}
 			else {
 				if (level.getClone() != null){
@@ -1623,6 +1635,15 @@ public class GameController implements ContactListener, Screen {
 							}
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
+
+								// Set the goal for the fireflies
+								if (fireflyToGoalTime == 0){
+									System.out.println("reached increment for ff");
+									for (int j = 0; j < fireFlyControls.size(); j++){
+										fireFlyControls.get(j).setGoal(level.getDoor(0).getPosition());
+									}
+									fireflyToGoalTime++;
+								}
 							}
 							else {
 								level.getAvatar().setCanExit(false);
@@ -1641,6 +1662,17 @@ public class GameController implements ContactListener, Screen {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
 							}
 						} else if (!doorHasEnemyOnTop(level.getDoor(i))) {
+
+							// Set the goal for the fireflies
+							if (fireflyToGoalTime == 1){
+								System.out.println("reached increment for ff");
+								for (int j = 0; j < fireFlyControls.size(); j++){
+									fireFlyControls.get(j).setGoal(new Vector2(MathUtils.random(level.getBounds().width)
+											,MathUtils.random(2*level.getBounds().height)));
+								}
+								fireflyToGoalTime--;
+							}
+
 							playDoorDown = 0;
 							if (playDoorUp == 0){
 								SoundController.getInstance().playDoorOpen();
@@ -1752,8 +1784,13 @@ public class GameController implements ContactListener, Screen {
 			//System.out.println("raycamera position is " + raycamera.position);
 
 			// Process FireFly updates
-			for (FireFlyAIController ffAI : fireFlyControls)
-				ffAI.getMoveAlongPath();
+			for (int i = 0; i < fireFlyControls.size(); i++) {
+				if (avatar.canExit()) {
+					fireFlyControls.get(i).getMoveToGoal(level.getDoor(0).getPosition());
+				} else {
+					fireFlyControls.get(i).getMoveAlongPath();
+				}
+			}
 
 			for (int i = 0; i < ffLights.length; i++) {
 				if (ffLightDsts[i] > 2.5f) {
