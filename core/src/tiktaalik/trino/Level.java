@@ -641,7 +641,19 @@ public class Level {
             FireFly ff = new FireFly(MathUtils.random(bounds.width),
                     MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
-            ff.setTexture(textureDict.get("fireFly"));
+            int random = MathUtils.random(4);
+            if (random == 0){
+                random = MathUtils.random(3);
+                if (random == 0){
+                    ff.setTexture(textureDict.get("fireFlyPurple"));
+                } else if (random == 1){
+                    ff.setTexture(textureDict.get("fireFlyBlue"));
+                } else if (random == 2){
+                    ff.setTexture(textureDict.get("fireFlyPink"));
+                }
+            } else {
+                ff.setTexture(textureDict.get("fireFly"));
+            }
             ff.setDrawScale(scale);
             addObject(ff);
         }

@@ -51,16 +51,16 @@ public class GameController implements ContactListener, Screen {
 	private static int FONT_SIZE = 64;
 
 	// Texture files
-	private static String BACKGROUND_FILE = "trino/background.png";
-	private static String OVERLAY_FILE = "trino/overlay.png";
-	private static String GOAL_FILE = "trino/openExitPlaceHolder.png";
-	private static String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
-	private static String DOOR_FILE_ONE = "trino/openExitPlaceHolder1.png";
-	private static String DOOR_CLOSED_FILE_ONE = "trino/exitClosedPlaceholder1.png";
-	private static String DOOR_FILE_TWO = "trino/openExitPlaceHolder2.png";
-	private static String DOOR_CLOSED_FILE_TWO = "trino/exitClosedPlaceHolder2.png";
-	private static String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
-	private static String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
+	private static final String BACKGROUND_FILE = "trino/background.png";
+	private static final String OVERLAY_FILE = "trino/overlay.png";
+	private static final String GOAL_FILE = "trino/openExitPlaceHolder.png";
+	private static final String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
+	private static final String DOOR_FILE_ONE = "trino/openExitPlaceHolder1.png";
+	private static final String DOOR_CLOSED_FILE_ONE = "trino/exitClosedPlaceholder1.png";
+	private static final String DOOR_FILE_TWO = "trino/openExitPlaceHolder2.png";
+	private static final String DOOR_CLOSED_FILE_TWO = "trino/exitClosedPlaceHolder2.png";
+	private static final String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
+	private static final String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
 	private static final String CLONE_FILE  = "trino/clone.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
@@ -118,6 +118,9 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_ATTACK_STRIP_BACK = "trino/enemy_back_attack_strip.png";
 	private static final String ENEMY_LEFT_EATING_STRIP = "trino/enemy_left_eaten_strip.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
+	private static final String FIREFLY_PURPLE_FILE = "trino/ffPurple.png";
+	private static final String FIREFLY_BLUE_FILE = "trino/ffBlue.png";
+	private static final String FIREFLY_PINK_FILE = "trino/ffPink.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
 	private static final String EDIBLE_WALL_EATING_STRIP = "trino/ediblewall_decay_strip.png";
@@ -282,6 +285,7 @@ public class GameController implements ContactListener, Screen {
 	private float radius;
 	private float randomAngle;
 	private float intensity;
+	private int fireflyToGoalTime = 0;
 
 	/** Timer */
 	float levelTime = 300;
@@ -457,6 +461,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(UNKILLABLE_ENEMY_STRIP_BACK);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
+		manager.load(FIREFLY_PURPLE_FILE, Texture.class);
+		assets.add(FIREFLY_PURPLE_FILE);
+		manager.load(FIREFLY_BLUE_FILE, Texture.class);
+		assets.add(FIREFLY_BLUE_FILE);
+		manager.load(FIREFLY_PINK_FILE, Texture.class);
+		assets.add(FIREFLY_PINK_FILE);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
@@ -641,6 +651,9 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("doorClosedTileThree", createTexture(manager,DOOR_CLOSED_FILE_THREE, false));
 		textureDict.put("clone", createTexture(manager,CLONE_FILE,false));
 		textureDict.put("fireFly", createTexture(manager, FIREFLY_FILE, false));
+		textureDict.put("fireFlyPurple", createTexture(manager, FIREFLY_PURPLE_FILE, false));
+		textureDict.put("fireFlyBlue", createTexture(manager, FIREFLY_BLUE_FILE, false));
+		textureDict.put("fireFlyPink", createTexture(manager, FIREFLY_PINK_FILE, false));
 		textureDict.put("wall", createTexture(manager,WALL_FILE,false));
 		textureDict.put("edibleWall", createTexture(manager, EDIBLE_WALL_FILE, false));
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
@@ -1032,8 +1045,22 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 0; i < level.getFireFlies().size(); i++) {
 			fireFlyControls.add(new FireFlyAIController(i, level.getFireFlies(), level.getBounds()));
 
+
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
-			fireLight.setColor(0.96f,0.67f,0.10f,0.15f);
+			if(level.getFirefly(i).getTexture() == textureDict.get("fireFlyPurple")){
+				System.out.println("reached purple light");
+				fireLight.setColor(Color.PURPLE);
+			} else if (level.getFirefly(i).getTexture() == textureDict.get("fireFlyBlue")){
+				fireLight.setColor(Color.BLUE);
+			} else if (level.getFirefly(i).getTexture() == textureDict.get("fireFlyPink")){
+				fireLight.setColor(Color.PINK);
+			} else {
+				fireLight.setColor(0.96f,0.67f,0.10f,0.15f);
+			}
+			Color color = fireLight.getColor();
+			color.a = 0.15f;
+			fireLight.setColor(color);
+
 			fireLight.setXray(true);
 			fireLight.setActive(true);
 			ffLights[i] = fireLight;
@@ -1045,6 +1072,7 @@ public class GameController implements ContactListener, Screen {
 
 		playDoorDown = 0;
 		playDoorUp = 1;
+		fireflyToGoalTime = 0;
 
 //		enemyLights = new LightSource[level.getEnemies().size()];
 //
@@ -1338,6 +1366,7 @@ public class GameController implements ContactListener, Screen {
 
 					if (InputHandler.getInstance().didReturn()) {
 						menuNum = 1;
+						resetCamera();
 						listener.exitScreen(this, 0);
 						menuNum = 0;
 					}
@@ -1580,6 +1609,16 @@ public class GameController implements ContactListener, Screen {
 				level.getAvatar().setCanExit(true);
 				level.getDoor(0).setLowered(true);
 				level.getDoor(0).setTexture(textureDict.get("goalOpenTile"));
+
+				// Set the goal for the fireflies
+				if (fireflyToGoalTime == 0){
+					System.out.println("reached increment for ff");
+					for (int i = 0; i < fireFlyControls.size(); i++){
+						fireFlyControls.get(i).setGoal(level.getDoor(0).getPosition());
+					}
+					fireflyToGoalTime++;
+				}
+
 			}
 			else {
 				if (level.getClone() != null){
@@ -1596,6 +1635,15 @@ public class GameController implements ContactListener, Screen {
 							}
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
+
+								// Set the goal for the fireflies
+								if (fireflyToGoalTime == 0){
+									System.out.println("reached increment for ff");
+									for (int j = 0; j < fireFlyControls.size(); j++){
+										fireFlyControls.get(j).setGoal(level.getDoor(0).getPosition());
+									}
+									fireflyToGoalTime++;
+								}
 							}
 							else {
 								level.getAvatar().setCanExit(false);
@@ -1613,7 +1661,18 @@ public class GameController implements ContactListener, Screen {
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
 							}
-						} else {
+						} else if (!doorHasEnemyOnTop(level.getDoor(i))) {
+
+							// Set the goal for the fireflies
+							if (fireflyToGoalTime == 1){
+								System.out.println("reached increment for ff");
+								for (int j = 0; j < fireFlyControls.size(); j++){
+									fireFlyControls.get(j).setGoal(new Vector2(MathUtils.random(level.getBounds().width)
+											,MathUtils.random(2*level.getBounds().height)));
+								}
+								fireflyToGoalTime--;
+							}
+
 							playDoorDown = 0;
 							if (playDoorUp == 0){
 								SoundController.getInstance().playDoorOpen();
@@ -1725,8 +1784,13 @@ public class GameController implements ContactListener, Screen {
 			//System.out.println("raycamera position is " + raycamera.position);
 
 			// Process FireFly updates
-			for (FireFlyAIController ffAI : fireFlyControls)
-				ffAI.getMoveAlongPath();
+			for (int i = 0; i < fireFlyControls.size(); i++) {
+				if (avatar.canExit()) {
+					fireFlyControls.get(i).getMoveToGoal(level.getDoor(0).getPosition());
+				} else {
+					fireFlyControls.get(i).getMoveAlongPath();
+				}
+			}
 
 			for (int i = 0; i < ffLights.length; i++) {
 				if (ffLightDsts[i] > 2.5f) {
@@ -2034,7 +2098,7 @@ public class GameController implements ContactListener, Screen {
 				} else if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
 					level.getAvatar().useAction();
 					GameObject tmp = level.objectInFrontOfAvatar();
-					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 5.5) {
+					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 6.6f) {
 						SoundController.getInstance().playMunch();
 						avatar.setCanBeSeen(false);
 					}
@@ -2212,6 +2276,26 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 		return false;
+	}
+
+	// Returns true if enemy is on top of door or near it
+	private boolean doorHasEnemyOnTop(Wall door){
+		for (Enemy e: level.getEnemies()){
+			if (e.getGridLocation().x == door.getGridLocation().x && e.getGridLocation().y == door.getGridLocation().y ||
+					e.getGridLocation().x == door.getGridLocation().x+1 && e.getGridLocation().y == door.getGridLocation().y
+					|| e.getGridLocation().x == door.getGridLocation().x-1 && e.getGridLocation().y == door.getGridLocation().y
+					|| e.getGridLocation().x == door.getGridLocation().x && e.getGridLocation().y == door.getGridLocation().y+1
+					|| e.getGridLocation().x == door.getGridLocation().x && e.getGridLocation().y == door.getGridLocation().y-1){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void resetCamera(){
+		canvas.getCamera().position.x = canvas.getWidth()/2.0f;
+		canvas.getCamera().position.y = canvas.getHeight()/2.0f;
+		canvas.getCamera().update();
 	}
 
 	/**

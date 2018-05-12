@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.EdibleObject;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.duggi.Clone;
 import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.util.FilmStrip;
 
@@ -36,6 +37,7 @@ public class Enemy extends EdibleObject {
     private boolean coolingCharge;
     private boolean loadingCharge;
     private boolean eatingClone;
+    private Clone cloneBeingEaten;
     private int direction;
     private Vector2 gridLocation = new Vector2();
     private boolean charging;
@@ -125,13 +127,14 @@ public class Enemy extends EdibleObject {
 
     public int getEnemyType() {return enemyType;}
 
-    public void setEatingClone(boolean assignment){
+    public void setEatingClone(boolean assignment, Clone c) {
         if (assignment){
             animeframe = 0f;
             charging = false;
             chargeLoad = 0;
             loadingCharge = false;
             charging = false;
+            cloneBeingEaten = c;
         }
         eatingClone = assignment;
     }
@@ -383,7 +386,9 @@ public class Enemy extends EdibleObject {
         if (eatingClone){
             System.out.println("reached eating clone animation");
             if (animeframe >= numFrames[direction + 16]) {
-                animeframe -= (numFrames[direction + 16]);
+                cloneBeingEaten.setRemoved(true);
+                eatingClone = false;
+                animeframe = 0;
             }
         }
         else if (loadingCharge || (chargeReady && !charging)) {
