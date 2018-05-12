@@ -118,6 +118,9 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_ATTACK_STRIP_BACK = "trino/enemy_back_attack_strip.png";
 	private static final String ENEMY_LEFT_EATING_STRIP = "trino/enemy_left_eaten_strip.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
+	private static final String FIREFLY_PURPLE_FILE = "trino/ffPurple.png";
+	private static final String FIREFLY_BLUE_FILE = "trino/ffBlue.png";
+	private static final String FIREFLY_PINK_FILE = "trino/ffPink.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
 	private static final String EDIBLE_WALL_EATING_STRIP = "trino/ediblewall_decay_strip.png";
@@ -457,6 +460,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(UNKILLABLE_ENEMY_STRIP_BACK);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
+		manager.load(FIREFLY_PURPLE_FILE, Texture.class);
+		assets.add(FIREFLY_PURPLE_FILE);
+		manager.load(FIREFLY_BLUE_FILE, Texture.class);
+		assets.add(FIREFLY_BLUE_FILE);
+		manager.load(FIREFLY_PINK_FILE, Texture.class);
+		assets.add(FIREFLY_PINK_FILE);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
@@ -641,6 +650,9 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("doorClosedTileThree", createTexture(manager,DOOR_CLOSED_FILE_THREE, false));
 		textureDict.put("clone", createTexture(manager,CLONE_FILE,false));
 		textureDict.put("fireFly", createTexture(manager, FIREFLY_FILE, false));
+		textureDict.put("fireFlyPurple", createTexture(manager, FIREFLY_PURPLE_FILE, false));
+		textureDict.put("fireFlyBlue", createTexture(manager, FIREFLY_BLUE_FILE, false));
+		textureDict.put("fireFlyPink", createTexture(manager, FIREFLY_PINK_FILE, false));
 		textureDict.put("wall", createTexture(manager,WALL_FILE,false));
 		textureDict.put("edibleWall", createTexture(manager, EDIBLE_WALL_FILE, false));
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
@@ -1032,8 +1044,21 @@ public class GameController implements ContactListener, Screen {
 		for (int i = 0; i < level.getFireFlies().size(); i++) {
 			fireFlyControls.add(new FireFlyAIController(i, level.getFireFlies(), level.getBounds()));
 
+
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
-			fireLight.setColor(0.96f,0.67f,0.10f,0.15f);
+			if(level.getFirefly(i).getTexture() == textureDict.get("fireFlyPurple")){
+				System.out.println("reached purple light");
+				fireLight.setColor(Color.PURPLE);
+			} else if (level.getFirefly(i).getTexture() == textureDict.get("fireFlyBlue")){
+				fireLight.setColor(Color.BLUE);
+			} else if (level.getFirefly(i).getTexture() == textureDict.get("fireFlyPink")){
+				fireLight.setColor(Color.PINK);
+			}
+			Color color = fireLight.getColor();
+			color.a = 0.15f;
+			fireLight.setColor(color);
+
+			//fireLight.setColor(0.96f,0.67f,0.10f,0.15f);
 			fireLight.setXray(true);
 			fireLight.setActive(true);
 			ffLights[i] = fireLight;
