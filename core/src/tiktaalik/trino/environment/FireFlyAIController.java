@@ -11,7 +11,8 @@ public class FireFlyAIController {
     private Vector2 goal;
     private Vector2 step;
     private Rectangle gameBounds;
-    private float radius = 500f;
+    private float radius = 750f;
+    private float fireFlyCircleScale = 3f;
 
     public FireFlyAIController(int id, PooledList<FireFly> fireFlies, Rectangle bounds) {
         this.firefly = fireFlies.get(id);
@@ -43,10 +44,20 @@ public class FireFlyAIController {
 
     public void getMoveToGoal(Vector2 position) {
         // If firefly is close to goal, pick a new goal
-        if (Vector2.dst(firefly.getX(),firefly.getY(),goal.x,goal.y) < 1f){
-            goal.set(MathUtils.random(position.x - radius, position.x + radius),MathUtils.random(position.y - radius, position.y + radius));
+        if (Vector2.dst(firefly.getX(),firefly.getY(),position.x,position.y) < 1f){
+            updateCircular(1, position);
+        } else {
+            step = position.cpy().sub(firefly.getPosition()).nor().scl(.025f);
+            firefly.setPosition(firefly.getX() + step.x, firefly.getY() + step.y);
         }
-        step = goal.cpy().sub(firefly.getPosition()).nor().scl(.025f);
-        firefly.setPosition(firefly.getX() + step.x, firefly.getY() + step.y);
+
+    }
+
+    public void updateCircular(float speed, Vector2 center){
+        Vector2 radius = center.cpy().sub(this.firefly.getPosition());
+        radius.x = fireFlyCircleScale * radius.x;
+        radius.y = fireFlyCircleScale * radius.y;
+        Vector2 force = radius.rotate90(1).nor().scl(speed);
+        this.firefly.setLinearVelocity(new Vector2(force.x, force.y));
     }
 }
