@@ -1689,8 +1689,6 @@ public class GameController implements ContactListener, Screen {
 			// Only shake when required. Thank you smilne for the code.
 			// Code used from https://www.netprogs.com/libgdx-screen-shaking/
 			if (elapsed < duration) {
-				System.out.println("shaking");
-
 				// Calculate the amount of shake based on how long it has been shaking already
 				float currentPower = intensity * canvas.getCamera().zoom * ((duration - elapsed) / duration);
 				float x = (random.nextFloat() - 0.5f) * currentPower;
@@ -1701,7 +1699,13 @@ public class GameController implements ContactListener, Screen {
 				elapsed += dt;
 			}
 
-
+			// Handle camera shaking for when duggi carn collides
+			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM){
+				if (((Carnivore)avatar).getShakeCamera()){
+					shake(500,500,5f);
+					((Carnivore)avatar).setShakeCamera(false);
+				}
+			}
 
 			canvas.getCamera().update();
 			raycamera.update();
