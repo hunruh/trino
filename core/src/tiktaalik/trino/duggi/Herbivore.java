@@ -15,10 +15,15 @@ public class Herbivore extends Dinosaur {
     protected FilmStrip[] swimmingTextureSet;
     protected int numSwimmingFrames[];
 
+    protected FilmStrip[] camoTextureSet;
+    protected int numCamoFrames[];
+
     public Herbivore(Dinosaur d) {
         super(d);
         swimmingTextureSet = new FilmStrip[8];
         numSwimmingFrames = new int[8];
+        camoTextureSet = new FilmStrip[4];
+        numCamoFrames = new int[4];
         upDown = false;
         shape = new PolygonShape();
 
