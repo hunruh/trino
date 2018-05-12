@@ -11,6 +11,7 @@ public class FireFlyAIController {
     private Vector2 goal;
     private Vector2 step;
     private Rectangle gameBounds;
+    private float radius = 500f;
 
     public FireFlyAIController(int id, PooledList<FireFly> fireFlies, Rectangle bounds) {
         this.firefly = fireFlies.get(id);
@@ -19,6 +20,10 @@ public class FireFlyAIController {
         goal = new Vector2(MathUtils.random(bounds.width),MathUtils.random(2*bounds.height));
         step = new Vector2();
         gameBounds = bounds;
+    }
+
+    public void setGoal(Vector2 position){
+        goal = position;
     }
 
     /**
@@ -32,6 +37,15 @@ public class FireFlyAIController {
             goal.set(MathUtils.random(gameBounds.width),MathUtils.random(2*gameBounds.height));
         }
 
+        step = goal.cpy().sub(firefly.getPosition()).nor().scl(.025f);
+        firefly.setPosition(firefly.getX() + step.x, firefly.getY() + step.y);
+    }
+
+    public void getMoveToGoal(Vector2 position) {
+        // If firefly is close to goal, pick a new goal
+        if (Vector2.dst(firefly.getX(),firefly.getY(),goal.x,goal.y) < 1f){
+            goal.set(MathUtils.random(position.x - radius, position.x + radius),MathUtils.random(position.y - radius, position.y + radius));
+        }
         step = goal.cpy().sub(firefly.getPosition()).nor().scl(.025f);
         firefly.setPosition(firefly.getX() + step.x, firefly.getY() + step.y);
     }

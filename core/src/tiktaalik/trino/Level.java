@@ -325,6 +325,8 @@ public class Level {
 
     public PooledList<Wall> getDoors() { return doors; }
 
+    public PooledList<River> getRivers() {return rivers;}
+
     public CottonFlower getCottonFlower(int idx) { return cottonFlowers.get(idx); }
 
     public PooledList<CottonFlower> getCottonFlowers() { return cottonFlowers; }
@@ -582,8 +584,8 @@ public class Level {
             if (type == Enemy.UNKILLABLE_ENEMY){
                 en.setTextureSet(filmStripDict.get("unkillableEnemyLeft"), 10,
                         filmStripDict.get("unkillableEnemyRight"), 10,
-                        filmStripDict.get("enemyBack"), 8,
-                        filmStripDict.get("enemyFront"), 10);
+                        filmStripDict.get("unkillableEnemyBack"), 8,
+                        filmStripDict.get("unkillableEnemyFront"), 10);
                 en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
                         filmStripDict.get("enemyChargeRight"), 15,
                         filmStripDict.get("enemyChargeLeft"), 15,
@@ -615,6 +617,10 @@ public class Level {
                         filmStripDict.get("enemyStunnedRight"), 3,
                         filmStripDict.get("enemyStunnedBack"), 3,
                         filmStripDict.get("enemyStunnedFront"), 3);
+                en.setEatingTextureSet(filmStripDict.get("carnivoreEatingLeft"), 8,
+                        filmStripDict.get("carnivoreEatingRight"), 8,
+                        filmStripDict.get("carnivoreEatingBack"), 8,
+                        filmStripDict.get("carnivoreEatingFront"), 12);
             }
             else {
                 en.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
@@ -635,7 +641,19 @@ public class Level {
             FireFly ff = new FireFly(MathUtils.random(bounds.width),
                     MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
-            ff.setTexture(textureDict.get("fireFly"));
+            int random = MathUtils.random(4);
+            if (random == 0){
+                random = MathUtils.random(3);
+                if (random == 0){
+                    ff.setTexture(textureDict.get("fireFlyPurple"));
+                } else if (random == 1){
+                    ff.setTexture(textureDict.get("fireFlyBlue"));
+                } else if (random == 2){
+                    ff.setTexture(textureDict.get("fireFlyPink"));
+                }
+            } else {
+                ff.setTexture(textureDict.get("fireFly"));
+            }
             ff.setDrawScale(scale);
             addObject(ff);
         }

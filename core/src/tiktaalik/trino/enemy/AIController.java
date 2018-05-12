@@ -86,7 +86,7 @@ public class AIController {
             if (enemy.getCharging()) {
                 SoundController.getInstance().playCrash();
                 enemy.setStunned();
-                gc.shake(500,500,10);
+                gc.shake(500,500,5f);
                 enemy.setCharging(false);
                 return;
             }
@@ -128,6 +128,11 @@ public class AIController {
         } else if (enemy.getDirection() == Dinosaur.UP) {
             step.x = 0;
             step.y = speed;
+        }
+
+        if (enemy.getEatingClone()){
+            step.x = 0;
+            step.y = 0;
         }
 
         enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
@@ -407,7 +412,7 @@ public class AIController {
         if (level.getClone() == null){
             return false;
         }
-        locationCache.set(level.getClone().getGridLocation().x, level.getClone().getGridLocation().y);
+        locationCache.set(getEnemyGridX(), getEnemyGridY());
         if (enemy.getDirection() == Dinosaur.UP){
             if(level.getClone().getGridLocation().x == getEnemyGridX() && (level.getClone().getGridLocation().y - getEnemyGridY() < chargeDetectionDistance) &&
                     (level.getClone().getGridLocation().y - getEnemyGridY() > 0)) {

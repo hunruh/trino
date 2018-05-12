@@ -8,6 +8,7 @@ public class Carnivore extends Dinosaur {
     private boolean collided;
     private boolean pushing;
     private boolean chargeActive;
+    private boolean shakeCamera;
 
     private Boulder nextToBoulder;
 
@@ -47,6 +48,12 @@ public class Carnivore extends Dinosaur {
     public boolean getPushing() {
         return pushing;
     }
+
+    public boolean getCollided() { return collided;}
+
+    public boolean getShakeCamera(){return shakeCamera;}
+
+    public void setShakeCamera(boolean assignment){shakeCamera = assignment;}
 
     public void setPushing(boolean pushing) {
         this.pushing = pushing;
@@ -112,6 +119,7 @@ public class Carnivore extends Dinosaur {
 
         if (!pushing && chargeActive && this.getLinearVelocity().len2() < 0.2f) {
             setCollided(true);
+            shakeCamera = true;
             stopAction();
             chargeActive = false;
         }
