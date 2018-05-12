@@ -130,6 +130,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String SWITCH_FILE_ONE = "trino/button1.png";
 	private static final String SWITCH_FILE_TWO = "trino/button2.png";
 	private static final String SWITCH_FILE_THREE = "trino/button3.png";
+    private static final String SWITCH_DOWN_FILE = "trino/buttonPressed.png";
+    private static final String SWITCH_DOWN_FILE_ONE = "trino/buttonPressed1.png";
+    private static final String SWITCH_DOWN_FILE_TWO = "trino/buttonPressed2.png";
+    private static final String SWITCH_DOWN_FILE_THREE = "trino/buttonPressed3.png";
 	private static final String RIVER_FILE = "trino/river.png";
 	private static final String BOULDER_FILE = "trino/boulder.png";
 	private static final String VICTORY_FILE = "trino/victoryImage.png";
@@ -478,6 +482,14 @@ public class GameController implements ContactListener, Screen {
 		manager.load(SWITCH_FILE_THREE, Texture.class);
 		assets.add(SWITCH_FILE_THREE);
 		manager.load(RIVER_FILE, Texture.class);
+		assets.add(SWITCH_DOWN_FILE);
+		manager.load(SWITCH_DOWN_FILE, Texture.class);
+		assets.add(SWITCH_DOWN_FILE_ONE);
+		manager.load(SWITCH_DOWN_FILE_ONE, Texture.class);
+		assets.add(SWITCH_DOWN_FILE_TWO);
+		manager.load(SWITCH_DOWN_FILE_TWO, Texture.class);
+		assets.add(SWITCH_DOWN_FILE_THREE);
+		manager.load(SWITCH_DOWN_FILE_THREE, Texture.class);
 		assets.add(RIVER_FILE);
 		manager.load(BOULDER_FILE, Texture.class);
 		assets.add(BOULDER_FILE);
@@ -661,6 +673,10 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("switchone", createTexture(manager, SWITCH_FILE_ONE, false));
 		textureDict.put("switchtwo", createTexture(manager, SWITCH_FILE_TWO, false));
 		textureDict.put("switchthree", createTexture(manager, SWITCH_FILE_THREE, false));
+		textureDict.put("switchoff", createTexture(manager, SWITCH_DOWN_FILE, false));
+		textureDict.put("switchoneoff", createTexture(manager, SWITCH_DOWN_FILE_ONE, false));
+		textureDict.put("switchtwooff", createTexture(manager, SWITCH_DOWN_FILE_TWO, false));
+		textureDict.put("switchthreeoff", createTexture(manager, SWITCH_DOWN_FILE_THREE, false));
 		textureDict.put("river", createTexture(manager, RIVER_FILE, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
@@ -1674,15 +1690,31 @@ public class GameController implements ContactListener, Screen {
 							level.getDoor(i).setLowered(true);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
+                                level.getSwitch(0).setTexture(textureDict.get("switchoff"));
+                                level.getSwitch(1).setTexture(textureDict.get("switchone"));
+                                level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
+                                level.getSwitch(3).setTexture(textureDict.get("switchthree"));
 							}
 							else if (i == 1) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileOne"));
+                                level.getSwitch(0).setTexture(textureDict.get("switch"));
+                                level.getSwitch(1).setTexture(textureDict.get("switchoneoff"));
+                                level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
+                                level.getSwitch(3).setTexture(textureDict.get("switchthree"));
 							}
 							else if (i == 2) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileTwo"));
+                                level.getSwitch(0).setTexture(textureDict.get("switch"));
+                                level.getSwitch(1).setTexture(textureDict.get("switchone"));
+                                level.getSwitch(2).setTexture(textureDict.get("switchtwooff"));
+                                level.getSwitch(3).setTexture(textureDict.get("switchthree"));
 							}
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
+                                level.getSwitch(0).setTexture(textureDict.get("switch"));
+                                level.getSwitch(1).setTexture(textureDict.get("switchone"));
+                                level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
+                                level.getSwitch(3).setTexture(textureDict.get("switchthreeoff"));
 							}
 						} else if (!doorHasEnemyOnTop(level.getDoor(i)) && !doorHasPlayerOnTop(level.getDoor(i))) {
 
@@ -1705,15 +1737,19 @@ public class GameController implements ContactListener, Screen {
 							level.getDoor(i).setLowered(false);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
+                                level.getSwitch(0).setTexture(textureDict.get("switch"));
 							}
 							else if (i == 1) {
 								level.getDoor(i).setTexture(textureDict.get("doorClosedTileOne"));
+                                level.getSwitch(1).setTexture(textureDict.get("switchone"));
 							}
 							else if (i == 2) {
 								level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
+                                level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
 							}
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
+                                level.getSwitch(3).setTexture(textureDict.get("switchthree"));
 							}
 
 						}
