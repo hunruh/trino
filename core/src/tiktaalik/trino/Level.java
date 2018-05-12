@@ -623,10 +623,10 @@ public class Level {
                         filmStripDict.get("carnivoreEatingFront"), 12);
             }
             else {
-                en.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
-                        filmStripDict.get("herbivoreRight"), 7,
-                        filmStripDict.get("herbivoreBack"), 8,
-                        filmStripDict.get("herbivoreFront"), 8);
+                en.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 8,
+                        filmStripDict.get("herbivoreSwimmingRight"), 8,
+                        filmStripDict.get("herbivoreSwimmingBack"), 4,
+                        filmStripDict.get("herbivoreSwimmingFront"), 4);
             }
             en.setDirection(d);
             en.setEnemyType(type);
