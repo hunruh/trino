@@ -151,10 +151,17 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
      * @param delta Number of seconds since last animation frame
      */
     private void update(float delta) {
-
-        background = new Texture(LEVEL_FILE);
-        overlay = new Texture(OVERLAY_FILE);
-        menu = new Texture(MENU_FILE);
+        if (background == null) {
+            manager.update(budget);
+            this.progress = manager.getProgress();
+            if (progress >= 1.0f) {
+                this.progress = 1.0f;
+                background = new Texture(LEVEL_FILE);
+                overlay = new Texture(OVERLAY_FILE);
+                menu = new Texture(MENU_FILE);
+                listener.exitScreen(this, 0);
+            }
+        }
 
     }
 

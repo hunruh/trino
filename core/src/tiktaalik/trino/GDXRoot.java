@@ -102,7 +102,6 @@ public class GDXRoot extends Game implements ScreenListener {
 				setScreen(null);
 				screen = levels;
 				setScreen(levels);
-				System.out.println(screen);
 				MenuController.currState = 0;
 
 			}
@@ -132,58 +131,149 @@ public class GDXRoot extends Game implements ScreenListener {
 			}
 			else {
 				if (LevelController.levelNum == 1) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(0);
 				}
 				else if (LevelController.levelNum == 2) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(1);
 				}
 				else if (LevelController.levelNum == 3) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(2);
 				}
 				else if (LevelController.levelNum == 4) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(3);
 
 				}
 				else if (LevelController.levelNum == 5) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(4);
 				}
 				else if (LevelController.levelNum == 6) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(5);
 				}
 				else if (LevelController.levelNum == 7) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(6);
 				}
 				else if (LevelController.levelNum == 8) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(7);
 				}
 				else if (LevelController.levelNum == 9) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(8);
 				}
 				else if (LevelController.levelNum == 10) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(9);
 				}
 				else if (LevelController.levelNum == 11) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(10);
 				}
 				else if (LevelController.levelNum == 12) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(11);
 				}
 				else if (LevelController.levelNum == 13) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(12);
 				}
 				else if (LevelController.levelNum == 14) {
+					controller.loadContent(manager);
+					controller.setScreenListener(this);
+					controller.setCanvas(canvas);
+					controller.reset();
+					setScreen(null);
+					screen = controller;
+					setScreen(controller);
 					controller.setCurrentLevel(13);
 				}
-				controller.loadContent(manager);
-				controller.setScreenListener(this);
-				controller.setCanvas(canvas);
-				controller.reset();
-				setScreen(null);
-				screen = controller;
-				setScreen(controller);
 			}
-
-            LevelController.levelNum = 0;
+			LevelController.levelNum = 0;
+			LevelController.menuPress = 0;
 		}
 		else if (screen == controller) {
 			musicScreen = false;
