@@ -303,7 +303,7 @@ public class Enemy extends EdibleObject {
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.enemyHerbCatBits;
             filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|
-                    Dinosaur.dollCatBits|Dinosaur.cloneCatBits;
+                    Dinosaur.dollCatBits|Dinosaur.cloneCatBits|Dinosaur.enemyHerbCatBits;
             geometry.setFilterData(filter);
         } else {
             Filter filter = geometry.getFilterData();
