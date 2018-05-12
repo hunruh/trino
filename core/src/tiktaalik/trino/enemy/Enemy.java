@@ -35,6 +35,7 @@ public class Enemy extends EdibleObject {
     private boolean stunned;
     private boolean coolingCharge;
     private boolean loadingCharge;
+    private boolean eatingClone;
     private int direction;
     private Vector2 gridLocation = new Vector2();
     private boolean charging;
@@ -52,6 +53,10 @@ public class Enemy extends EdibleObject {
     private static final int STUNNED_RIGHT = 13;
     private static final int STUNNED_UP = 14;
     private static final int STUNNED_DOWN = 15;
+    private static final int EATING_LEFT = 16;
+    private static final int EATING_RIGHT = 17;
+    private static final int EATING_UP = 18;
+    private static final int EATING_DOWN = 19;
 
     public static final int CARNIVORE_ENEMY = 16;
     public static final int HERBIVORE_ENEMY = 17;
@@ -88,8 +93,8 @@ public class Enemy extends EdibleObject {
         shape.set(vertices);
 
         // Gameplay attributes
-        textureSet = new FilmStrip[16];
-        numFrames = new int[16];
+        textureSet = new FilmStrip[20];
+        numFrames = new int[20];
         animeframe = 0;
         faceRight = true;
         faceUp = false;
@@ -98,6 +103,7 @@ public class Enemy extends EdibleObject {
         charging = false;
         coolingCharge = false;
         chargeReady = false;
+        eatingClone = false;
     }
 
     public void setAlert(boolean assignment){
@@ -118,6 +124,21 @@ public class Enemy extends EdibleObject {
     }
 
     public int getEnemyType() {return enemyType;}
+
+    public void setEatingClone(boolean assignment){
+        if (assignment){
+            animeframe = 0f;
+            charging = false;
+            chargeLoad = 0;
+            loadingCharge = false;
+            charging = false;
+        }
+        eatingClone = assignment;
+    }
+
+    public boolean getEatingClone(){
+        return eatingClone;
+    }
 
     public void setTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
                               Texture down, int downFrames) {
@@ -166,6 +187,18 @@ public class Enemy extends EdibleObject {
         textureSet[ACTION_UP] = new FilmStrip(up,1,upFrames,upFrames);
         numFrames[ACTION_DOWN] = downFrames;
         textureSet[ACTION_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
+    public void setEatingTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                                    Texture down, int downFrames) {
+        numFrames[16] = leftFrames;
+        textureSet[16] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[17] = rightFrames;
+        textureSet[17] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[18] = upFrames;
+        textureSet[18] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[19] = downFrames;
+        textureSet[19] = new FilmStrip(down,1,downFrames,downFrames);
     }
 
     public void beginEating() {
@@ -347,11 +380,18 @@ public class Enemy extends EdibleObject {
 
         animeframe += ANIMATION_SPEED;
 
-        if (loadingCharge || (chargeReady && !charging)) {
+        if (eatingClone){
+            System.out.println("reached eating clone animation");
+            if (animeframe >= numFrames[direction + 16]) {
+                animeframe -= (numFrames[direction + 16]);
+            }
+        }
+        else if (loadingCharge || (chargeReady && !charging)) {
             if (animeframe >= numFrames[direction + 4]) {
                 animeframe -= (numFrames[direction + 4] - 3);
             }
         } else if (charging) {
+            System.out.println("reached charging animation");
             if (animeframe >= numFrames[direction + 8]) {
                 animeframe -= (numFrames[direction + 8]);
             }
@@ -402,6 +442,8 @@ public class Enemy extends EdibleObject {
             filmStripItem += 8;
         else if (stunned)
             filmStripItem += 12;
+        else if (eatingClone)
+            filmStripItem += 16;
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {

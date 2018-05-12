@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.enemy.Enemy;
 
 public class Clone extends GameObject {
     private float radius;
@@ -18,6 +19,7 @@ public class Clone extends GameObject {
     private float totalTime = 60.0f;
     private float timeElapsed;
     private float eatTime = 2.0f;
+    private Enemy enemyEating;
 
     public Clone(float radius) {
         this(0, 0, radius);
@@ -45,6 +47,10 @@ public class Clone extends GameObject {
         this.radius = radius;
     }
 
+    public void setEnemy(Enemy e){
+        enemyEating = e;
+    }
+
     public float getCloneTime(){return timeElapsed;}
 
     public boolean getAlive() {
@@ -69,6 +75,9 @@ public class Clone extends GameObject {
 
         timeElapsed += dt;
         if (timeElapsed > totalTime) {
+            if (enemyEating != null){
+                enemyEating.setEatingClone(false);
+            }
             alive = false;
             removed = true;
         }
