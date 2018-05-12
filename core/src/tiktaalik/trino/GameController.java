@@ -1661,7 +1661,7 @@ public class GameController implements ContactListener, Screen {
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
 							}
-						} else if (!doorHasEnemyOnTop(level.getDoor(i))) {
+						} else if (!doorHasEnemyOnTop(level.getDoor(i)) && !doorHasPlayerOnTop(level.getDoor(i))) {
 
 							// Set the goal for the fireflies
 							if (fireflyToGoalTime == 1){
@@ -2289,6 +2289,20 @@ public class GameController implements ContactListener, Screen {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	// Returns true if enemy is on top of door or near it
+	private boolean doorHasPlayerOnTop(Wall door){
+
+			if (level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y ||
+					level.getAvatarGridX() == door.getGridLocation().x+1 && level.getAvatarGridY() == door.getGridLocation().y
+					|| level.getAvatarGridX() == door.getGridLocation().x-1 && level.getAvatarGridY() == door.getGridLocation().y
+					|| level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y+1
+					|| level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y-1){
+				return true;
+			}
+
 		return false;
 	}
 
