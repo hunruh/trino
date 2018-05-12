@@ -1702,7 +1702,11 @@ public class GameController implements ContactListener, Screen {
 			// Handle camera shaking for when duggi carn collides
 			if (avatar.getForm() == Dinosaur.CARNIVORE_FORM){
 				if (((Carnivore)avatar).getShakeCamera()){
-					shake(500,500,5f);
+					if (level.objectInFrontOfAvatar() != null){
+						if (level.objectInFrontOfAvatar().getType() == WALL){
+							shake(500,500,5f);
+						}
+					}
 					((Carnivore)avatar).setShakeCamera(false);
 				}
 			}
