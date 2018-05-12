@@ -1,5 +1,6 @@
 package tiktaalik.trino;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.audio.Sound;
 import tiktaalik.trino.duggi.Carnivore;
 import tiktaalik.trino.duggi.Clone;
@@ -12,7 +13,6 @@ import tiktaalik.trino.environment.River;
 public class CollisionHandler {
     GameController parent;
     Level level;
-    private int cloneTime = 0;
 
     public CollisionHandler(GameController parent) {
 
@@ -123,10 +123,11 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Dinosaur d, Boulder b) {
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
-            b.setPushed();
-            ((Carnivore) d).setCollided(true);
-            d.stopAction();
+        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress() && !((Carnivore) d).getPushing() &&
+                level.isInFrontOfAvatar(b)) {
+            level.pushBoulder(d, b);
+        } else if (d.getForm() == Dinosaur.CARNIVORE_FORM && !d.getActionInProgress()) {
+            ((Carnivore) d).setNextToBoulder(b);
         }
     }
 
@@ -139,10 +140,6 @@ public class CollisionHandler {
                 parent.setComplete(false);
             }
         }
-//        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
-//            ((Carnivore) d).setCollided(true);
-//            d.stopAction();
-//        }
 
         if (level.isInFrontOfAvatar(w)) {
             SoundController.getInstance().playCollide();
@@ -150,14 +147,12 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Dinosaur d, River r) {
-        if (d.getForm() == Dinosaur.CARNIVORE_FORM && d.getActionInProgress()) {
-            ((Carnivore) d).setCollided(true);
-            d.stopAction();
-        }
+
     }
 
     public void handleCollision(Clone c, Enemy e) {
-        c.setRemoved(true);
+        e.setEatingClone(true, c);
+        c.setEnemy(e);
     }
 
     public void handleCollision(Enemy e1, Enemy e2) {
@@ -177,7 +172,6 @@ public class CollisionHandler {
         e.setCollided(true);
         if (e.getCharging()) {
             e.setStunned();
-            b.setPushed();
         }
     }
 

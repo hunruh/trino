@@ -6,6 +6,7 @@ import static tiktaalik.trino.duggi.Dinosaur.*;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Color;
 import org.json.simple.JSONObject;
+import tiktaalik.trino.duggi.Carnivore;
 import tiktaalik.trino.level_editor.LevelParser;
 import tiktaalik.trino.level_editor.LevelParser.*;
 
@@ -37,7 +38,8 @@ public class Level {
     private static final float DEFAULT_HEIGHT = 9.0f; // Height of the game world in Box2d units
 
     protected PooledList<GameObject> objects  = new PooledList<GameObject>(); // All the objects in the world
-    protected PooledList<GameObject> drawObjects  = new PooledList<GameObject>(); // Sortable list of objects for draw
+    protected PooledList<GameObject> groundObjects  = new PooledList<GameObject>(); // List of ground-level draw objects
+    protected PooledList<GameObject> blockObjects = new PooledList<GameObject>(); // Sortable list of objects for draw
 
     private PooledList<Wall> walls = new PooledList<Wall>();
     private PooledList<CottonFlower> cottonFlowers = new PooledList<CottonFlower>();
@@ -181,6 +183,14 @@ public class Level {
         return grid[x][y];
     }
 
+    public boolean setGridObject(int x, int y, GameObject g, boolean overwrite) {
+        if (grid[x][y] != null && !overwrite)
+            return false;
+
+        grid[x][y] = g;
+        return true;
+    }
+
     public GameObject[][] getGrid() { return grid; }
 
     public Dinosaur getAvatar() {
@@ -201,7 +211,7 @@ public class Level {
     }
 
     public void placeClone() {
-        clone = new Clone(avatar.getX(), avatar.getY(), cloneTexture.getRegionWidth() / (scale.x * 2));
+        clone = new Clone(avatar.getX(), avatar.getY(), 40 / (scale.x * 2));
         clone.setGridLocation(getAvatarGridX(), getAvatarGridY());
         clone.setDrawScale(scale);
         clone.setType(CLONE);
@@ -212,6 +222,75 @@ public class Level {
 
     public void removeClone() {
         removeObject(clone);
+    }
+
+    public void pushBoulder(Dinosaur d, Boulder b) {
+        if (!b.getInMotion()) {
+            float targetX = b.getX();
+            float targetY = b.getY();
+            int gridX = (int)b.getGridLocation().x;
+            int gridY = (int)b.getGridLocation().y;
+            int targetGridX = gridX;
+            int targetGridY = gridY;
+
+            if (d.getDirection() == Dinosaur.LEFT) {
+                if (getGridObject(gridX - 1, gridY) != null) {
+                    if (getGridObject(gridX - 1, gridY).getType() != GameController.COTTON)
+                        return;
+                }
+
+                if (isEnemyOnSquare(gridX - 1, gridY))
+                    return;
+
+                targetX = 1 + 2 * (gridX - 1);
+                targetGridX = gridX - 1;
+            }
+            else if (d.getDirection() == Dinosaur.RIGHT) {
+                if (getGridObject(gridX + 1, gridY) != null) {
+                    if (getGridObject(gridX + 1, gridY).getType() != GameController.COTTON)
+                        return;
+                }
+
+                if (isEnemyOnSquare(gridX + 1, gridY))
+                    return;
+
+                targetX = 1 + 2 * (gridX + 1);
+                targetGridX = gridX + 1;
+            }
+            else if (d.getDirection() == Dinosaur.UP) {
+                if (getGridObject(gridX, gridY + 1) != null) {
+                    if (getGridObject(gridX, gridY + 1).getType() != GameController.COTTON)
+                        return;
+                }
+
+                if (isEnemyOnSquare(gridX, gridY + 1))
+                    return;
+
+                targetY = 1 + 2 * (gridY + 1);
+                targetGridY = gridY + 1;
+            }
+            else if (d.getDirection() == Dinosaur.DOWN) {
+                if (getGridObject(gridX, gridY - 1) != null) {
+                    if (getGridObject(gridX, gridY - 1).getType() != GameController.COTTON)
+                        return;
+                }
+
+                if (isEnemyOnSquare(gridX, gridY - 1))
+                    return;
+
+                targetY = 1 + 2 * (gridY - 1);
+                targetGridY = gridY - 1;
+            }
+
+            // Move the boulder on the grid. Do not null the grid tile if it is a cotton flower
+            if (getGridObject(gridX, gridY).getType() == GameController.BOULDER)
+                setGridObject(gridX, gridY, null, true);
+            setGridObject(targetGridX, targetGridY, b, false);
+
+            b.setTargetDestination(targetX, targetY);
+            b.setInMotion(true, ((Carnivore) d));
+            ((Carnivore) d).setPushing(true);
+        }
     }
 
     //public Wall getGoalDoor() {
@@ -246,6 +325,8 @@ public class Level {
 
     public PooledList<Wall> getDoors() { return doors; }
 
+    public PooledList<River> getRivers() {return rivers;}
+
     public CottonFlower getCottonFlower(int idx) { return cottonFlowers.get(idx); }
 
     public PooledList<CottonFlower> getCottonFlowers() { return cottonFlowers; }
@@ -268,7 +349,7 @@ public class Level {
         try {
             savefileparser.parse("jsons/save.json");
         } catch(Exception e){
-            System.out.println("fuck me");
+            System.out.println("oops");
         }
         savefileparser.printObj();
         savefileparser.changeLevelCompletion(0, true);
@@ -276,7 +357,7 @@ public class Level {
         try {
             savefileparser.writeToFile("jsons/save.json");
         } catch(Exception e){
-            System.out.println("fuck me");
+            System.out.println("oops");
         }
 
 
@@ -470,6 +551,7 @@ public class Level {
                 goalDoor.setGoal(false);
             }
             addObject(goalDoor);
+            grid[(int) goalDoor.getGridLocation().x][(int) goalDoor.getGridLocation().y] = goalDoor;
         }
 
         // Create enemy
@@ -502,8 +584,8 @@ public class Level {
             if (type == Enemy.UNKILLABLE_ENEMY){
                 en.setTextureSet(filmStripDict.get("unkillableEnemyLeft"), 10,
                         filmStripDict.get("unkillableEnemyRight"), 10,
-                        filmStripDict.get("enemyBack"), 8,
-                        filmStripDict.get("enemyFront"), 10);
+                        filmStripDict.get("unkillableEnemyBack"), 8,
+                        filmStripDict.get("unkillableEnemyFront"), 10);
                 en.setActionLoadingTextureSet(filmStripDict.get("enemyChargeLeft"), 15,
                         filmStripDict.get("enemyChargeRight"), 15,
                         filmStripDict.get("enemyChargeLeft"), 15,
@@ -518,7 +600,7 @@ public class Level {
                         filmStripDict.get("enemyStunnedFront"), 3);
                 en.setEatAnimation(filmStripDict.get("enemyLeftEating"), 6);
             }
-            else {
+            else if (type == Enemy.CARNIVORE_ENEMY){
                 en.setTextureSet(filmStripDict.get("enemyLeft"), 10,
                         filmStripDict.get("enemyRight"), 10,
                         filmStripDict.get("enemyBack"), 8,
@@ -535,6 +617,16 @@ public class Level {
                         filmStripDict.get("enemyStunnedRight"), 3,
                         filmStripDict.get("enemyStunnedBack"), 3,
                         filmStripDict.get("enemyStunnedFront"), 3);
+                en.setEatingTextureSet(filmStripDict.get("carnivoreEatingLeft"), 8,
+                        filmStripDict.get("carnivoreEatingRight"), 8,
+                        filmStripDict.get("carnivoreEatingBack"), 8,
+                        filmStripDict.get("carnivoreEatingFront"), 12);
+            }
+            else {
+                en.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
+                        filmStripDict.get("herbivoreRight"), 7,
+                        filmStripDict.get("herbivoreBack"), 8,
+                        filmStripDict.get("herbivoreFront"), 8);
             }
             en.setDirection(d);
             en.setEnemyType(type);
@@ -549,7 +641,19 @@ public class Level {
             FireFly ff = new FireFly(MathUtils.random(bounds.width),
                     MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
-            ff.setTexture(textureDict.get("fireFly"));
+            int random = MathUtils.random(4);
+            if (random == 0){
+                random = MathUtils.random(3);
+                if (random == 0){
+                    ff.setTexture(textureDict.get("fireFlyPurple"));
+                } else if (random == 1){
+                    ff.setTexture(textureDict.get("fireFlyBlue"));
+                } else if (random == 2){
+                    ff.setTexture(textureDict.get("fireFlyPink"));
+                }
+            } else {
+                ff.setTexture(textureDict.get("fireFly"));
+            }
             ff.setDrawScale(scale);
             addObject(ff);
         }
@@ -562,10 +666,15 @@ public class Level {
         Iterator<PooledList<GameObject>.Entry> iterator = objects.entryIterator();
         while (iterator.hasNext()) {
             PooledList<GameObject>.Entry entry = iterator.next();
-            drawObjects.add(entry.getValue());
+            GameObject g = entry.getValue();
+            if (g.getType() == COTTON || g.getType() == SWITCH ||
+                    (g.getType() == GOAL && ((Wall) g).getLowered()))
+                groundObjects.add(entry.getValue());
+            else
+                blockObjects.add(entry.getValue());
         }
 
-        Collections.sort(drawObjects, new Comparator<GameObject>() {
+        Collections.sort(blockObjects, new Comparator<GameObject>() {
             @Override
             public int compare(GameObject g1, GameObject g2) {
                 if (g1.getType() == RIVER)
@@ -573,21 +682,13 @@ public class Level {
                 if (g2.getType() == RIVER)
                     return 1;
 
-                if (g1.getType() == SWITCH)
+                if (((g1.getType() == WALL || g1.getType() == GOAL || g1.getType() == EDIBLEWALL) &&
+                        (g2.getType() == DUGGI || g2.getType() == CLONE || g2.getType() == ENEMY)) &&
+                        Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
                     return -1;
-                if (g2.getType() == SWITCH)
-                    return 1;
-
-                if (g1.getType() == GOAL && ((Wall) g1).getLowered()) {
-                    return -1;
-                }
-                if (g2.getType() == GOAL && ((Wall) g2).getLowered()) {
-                    return 1;
-                }
-
-                if (g1.getType() == COTTON)
-                    return -1;
-                if (g2.getType() == COTTON)
+                if (((g2.getType() == WALL || g2.getType() == GOAL || g2.getType() == EDIBLEWALL) &&
+                        (g1.getType() == DUGGI || g1.getType() == CLONE || g1.getType() == ENEMY)) &&
+                        Math.abs(screenToMaze(g1.getY()) - screenToMaze(g2.getY())) <= 2)
                     return 1;
 
                 if (g1.getType() == FIREFLY)
@@ -602,15 +703,22 @@ public class Level {
         canvas.draw(background, 1270, 0);
         canvas.end();
 
+        canvas.begin();
+        for(GameObject g : groundObjects)
+            g.draw(canvas);
+        canvas.end();
+
         canvas.beginShadows();
         avatar.drawShadow(canvas);
         for(Enemy e : enemies) {
             e.drawShadow(canvas);
         }
+        if (clone != null)
+            clone.drawShadow(canvas);
         canvas.endShadows();
 
         canvas.begin();
-        for(GameObject g : drawObjects)
+        for(GameObject g : blockObjects)
             g.draw(canvas);
         canvas.end();
 
@@ -624,17 +732,8 @@ public class Level {
         }
         canvas.endProgressCircle();
 
-//        canvas.beginDebug();
-//        avatar.drawDebug(canvas);
-//        for(Enemy e : enemies) {
-//            e.drawDebug(canvas);
-//        }
-//        for(Wall w : walls) {
-//            w.drawDebug(canvas);
-//        }
-//        canvas.endDebug();
-
-        drawObjects.clear();
+        groundObjects.clear();
+        blockObjects.clear();
     }
 
     public int getAvatarGridX() {
@@ -648,6 +747,17 @@ public class Level {
     public boolean[][] getEnemyLocation() {return enemyLocation;}
 
     public void setEnemyLocation(int x, int y, boolean value) {enemyLocation[x][y] = value;}
+
+    public boolean isEnemyOnSquare(int gridX, int gridY) {
+        for (Enemy e : enemies) {
+            float dx = ((e.getX() - 1) / 2) - gridX;
+            float dy = ((e.getY() - 1) / 2) - gridY;
+            if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5)
+                return true;
+        }
+
+        return false;
+    }
 
     public float getStraightDist(int direction, GameObject bd1, GameObject bd2) {
         if (bd1 == null || bd2 == null)
@@ -665,10 +775,11 @@ public class Level {
 
         if (bd.getType() != WALL && bd.getType() != COTTON && bd.getType() != EDIBLEWALL){
             if ((direction == LEFT && bd.getX() <= avatar.getX()) ||
-                    (direction == RIGHT && bd.getX() >= avatar.getX()) ||
-                    (direction == UP && bd.getY() >= avatar.getY()) ||
+                    (direction == RIGHT && bd.getX() >= avatar.getX()))
+                return bd.getPosition().dst2(avatar.getPosition()) < 4.5;
+            if ((direction == UP && bd.getY() >= avatar.getY()) ||
                     (direction == DOWN && bd.getY() <= avatar.getY())) {
-                return bd.getPosition().dst2(avatar.getPosition()) < 2.5;
+                return bd.getPosition().dst2(avatar.getPosition()) < 3.5;
             }
         }
         else {
@@ -728,79 +839,6 @@ public class Level {
                 return grid[(int)locationCache.x + 1][(int)locationCache.y];
         }
         return null;
-    }
-
-    public Vector2 objectInFrontofAvatarLocation() {
-        int direction = avatar.getDirection();
-        locationCache.set(getAvatarGridX(), getAvatarGridY());
-
-        if (direction == UP) {
-            if ((int)locationCache.y == getHeight())
-                return null;
-            else
-                return new Vector2((int)locationCache.x,(int)locationCache.y + 1);
-        }
-        else if (direction == DOWN) {
-            if ((int)locationCache.y == 0)
-                return null;
-            else
-                return new Vector2((int)locationCache.x, (int)locationCache.y - 1);
-        }
-        else if (direction == LEFT) {
-            if ((int)locationCache.x == 0)
-                return null;
-            else
-                return new Vector2((int)locationCache.x - 1, (int)locationCache.y);
-        }
-        else if (direction == RIGHT) {
-            if ((int)locationCache.x == getWidth())
-                return null;
-            else
-                return new Vector2((int)locationCache.x + 1, (int)locationCache.y);
-        }
-        return null;
-    }
-
-    public boolean objectInFrontOfEnemy(Enemy e) {
-        int direction = e.getDirection();
-
-        objectCache = null;
-        if (direction == UP) {
-            locationCache.set(Math.round((e.getX() - 1) / 2), (float)Math.floor((e.getY() - 1) / 2));
-            objectCache = grid[(int)locationCache.x][(int)locationCache.y + 1];
-        }
-        else if (direction == DOWN) {
-            locationCache.set(Math.round((e.getX() - 1) / 2), (float)Math.ceil((e.getY() - 1) / 2));
-            objectCache = grid[(int)locationCache.x][(int)locationCache.y - 1];
-        }
-        else if (direction == LEFT) {
-            locationCache.set((float)Math.ceil((e.getX() - 1) / 2), Math.round((e.getY() - 1) / 2));
-            objectCache = grid[(int)locationCache.x - 1][(int)locationCache.y];
-        }
-        else {
-            locationCache.set((float)Math.floor((e.getX() - 1) / 2), Math.round((e.getY() - 1) / 2));
-            objectCache = grid[(int)locationCache.x + 1][(int)locationCache.y];
-        }
-
-        if (objectCache == null)
-            return false;
-
-        return objectCache.getType() == WALL || objectCache.getType() == EDIBLEWALL ||
-                objectCache.getType() == RIVER || objectCache.getType() == BOULDER;
-    }
-
-    public boolean isAlignedHorizontally(GameObject bd1, GameObject bd2, double offset){
-        return (Math.abs(bd1.getY() - bd2.getY()) <= offset);
-    }
-
-    public boolean isAlignedVertically(GameObject bd1, GameObject bd2, double offset){
-        return (Math.abs(bd1.getX() - bd2.getX()) <= offset);
-    }
-
-    public boolean isOnGrid(double x, double y){
-        float gridx = screenToMaze(Math.round((avatar.getX() - 1) / 2));
-        float gridy = screenToMaze(Math.round((avatar.getY() - 1) / 2));
-        return (Math.abs(avatar.getX() - gridx) <= x) && (Math.abs(avatar.getY() - gridy) <= y);
     }
 
     /** drawing on screen */

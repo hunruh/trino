@@ -151,10 +151,17 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
      * @param delta Number of seconds since last animation frame
      */
     private void update(float delta) {
-
-        background = new Texture(LEVEL_FILE);
-        overlay = new Texture(OVERLAY_FILE);
-        menu = new Texture(MENU_FILE);
+        if (background == null) {
+            manager.update(budget);
+            this.progress = manager.getProgress();
+            if (progress >= 1.0f) {
+                this.progress = 1.0f;
+                background = new Texture(LEVEL_FILE);
+                overlay = new Texture(OVERLAY_FILE);
+                menu = new Texture(MENU_FILE);
+//                listener.exitScreen(this, 0);
+            }
+        }
 
     }
 
@@ -307,20 +314,75 @@ public class LevelController implements Screen, InputProcessor, ControllerListen
 
 
         // level one
-        if ((screenX >=  26) && (screenX <= 360) &&
-                (screenY >= 370) && (screenY <= 534)) {
+        if ((screenX >=  120) && (screenX <= 288) &&
+                (screenY >= 516) && (screenY <= 598)) {
             selectState = 1;
             levelNum = 1;
         }
-        else if ((screenX >=  466) && (screenX <= 674) &&
-                (screenY >= 36) && (screenY <= 165)) {
+        else if ((screenX >=  342) && (screenX <= 510) &&
+                (screenY >= 516) && (screenY <= 598)) {
             selectState = 1;
             levelNum = 2;
         }
-        else if ((screenX >=  873) && (screenX <= 1082) &&
-                (screenY >= 36) && (screenY <= 165)) {
+        else if ((screenX >=  564) && (screenX <= 732) &&
+                (screenY >= 516) && (screenY <= 598)) {
             selectState = 1;
             levelNum = 3;
+        }
+        else if ((screenX >=  786) && (screenX <= 954) &&
+                (screenY >= 516) && (screenY <= 598)) {
+            selectState = 1;
+            levelNum = 4;
+        }
+        else if ((screenX >=  1008) && (screenX <= 1176) &&
+                (screenY >= 516) && (screenY <= 598)) {
+            selectState = 1;
+            levelNum = 5;
+        }
+        else if ((screenX >=  120) && (screenX <= 288) &&
+                (screenY >= 400) && (screenY <= 482)) {
+            selectState = 1;
+            levelNum = 6;
+        }
+        else if ((screenX >=  342) && (screenX <= 510) &&
+                (screenY >= 400) && (screenY <= 482)) {
+            selectState = 1;
+            levelNum = 7;
+        }
+        else if ((screenX >=  564) && (screenX <= 732) &&
+                (screenY >= 400) && (screenY <= 482)) {
+            selectState = 1;
+            levelNum = 8;
+        }
+        else if ((screenX >=  786) && (screenX <= 954) &&
+                (screenY >= 400) && (screenY <= 482)) {
+            selectState = 1;
+            levelNum = 9;
+        }
+        else if ((screenX >=  1008) && (screenX <= 1176) &&
+                (screenY >= 400) && (screenY <= 482)) {
+            selectState = 1;
+            levelNum = 10;
+        }
+        else if ((screenX >=  120) && (screenX <= 288) &&
+                (screenY >= 284) && (screenY <= 366)) {
+            selectState = 1;
+            levelNum = 11;
+        }
+        else if ((screenX >=  342) && (screenX <= 510) &&
+                (screenY >= 284) && (screenY <= 366)) {
+            selectState = 1;
+            levelNum = 12;
+        }
+        else if ((screenX >=  564) && (screenX <= 732) &&
+                (screenY >= 284) && (screenY <= 366)) {
+            selectState = 1;
+            levelNum = 13;
+        }
+        else if ((screenX >=  786) && (screenX <= 954) &&
+                (screenY >= 284) && (screenY <= 366)) {
+            selectState = 1;
+            levelNum = 14;
         }
 
         else if ((screenX >= 914) && (screenX <= 1248) &&

@@ -2,15 +2,21 @@ package tiktaalik.trino.duggi;
 
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import tiktaalik.trino.Canvas;
+import tiktaalik.trino.environment.Boulder;
 
 public class Carnivore extends Dinosaur {
     private boolean collided;
+    private boolean pushing;
     private boolean chargeActive;
+    private boolean shakeCamera;
+
+    private Boulder nextToBoulder;
 
     public Carnivore(Dinosaur d) {
         super(d);
         chargeActive = false;
         collided = false;
+        pushing = false;
 
         shape = new PolygonShape();
         float vertices[] = new float[16];
@@ -27,6 +33,38 @@ public class Carnivore extends Dinosaur {
         body.destroyFixture(body.getFixtureList().first());
         fixture.shape = shape;
         body.createFixture(fixture);
+    }
+
+    public void setLeftRight(float value) {
+        if (!actionInProgress)
+            super.setLeftRight(value);
+    }
+
+    public void setUpDown(float value) {
+        if (!actionInProgress)
+            super.setUpDown(value);
+    }
+
+    public boolean getPushing() {
+        return pushing;
+    }
+
+    public boolean getCollided() { return collided;}
+
+    public boolean getShakeCamera(){return shakeCamera;}
+
+    public void setShakeCamera(boolean assignment){shakeCamera = assignment;}
+
+    public void setPushing(boolean pushing) {
+        this.pushing = pushing;
+    }
+
+    public Boulder getAdjacentBoulder() {
+        return nextToBoulder;
+    }
+
+    public void setNextToBoulder(Boulder b) {
+        this.nextToBoulder = b;
     }
 
     public int getForm() {
@@ -53,7 +91,17 @@ public class Carnivore extends Dinosaur {
             body.setLinearVelocity(0.0f, 0.0f);
             collided = false;
         }
-        else {
+        else if (pushing) {
+            chargeActive = true;
+            if (actionDirection == LEFT)
+                body.setLinearVelocity(-5.0f, 0.0f);
+            else if (actionDirection == RIGHT)
+                body.setLinearVelocity(5.0f, 0.0f);
+            else if (actionDirection == UP)
+                body.setLinearVelocity(0.0f, 5.0f);
+            else
+                body.setLinearVelocity(0.0f, -5.0f);
+        } else {
             chargeActive = true;
             if (actionDirection == LEFT)
                 body.setLinearVelocity(-15.0f, 0.0f);
@@ -69,8 +117,9 @@ public class Carnivore extends Dinosaur {
     public void update(float dt) {
         super.update(dt);
 
-        if (chargeActive && this.getLinearVelocity().len2() < 0.2f) {
+        if (!pushing && chargeActive && this.getLinearVelocity().len2() < 0.2f) {
             setCollided(true);
+            shakeCamera = true;
             stopAction();
             chargeActive = false;
         }

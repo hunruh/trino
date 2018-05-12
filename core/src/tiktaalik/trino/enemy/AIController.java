@@ -31,10 +31,11 @@ public class AIController {
 
     private Vector2 locationCache;
     private Level level;
+    private GameController gc;
 
     private int chargeDetectionDistance = 5;
 
-    public AIController(int id, Dinosaur duggi, PooledList<Enemy> enemies, int turnAngle, Level level) {
+    public AIController(int id, Dinosaur duggi, PooledList<Enemy> enemies, int turnAngle, Level level, GameController gc) {
         this.enemy = enemies.get(id);
 
         target = duggi;
@@ -42,6 +43,7 @@ public class AIController {
         this.turnAngle = turnAngle;
         this.level = level;
         locationCache = new Vector2();
+        this.gc = gc;
     }
 
     public AIController(int id, Dinosaur duggi, PooledList<Enemy> enemies, int turnAngle, int type, Level level) {
@@ -59,12 +61,16 @@ public class AIController {
         if (enemy.getStunned())
             return;
 
-        if (playerInFrontOfEnemy() && !enemy.getCharging()){
-
-            if (level.getAvatar().getCanBeSeen()){
+        if (!enemy.getCharging() && enemy.getEnemyType() == Enemy.CARNIVORE_ENEMY){
+            if (cloneInFrontOfEnemy()){
                 SoundController.getInstance().playAlert();
-                enemy.setAlert(true);
                 enemy.loadCharge();
+            }
+            else if (playerInFrontOfEnemy()){
+                if (level.getAvatar().getCanBeSeen()){
+                    SoundController.getInstance().playAlert();
+                    enemy.loadCharge();
+                }
             }
         }
 
@@ -80,6 +86,7 @@ public class AIController {
             if (enemy.getCharging()) {
                 SoundController.getInstance().playCrash();
                 enemy.setStunned();
+                gc.shake(500,500,5f);
                 enemy.setCharging(false);
                 return;
             }
@@ -121,6 +128,11 @@ public class AIController {
         } else if (enemy.getDirection() == Dinosaur.UP) {
             step.x = 0;
             step.y = speed;
+        }
+
+        if (enemy.getEatingClone()){
+            step.x = 0;
+            step.y = 0;
         }
 
         enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
@@ -342,7 +354,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y + i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -356,7 +368,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y - i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -371,7 +383,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x - i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }
@@ -385,7 +397,73 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x + i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER)
+                                g.getType() == BOULDER || g.getType() == GOAL)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean cloneInFrontOfEnemy() {
+        if (level.getClone() == null){
+            return false;
+        }
+        locationCache.set(getEnemyGridX(), getEnemyGridY());
+        if (enemy.getDirection() == Dinosaur.UP){
+            if(level.getClone().getGridLocation().x == getEnemyGridX() && (level.getClone().getGridLocation().y - getEnemyGridY() < chargeDetectionDistance) &&
+                    (level.getClone().getGridLocation().y - getEnemyGridY() > 0)) {
+                for(int i = 1; i < Math.abs(getEnemyGridY() - level.getClone().getGridLocation().y); i++) {
+                    GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y + i];
+                    if (g != null) {
+                        if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
+                                g.getType() == BOULDER || g.getType() == GOAL)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.DOWN){
+            if(level.getClone().getGridLocation().x == getEnemyGridX() && (getEnemyGridY() - level.getClone().getGridLocation().y < chargeDetectionDistance) &&
+                    (getEnemyGridY() - level.getClone().getGridLocation().y > 0)){
+                for(int i = 1; i < Math.abs(getEnemyGridY() - level.getClone().getGridLocation().y); i++) {
+                    GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y - i];
+                    if (g != null) {
+                        if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
+                                g.getType() == BOULDER || g.getType() == GOAL)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.LEFT){
+            if(level.getClone().getGridLocation().y == getEnemyGridY() && (getEnemyGridX() - level.getClone().getGridLocation().x < chargeDetectionDistance) &&
+                    (getEnemyGridX() - level.getClone().getGridLocation().x > 0)){
+
+                for(int i = 1; i < Math.abs(getEnemyGridX() - level.getClone().getGridLocation().x); i++) {
+                    GameObject g = level.getGrid()[(int) locationCache.x - i][(int) locationCache.y];
+                    if (g != null) {
+                        if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
+                                g.getType() == BOULDER || g.getType() == GOAL)
+                            return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else if (enemy.getDirection() == Dinosaur.RIGHT){
+            if(level.getClone().getGridLocation().y == getEnemyGridY() && (level.getClone().getGridLocation().x - getEnemyGridX() < chargeDetectionDistance) &&
+                    (level.getClone().getGridLocation().x - getEnemyGridX() > 0)){
+                for(int i = 1; i < Math.abs(getEnemyGridX() - level.getClone().getGridLocation().x); i++) {
+                    GameObject g = level.getGrid()[(int) locationCache.x + i][(int) locationCache.y];
+                    if (g != null) {
+                        if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
+                                g.getType() == BOULDER || g.getType() == GOAL)
                             return false;
                     }
                 }

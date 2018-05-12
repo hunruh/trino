@@ -3,9 +3,7 @@ package tiktaalik.trino.environment;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import tiktaalik.trino.Canvas;
-import tiktaalik.trino.EdibleObject;
-import tiktaalik.trino.GameObject;
+import tiktaalik.trino.*;
 import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.util.FilmStrip;
 
@@ -18,7 +16,7 @@ public class Wall extends EdibleObject {
     private Vector2 gridLocation;
 
     private boolean edible;
-    private boolean lowered;
+    private boolean lowered = false;
     private boolean goal;
 
     /**
@@ -63,7 +61,10 @@ public class Wall extends EdibleObject {
     }
 
     public boolean getLowered() { return lowered; }
-    public void setLowered(boolean lowered) { this.lowered = lowered; }
+    public void setLowered(boolean lowered) {
+        this.lowered = lowered;
+
+    }
 
     public boolean getGoal() { return goal; }
     public void setGoal(boolean goal) { this.goal = goal; }
@@ -203,6 +204,7 @@ public class Wall extends EdibleObject {
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits;
             geometry.setFilterData(filter);
             this.setSensor(true);
+
         } else {
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.wallCatBits;
