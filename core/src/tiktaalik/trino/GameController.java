@@ -1053,12 +1053,13 @@ public class GameController implements ContactListener, Screen {
 				fireLight.setColor(Color.BLUE);
 			} else if (level.getFirefly(i).getTexture() == textureDict.get("fireFlyPink")){
 				fireLight.setColor(Color.PINK);
+			} else {
+				fireLight.setColor(0.96f,0.67f,0.10f,0.15f);
 			}
 			Color color = fireLight.getColor();
 			color.a = 0.15f;
 			fireLight.setColor(color);
 
-			//fireLight.setColor(0.96f,0.67f,0.10f,0.15f);
 			fireLight.setXray(true);
 			fireLight.setActive(true);
 			ffLights[i] = fireLight;
