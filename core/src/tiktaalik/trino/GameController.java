@@ -1338,6 +1338,7 @@ public class GameController implements ContactListener, Screen {
 
 					if (InputHandler.getInstance().didReturn()) {
 						menuNum = 1;
+						resetCamera();
 						listener.exitScreen(this, 0);
 						menuNum = 0;
 					}
@@ -2226,6 +2227,12 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 		return false;
+	}
+
+	private void resetCamera(){
+		canvas.getCamera().position.x = canvas.getWidth()/2.0f;
+		canvas.getCamera().position.y = canvas.getHeight()/2.0f;
+		canvas.getCamera().update();
 	}
 
 	/**
