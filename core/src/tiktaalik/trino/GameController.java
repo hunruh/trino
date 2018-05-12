@@ -1131,7 +1131,6 @@ public class GameController implements ContactListener, Screen {
 
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
 			if(level.getFirefly(i).getTexture() == textureDict.get("fireFlyPurple")){
-				System.out.println("reached purple light");
 				fireLight.setColor(Color.PURPLE);
 			} else if (level.getFirefly(i).getTexture() == textureDict.get("fireFlyBlue")){
 				fireLight.setColor(Color.BLUE);
