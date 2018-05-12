@@ -77,10 +77,21 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_STRIP_BACK  = "trino/herbivore_back_strip.png";
 	private static final String HERBIVORE_DIVING_STRIP_LEFT  = "trino/herbivore_left_diving_strip.png";
 	private static final String HERBIVORE_SWIMMING_STRIP_LEFT  = "trino/herbivore_left_swimming_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_RIGHT  = "trino/herbivore_right_swimming_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_FRONT  = "trino/herbivore_front_swimming_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_BACK = "trino/herbivore_back_swimming_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_FRONT  = "trino/herbivore_front_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_LEFT  = "trino/herbivore_left_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_RIGHT  = "trino/herbivore_right_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_BACK = "trino/herbivore_back_eating_strip.png";
+	private static final String HERBIVORE_PLACECAMO_STRIP_FRONT = "trino/herbivore_front_placeCamo.png";
+	private static final String HERBIVORE_PLACECAMO_STRIP_LEFT = "trino/herbivore_left_placeCamo.png";
+	private static final String HERBIVORE_PLACECAMO_STRIP_RIGHT = "trino/herbivore_right_placeCamo.png";
+	private static final String HERBIVORE_PLACECAMO_STRIP_BACK = "trino/herbivore_back_placeCamo.png";
+	private static final String HERBIVORE_CAMO_STRIP_FRONT = "trino/herbivore_front_camo.png";
+	private static final String HERBIVORE_CAMO_STRIP_LEFT = "trino/herbivore_left_camo.png";
+	private static final String HERBIVORE_CAMO_STRIP_RIGHT = "trino/herbivore_right_camo.png";
+	private static final String HERBIVORE_CAMO_STRIP_BACK = "trino/herbivore_back_camo.png";
 	private static final String CARNIVORE_STRIP_FRONT  = "trino/carnivore_front_strip.png";
 	private static final String CARNIVORE_STRIP_LEFT  = "trino/carnivore_left_strip.png";
 	private static final String CARNIVORE_STRIP_RIGHT  = "trino/carnivore_right_strip.png";
@@ -375,6 +386,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_DIVING_STRIP_LEFT);
 		manager.load(HERBIVORE_SWIMMING_STRIP_LEFT, Texture.class);
 		assets.add(HERBIVORE_SWIMMING_STRIP_LEFT);
+		manager.load(HERBIVORE_SWIMMING_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_SWIMMING_STRIP_RIGHT);
+		manager.load(HERBIVORE_SWIMMING_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_SWIMMING_STRIP_BACK);
+		manager.load(HERBIVORE_SWIMMING_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_SWIMMING_STRIP_FRONT);
 		manager.load(HERBIVORE_EATING_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_EATING_STRIP_FRONT);
 		manager.load(HERBIVORE_EATING_STRIP_LEFT, Texture.class);
@@ -383,6 +400,22 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_EATING_STRIP_RIGHT);
 		manager.load(HERBIVORE_EATING_STRIP_BACK, Texture.class);
 		assets.add(HERBIVORE_EATING_STRIP_BACK);
+		manager.load(HERBIVORE_PLACECAMO_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_PLACECAMO_STRIP_BACK);
+		manager.load(HERBIVORE_PLACECAMO_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_PLACECAMO_STRIP_FRONT);
+		manager.load(HERBIVORE_PLACECAMO_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_PLACECAMO_STRIP_RIGHT);
+		manager.load(HERBIVORE_PLACECAMO_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_PLACECAMO_STRIP_LEFT);
+		manager.load(HERBIVORE_CAMO_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_CAMO_STRIP_LEFT);
+		manager.load(HERBIVORE_CAMO_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_CAMO_STRIP_RIGHT);
+		manager.load(HERBIVORE_CAMO_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_CAMO_STRIP_BACK);
+		manager.load(HERBIVORE_CAMO_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_CAMO_STRIP_FRONT);
 		manager.load(CARNIVORE_STRIP_LEFT, Texture.class);
 		assets.add(CARNIVORE_STRIP_LEFT);
 		manager.load(CARNIVORE_STRIP_RIGHT, Texture.class);
@@ -777,10 +810,21 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreBack", createFilmTexture(manager,HERBIVORE_STRIP_BACK));
 		filmStripDict.put("herbivoreDivingLeft", createFilmTexture(manager,HERBIVORE_DIVING_STRIP_LEFT));
 		filmStripDict.put("herbivoreSwimmingLeft", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_LEFT));
+		filmStripDict.put("herbivoreSwimmingRight", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_RIGHT));
+		filmStripDict.put("herbivoreSwimmingFront", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_FRONT));
+		filmStripDict.put("herbivoreSwimmingBack", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_BACK));
 		filmStripDict.put("herbivoreEatingLeft", createFilmTexture(manager,HERBIVORE_EATING_STRIP_LEFT));
 		filmStripDict.put("herbivoreEatingRight", createFilmTexture(manager,HERBIVORE_EATING_STRIP_RIGHT));
 		filmStripDict.put("herbivoreEatingFront", createFilmTexture(manager,HERBIVORE_EATING_STRIP_FRONT));
 		filmStripDict.put("herbivoreEatingBack", createFilmTexture(manager,HERBIVORE_EATING_STRIP_BACK));
+		filmStripDict.put("herbivorePlaceCamoLeft", createFilmTexture(manager,HERBIVORE_PLACECAMO_STRIP_LEFT));
+		filmStripDict.put("herbivorePlaceCamoRight", createFilmTexture(manager,HERBIVORE_PLACECAMO_STRIP_RIGHT));
+		filmStripDict.put("herbivorePlaceCamoFront", createFilmTexture(manager,HERBIVORE_PLACECAMO_STRIP_FRONT));
+		filmStripDict.put("herbivorePlaceCamoBack", createFilmTexture(manager,HERBIVORE_PLACECAMO_STRIP_BACK));
+		filmStripDict.put("herbivoreCamoLeft", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_LEFT));
+		filmStripDict.put("herbivoreCamoRight", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_RIGHT));
+		filmStripDict.put("herbivoreCamoFront", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_FRONT));
+		filmStripDict.put("herbivoreCamoBack", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_BACK));
 		filmStripDict.put("enemyLeft", createFilmTexture(manager,ENEMY_STRIP_LEFT));
 		filmStripDict.put("enemyRight", createFilmTexture(manager,ENEMY_STRIP_RIGHT));
 		filmStripDict.put("enemyFront", createFilmTexture(manager,ENEMY_STRIP_FRONT));
@@ -1869,6 +1913,23 @@ public class GameController implements ContactListener, Screen {
 			for (int i = 0; i < level.getEnemies().size(); i++)
 				controls.get(i).step();
 
+			if (avatar.getForm() == Dinosaur.HERBIVORE_FORM){
+
+				if (isOnRiverTile()){
+					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 8,
+							filmStripDict.get("herbivoreSwimmingRight"), 8,
+							filmStripDict.get("herbivoreSwimmingBack"), 4,
+							filmStripDict.get("herbivoreSwimmingFront"), 4);
+				}
+				else if (avatar.getCanBeSeen()){
+					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
+							filmStripDict.get("herbivoreRight"), 7,
+							filmStripDict.get("herbivoreBack"), 8,
+							filmStripDict.get("herbivoreFront"), 8);
+				}
+
+			}
+
 			//this is hard coded in rn
 			//also naming stuff real bad bc im lazy
 			/*
@@ -1992,14 +2053,20 @@ public class GameController implements ContactListener, Screen {
 						filter.categoryBits = Dinosaur.herbCatBits;
 						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits|Dinosaur.enemyHerbCatBits;
 						avatar.setFilterData(filter);
+
 						avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
 								filmStripDict.get("herbivoreRight"), 7,
 								filmStripDict.get("herbivoreBack"), 8,
 								filmStripDict.get("herbivoreFront"), 8);
+
 						avatar.setEatingTextureSet(filmStripDict.get("herbivoreEatingLeft"), 10,
 								filmStripDict.get("herbivoreEatingRight"), 10,
 								filmStripDict.get("herbivoreEatingBack"), 10,
 								filmStripDict.get("herbivoreEatingFront"), 10);
+						avatar.setActionLoadingTextureSet(filmStripDict.get("herbivorePlaceCamoLeft"), 12, 0,
+								filmStripDict.get("herbivorePlaceCamoRight"), 12, 0,
+								filmStripDict.get("herbivorePlaceCamoBack"), 10, 0,
+								filmStripDict.get("herbivorePlaceCamoFront"),  12, 0);
 
 						level.setAvatar(avatar);
 
@@ -2160,6 +2227,10 @@ public class GameController implements ContactListener, Screen {
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 6.6f) {
 						SoundController.getInstance().playMunch();
 						avatar.setCanBeSeen(false);
+						avatar.setTextureSet(filmStripDict.get("herbivoreCamoLeft"), 7,
+								filmStripDict.get("herbivoreCamoRight"), 7,
+								filmStripDict.get("herbivoreCamoBack"), 8,
+								filmStripDict.get("herbivoreCamoFront"), 8);
 					}
 				}
 			}
