@@ -1292,12 +1292,12 @@ public class GameController implements ContactListener, Screen {
 		if (currentLevel == 0) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("1a"), 126, 292);
-				canvas.draw(textureDict.get("1c"), 957, 292);
+				canvas.draw(textureDict.get("1a"), 354, 156);
+				canvas.draw(textureDict.get("1c"), 354, 1119);
 			}
 			else {
-				canvas.draw(textureDict.get("1b"), 126, 292);
-				canvas.draw(textureDict.get("1d"), 957, 292);
+				canvas.draw(textureDict.get("1b"), 82, 308);
+				canvas.draw(textureDict.get("1d"), 948, 308);
 			}
 			canvas.end();
 		}
@@ -1305,12 +1305,12 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 1) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("2a"), 126, 292);
-				canvas.draw(textureDict.get("2c"), 957, 292);
+				canvas.draw(textureDict.get("2a"), 82, 308);
+				canvas.draw(textureDict.get("2c"), 948, 308);
 			}
 			else {
-				canvas.draw(textureDict.get("2b"), 126, 292);
-				canvas.draw(textureDict.get("2d"), 957, 292);
+				canvas.draw(textureDict.get("2b"), 82, 308);
+				canvas.draw(textureDict.get("2d"), 948, 308);
 			}
 			canvas.end();
 		}
@@ -1318,10 +1318,10 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 2) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("3a"), 126, 292);
+				canvas.draw(textureDict.get("3a"), 82, 308);
 			}
 			else {
-				canvas.draw(textureDict.get("3b"), 126, 292);
+				canvas.draw(textureDict.get("3b"), 82, 308);
 			}
 			canvas.end();
 		}
@@ -1329,47 +1329,47 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 3) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("4a"), 126, 292);
+				canvas.draw(textureDict.get("4a"), 82, 308);
 			}
 			else {
-				canvas.draw(textureDict.get("4b"), 126, 292);
+				canvas.draw(textureDict.get("4b"), 82, 308);
 			}
 			canvas.end();
 		}
         else if (currentLevel == 5) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("6a"), 126, 292);
-                canvas.draw(textureDict.get("6c"), 957, 292);
+                canvas.draw(textureDict.get("6a"), 82, 308);
+                canvas.draw(textureDict.get("6c"), 948, 308);
             }
             else {
-                canvas.draw(textureDict.get("6b"), 126, 292);
-                canvas.draw(textureDict.get("6d"), 957, 292);
+                canvas.draw(textureDict.get("6b"), 82, 308);
+                canvas.draw(textureDict.get("6d"), 948, 308);
             }
             canvas.end();
         }
         else if (currentLevel == 6) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("7a"), 126, 292);
+                canvas.draw(textureDict.get("7a"), 82, 308);
             }
             else {
-                canvas.draw(textureDict.get("7b"), 126, 292);
+                canvas.draw(textureDict.get("7b"), 82, 308);
             }
             canvas.end();
         }
         else if (currentLevel == 7) {
             canvas.beginOverlay();
-            canvas.draw(textureDict.get("8a"), 126, 292);
+            canvas.draw(textureDict.get("8a"), 82, 308);
             canvas.end();
         }
         else if (currentLevel == 8) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("9a"), 126, 292);
+                canvas.draw(textureDict.get("9a"), 82, 308);
             }
             else {
-                canvas.draw(textureDict.get("9b"), 126, 292);
+                canvas.draw(textureDict.get("9b"), 82, 308);
             }
             canvas.end();
         }
@@ -1735,29 +1735,17 @@ public class GameController implements ContactListener, Screen {
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
                                 level.getSwitch(0).setTexture(textureDict.get("switchoff"));
-                                level.getSwitch(1).setTexture(textureDict.get("switchone"));
-                                level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
-                                level.getSwitch(3).setTexture(textureDict.get("switchthree"));
 							}
 							else if (i == 1) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileOne"));
-                                level.getSwitch(0).setTexture(textureDict.get("switch"));
                                 level.getSwitch(1).setTexture(textureDict.get("switchoneoff"));
-                                level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
-                                level.getSwitch(3).setTexture(textureDict.get("switchthree"));
 							}
 							else if (i == 2) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileTwo"));
-                                level.getSwitch(0).setTexture(textureDict.get("switch"));
-                                level.getSwitch(1).setTexture(textureDict.get("switchone"));
                                 level.getSwitch(2).setTexture(textureDict.get("switchtwooff"));
-                                level.getSwitch(3).setTexture(textureDict.get("switchthree"));
 							}
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
-                                level.getSwitch(0).setTexture(textureDict.get("switch"));
-                                level.getSwitch(1).setTexture(textureDict.get("switchone"));
-                                level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
                                 level.getSwitch(3).setTexture(textureDict.get("switchthreeoff"));
 							}
 						} else if (!doorHasEnemyOnTop(level.getDoor(i)) && !doorHasPlayerOnTop(level.getDoor(i))) {
