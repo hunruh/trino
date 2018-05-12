@@ -153,6 +153,8 @@ public class CollisionHandler {
 
     public void handleCollision(Clone c, Enemy e) {
         c.startCountDown();
+        e.setEatingClone(true);
+        c.setEnemy(e);
     }
 
     public void handleCollision(Enemy e1, Enemy e2) {

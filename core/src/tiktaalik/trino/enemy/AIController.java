@@ -130,6 +130,11 @@ public class AIController {
             step.y = speed;
         }
 
+        if (enemy.getEatingClone()){
+            step.x = 0;
+            step.y = 0;
+        }
+
         enemy.setPosition(enemy.getX() + step.x, enemy.getY() + step.y);
         enemy.setGridLocation(getEnemyGridX(), getEnemyGridY());
     }
