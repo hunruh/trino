@@ -1613,7 +1613,7 @@ public class GameController implements ContactListener, Screen {
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
 							}
-						} else {
+						} else if (!doorHasEnemyOnTop(level.getDoor(i))) {
 							playDoorDown = 0;
 							if (playDoorUp == 0){
 								SoundController.getInstance().playDoorOpen();
@@ -2208,6 +2208,20 @@ public class GameController implements ContactListener, Screen {
 	private boolean isOnRiverTile(){
 		for (River r : level.getRivers()){
 			if (r.getGridLocation().x == level.getAvatarGridX() && r.getGridLocation().y == level.getAvatarGridY()){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Returns true if enemy is on top of door or near it
+	private boolean doorHasEnemyOnTop(Wall door){
+		for (Enemy e: level.getEnemies()){
+			if (e.getGridLocation().x == door.getGridLocation().x && e.getGridLocation().y == door.getGridLocation().y ||
+					e.getGridLocation().x == door.getGridLocation().x+1 && e.getGridLocation().y == door.getGridLocation().y
+					|| e.getGridLocation().x == door.getGridLocation().x-1 && e.getGridLocation().y == door.getGridLocation().y
+					|| e.getGridLocation().x == door.getGridLocation().x && e.getGridLocation().y == door.getGridLocation().y+1
+					|| e.getGridLocation().x == door.getGridLocation().x && e.getGridLocation().y == door.getGridLocation().y-1){
 				return true;
 			}
 		}
