@@ -100,7 +100,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
 	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
 	private static final String ENEMY_STRIP_BACK = "trino/enemy_back_strip.png";
-	private static final String UNKILLABLE_ENEMY_STRIP_FRONT = "trino/unkillable_enemy_back.png";
+	private static final String UNKILLABLE_ENEMY_STRIP_FRONT = "trino/unkillable_enemy_front.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_LEFT = "trino/unkillable_enemy_left.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_RIGHT = "trino/unkillable_enemy_right.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_BACK = "trino/unkillable_enemy_back.png";
