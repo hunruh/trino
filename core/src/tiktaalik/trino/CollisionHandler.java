@@ -13,7 +13,6 @@ import tiktaalik.trino.environment.River;
 public class CollisionHandler {
     GameController parent;
     Level level;
-    private int cloneTime = 0;
 
     public CollisionHandler(GameController parent) {
 
@@ -152,8 +151,7 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Clone c, Enemy e) {
-        c.startCountDown();
-        e.setEatingClone(true);
+        e.setEatingClone(true, c);
         c.setEnemy(e);
     }
 

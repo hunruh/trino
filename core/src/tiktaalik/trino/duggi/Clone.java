@@ -18,7 +18,6 @@ public class Clone extends GameObject {
 
     private float totalTime = 60.0f;
     private float timeElapsed;
-    private float eatTime = 2.0f;
     private Enemy enemyEating;
 
     public Clone(float radius) {
@@ -76,7 +75,7 @@ public class Clone extends GameObject {
         timeElapsed += dt;
         if (timeElapsed > totalTime) {
             if (enemyEating != null){
-                enemyEating.setEatingClone(false);
+                enemyEating.setEatingClone(false, this);
             }
             alive = false;
             removed = true;
@@ -129,10 +128,6 @@ public class Clone extends GameObject {
             body.destroyFixture(geometry);
             geometry = null;
         }
-    }
-
-    public void startCountDown(){
-        totalTime = timeElapsed + eatTime;
     }
 
     public void drawProgressCircle(Canvas canvas){
