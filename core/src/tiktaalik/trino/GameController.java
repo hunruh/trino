@@ -100,7 +100,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
 	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
 	private static final String ENEMY_STRIP_BACK = "trino/enemy_back_strip.png";
-	private static final String UNKILLABLE_ENEMY_STRIP_FRONT = "trino/unkillable_enemy_back.png";
+	private static final String UNKILLABLE_ENEMY_STRIP_FRONT = "trino/unkillable_enemy_front.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_LEFT = "trino/unkillable_enemy_left.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_RIGHT = "trino/unkillable_enemy_right.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_BACK = "trino/unkillable_enemy_back.png";
@@ -961,6 +961,29 @@ public class GameController implements ContactListener, Screen {
 		state = GAME_READY;
 	}
 
+	protected GameController(int l) {
+		assets = new Array<String>();
+		world = new World(new Vector2(0, DEFAULT_GRAVITY),false);
+		currentLevel = l;
+		level = new Level(world, currentLevel);
+		complete = false;
+		failed = false;
+		timeOut = false;
+		active = false;
+		countdown = -1;
+		cameraBounds = new Rectangle(0,0, 32.0f,18.0f);
+		collisionHandler = new CollisionHandler(this);
+		hud = new HUDController();
+		shadowDuggiGotCotton = true;
+		//cottonFlowers = level.getCottonFlowerList();
+		//////System.out.println("cotton flowers "+cottonFlowers);
+
+		isSwitch = false;
+		isCotton = false;
+
+		state = GAME_READY;
+	}
+
 	public void nextLevel(){
 
 		if (currentLevel == 18)
@@ -1661,7 +1684,7 @@ public class GameController implements ContactListener, Screen {
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
 							}
-						} else if (!doorHasEnemyOnTop(level.getDoor(i))) {
+						} else if (!doorHasEnemyOnTop(level.getDoor(i)) && !doorHasPlayerOnTop(level.getDoor(i))) {
 
 							// Set the goal for the fireflies
 							if (fireflyToGoalTime == 1){
@@ -2289,6 +2312,20 @@ public class GameController implements ContactListener, Screen {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	// Returns true if enemy is on top of door or near it
+	private boolean doorHasPlayerOnTop(Wall door){
+
+			if (level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y ||
+					level.getAvatarGridX() == door.getGridLocation().x+1 && level.getAvatarGridY() == door.getGridLocation().y
+					|| level.getAvatarGridX() == door.getGridLocation().x-1 && level.getAvatarGridY() == door.getGridLocation().y
+					|| level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y+1
+					|| level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y-1){
+				return true;
+			}
+
 		return false;
 	}
 
