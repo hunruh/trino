@@ -1787,6 +1787,17 @@ public class GameController implements ContactListener, Screen {
 						}
 					}
 				} else {
+
+                    // Set the goal for the fireflies
+                    if (fireflyToGoalTime == 1){
+                        System.out.println("reached increment for ff");
+                        for (int j = 0; j < fireFlyControls.size(); j++){
+                            fireFlyControls.get(j).setGoal(new Vector2(MathUtils.random(level.getBounds().width)
+                                    ,MathUtils.random(2*level.getBounds().height)));
+                        }
+                        fireflyToGoalTime--;
+                    }
+
 					if (playDoorUp == 0 && playDoorDown > 0){
 						SoundController.getInstance().playDoorOpen();
 						playDoorUp++;
