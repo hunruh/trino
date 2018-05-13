@@ -211,7 +211,10 @@ public class GameController implements ContactListener, Screen {
     private static final String RIVER_RIGHT_3_FILE = "trino/river_right_3_sides.png";
     private static final String RIVER_VERT_2_FILE = "trino/river_one_width.png";
     private static final String RIVER_HOR_2_FILE = "trino/river_one_height.png";
-
+    private static final String CORNER_BOTTOM_LEFT = "trino/corner_bottom_left.png";
+    private static final String CORNER_BOTTOM_RIGHT = "trino/corner_bottom_right.png";
+    private static final String CORNER_TOP_LEFT = "trino/corner_top_left.png";
+    private static final String CORNER_TOP_RIGHT = "trino/corner_top_right.png";
 
 	// Tutorial menus
 	private static final String TUT_ONE_A = "tutorial/move1.png";
@@ -662,6 +665,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(RIVER_CORNER_RIGHT_BOT_FILE);
 		manager.load(RIVER_CORNER_RIGHT_TOP_FILE, Texture.class);
 		assets.add(RIVER_CORNER_RIGHT_TOP_FILE);
+		manager.load(CORNER_BOTTOM_LEFT, Texture.class);
+		assets.add(CORNER_BOTTOM_LEFT);
+		manager.load(CORNER_BOTTOM_RIGHT, Texture.class);
+		assets.add(CORNER_BOTTOM_RIGHT);
+		manager.load(CORNER_TOP_LEFT, Texture.class);
+		assets.add(CORNER_TOP_LEFT);
+		manager.load(CORNER_TOP_RIGHT, Texture.class);
+		assets.add(CORNER_TOP_RIGHT);
 		manager.load(TUT_ONE_A, Texture.class);
 		assets.add(TUT_ONE_A);
 		manager.load(TUT_ONE_B, Texture.class);
@@ -772,6 +783,10 @@ public class GameController implements ContactListener, Screen {
         textureDict.put("riverBot3Sides", createTexture(manager, RIVER_BOT_3_FILE, false));
         textureDict.put("riverVert2Sides", createTexture(manager, RIVER_VERT_2_FILE, false));
         textureDict.put("riverHor2Sides", createTexture(manager, RIVER_HOR_2_FILE, false));
+        textureDict.put("cornerBottomLeft", createTexture(manager, CORNER_BOTTOM_LEFT, false));
+        textureDict.put("cornerBottomRight", createTexture(manager, CORNER_BOTTOM_RIGHT, false));
+        textureDict.put("cornerTopLeft", createTexture(manager, CORNER_TOP_LEFT, false));
+        textureDict.put("cornerTopRight", createTexture(manager, CORNER_TOP_RIGHT, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
 		textureDict.put("gameover", createTexture(manager, GAMEOVER_FILE, false));
