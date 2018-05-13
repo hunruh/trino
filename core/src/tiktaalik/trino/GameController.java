@@ -1443,7 +1443,8 @@ public class GameController implements ContactListener, Screen {
 						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
 						textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
 				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
-				if (totalTime >= 280) {
+				if (totalTime >= 2*levelTime/3) {
+					System.out.println("THREE STAR!");
 					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
 							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
@@ -1451,7 +1452,8 @@ public class GameController implements ContactListener, Screen {
 							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * 3 * .75f / 4,
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
 				}
-				else if (totalTime >= 60) {
+				else if (totalTime >= levelTime/3) {
+					System.out.println("TWO STAR!");
 					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
 							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);

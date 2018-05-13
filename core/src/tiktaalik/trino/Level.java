@@ -403,8 +403,8 @@ public class Level {
         // in the objects list
         dwidth = textureDict.get("clone").getRegionWidth() / (scale.x * 2);
 
-
         tmp = parser.getAssetList(currentLevel, "Player");
+        int facing = parser.getPlayerInitialOrientation(currentLevel);
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y - 1;
@@ -430,7 +430,7 @@ public class Level {
             Filter filter = avatar.getFilterData();
             filter.categoryBits = 0x0004;
             avatar.setFilterData(filter);
-
+            avatar.setDirection(facing);
             addObject(avatar);
             avatarLight.attachToBody(avatar.getBody(), avatarLight.getX(), avatarLight.getY(), avatarLight.getDirection());
         }
@@ -593,9 +593,6 @@ public class Level {
             if (et.equals("Carni")) type = Enemy.CARNIVORE_ENEMY;
             else if (et.equals("Herbi")) type = Enemy.HERBIVORE_ENEMY;
             else if (et.equals("Unkillable")) type = Enemy.UNKILLABLE_ENEMY;
-            System.out.println(type);
-            System.out.println(et);
-            System.out.println("d is " + d);
             en.setType(ENEMY);
             en.setDrawScale(scale);
             if (type == Enemy.UNKILLABLE_ENEMY){

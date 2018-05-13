@@ -57,6 +57,7 @@ public class LevelParser {
 
     public int getPlayerInitialOrientation(int level){
         JSONObject tmp = (JSONObject)((JSONObject)(levels.get(level))).get("Player");
+        System.out.println(tmp);
         String orientation = (String)tmp.get("Orientation");
         if (orientation == "Left") return Dinosaur.LEFT;
         else if (orientation == "Right") return Dinosaur.RIGHT;
