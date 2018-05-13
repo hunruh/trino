@@ -2019,10 +2019,10 @@ public class GameController implements ContactListener, Screen {
 			if (avatar.getForm() == Dinosaur.HERBIVORE_FORM){
 
 				if (isOnRiverTile()){
-					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 8,
-							filmStripDict.get("herbivoreSwimmingRight"), 8,
-							filmStripDict.get("herbivoreSwimmingBack"), 4,
-							filmStripDict.get("herbivoreSwimmingFront"), 4);
+					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 7,
+							filmStripDict.get("herbivoreSwimmingRight"), 7,
+							filmStripDict.get("herbivoreSwimmingBack"), 8,
+							filmStripDict.get("herbivoreSwimmingFront"), 7);
 				}
 				else if (avatar.getCanBeSeen()){
 					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
