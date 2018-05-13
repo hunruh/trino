@@ -49,6 +49,7 @@ public class Level {
     private PooledList<FireFly> fireFlies = new PooledList<FireFly>();
     private PooledList<Switch> switches = new PooledList<Switch>();
     private PooledList<Wall> doors = new PooledList<Wall>();
+    private PooledList<River> patchRivers = new PooledList<River>();
 
     private GameObject[][] grid;
     private PooledList<Vector2> cottonFlowerList = new PooledList<Vector2>();//for shadow duggi
@@ -468,11 +469,10 @@ public class Level {
             addObject(riv);
             grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
         }
-
+        
         for(River river:rivers){
             setRiverTexture(river,textureDict);
         }
-
 
         dwidth = textureDict.get("boulder").getRegionWidth() / scale.x;
         dheight = textureDict.get("boulder").getRegionHeight() / scale.y;
@@ -924,6 +924,7 @@ public class Level {
             isBotRiver = false;
         }
 
+
         if (isTopRiver && isBotRiver && isLeftRiver && isRightRiver){
             // Center Tile
             river.setTexture(riverCenter);
@@ -973,6 +974,158 @@ public class Level {
         else {
             river.setTexture(textureDict.get("river"));
         }
+
+    }
+
+    public void setPatchRivers(River river,Hashtable<String, TextureRegion> textureDict){
+
+        TextureRegion cornerBottomLeft = textureDict.get("cornerBottomLeft");
+        TextureRegion cornerBottomRight = textureDict.get("cornerBottomRight");
+        TextureRegion cornerTopLeft = textureDict.get("cornerTopLeft");
+        TextureRegion cornerTopRight = textureDict.get("cornerTopRight");
+        GameObject left = grid[(int)river.getGridLocation().x-1][(int)river.getGridLocation().y];
+        GameObject right = grid[(int)river.getGridLocation().x+1][(int)river.getGridLocation().y];
+        GameObject top = grid[(int)river.getGridLocation().x][(int)river.getGridLocation().y+1];
+        GameObject bot = grid[(int)river.getGridLocation().x][(int)river.getGridLocation().y-1];
+
+        boolean isLeftRiver = false;
+        boolean isRightRiver = false;
+        boolean isTopRiver = false;
+        boolean isBotRiver = false;
+
+        GameObject northwest = grid[(int)river.getGridLocation().x-1][(int)river.getGridLocation().y+1];
+        GameObject northeast = grid[(int)river.getGridLocation().x+1][(int)river.getGridLocation().y+1];
+        GameObject southwest = grid[(int)river.getGridLocation().x-1][(int)river.getGridLocation().y-1];
+        GameObject southeast = grid[(int)river.getGridLocation().x+1][(int)river.getGridLocation().y-1];
+
+        boolean isSouthEastRiver = false;
+        boolean isNorthEastRiver = false;
+        boolean isSouthWestRiver = false;
+        boolean isNorthWestRiver = false;
+
+        // set the booleans for each neighbor
+        if (left != null){
+            if (left.getType() == RIVER){
+                isLeftRiver = true;
+            } else {
+                isLeftRiver = false;
+            }
+        } else {
+            isLeftRiver = false;
+        }
+
+        if (right != null){
+            if (right.getType() == RIVER){
+                isRightRiver = true;
+            } else {
+                isRightRiver = false;
+            }
+        } else {
+            isRightRiver = false;
+        }
+
+        if (top != null){
+            if (top.getType() == RIVER){
+                isTopRiver = true;
+            } else {
+                isTopRiver = false;
+            }
+        } else {
+            isTopRiver = false;
+        }
+
+        if (bot != null){
+            if (bot.getType() == RIVER){
+                isBotRiver = true;
+            } else {
+                isBotRiver = false;
+            }
+        } else {
+            isBotRiver = false;
+        }
+        if (northeast != null){
+            if (northeast.getType() == RIVER){
+                isNorthEastRiver = true;
+            } else {
+                isNorthEastRiver = false;
+            }
+        } else {
+            isNorthEastRiver = false;
+        }
+
+        if (northwest != null){
+            if (northwest.getType() == RIVER){
+                isNorthWestRiver = true;
+            } else {
+                isNorthWestRiver = false;
+            }
+        } else {
+            isNorthWestRiver = false;
+        }
+
+        if (southwest != null){
+            if (southwest.getType() == RIVER){
+                isSouthWestRiver = true;
+            } else {
+                isSouthWestRiver = false;
+            }
+        } else {
+            isSouthWestRiver = false;
+        }
+
+        if (southeast != null){
+            if (southeast.getType() == RIVER){
+                isSouthEastRiver = true;
+            } else {
+                isSouthEastRiver = false;
+            }
+        } else {
+            isSouthEastRiver = false;
+        }
+
+        float dwidth = textureDict.get("river").getRegionWidth() / scale.x;
+        float dheight = textureDict.get("river").getRegionHeight() / scale.y;
+
+        // Add patch rivers
+        if (isTopRiver && isLeftRiver && !isNorthWestRiver){
+            River riv = new River((int)river.getGridLocation().x, (int)river.getGridLocation().y,
+                    screenToMaze(river.getGridLocation().x), screenToMaze(river.getGridLocation().y), dwidth, dheight, false);
+            riv.setBodyType(BodyDef.BodyType.StaticBody);
+            riv.setDrawScale(scale);
+            riv.setTexture(cornerTopLeft);
+            riv.setType(RIVER);
+            patchRivers.add(riv);
+            grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
+        } else if (isTopRiver && isRightRiver && !isNorthEastRiver){
+            System.out.println("reached northeastriver patch creation");
+            River riv = new River((int)river.getGridLocation().x-4, (int)river.getGridLocation().y,
+                    screenToMaze(river.getGridLocation().x-4), screenToMaze(river.getGridLocation().y), dwidth, dheight, false);
+            riv.setBodyType(BodyDef.BodyType.StaticBody);
+            riv.setDrawScale(scale);
+            riv.setTexture(cornerTopRight);
+            riv.setType(RIVER);
+            patchRivers.add(riv);
+            grid[(int)river.getGridLocation().x][(int)river.getGridLocation().y] = riv;
+        } else if (isRightRiver && isBotRiver && !isSouthEastRiver){
+            River riv = new River((int)river.getGridLocation().x, (int)river.getGridLocation().y,
+                    screenToMaze(river.getGridLocation().x), screenToMaze(river.getGridLocation().y), dwidth, dheight, false);
+            riv.setBodyType(BodyDef.BodyType.StaticBody);
+            riv.setDrawScale(scale);
+            riv.setTexture(cornerBottomRight);
+            riv.setType(RIVER);
+            patchRivers.add(riv);
+            grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
+        } else if (isBotRiver && isLeftRiver && !isSouthWestRiver){
+            River riv = new River((int)river.getGridLocation().x, (int)river.getGridLocation().y,
+                    screenToMaze(river.getGridLocation().x), screenToMaze(river.getGridLocation().y), dwidth, dheight, false);
+            riv.setBodyType(BodyDef.BodyType.StaticBody);
+            riv.setDrawScale(scale);
+            riv.setTexture(cornerBottomLeft);
+            riv.setType(RIVER);
+            patchRivers.add(riv);
+            grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
+        }
+
     }
 
     /** drawing on screen */
