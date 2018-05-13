@@ -498,8 +498,8 @@ public abstract class Dinosaur extends GameObject {
         if (transform){
             animeframe += 0.35f;
             if (animeframe >= numFrames[16]) {
-                animeframe = 0;
                 transform = false;
+                animeframe = 0;
             }
         }
         else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {

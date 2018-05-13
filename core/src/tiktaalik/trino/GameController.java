@@ -1277,8 +1277,7 @@ public class GameController implements ContactListener, Screen {
 					fireLight.getDirection());
 		}
 
-		playDoorDown = 0;
-		playDoorUp = 1;
+		playDoorSound = -1;
 
 //		enemyLights = new LightSource[level.getEnemies().size()];
 //
