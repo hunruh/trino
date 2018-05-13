@@ -80,6 +80,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_SWIMMING_STRIP_RIGHT  = "trino/herbivore_right_swimming_strip.png";
 	private static final String HERBIVORE_SWIMMING_STRIP_FRONT  = "trino/herbivore_front_swimming_strip.png";
 	private static final String HERBIVORE_SWIMMING_STRIP_BACK = "trino/herbivore_back_swimming_strip.png";
+	private static final String HERBIVORE_GOING_IN_STRIP_FRONT = "trino/herbivore_front_going_in_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_FRONT  = "trino/herbivore_front_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_LEFT  = "trino/herbivore_left_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_RIGHT  = "trino/herbivore_right_eating_strip.png";
@@ -325,6 +326,7 @@ public class GameController implements ContactListener, Screen {
 	public static int tenSec;
 	private int playDoorDown = 0;
 	private int playDoorUp = 0;
+	private int playDoorSound = -1;
 	private float elapsed;
 	private float duration;
 	private float radius;
@@ -423,6 +425,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_SWIMMING_STRIP_BACK);
 		manager.load(HERBIVORE_SWIMMING_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_SWIMMING_STRIP_FRONT);
+		manager.load(HERBIVORE_GOING_IN_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_GOING_IN_STRIP_FRONT);
 		manager.load(HERBIVORE_EATING_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_EATING_STRIP_FRONT);
 		manager.load(HERBIVORE_EATING_STRIP_LEFT, Texture.class);
@@ -923,6 +927,7 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreSwimmingRight", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_RIGHT));
 		filmStripDict.put("herbivoreSwimmingFront", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_FRONT));
 		filmStripDict.put("herbivoreSwimmingBack", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_BACK));
+		filmStripDict.put("herbivoreGoingInFront", createFilmTexture(manager, HERBIVORE_GOING_IN_STRIP_FRONT));
 		filmStripDict.put("herbivoreEatingLeft", createFilmTexture(manager,HERBIVORE_EATING_STRIP_LEFT));
 		filmStripDict.put("herbivoreEatingRight", createFilmTexture(manager,HERBIVORE_EATING_STRIP_RIGHT));
 		filmStripDict.put("herbivoreEatingFront", createFilmTexture(manager,HERBIVORE_EATING_STRIP_FRONT));
@@ -1822,11 +1827,7 @@ public class GameController implements ContactListener, Screen {
 						if (Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) < 1f &&
 								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.70f){
 							//////System.out.println("success");
-							playDoorUp = 0;
-							if (playDoorDown == 0){
-								SoundController.getInstance().playDoorOpen();
-								playDoorDown++;
-							}
+
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
 							}
@@ -1852,11 +1853,6 @@ public class GameController implements ContactListener, Screen {
 							}
 						} else if (!doorHasEnemyOnTop(level.getDoor(i)) && !doorHasPlayerOnTop(level.getDoor(i))) {
 
-							playDoorDown = 0;
-							if (playDoorUp == 0){
-								SoundController.getInstance().playDoorOpen();
-								playDoorUp++;
-							}
 							if (i == 0){
 								level.getAvatar().setCanExit(false);
 							}
@@ -1882,11 +1878,6 @@ public class GameController implements ContactListener, Screen {
 					}
 				} else {
 
-					if (playDoorUp == 0 && playDoorDown > 0){
-						SoundController.getInstance().playDoorOpen();
-						playDoorUp++;
-					}
-					playDoorDown = 0;
 					for (int i = 0; i < level.getDoors().size(); i++) {
 						level.getAvatar().setCanExit(false);
 						level.getDoor(i).setLowered(false);
@@ -1983,6 +1974,17 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 
+			// Process Door Sound
+			if (level.getAvatar().canExit() && playDoorSound < 0){
+				playDoorSound = 0;
+				playDoorSound++;
+				SoundController.getInstance().playDoorOpen();
+			} else if (!level.getAvatar().canExit() && playDoorSound > 0){
+				playDoorSound = 0;
+				playDoorSound--;
+				SoundController.getInstance().playDoorOpen();
+			}
+
 			for (int i = 0; i < ffLights.length; i++) {
 				if (ffLightDsts[i] > 2.5f) {
 					ffLightChanges[i] *= -1;
@@ -2003,11 +2005,23 @@ public class GameController implements ContactListener, Screen {
 
 			if (avatar.getForm() == Dinosaur.HERBIVORE_FORM){
 
-				if (isOnRiverTile()){
+				if (animationFrameForGoingIn(7, avatar.getDirection()) != -1){
+					System.out.println("reached the going in");
+					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 7,
+							filmStripDict.get("herbivoreSwimmingRight"), 7,
+							filmStripDict.get("herbivoreSwimmingBack"), 8,
+							filmStripDict.get("herbivoreGoingInFront"), 7);
+
+					avatar.forceFrame(animationFrameForGoingIn(7, avatar.getDirection()));
+
+				}
+				else if (isOnRiverTile()){
+
 					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 7,
 							filmStripDict.get("herbivoreSwimmingRight"), 7,
 							filmStripDict.get("herbivoreSwimmingBack"), 8,
 							filmStripDict.get("herbivoreSwimmingFront"), 7);
+
 				}
 				else if (avatar.getCanBeSeen()){
 					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
@@ -2535,6 +2549,63 @@ public class GameController implements ContactListener, Screen {
 		}
 		return false;
 	}
+
+	private int animationFrameForGoingIn(int numFrames, int direction){
+		float smallestDistance = Float.MAX_VALUE;
+		River river = null;
+		float detectionRadius = 2.0f;
+		for (River r: level.getRivers()){
+			float distance = Vector2.dst(r.getX(),r.getY(), level.getAvatar().getX(), level.getAvatar().getY());
+			if (distance < smallestDistance){
+				smallestDistance = distance;
+				river = r;
+			}
+		}
+		if (river == null){
+			return -1;
+		}
+
+
+		if (direction == Dinosaur.DOWN){
+			if (river.getGridLocation().y != level.getAvatarGridY() - 1){
+				return -1;
+			}
+		}
+		else if (direction == Dinosaur.UP){
+			if (river.getGridLocation().y != level.getAvatarGridY() + 1){
+				return -1;
+			}
+		}
+		else if (direction == Dinosaur.RIGHT){
+			if (river.getGridLocation().x != level.getAvatarGridX() + 1){
+				return -1;
+			}
+		}
+		else if (direction == Dinosaur.LEFT){
+			if (river.getGridLocation().x != level.getAvatarGridX() - 1){
+				return -1;
+			}
+ 		}
+
+		if (direction == Dinosaur.DOWN || direction == Dinosaur.UP){
+			if (river.getIsBotRiver() && river.getIsTopRiver()){
+				return -1;
+			}
+		}
+		else if (direction == Dinosaur.LEFT || direction == Dinosaur.RIGHT){
+			if (river.getIsLeftRiver() && river.getIsRightRiver()){
+				return -1;
+			}
+		}
+
+		if (smallestDistance <= detectionRadius && !river.getisCenterTile()){
+			int frame = numFrames - (int)((smallestDistance/detectionRadius) * (float)numFrames);
+			return frame;
+		} else {
+			return -1;
+		}
+	}
+
 
 	// Returns true if enemy is on top of door or near it
 	private boolean doorHasEnemyOnTop(Wall door){

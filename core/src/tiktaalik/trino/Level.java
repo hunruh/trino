@@ -945,10 +945,16 @@ public class Level {
             isBotRiver = false;
         }
 
+        river.setRight(isRightRiver);
+        river.setLeft(isLeftRiver);
+        river.setTop(isTopRiver);
+        river.setBot(isBotRiver);
+
 
         if (isTopRiver && isBotRiver && isLeftRiver && isRightRiver){
             // Center Tile
             river.setTexture(riverCenter);
+            river.setCenterTile(true);
         }
         else if (!isTopRiver && !isLeftRiver && isBotRiver && isRightRiver){
             river.setTexture(riverCornerLeftTop);

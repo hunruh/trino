@@ -630,6 +630,10 @@ public abstract class Dinosaur extends GameObject {
 
     }
 
+    public void forceFrame(int frame){
+        animeframe = frame;
+    }
+
     /**
      * Draws the outline of the physics body.
      *
