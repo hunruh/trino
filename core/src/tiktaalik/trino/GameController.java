@@ -77,10 +77,21 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_STRIP_BACK  = "trino/herbivore_back_strip.png";
 	private static final String HERBIVORE_DIVING_STRIP_LEFT  = "trino/herbivore_left_diving_strip.png";
 	private static final String HERBIVORE_SWIMMING_STRIP_LEFT  = "trino/herbivore_left_swimming_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_RIGHT  = "trino/herbivore_right_swimming_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_FRONT  = "trino/herbivore_front_swimming_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_BACK = "trino/herbivore_back_swimming_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_FRONT  = "trino/herbivore_front_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_LEFT  = "trino/herbivore_left_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_RIGHT  = "trino/herbivore_right_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_BACK = "trino/herbivore_back_eating_strip.png";
+	private static final String HERBIVORE_PLACECAMO_STRIP_FRONT = "trino/herbivore_front_placeCamo.png";
+	private static final String HERBIVORE_PLACECAMO_STRIP_LEFT = "trino/herbivore_left_placeCamo.png";
+	private static final String HERBIVORE_PLACECAMO_STRIP_RIGHT = "trino/herbivore_right_placeCamo.png";
+	private static final String HERBIVORE_PLACECAMO_STRIP_BACK = "trino/herbivore_back_placeCamo.png";
+	private static final String HERBIVORE_CAMO_STRIP_FRONT = "trino/herbivore_front_camo.png";
+	private static final String HERBIVORE_CAMO_STRIP_LEFT = "trino/herbivore_left_camo.png";
+	private static final String HERBIVORE_CAMO_STRIP_RIGHT = "trino/herbivore_right_camo.png";
+	private static final String HERBIVORE_CAMO_STRIP_BACK = "trino/herbivore_back_camo.png";
 	private static final String CARNIVORE_STRIP_FRONT  = "trino/carnivore_front_strip.png";
 	private static final String CARNIVORE_STRIP_LEFT  = "trino/carnivore_left_strip.png";
 	private static final String CARNIVORE_STRIP_RIGHT  = "trino/carnivore_right_strip.png";
@@ -100,7 +111,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
 	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
 	private static final String ENEMY_STRIP_BACK = "trino/enemy_back_strip.png";
-	private static final String UNKILLABLE_ENEMY_STRIP_FRONT = "trino/unkillable_enemy_back.png";
+	private static final String UNKILLABLE_ENEMY_STRIP_FRONT = "trino/unkillable_enemy_front.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_LEFT = "trino/unkillable_enemy_left.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_RIGHT = "trino/unkillable_enemy_right.png";
 	private static final String UNKILLABLE_ENEMY_STRIP_BACK = "trino/unkillable_enemy_back.png";
@@ -130,6 +141,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String SWITCH_FILE_ONE = "trino/button1.png";
 	private static final String SWITCH_FILE_TWO = "trino/button2.png";
 	private static final String SWITCH_FILE_THREE = "trino/button3.png";
+    private static final String SWITCH_DOWN_FILE = "trino/buttonPressed.png";
+    private static final String SWITCH_DOWN_FILE_ONE = "trino/buttonPressed1.png";
+    private static final String SWITCH_DOWN_FILE_TWO = "trino/buttonPressed2.png";
+    private static final String SWITCH_DOWN_FILE_THREE = "trino/buttonPressed3.png";
 	private static final String RIVER_FILE = "trino/river.png";
 	private static final String BOULDER_FILE = "trino/boulder.png";
 	private static final String VICTORY_FILE = "trino/victoryImage.png";
@@ -371,6 +386,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_DIVING_STRIP_LEFT);
 		manager.load(HERBIVORE_SWIMMING_STRIP_LEFT, Texture.class);
 		assets.add(HERBIVORE_SWIMMING_STRIP_LEFT);
+		manager.load(HERBIVORE_SWIMMING_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_SWIMMING_STRIP_RIGHT);
+		manager.load(HERBIVORE_SWIMMING_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_SWIMMING_STRIP_BACK);
+		manager.load(HERBIVORE_SWIMMING_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_SWIMMING_STRIP_FRONT);
 		manager.load(HERBIVORE_EATING_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_EATING_STRIP_FRONT);
 		manager.load(HERBIVORE_EATING_STRIP_LEFT, Texture.class);
@@ -379,6 +400,22 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_EATING_STRIP_RIGHT);
 		manager.load(HERBIVORE_EATING_STRIP_BACK, Texture.class);
 		assets.add(HERBIVORE_EATING_STRIP_BACK);
+		manager.load(HERBIVORE_PLACECAMO_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_PLACECAMO_STRIP_BACK);
+		manager.load(HERBIVORE_PLACECAMO_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_PLACECAMO_STRIP_FRONT);
+		manager.load(HERBIVORE_PLACECAMO_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_PLACECAMO_STRIP_RIGHT);
+		manager.load(HERBIVORE_PLACECAMO_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_PLACECAMO_STRIP_LEFT);
+		manager.load(HERBIVORE_CAMO_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_CAMO_STRIP_LEFT);
+		manager.load(HERBIVORE_CAMO_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_CAMO_STRIP_RIGHT);
+		manager.load(HERBIVORE_CAMO_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_CAMO_STRIP_BACK);
+		manager.load(HERBIVORE_CAMO_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_CAMO_STRIP_FRONT);
 		manager.load(CARNIVORE_STRIP_LEFT, Texture.class);
 		assets.add(CARNIVORE_STRIP_LEFT);
 		manager.load(CARNIVORE_STRIP_RIGHT, Texture.class);
@@ -478,6 +515,14 @@ public class GameController implements ContactListener, Screen {
 		manager.load(SWITCH_FILE_THREE, Texture.class);
 		assets.add(SWITCH_FILE_THREE);
 		manager.load(RIVER_FILE, Texture.class);
+		assets.add(SWITCH_DOWN_FILE);
+		manager.load(SWITCH_DOWN_FILE, Texture.class);
+		assets.add(SWITCH_DOWN_FILE_ONE);
+		manager.load(SWITCH_DOWN_FILE_ONE, Texture.class);
+		assets.add(SWITCH_DOWN_FILE_TWO);
+		manager.load(SWITCH_DOWN_FILE_TWO, Texture.class);
+		assets.add(SWITCH_DOWN_FILE_THREE);
+		manager.load(SWITCH_DOWN_FILE_THREE, Texture.class);
 		assets.add(RIVER_FILE);
 		manager.load(BOULDER_FILE, Texture.class);
 		assets.add(BOULDER_FILE);
@@ -661,6 +706,10 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("switchone", createTexture(manager, SWITCH_FILE_ONE, false));
 		textureDict.put("switchtwo", createTexture(manager, SWITCH_FILE_TWO, false));
 		textureDict.put("switchthree", createTexture(manager, SWITCH_FILE_THREE, false));
+		textureDict.put("switchoff", createTexture(manager, SWITCH_DOWN_FILE, false));
+		textureDict.put("switchoneoff", createTexture(manager, SWITCH_DOWN_FILE_ONE, false));
+		textureDict.put("switchtwooff", createTexture(manager, SWITCH_DOWN_FILE_TWO, false));
+		textureDict.put("switchthreeoff", createTexture(manager, SWITCH_DOWN_FILE_THREE, false));
 		textureDict.put("river", createTexture(manager, RIVER_FILE, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
@@ -761,10 +810,21 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreBack", createFilmTexture(manager,HERBIVORE_STRIP_BACK));
 		filmStripDict.put("herbivoreDivingLeft", createFilmTexture(manager,HERBIVORE_DIVING_STRIP_LEFT));
 		filmStripDict.put("herbivoreSwimmingLeft", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_LEFT));
+		filmStripDict.put("herbivoreSwimmingRight", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_RIGHT));
+		filmStripDict.put("herbivoreSwimmingFront", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_FRONT));
+		filmStripDict.put("herbivoreSwimmingBack", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_BACK));
 		filmStripDict.put("herbivoreEatingLeft", createFilmTexture(manager,HERBIVORE_EATING_STRIP_LEFT));
 		filmStripDict.put("herbivoreEatingRight", createFilmTexture(manager,HERBIVORE_EATING_STRIP_RIGHT));
 		filmStripDict.put("herbivoreEatingFront", createFilmTexture(manager,HERBIVORE_EATING_STRIP_FRONT));
 		filmStripDict.put("herbivoreEatingBack", createFilmTexture(manager,HERBIVORE_EATING_STRIP_BACK));
+		filmStripDict.put("herbivorePlaceCamoLeft", createFilmTexture(manager,HERBIVORE_PLACECAMO_STRIP_LEFT));
+		filmStripDict.put("herbivorePlaceCamoRight", createFilmTexture(manager,HERBIVORE_PLACECAMO_STRIP_RIGHT));
+		filmStripDict.put("herbivorePlaceCamoFront", createFilmTexture(manager,HERBIVORE_PLACECAMO_STRIP_FRONT));
+		filmStripDict.put("herbivorePlaceCamoBack", createFilmTexture(manager,HERBIVORE_PLACECAMO_STRIP_BACK));
+		filmStripDict.put("herbivoreCamoLeft", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_LEFT));
+		filmStripDict.put("herbivoreCamoRight", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_RIGHT));
+		filmStripDict.put("herbivoreCamoFront", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_FRONT));
+		filmStripDict.put("herbivoreCamoBack", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_BACK));
 		filmStripDict.put("enemyLeft", createFilmTexture(manager,ENEMY_STRIP_LEFT));
 		filmStripDict.put("enemyRight", createFilmTexture(manager,ENEMY_STRIP_RIGHT));
 		filmStripDict.put("enemyFront", createFilmTexture(manager,ENEMY_STRIP_FRONT));
@@ -961,9 +1021,32 @@ public class GameController implements ContactListener, Screen {
 		state = GAME_READY;
 	}
 
+	protected GameController(int l) {
+		assets = new Array<String>();
+		world = new World(new Vector2(0, DEFAULT_GRAVITY),false);
+		currentLevel = l;
+		level = new Level(world, currentLevel);
+		complete = false;
+		failed = false;
+		timeOut = false;
+		active = false;
+		countdown = -1;
+		cameraBounds = new Rectangle(0,0, 32.0f,18.0f);
+		collisionHandler = new CollisionHandler(this);
+		hud = new HUDController();
+		shadowDuggiGotCotton = true;
+		//cottonFlowers = level.getCottonFlowerList();
+		//////System.out.println("cotton flowers "+cottonFlowers);
+
+		isSwitch = false;
+		isCotton = false;
+
+		state = GAME_READY;
+	}
+
 	public void nextLevel(){
 
-		if (currentLevel == 14)
+		if (currentLevel == 18)
 			currentLevel = 0;
 		else
 			currentLevel++;
@@ -1048,7 +1131,6 @@ public class GameController implements ContactListener, Screen {
 
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
 			if(level.getFirefly(i).getTexture() == textureDict.get("fireFlyPurple")){
-				System.out.println("reached purple light");
 				fireLight.setColor(Color.PURPLE);
 			} else if (level.getFirefly(i).getTexture() == textureDict.get("fireFlyBlue")){
 				fireLight.setColor(Color.BLUE);
@@ -1209,12 +1291,12 @@ public class GameController implements ContactListener, Screen {
 		if (currentLevel == 0) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("1a"), 126, 292);
-				canvas.draw(textureDict.get("1c"), 957, 292);
+				canvas.draw(textureDict.get("1a"), 35, 260);
+				canvas.draw(textureDict.get("1c"), 1000, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("1b"), 126, 292);
-				canvas.draw(textureDict.get("1d"), 957, 292);
+				canvas.draw(textureDict.get("1b"), 35, 260);
+				canvas.draw(textureDict.get("1d"), 1000, 260);
 			}
 			canvas.end();
 		}
@@ -1222,12 +1304,12 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 1) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("2a"), 126, 292);
-				canvas.draw(textureDict.get("2c"), 957, 292);
+				canvas.draw(textureDict.get("2a"), 35, 260);
+				canvas.draw(textureDict.get("2c"), 1000, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("2b"), 126, 292);
-				canvas.draw(textureDict.get("2d"), 957, 292);
+				canvas.draw(textureDict.get("2b"), 35, 260);
+				canvas.draw(textureDict.get("2d"), 1000, 260);
 			}
 			canvas.end();
 		}
@@ -1235,10 +1317,10 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 2) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("3a"), 126, 292);
+				canvas.draw(textureDict.get("3a"), 35, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("3b"), 126, 292);
+				canvas.draw(textureDict.get("3b"), 35, 260);
 			}
 			canvas.end();
 		}
@@ -1246,47 +1328,47 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 3) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("4a"), 126, 292);
+				canvas.draw(textureDict.get("4a"), 35, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("4b"), 126, 292);
+				canvas.draw(textureDict.get("4b"), 35, 260);
 			}
 			canvas.end();
 		}
         else if (currentLevel == 5) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("6a"), 126, 292);
-                canvas.draw(textureDict.get("6c"), 957, 292);
+                canvas.draw(textureDict.get("6a"), 35, 260);
+                canvas.draw(textureDict.get("6c"), 1000, 260);
             }
             else {
-                canvas.draw(textureDict.get("6b"), 126, 292);
-                canvas.draw(textureDict.get("6d"), 957, 292);
+                canvas.draw(textureDict.get("6b"), 35, 260);
+                canvas.draw(textureDict.get("6d"), 1000, 260);
             }
             canvas.end();
         }
         else if (currentLevel == 6) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("7a"), 126, 292);
+                canvas.draw(textureDict.get("7a"), 35, 260);
             }
             else {
-                canvas.draw(textureDict.get("7b"), 126, 292);
+                canvas.draw(textureDict.get("7b"), 35, 260);
             }
             canvas.end();
         }
         else if (currentLevel == 7) {
             canvas.beginOverlay();
-            canvas.draw(textureDict.get("8a"), 126, 292);
+            canvas.draw(textureDict.get("8a"), 35, 260);
             canvas.end();
         }
         else if (currentLevel == 8) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("9a"), 126, 292);
+                canvas.draw(textureDict.get("9a"), 35, 260);
             }
             else {
-                canvas.draw(textureDict.get("9b"), 126, 292);
+                canvas.draw(textureDict.get("9b"), 35, 260);
             }
             canvas.end();
         }
@@ -1651,17 +1733,21 @@ public class GameController implements ContactListener, Screen {
 							level.getDoor(i).setLowered(true);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
+                                level.getSwitch(0).setTexture(textureDict.get("switchoff"));
 							}
 							else if (i == 1) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileOne"));
+                                level.getSwitch(1).setTexture(textureDict.get("switchoneoff"));
 							}
 							else if (i == 2) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileTwo"));
+                                level.getSwitch(2).setTexture(textureDict.get("switchtwooff"));
 							}
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
+                                level.getSwitch(3).setTexture(textureDict.get("switchthreeoff"));
 							}
-						} else if (!doorHasEnemyOnTop(level.getDoor(i))) {
+						} else if (!doorHasEnemyOnTop(level.getDoor(i)) && !doorHasPlayerOnTop(level.getDoor(i))) {
 
 							// Set the goal for the fireflies
 							if (fireflyToGoalTime == 1){
@@ -1682,20 +1768,35 @@ public class GameController implements ContactListener, Screen {
 							level.getDoor(i).setLowered(false);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
+                                level.getSwitch(0).setTexture(textureDict.get("switch"));
 							}
 							else if (i == 1) {
 								level.getDoor(i).setTexture(textureDict.get("doorClosedTileOne"));
+                                level.getSwitch(1).setTexture(textureDict.get("switchone"));
 							}
 							else if (i == 2) {
 								level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
+                                level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
 							}
 							else if (i == 3) {
 								level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
+                                level.getSwitch(3).setTexture(textureDict.get("switchthree"));
 							}
 
 						}
 					}
 				} else {
+
+                    // Set the goal for the fireflies
+                    if (fireflyToGoalTime == 1){
+                        System.out.println("reached increment for ff");
+                        for (int j = 0; j < fireFlyControls.size(); j++){
+                            fireFlyControls.get(j).setGoal(new Vector2(MathUtils.random(level.getBounds().width)
+                                    ,MathUtils.random(2*level.getBounds().height)));
+                        }
+                        fireflyToGoalTime--;
+                    }
+
 					if (playDoorUp == 0 && playDoorDown > 0){
 						SoundController.getInstance().playDoorOpen();
 						playDoorUp++;
@@ -1809,6 +1910,23 @@ public class GameController implements ContactListener, Screen {
 			// Process enemy updates
 			for (int i = 0; i < level.getEnemies().size(); i++)
 				controls.get(i).step();
+
+			if (avatar.getForm() == Dinosaur.HERBIVORE_FORM){
+
+				if (isOnRiverTile()){
+					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 8,
+							filmStripDict.get("herbivoreSwimmingRight"), 8,
+							filmStripDict.get("herbivoreSwimmingBack"), 4,
+							filmStripDict.get("herbivoreSwimmingFront"), 4);
+				}
+				else if (avatar.getCanBeSeen()){
+					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
+							filmStripDict.get("herbivoreRight"), 7,
+							filmStripDict.get("herbivoreBack"), 8,
+							filmStripDict.get("herbivoreFront"), 8);
+				}
+
+			}
 
 			//this is hard coded in rn
 			//also naming stuff real bad bc im lazy
@@ -1933,14 +2051,20 @@ public class GameController implements ContactListener, Screen {
 						filter.categoryBits = Dinosaur.herbCatBits;
 						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits|Dinosaur.enemyHerbCatBits;
 						avatar.setFilterData(filter);
+
 						avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
 								filmStripDict.get("herbivoreRight"), 7,
 								filmStripDict.get("herbivoreBack"), 8,
 								filmStripDict.get("herbivoreFront"), 8);
+
 						avatar.setEatingTextureSet(filmStripDict.get("herbivoreEatingLeft"), 10,
 								filmStripDict.get("herbivoreEatingRight"), 10,
 								filmStripDict.get("herbivoreEatingBack"), 10,
 								filmStripDict.get("herbivoreEatingFront"), 10);
+						avatar.setActionLoadingTextureSet(filmStripDict.get("herbivorePlaceCamoLeft"), 12, 0,
+								filmStripDict.get("herbivorePlaceCamoRight"), 12, 0,
+								filmStripDict.get("herbivorePlaceCamoBack"), 10, 0,
+								filmStripDict.get("herbivorePlaceCamoFront"),  12, 0);
 
 						level.setAvatar(avatar);
 
@@ -2101,6 +2225,10 @@ public class GameController implements ContactListener, Screen {
 					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 6.6f) {
 						SoundController.getInstance().playMunch();
 						avatar.setCanBeSeen(false);
+						avatar.setTextureSet(filmStripDict.get("herbivoreCamoLeft"), 7,
+								filmStripDict.get("herbivoreCamoRight"), 7,
+								filmStripDict.get("herbivoreCamoBack"), 8,
+								filmStripDict.get("herbivoreCamoFront"), 8);
 					}
 				}
 			}
@@ -2289,6 +2417,20 @@ public class GameController implements ContactListener, Screen {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	// Returns true if enemy is on top of door or near it
+	private boolean doorHasPlayerOnTop(Wall door){
+
+			if (level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y ||
+					level.getAvatarGridX() == door.getGridLocation().x+1 && level.getAvatarGridY() == door.getGridLocation().y
+					|| level.getAvatarGridX() == door.getGridLocation().x-1 && level.getAvatarGridY() == door.getGridLocation().y
+					|| level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y+1
+					|| level.getAvatarGridX() == door.getGridLocation().x && level.getAvatarGridY() == door.getGridLocation().y-1){
+				return true;
+			}
+
 		return false;
 	}
 

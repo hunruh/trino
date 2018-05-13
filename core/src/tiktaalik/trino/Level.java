@@ -235,7 +235,8 @@ public class Level {
 
             if (d.getDirection() == Dinosaur.LEFT) {
                 if (getGridObject(gridX - 1, gridY) != null) {
-                    if (getGridObject(gridX - 1, gridY).getType() != GameController.COTTON)
+                    if (getGridObject(gridX - 1, gridY).getType() != GameController.COTTON &&
+                            getGridObject(gridX - 1, gridY).getType() != GameController.SWITCH)
                         return;
                 }
 
@@ -247,7 +248,8 @@ public class Level {
             }
             else if (d.getDirection() == Dinosaur.RIGHT) {
                 if (getGridObject(gridX + 1, gridY) != null) {
-                    if (getGridObject(gridX + 1, gridY).getType() != GameController.COTTON)
+                    if (getGridObject(gridX + 1, gridY).getType() != GameController.COTTON &&
+                            getGridObject(gridX + 1, gridY).getType() != GameController.SWITCH)
                         return;
                 }
 
@@ -259,7 +261,8 @@ public class Level {
             }
             else if (d.getDirection() == Dinosaur.UP) {
                 if (getGridObject(gridX, gridY + 1) != null) {
-                    if (getGridObject(gridX, gridY + 1).getType() != GameController.COTTON)
+                    if (getGridObject(gridX, gridY + 1).getType() != GameController.COTTON &&
+                            getGridObject(gridX, gridY + 1).getType() != GameController.SWITCH)
                         return;
                 }
 
@@ -271,7 +274,8 @@ public class Level {
             }
             else if (d.getDirection() == Dinosaur.DOWN) {
                 if (getGridObject(gridX, gridY - 1) != null) {
-                    if (getGridObject(gridX, gridY - 1).getType() != GameController.COTTON)
+                    if (getGridObject(gridX, gridY - 1).getType() != GameController.COTTON &&
+                            getGridObject(gridX, gridY-1).getType() != GameController.SWITCH)
                         return;
                 }
 
@@ -623,10 +627,10 @@ public class Level {
                         filmStripDict.get("carnivoreEatingFront"), 12);
             }
             else {
-                en.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
-                        filmStripDict.get("herbivoreRight"), 7,
-                        filmStripDict.get("herbivoreBack"), 8,
-                        filmStripDict.get("herbivoreFront"), 8);
+                en.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 8,
+                        filmStripDict.get("herbivoreSwimmingRight"), 8,
+                        filmStripDict.get("herbivoreSwimmingBack"), 4,
+                        filmStripDict.get("herbivoreSwimmingFront"), 4);
             }
             en.setDirection(d);
             en.setEnemyType(type);
@@ -641,9 +645,9 @@ public class Level {
             FireFly ff = new FireFly(MathUtils.random(bounds.width),
                     MathUtils.random(2*bounds.height), dwidth);
             ff.setType(FIREFLY);
-            int random = MathUtils.random(4);
-            if (random == 0){
-                random = MathUtils.random(3);
+            int random = MathUtils.random(3);
+            if (random <2){
+                random = MathUtils.random(2);
                 if (random == 0){
                     ff.setTexture(textureDict.get("fireFlyPurple"));
                 } else if (random == 1){

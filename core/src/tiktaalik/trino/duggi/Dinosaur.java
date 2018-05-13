@@ -451,16 +451,16 @@ public abstract class Dinosaur extends GameObject {
             canBeSeen = true;
         }
 
-        if (canBeSeen){
-            tint = Color.WHITE;
-        }else {
-            tint = Color.GREEN;
-        }
+        tint = Color.WHITE;
 
         if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 4]) {
-                animeframe -= (numLoopFrames[direction]);
+                if (this.getForm() == CARNIVORE_FORM ) {
+                    animeframe -= (numLoopFrames[direction]);
+                } else {
+                    animeframe -= ANIMATION_SPEED;
+                }
             }
         } else if (actionInProgress) {
             if (this.getForm() == CARNIVORE_FORM && direction == DOWN)
