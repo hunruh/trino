@@ -634,8 +634,8 @@ public class Level {
                         filmStripDict.get("enemyStunnedRight"), 3,
                         filmStripDict.get("enemyStunnedBack"), 3,
                         filmStripDict.get("enemyStunnedFront"), 3);
-                en.setEatingTextureSet(filmStripDict.get("enemyEatingFront"), 12,
-                        filmStripDict.get("enemyEatingFront"), 12,
+                en.setEatingTextureSet(filmStripDict.get("enemyEatingLeft"), 8,
+                        filmStripDict.get("enemyEatingRight"), 8,
                         filmStripDict.get("enemyEatingBack"), 9,
                         filmStripDict.get("enemyEatingFront"), 12);
             }
