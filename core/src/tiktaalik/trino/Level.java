@@ -72,6 +72,8 @@ public class Level {
     private int levelWidth;
     private int levelHeight;
 
+    private int levelTime;
+
     private boolean isNight;
 
     private int currentLevel;
@@ -345,6 +347,8 @@ public class Level {
 
     public PooledList<Vector2>getCottonFlowerList(){return cottonFlowerList;}
 
+    public int getLevelTime() { return levelTime; }
+
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
@@ -380,6 +384,11 @@ public class Level {
         //System.out.println("rdjgheks"+parser.getLevelDimension(0).y);
         levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).y));
         levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).x));
+
+
+        levelTime = (int)((double)((float)parser.getLevelTime(currentLevel)));
+
+
 
         bounds.x = levelWidth/pixelFactor;
         bounds.y = levelHeight/pixelFactor;

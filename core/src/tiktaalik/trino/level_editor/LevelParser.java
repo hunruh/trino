@@ -39,6 +39,11 @@ public class LevelParser {
         return (new Vector2((Long)tmp.get("width"), (Long)tmp.get("height")));
     }
 
+    public Long getLevelTime(int level) {
+        Long tmp = (Long)((JSONObject)(levels.get(level))).get("Time");
+        return tmp;
+    }
+
     /**
      * the key should only be switch goal or player
      * @param level

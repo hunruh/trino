@@ -319,7 +319,7 @@ public class GameController implements ContactListener, Screen {
 	private int fireflyToGoalTime = 0;
 
 	/** Timer */
-	float levelTime = 300;
+	float levelTime = 60;
 	float totalTime = 300;
 	int minutes = 0;
 	int seconds = 0;
@@ -1121,7 +1121,7 @@ public class GameController implements ContactListener, Screen {
 	 * This method disposes of the world and creates a new one.
 	 */
 	public void reset() {
-		totalTime = levelTime;
+		totalTime = level.getLevelTime();
 		Vector2 gravity = new Vector2(world.getGravity() );
 
 		level.dispose();
@@ -1281,7 +1281,7 @@ public class GameController implements ContactListener, Screen {
 		// Reset level when colliding with enemy
 		if (countdown > 0) {
 			countdown--;
-			totalTime = levelTime;
+			totalTime = level.getLevelTime();;
 		} else if (countdown == 0) {
 			if (failed || timeOut) {
 				state = GAME_OVER;
@@ -1698,6 +1698,8 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	private void updateReady() {
+		totalTime = level.getLevelTime();
+		levelTime = level.getLevelTime();
 		state = GAME_RUNNING;
 	}
 
