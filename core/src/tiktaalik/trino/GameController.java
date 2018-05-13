@@ -99,6 +99,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARNIVORE_EATING_STRIP_FRONT  = "trino/carnivore_front_eating_strip.png";
 	private static final String CARNIVORE_EATING_STRIP_LEFT  = "trino/carnivore_left_eating_strip.png";
 	private static final String CARNIVORE_EATING_STRIP_RIGHT  = "trino/carnivore_right_eating_strip.png";
+	private static final String CARNIVORE_EATING_STRIP_BACK = "trino/carnivore_back_eating_strip.png";
 	private static final String CARNIVORE_CHARGE_STRIP_FRONT = "trino/carnivore_front_charge_strip.png";
 	private static final String CARNIVORE_CHARGE_STRIP_LEFT = "trino/carnivore_left_charge_strip.png";
 	private static final String CARNIVORE_CHARGE_STRIP_RIGHT = "trino/carnivore_right_charge_strip.png";
@@ -127,6 +128,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_ATTACK_STRIP_RIGHT = "trino/enemy_right_attack_strip.png";
 	private static final String ENEMY_ATTACK_STRIP_FRONT = "trino/enemy_front_attack_strip.png";
 	private static final String ENEMY_ATTACK_STRIP_BACK = "trino/enemy_back_attack_strip.png";
+	private static final String ENEMY_EATING_STRIP_FRONT = "trino/enemy_eating_front_strip.png";
+	private static final String ENEMY_EATING_STRIP_BACK = "trino/enemy_eating_back_strip.png";
+	private static final String ENEMY_EATING_STRIP_LEFT = "trino/enemy_eating_front_strip.png";
+	private static final String ENEMY_EATING_STRIP_RIGHT = "trino/enemy_eating_front_strip.png";
 	private static final String ENEMY_LEFT_EATING_STRIP = "trino/enemy_left_eaten_strip.png";
 	private static final String DOLL_TO_HERB_STRIP = "trino/dollToHerb.png";
 	private static final String DOLL_TO_CARN_STRIP = "trino/dollToCarn.png";
@@ -456,6 +461,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_EATING_STRIP_LEFT);
 		manager.load(CARNIVORE_EATING_STRIP_RIGHT, Texture.class);
 		assets.add(CARNIVORE_EATING_STRIP_RIGHT);
+		manager.load(CARNIVORE_EATING_STRIP_BACK, Texture.class);
+		assets.add(CARNIVORE_EATING_STRIP_BACK);
 		manager.load(CARNIVORE_CHARGE_STRIP_FRONT, Texture.class);
 		assets.add(CARNIVORE_CHARGE_STRIP_FRONT);
 		manager.load(CARNIVORE_CHARGE_STRIP_LEFT, Texture.class);
@@ -526,6 +533,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ENEMY_ATTACK_STRIP_BACK);
 		manager.load(ENEMY_LEFT_EATING_STRIP, Texture.class);
 		assets.add(ENEMY_LEFT_EATING_STRIP);
+		manager.load(ENEMY_EATING_STRIP_FRONT, Texture.class);
+		assets.add(ENEMY_EATING_STRIP_FRONT);
+		manager.load(ENEMY_EATING_STRIP_BACK, Texture.class);
+		assets.add(ENEMY_EATING_STRIP_BACK);
+		manager.load(ENEMY_EATING_STRIP_LEFT, Texture.class);
+		assets.add(ENEMY_EATING_STRIP_LEFT);
+		manager.load(ENEMY_EATING_STRIP_RIGHT, Texture.class);
+		assets.add(ENEMY_EATING_STRIP_RIGHT);
 		manager.load(UNKILLABLE_ENEMY_STRIP_FRONT, Texture.class);
 		assets.add(UNKILLABLE_ENEMY_STRIP_FRONT);
 		manager.load(UNKILLABLE_ENEMY_STRIP_LEFT, Texture.class);
@@ -890,7 +905,7 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("carnivoreEatingLeft", createFilmTexture(manager,CARNIVORE_EATING_STRIP_LEFT));
 		filmStripDict.put("carnivoreEatingRight", createFilmTexture(manager,CARNIVORE_EATING_STRIP_RIGHT));
 		filmStripDict.put("carnivoreEatingFront", createFilmTexture(manager,CARNIVORE_EATING_STRIP_FRONT));
-		filmStripDict.put("carnivoreEatingBack", createFilmTexture(manager,CARNIVORE_EATING_STRIP_LEFT));
+		filmStripDict.put("carnivoreEatingBack", createFilmTexture(manager,CARNIVORE_EATING_STRIP_BACK));
 		filmStripDict.put("carnivoreChargeFront", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_FRONT));
 		filmStripDict.put("carnivoreChargeLeft", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_LEFT));
 		filmStripDict.put("carnivoreChargeRight", createFilmTexture(manager,CARNIVORE_CHARGE_STRIP_RIGHT));
@@ -941,6 +956,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("enemyAttackFront", createFilmTexture(manager,ENEMY_ATTACK_STRIP_FRONT));
 		filmStripDict.put("enemyAttackBack", createFilmTexture(manager,ENEMY_ATTACK_STRIP_BACK));
 		filmStripDict.put("enemyLeftEating", createFilmTexture(manager,ENEMY_LEFT_EATING_STRIP));
+		filmStripDict.put("enemyEatingFront", createFilmTexture(manager, ENEMY_EATING_STRIP_FRONT));
+		filmStripDict.put("enemyEatingBack", createFilmTexture(manager, ENEMY_EATING_STRIP_BACK));
+		filmStripDict.put("enemyEatingLeft", createFilmTexture(manager, ENEMY_EATING_STRIP_LEFT));
+		filmStripDict.put("enemyEatingRight", createFilmTexture(manager, ENEMY_EATING_STRIP_RIGHT));
 		filmStripDict.put("edibleWallEating", createFilmTexture(manager, EDIBLE_WALL_EATING_STRIP));
 		filmStripDict.put("dollToHerb", createFilmTexture(manager, DOLL_TO_HERB_STRIP));
 		filmStripDict.put("dollToCarn", createFilmTexture(manager, DOLL_TO_CARN_STRIP));
@@ -2200,7 +2219,7 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("carnivoreFront"), 10);
 					avatar.setEatingTextureSet(filmStripDict.get("carnivoreEatingLeft"), 8,
 							filmStripDict.get("carnivoreEatingRight"), 8,
-							filmStripDict.get("carnivoreEatingBack"), 8,
+							filmStripDict.get("carnivoreEatingBack"), 9,
 							filmStripDict.get("carnivoreEatingFront"), 12);
 					avatar.setActionLoadingTextureSet(filmStripDict.get("carnivoreChargeLeft"), 15, 12,
 							filmStripDict.get("carnivoreChargeRight"), 15, 12,
