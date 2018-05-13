@@ -2142,7 +2142,7 @@ public class GameController implements ContactListener, Screen {
 					//Change the filter data
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = Dinosaur.dollCatBits;
-					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
+					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits|Dinosaur.goalCatBits;
 					avatar.setFilterData(filter);
 					avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
 							filmStripDict.get("dollRight"), 8,
@@ -2167,7 +2167,7 @@ public class GameController implements ContactListener, Screen {
 					//Change the filter data
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = Dinosaur.herbCatBits;
-					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits|Dinosaur.enemyHerbCatBits;
+					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits|Dinosaur.enemyHerbCatBits|Dinosaur.goalCatBits;
 					avatar.setFilterData(filter);
 
 					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
@@ -2192,7 +2192,7 @@ public class GameController implements ContactListener, Screen {
 
 					Filter filter = avatar.getFilterData();
 					filter.categoryBits = Dinosaur.carnCatBits;
-					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
+					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits|Dinosaur.goalCatBits;
 					avatar.setFilterData(filter);
 					avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), 10,
 							filmStripDict.get("carnivoreRight"), 10,

@@ -21,16 +21,16 @@ public abstract class Dinosaur extends GameObject {
     public static final int CARNIVORE_FORM = 2;
 
     // Category Bits
-    public static final short dollCatBits = 0x0001;
-    public static final short herbCatBits = 0x0002;
-    public static final short carnCatBits = 0x0004;
-    public static final short enemyCatBits = 0x0008;
-    public static final short riverCatBits = 0x0010;
-    public static final short cloneCatBits = 0x0011;
-    public static final short switchCatBits = 0x0012;
-    public static final short wallCatBits = 0x0014;
-    public static final short goalCatBits = 0x0018;
-    public static final short enemyHerbCatBits = 0x0100;
+    public static final short dollCatBits = 2;
+    public static final short herbCatBits = 4;
+    public static final short carnCatBits = 8;
+    public static final short enemyCatBits = 16;
+    public static final short riverCatBits = 32;
+    public static final short cloneCatBits = 64;
+    public static final short switchCatBits = 128;
+    public static final short wallCatBits = 256;
+    public static final short goalCatBits = 512;
+    public static final short enemyHerbCatBits = 1024;
 
     public static final int LEFT = 0;
     public static final int RIGHT = 1;

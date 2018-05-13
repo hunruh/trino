@@ -199,6 +199,7 @@ public class Wall extends EdibleObject {
     public void update(float dt) {
         super.update(dt);
         if (lowered){
+            System.out.println("goal is now filter change");
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.goalCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits;
