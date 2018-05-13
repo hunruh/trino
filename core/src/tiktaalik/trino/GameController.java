@@ -1131,7 +1131,6 @@ public class GameController implements ContactListener, Screen {
 
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
 			if(level.getFirefly(i).getTexture() == textureDict.get("fireFlyPurple")){
-				System.out.println("reached purple light");
 				fireLight.setColor(Color.PURPLE);
 			} else if (level.getFirefly(i).getTexture() == textureDict.get("fireFlyBlue")){
 				fireLight.setColor(Color.BLUE);
@@ -1292,12 +1291,12 @@ public class GameController implements ContactListener, Screen {
 		if (currentLevel == 0) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("1a"), 354, 156);
-				canvas.draw(textureDict.get("1c"), 354, 1119);
+				canvas.draw(textureDict.get("1a"), 35, 260);
+				canvas.draw(textureDict.get("1c"), 1000, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("1b"), 82, 308);
-				canvas.draw(textureDict.get("1d"), 948, 308);
+				canvas.draw(textureDict.get("1b"), 35, 260);
+				canvas.draw(textureDict.get("1d"), 1000, 260);
 			}
 			canvas.end();
 		}
@@ -1305,12 +1304,12 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 1) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("2a"), 82, 308);
-				canvas.draw(textureDict.get("2c"), 948, 308);
+				canvas.draw(textureDict.get("2a"), 35, 260);
+				canvas.draw(textureDict.get("2c"), 1000, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("2b"), 82, 308);
-				canvas.draw(textureDict.get("2d"), 948, 308);
+				canvas.draw(textureDict.get("2b"), 35, 260);
+				canvas.draw(textureDict.get("2d"), 1000, 260);
 			}
 			canvas.end();
 		}
@@ -1318,10 +1317,10 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 2) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("3a"), 82, 308);
+				canvas.draw(textureDict.get("3a"), 35, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("3b"), 82, 308);
+				canvas.draw(textureDict.get("3b"), 35, 260);
 			}
 			canvas.end();
 		}
@@ -1329,47 +1328,47 @@ public class GameController implements ContactListener, Screen {
 		else if (currentLevel == 3) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("4a"), 82, 308);
+				canvas.draw(textureDict.get("4a"), 35, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("4b"), 82, 308);
+				canvas.draw(textureDict.get("4b"), 35, 260);
 			}
 			canvas.end();
 		}
         else if (currentLevel == 5) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("6a"), 82, 308);
-                canvas.draw(textureDict.get("6c"), 948, 308);
+                canvas.draw(textureDict.get("6a"), 35, 260);
+                canvas.draw(textureDict.get("6c"), 1000, 260);
             }
             else {
-                canvas.draw(textureDict.get("6b"), 82, 308);
-                canvas.draw(textureDict.get("6d"), 948, 308);
+                canvas.draw(textureDict.get("6b"), 35, 260);
+                canvas.draw(textureDict.get("6d"), 1000, 260);
             }
             canvas.end();
         }
         else if (currentLevel == 6) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("7a"), 82, 308);
+                canvas.draw(textureDict.get("7a"), 35, 260);
             }
             else {
-                canvas.draw(textureDict.get("7b"), 82, 308);
+                canvas.draw(textureDict.get("7b"), 35, 260);
             }
             canvas.end();
         }
         else if (currentLevel == 7) {
             canvas.beginOverlay();
-            canvas.draw(textureDict.get("8a"), 82, 308);
+            canvas.draw(textureDict.get("8a"), 35, 260);
             canvas.end();
         }
         else if (currentLevel == 8) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("9a"), 82, 308);
+                canvas.draw(textureDict.get("9a"), 35, 260);
             }
             else {
-                canvas.draw(textureDict.get("9b"), 82, 308);
+                canvas.draw(textureDict.get("9b"), 35, 260);
             }
             canvas.end();
         }
