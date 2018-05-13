@@ -383,7 +383,6 @@ public class Enemy extends EdibleObject {
         animeframe += ANIMATION_SPEED;
 
         if (eatingClone){
-            System.out.println("reached eating clone animation");
             if (animeframe >= numFrames[direction + 16]) {
                 cloneBeingEaten.setRemoved(true);
                 eatingClone = false;
@@ -395,7 +394,6 @@ public class Enemy extends EdibleObject {
                 animeframe -= (numFrames[direction + 4] - 3);
             }
         } else if (charging) {
-            System.out.println("reached charging animation");
             if (animeframe >= numFrames[direction + 8]) {
                 animeframe -= (numFrames[direction + 8]);
             }
