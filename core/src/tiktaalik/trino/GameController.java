@@ -1819,8 +1819,8 @@ public class GameController implements ContactListener, Screen {
 			else {
 				if (level.getClone() != null){
 					for (int i = 0; i < level.getSwitches().size(); i++){
-						if (level.getSwitch(i).getGridLocation().x == level.getClone().getGridLocation().x &&
-								level.getSwitch(i).getGridLocation().y == level.getClone().getGridLocation().y){
+						if (Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) < 1f &&
+								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.70f){
 							//////System.out.println("success");
 							playDoorUp = 0;
 							if (playDoorDown == 0){

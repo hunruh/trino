@@ -46,6 +46,7 @@ public class FireFlyAIController {
     }
 
     public void getMoveToGoal(Vector2 position) {
+        position.y = position.y + 0.75f;
         // If firefly is close to goal, pick a new goal
         if (Vector2.dst(firefly.getX(),firefly.getY(),position.x,position.y) < 1f){
             updateCircular(1, position);
