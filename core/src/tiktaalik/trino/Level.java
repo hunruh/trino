@@ -79,6 +79,8 @@ public class Level {
 
     private int currentLevel;
 
+    private Hashtable<String, TextureRegion> textureDict;
+
     public Level(World world, int lvl) {
         this.bounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.world = world;
@@ -352,6 +354,7 @@ public class Level {
 
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
+        this.textureDict = textureDict;
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
 
         SaveFileParser savefileparser = new SaveFileParser();
@@ -735,8 +738,27 @@ public class Level {
         canvas.endShadows();
 
         canvas.begin();
-        for(GameObject g : blockObjects)
+        for(GameObject g : blockObjects) {
             g.draw(canvas);
+            if (g.getType() == RIVER && textureDict !=null) {
+                float dwidth = textureDict.get("river").getRegionWidth() / scale.x;
+                float dheight = textureDict.get("river").getRegionHeight() / scale.y;
+
+                if (setPatchRivers((River) g, textureDict) != null){
+                    TextureRegion[] list = setPatchRivers((River) g, textureDict);
+                    for (int i = 0; i < list.length; i++){
+                        if (list[i] != null){
+                            TextureRegion riverTexture = list[i];
+                            System.out.println("reached draw patch texture for " + i);
+                            Vector2 origin = new Vector2(riverTexture.getRegionWidth()/2.0f, riverTexture.getRegionHeight()/2.0f);
+                            canvas.draw(riverTexture, Color.WHITE,origin.x,origin.y,(g.getX()
+                                    *g.getDrawScale().x),(g.getY()*g.getDrawScale().x) +12f,0,1,1);
+                        }
+                    }
+
+                }
+            }
+        }
         canvas.end();
 
         canvas.beginProgressCircle();
@@ -980,7 +1002,7 @@ public class Level {
 
     }
 
-    public void setPatchRivers(River river,Hashtable<String, TextureRegion> textureDict){
+    public TextureRegion[] setPatchRivers(River river,Hashtable<String, TextureRegion> textureDict){
 
         TextureRegion cornerBottomLeft = textureDict.get("cornerBottomLeft");
         TextureRegion cornerBottomRight = textureDict.get("cornerBottomRight");
@@ -1086,48 +1108,22 @@ public class Level {
             isSouthEastRiver = false;
         }
 
-        float dwidth = textureDict.get("river").getRegionWidth() / scale.x;
-        float dheight = textureDict.get("river").getRegionHeight() / scale.y;
+        TextureRegion[] list = new TextureRegion[4];
 
         // Add patch rivers
         if (isTopRiver && isLeftRiver && !isNorthWestRiver){
-            River riv = new River((int)river.getGridLocation().x, (int)river.getGridLocation().y,
-                    screenToMaze(river.getGridLocation().x), screenToMaze(river.getGridLocation().y), dwidth, dheight, false);
-            riv.setBodyType(BodyDef.BodyType.StaticBody);
-            riv.setDrawScale(scale);
-            riv.setTexture(cornerTopLeft);
-            riv.setType(RIVER);
-            patchRivers.add(riv);
-            grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
-        } else if (isTopRiver && isRightRiver && !isNorthEastRiver){
-            System.out.println("reached northeastriver patch creation");
-            River riv = new River((int)river.getGridLocation().x-4, (int)river.getGridLocation().y,
-                    screenToMaze(river.getGridLocation().x-4), screenToMaze(river.getGridLocation().y), dwidth, dheight, false);
-            riv.setBodyType(BodyDef.BodyType.StaticBody);
-            riv.setDrawScale(scale);
-            riv.setTexture(cornerTopRight);
-            riv.setType(RIVER);
-            patchRivers.add(riv);
-            grid[(int)river.getGridLocation().x][(int)river.getGridLocation().y] = riv;
-        } else if (isRightRiver && isBotRiver && !isSouthEastRiver){
-            River riv = new River((int)river.getGridLocation().x, (int)river.getGridLocation().y,
-                    screenToMaze(river.getGridLocation().x), screenToMaze(river.getGridLocation().y), dwidth, dheight, false);
-            riv.setBodyType(BodyDef.BodyType.StaticBody);
-            riv.setDrawScale(scale);
-            riv.setTexture(cornerBottomRight);
-            riv.setType(RIVER);
-            patchRivers.add(riv);
-            grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
-        } else if (isBotRiver && isLeftRiver && !isSouthWestRiver){
-            River riv = new River((int)river.getGridLocation().x, (int)river.getGridLocation().y,
-                    screenToMaze(river.getGridLocation().x), screenToMaze(river.getGridLocation().y), dwidth, dheight, false);
-            riv.setBodyType(BodyDef.BodyType.StaticBody);
-            riv.setDrawScale(scale);
-            riv.setTexture(cornerBottomLeft);
-            riv.setType(RIVER);
-            patchRivers.add(riv);
-            grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
+            list[0] = cornerTopLeft;
         }
+        if (isTopRiver && isRightRiver && !isNorthEastRiver){
+            list[1] = cornerTopRight;
+        }
+        if (isRightRiver && isBotRiver && !isSouthEastRiver){
+            list[2] = cornerBottomRight;
+        }
+        if (isBotRiver && isLeftRiver && !isSouthWestRiver){
+            list[3] = cornerBottomLeft;
+        }
+        return list;
 
     }
 
