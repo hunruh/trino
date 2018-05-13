@@ -1,6 +1,7 @@
 package tiktaalik.trino.environment;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.*;
@@ -18,6 +19,14 @@ public class Wall extends EdibleObject {
     private boolean edible;
     private boolean lowered = false;
     private boolean goal;
+
+    private static final float ANIMATION_SPEED = 0.175f;
+    private FilmStrip[] textureSet;
+    private int numFrames[];
+    private float animeframe;
+    private Vector2 vineOrigin;
+
+    private static final int VINE_DROP= 0;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -54,6 +63,10 @@ public class Wall extends EdibleObject {
 
         this.edible = edible;
         gridLocation = new Vector2(gx, gy);
+
+        textureSet = new FilmStrip[1];
+        numFrames = new int[1];
+        animeframe = 0;
     }
 
     public boolean getEdible() {
@@ -137,6 +150,12 @@ public class Wall extends EdibleObject {
         setDimension(sizeCache);
     }
 
+    public void setVineTextureSet(Texture vine, int vineFrames) {
+        numFrames[VINE_DROP] = vineFrames;
+        textureSet[VINE_DROP] = new FilmStrip(vine,1,vineFrames,vineFrames);
+        vineOrigin = new Vector2(textureSet[VINE_DROP].getRegionWidth()/2.0f, textureSet[VINE_DROP].getRegionHeight()/2.0f);
+    }
+
     public void setGridLocation(Vector2 location){
         this.gridLocation = location;
     }
@@ -205,7 +224,14 @@ public class Wall extends EdibleObject {
             geometry.setFilterData(filter);
             this.setSensor(true);
 
+            animeframe += ANIMATION_SPEED;
+
+            if (animeframe >= numFrames[VINE_DROP]) {
+                animeframe = numFrames[VINE_DROP];
+            }
+
         } else {
+            animeframe = 0;
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.wallCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
@@ -213,6 +239,7 @@ public class Wall extends EdibleObject {
             geometry.setFilterData(filter);
             this.setSensor(false);
         }
+
     }
 
     /**
@@ -221,7 +248,20 @@ public class Wall extends EdibleObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
+
         super.draw(canvas, 0, 7, edible);
+
+        float offsetX = 0;
+        float offsetY = 0;
+
+//        if (lowered){
+//            textureSet[VINE_DROP].setFrame((int)animeframe);
+//            if (textureSet[VINE_DROP] != null) {
+//                //canvas.draw(textureSet[VINE_DROP], Color.WHITE,vineOrigin.x,vineOrigin.y,getX()*drawScale.x + offsetX,
+//                        //getY()*drawScale.x + offsetY,0,1,1);
+//            }
+//        }
+
     }
 
     /**

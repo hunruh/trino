@@ -566,10 +566,12 @@ public class Level {
             goalDoor.setType(GOAL);
             if (i == 0) {
                 goalDoor.setGoal(true);
+                goalDoor.setVineTextureSet(filmStripDict.get("vineDrop"),12);
             }
             else {
                 goalDoor.setGoal(false);
             }
+
             addObject(goalDoor);
             grid[(int) goalDoor.getGridLocation().x][(int) goalDoor.getGridLocation().y] = goalDoor;
         }
