@@ -128,6 +128,12 @@ public class GameController implements ContactListener, Screen {
 	private static final String ENEMY_ATTACK_STRIP_FRONT = "trino/enemy_front_attack_strip.png";
 	private static final String ENEMY_ATTACK_STRIP_BACK = "trino/enemy_back_attack_strip.png";
 	private static final String ENEMY_LEFT_EATING_STRIP = "trino/enemy_left_eaten_strip.png";
+	private static final String DOLL_TO_HERB_STRIP = "trino/dollToHerb.png";
+	private static final String DOLL_TO_CARN_STRIP = "trino/dollToCarn.png";
+	private static final String HERB_TO_DOLL_STRIP = "trino/herbToDoll.png";
+	private static final String HERB_TO_CARN_STRIP = "trino/herbToCarn.png";
+	private static final String CARN_TO_DOLL_STRIP = "trino/carnToDoll.png";
+	private static final String CARN_TO_HERB_STRIP = "trino/carnToHerb.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String FIREFLY_PURPLE_FILE = "trino/ffPurple.png";
 	private static final String FIREFLY_BLUE_FILE = "trino/ffBlue.png";
@@ -211,7 +217,10 @@ public class GameController implements ContactListener, Screen {
     private static final String RIVER_RIGHT_3_FILE = "trino/river_right_3_sides.png";
     private static final String RIVER_VERT_2_FILE = "trino/river_one_width.png";
     private static final String RIVER_HOR_2_FILE = "trino/river_one_height.png";
-
+    private static final String CORNER_BOTTOM_LEFT = "trino/corner_bottom_left.png";
+    private static final String CORNER_BOTTOM_RIGHT = "trino/corner_bottom_right.png";
+    private static final String CORNER_TOP_LEFT = "trino/corner_top_left.png";
+    private static final String CORNER_TOP_RIGHT = "trino/corner_top_right.png";
 
 	// Tutorial menus
 	private static final String TUT_ONE_A = "tutorial/move1.png";
@@ -316,10 +325,11 @@ public class GameController implements ContactListener, Screen {
 	private float radius;
 	private float randomAngle;
 	private float intensity;
-	private int fireflyToGoalTime = 0;
+	private boolean fireflyCanGoToGoal;
+	private boolean transform = false;
 
 	/** Timer */
-	float levelTime = 300;
+	float levelTime = 60;
 	float totalTime = 300;
 	int minutes = 0;
 	int seconds = 0;
@@ -462,6 +472,18 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_ATTACK_STRIP_RIGHT);
 		manager.load(CARNIVORE_ATTACK_STRIP_BACK, Texture.class);
 		assets.add(CARNIVORE_ATTACK_STRIP_BACK);
+		manager.load(DOLL_TO_HERB_STRIP, Texture.class);
+		assets.add(DOLL_TO_HERB_STRIP);
+		manager.load(DOLL_TO_CARN_STRIP, Texture.class);
+		assets.add(DOLL_TO_CARN_STRIP);
+		manager.load(HERB_TO_DOLL_STRIP, Texture.class);
+		assets.add(HERB_TO_DOLL_STRIP);
+		manager.load(HERB_TO_CARN_STRIP, Texture.class);
+		assets.add(HERB_TO_CARN_STRIP);
+		manager.load(CARN_TO_DOLL_STRIP, Texture.class);
+		assets.add(CARN_TO_DOLL_STRIP);
+		manager.load(CARN_TO_HERB_STRIP, Texture.class);
+		assets.add(CARN_TO_HERB_STRIP);
 		manager.load(WALL_FILE, Texture.class);
 		assets.add(WALL_FILE);
 		manager.load(EDIBLE_WALL_FILE, Texture.class);
@@ -662,6 +684,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(RIVER_CORNER_RIGHT_BOT_FILE);
 		manager.load(RIVER_CORNER_RIGHT_TOP_FILE, Texture.class);
 		assets.add(RIVER_CORNER_RIGHT_TOP_FILE);
+		manager.load(CORNER_BOTTOM_LEFT, Texture.class);
+		assets.add(CORNER_BOTTOM_LEFT);
+		manager.load(CORNER_BOTTOM_RIGHT, Texture.class);
+		assets.add(CORNER_BOTTOM_RIGHT);
+		manager.load(CORNER_TOP_LEFT, Texture.class);
+		assets.add(CORNER_TOP_LEFT);
+		manager.load(CORNER_TOP_RIGHT, Texture.class);
+		assets.add(CORNER_TOP_RIGHT);
 		manager.load(TUT_ONE_A, Texture.class);
 		assets.add(TUT_ONE_A);
 		manager.load(TUT_ONE_B, Texture.class);
@@ -772,6 +802,10 @@ public class GameController implements ContactListener, Screen {
         textureDict.put("riverBot3Sides", createTexture(manager, RIVER_BOT_3_FILE, false));
         textureDict.put("riverVert2Sides", createTexture(manager, RIVER_VERT_2_FILE, false));
         textureDict.put("riverHor2Sides", createTexture(manager, RIVER_HOR_2_FILE, false));
+        textureDict.put("cornerBottomLeft", createTexture(manager, CORNER_BOTTOM_LEFT, false));
+        textureDict.put("cornerBottomRight", createTexture(manager, CORNER_BOTTOM_RIGHT, false));
+        textureDict.put("cornerTopLeft", createTexture(manager, CORNER_TOP_LEFT, false));
+        textureDict.put("cornerTopRight", createTexture(manager, CORNER_TOP_RIGHT, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
 		textureDict.put("gameover", createTexture(manager, GAMEOVER_FILE, false));
@@ -908,6 +942,12 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("enemyAttackBack", createFilmTexture(manager,ENEMY_ATTACK_STRIP_BACK));
 		filmStripDict.put("enemyLeftEating", createFilmTexture(manager,ENEMY_LEFT_EATING_STRIP));
 		filmStripDict.put("edibleWallEating", createFilmTexture(manager, EDIBLE_WALL_EATING_STRIP));
+		filmStripDict.put("dollToHerb", createFilmTexture(manager, DOLL_TO_HERB_STRIP));
+		filmStripDict.put("dollToCarn", createFilmTexture(manager, DOLL_TO_CARN_STRIP));
+		filmStripDict.put("herbToDoll", createFilmTexture(manager, HERB_TO_DOLL_STRIP));
+		filmStripDict.put("herbToCarn", createFilmTexture(manager, HERB_TO_CARN_STRIP));
+		filmStripDict.put("carnToDoll", createFilmTexture(manager, CARN_TO_DOLL_STRIP));
+		filmStripDict.put("carnToHerb", createFilmTexture(manager, CARN_TO_HERB_STRIP));
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -1121,7 +1161,7 @@ public class GameController implements ContactListener, Screen {
 	 * This method disposes of the world and creates a new one.
 	 */
 	public void reset() {
-		totalTime = levelTime;
+		totalTime = level.getLevelTime();
 		Vector2 gravity = new Vector2(world.getGravity() );
 
 		level.dispose();
@@ -1215,7 +1255,6 @@ public class GameController implements ContactListener, Screen {
 
 		playDoorDown = 0;
 		playDoorUp = 1;
-		fireflyToGoalTime = 0;
 
 //		enemyLights = new LightSource[level.getEnemies().size()];
 //
@@ -1281,7 +1320,7 @@ public class GameController implements ContactListener, Screen {
 		// Reset level when colliding with enemy
 		if (countdown > 0) {
 			countdown--;
-			totalTime = levelTime;
+			totalTime = level.getLevelTime();;
 		} else if (countdown == 0) {
 			if (failed || timeOut) {
 				state = GAME_OVER;
@@ -1443,7 +1482,8 @@ public class GameController implements ContactListener, Screen {
 						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
 						textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
 				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
-				if (totalTime >= 280) {
+				if (totalTime >= 2*levelTime/3) {
+					System.out.println("THREE STAR!");
 					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
 							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
@@ -1451,7 +1491,8 @@ public class GameController implements ContactListener, Screen {
 							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * 3 * .75f / 4,
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
 				}
-				else if (totalTime >= 60) {
+				else if (totalTime >= levelTime/3) {
+					System.out.println("TWO STAR!");
 					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
 							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
@@ -1698,6 +1739,8 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	private void updateReady() {
+		totalTime = level.getLevelTime();
+		levelTime = level.getLevelTime();
 		state = GAME_RUNNING;
 	}
 
@@ -1753,23 +1796,12 @@ public class GameController implements ContactListener, Screen {
 				level.getDoor(0).setLowered(true);
 				level.getDoor(0).setTexture(textureDict.get("goalOpenTile"));
 
-				// Set the goal for the fireflies
-				if (fireflyToGoalTime == 0){
-					System.out.println("reached increment for ff");
-					for (int i = 0; i < fireFlyControls.size(); i++){
-						fireFlyControls.get(i).setGoal(level.getDoor(0).getPosition());
-					}
-					fireflyToGoalTime++;
-				}
-
 			}
 			else {
 				if (level.getClone() != null){
 					for (int i = 0; i < level.getSwitches().size(); i++){
-						if (Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) < 1.5 &&
-								Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) > 0 &&
-								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.5 &&
-								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) > 0){
+						if (level.getSwitch(i).getGridLocation().x == level.getClone().getGridLocation().x &&
+								level.getSwitch(i).getGridLocation().y == level.getClone().getGridLocation().y){
 							//////System.out.println("success");
 							playDoorUp = 0;
 							if (playDoorDown == 0){
@@ -1778,15 +1810,6 @@ public class GameController implements ContactListener, Screen {
 							}
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
-
-								// Set the goal for the fireflies
-								if (fireflyToGoalTime == 0){
-									System.out.println("reached increment for ff");
-									for (int j = 0; j < fireFlyControls.size(); j++){
-										fireFlyControls.get(j).setGoal(level.getDoor(0).getPosition());
-									}
-									fireflyToGoalTime++;
-								}
 							}
 							else {
 								level.getAvatar().setCanExit(false);
@@ -1810,22 +1833,14 @@ public class GameController implements ContactListener, Screen {
 							}
 						} else if (!doorHasEnemyOnTop(level.getDoor(i)) && !doorHasPlayerOnTop(level.getDoor(i))) {
 
-							// Set the goal for the fireflies
-							if (fireflyToGoalTime == 1){
-								System.out.println("reached increment for ff");
-								for (int j = 0; j < fireFlyControls.size(); j++){
-									fireFlyControls.get(j).setGoal(new Vector2(MathUtils.random(level.getBounds().width)
-											,MathUtils.random(2*level.getBounds().height)));
-								}
-								fireflyToGoalTime--;
-							}
-
 							playDoorDown = 0;
 							if (playDoorUp == 0){
 								SoundController.getInstance().playDoorOpen();
 								playDoorUp++;
 							}
-							level.getAvatar().setCanExit(false);
+							if (i == 0){
+								level.getAvatar().setCanExit(false);
+							}
 							level.getDoor(i).setLowered(false);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
@@ -1847,16 +1862,6 @@ public class GameController implements ContactListener, Screen {
 						}
 					}
 				} else {
-
-                    // Set the goal for the fireflies
-                    if (fireflyToGoalTime == 1){
-                        System.out.println("reached increment for ff");
-                        for (int j = 0; j < fireFlyControls.size(); j++){
-                            fireFlyControls.get(j).setGoal(new Vector2(MathUtils.random(level.getBounds().width)
-                                    ,MathUtils.random(2*level.getBounds().height)));
-                        }
-                        fireflyToGoalTime--;
-                    }
 
 					if (playDoorUp == 0 && playDoorDown > 0){
 						SoundController.getInstance().playDoorOpen();
@@ -1947,9 +1952,14 @@ public class GameController implements ContactListener, Screen {
 
 			// Process FireFly updates
 			for (int i = 0; i < fireFlyControls.size(); i++) {
-				if (avatar.canExit()) {
+				if (level.getAvatar().canExit()) {
+					fireFlyControls.get(i).setGoal(level.getDoor(0).getPosition());
 					fireFlyControls.get(i).getMoveToGoal(level.getDoor(0).getPosition());
 				} else {
+					if (fireFlyControls.get(i).getGoal().equals(level.getDoor(0).getPosition())){
+						fireFlyControls.get(i).setGoal(new Vector2(MathUtils.random(level.getBounds().x),
+								2 * MathUtils.random(level.getBounds().y)));
+					}
 					fireFlyControls.get(i).getMoveAlongPath();
 				}
 			}
@@ -1975,10 +1985,10 @@ public class GameController implements ContactListener, Screen {
 			if (avatar.getForm() == Dinosaur.HERBIVORE_FORM){
 
 				if (isOnRiverTile()){
-					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 8,
-							filmStripDict.get("herbivoreSwimmingRight"), 8,
-							filmStripDict.get("herbivoreSwimmingBack"), 4,
-							filmStripDict.get("herbivoreSwimmingFront"), 4);
+					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 7,
+							filmStripDict.get("herbivoreSwimmingRight"), 7,
+							filmStripDict.get("herbivoreSwimmingBack"), 8,
+							filmStripDict.get("herbivoreSwimmingFront"), 7);
 				}
 				else if (avatar.getCanBeSeen()){
 					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
@@ -2077,91 +2087,131 @@ public class GameController implements ContactListener, Screen {
 					if (InputHandler.getInstance().didTransformDoll() &&
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 
-						avatar = avatar.transformToDoll();
-						avatar.setCanBeSeen(true);
-
-						//Change the filter data
-						Filter filter = avatar.getFilterData();
-						filter.categoryBits = Dinosaur.dollCatBits;
-						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
-						avatar.setFilterData(filter);
-						avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
-								filmStripDict.get("dollRight"), 8,
-								filmStripDict.get("dollBack"), 8,
-								filmStripDict.get("dollFront"), 8);
-						avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
-								filmStripDict.get("dollEatingRight"), 7,
-								filmStripDict.get("dollEatingBack"), 6,
-								filmStripDict.get("dollEatingFront"), 7);
-						avatar.setActionTextureSet(filmStripDict.get("dollCloningFront"), 12,
-								filmStripDict.get("dollCloningFront"), 12,
-								filmStripDict.get("dollCloningFront"), 12,
-								filmStripDict.get("dollCloningFront"), 12);
-
-						level.setAvatar(avatar);
+						if (avatar.getForm() == Dinosaur.HERBIVORE_FORM){
+							avatar.setTransformTextureSet(filmStripDict.get("herbToDoll"), 11);
+						} else{
+							avatar.setTransformTextureSet(filmStripDict.get("carnToDoll"), 11);
+						}
+						transform = true;
+						avatar.setTransform(true);
+						avatar.setTransformToForm(0);
 
 						SoundController.getInstance().changeBackground(Dinosaur.DOLL_FORM);
 						SoundController.getInstance().playTransform();
+
 					} else if (InputHandler.getInstance().didTransformHerbi() &&
 							avatar.getForm() != Dinosaur.HERBIVORE_FORM) {
-						avatar = avatar.transformToHerbivore();
-						avatar.setCanBeSeen(true);
 
-						//Change the filter data
-						Filter filter = avatar.getFilterData();
-						filter.categoryBits = Dinosaur.herbCatBits;
-						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits|Dinosaur.enemyHerbCatBits;
-						avatar.setFilterData(filter);
+						if (avatar.getForm() == Dinosaur.DOLL_FORM){
+							avatar.setTransformTextureSet(filmStripDict.get("dollToHerb"), 11);
+						} else{
+							avatar.setTransformTextureSet(filmStripDict.get("carnToHerb"), 11);
+						}
 
-						avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
-								filmStripDict.get("herbivoreRight"), 7,
-								filmStripDict.get("herbivoreBack"), 8,
-								filmStripDict.get("herbivoreFront"), 8);
-
-						avatar.setEatingTextureSet(filmStripDict.get("herbivoreEatingLeft"), 10,
-								filmStripDict.get("herbivoreEatingRight"), 10,
-								filmStripDict.get("herbivoreEatingBack"), 10,
-								filmStripDict.get("herbivoreEatingFront"), 10);
-						avatar.setActionLoadingTextureSet(filmStripDict.get("herbivorePlaceCamoLeft"), 12, 0,
-								filmStripDict.get("herbivorePlaceCamoRight"), 12, 0,
-								filmStripDict.get("herbivorePlaceCamoBack"), 10, 0,
-								filmStripDict.get("herbivorePlaceCamoFront"),  12, 0);
-
-						level.setAvatar(avatar);
+						transform = true;
+						avatar.setTransform(true);
+						avatar.setTransformToForm(1);
 
 						SoundController.getInstance().changeBackground(Dinosaur.HERBIVORE_FORM);
 						SoundController.getInstance().playTransform();
+
 					} else if (InputHandler.getInstance().didTransformCarni() &&
 							avatar.getForm() != Dinosaur.CARNIVORE_FORM) {
-						avatar = avatar.transformToCarnivore();
-						avatar.setCanBeSeen(true);
+						if (avatar.getForm() == Dinosaur.DOLL_FORM){
+							avatar.setTransformTextureSet(filmStripDict.get("dollToCarn"), 11);
+						} else{
+							avatar.setTransformTextureSet(filmStripDict.get("herbToCarn"), 11);
+						}
 
-						Filter filter = avatar.getFilterData();
-						filter.categoryBits = Dinosaur.carnCatBits;
-						filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
-						avatar.setFilterData(filter);
-						avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), 10,
-								filmStripDict.get("carnivoreRight"), 10,
-								filmStripDict.get("carnivoreBack"), 8,
-								filmStripDict.get("carnivoreFront"), 10);
-						avatar.setEatingTextureSet(filmStripDict.get("carnivoreEatingLeft"), 8,
-								filmStripDict.get("carnivoreEatingRight"), 8,
-								filmStripDict.get("carnivoreEatingBack"), 8,
-								filmStripDict.get("carnivoreEatingFront"), 12);
-						avatar.setActionLoadingTextureSet(filmStripDict.get("carnivoreChargeLeft"), 15, 12,
-								filmStripDict.get("carnivoreChargeRight"), 15, 12,
-								filmStripDict.get("carnivoreChargeBack"), 8, 4,
-								filmStripDict.get("carnivoreChargeFront"),  11, 5);
-						avatar.setActionTextureSet(filmStripDict.get("carnivoreAttackLeft"), 9,
-								filmStripDict.get("carnivoreAttackRight"), 9,
-								filmStripDict.get("carnivoreAttackBack"), 6,
-								filmStripDict.get("carnivoreAttackFront"), 10);
-
-						level.setAvatar(avatar);
+						transform = true;
+						avatar.setTransform(true);
+						avatar.setTransformToForm(2);
 
 						SoundController.getInstance().changeBackground(Dinosaur.CARNIVORE_FORM);
 						SoundController.getInstance().playTransform();
 					}
+				}
+			}
+
+			if (transform && !avatar.getTransform()){
+				transform = false;
+				if (avatar.getTransformNumber() == 0){
+					avatar = avatar.transformToDoll();
+					avatar.setCanBeSeen(true);
+
+					//Change the filter data
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = Dinosaur.dollCatBits;
+					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits|Dinosaur.goalCatBits;
+					avatar.setFilterData(filter);
+					avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
+							filmStripDict.get("dollRight"), 8,
+							filmStripDict.get("dollBack"), 8,
+							filmStripDict.get("dollFront"), 8);
+					avatar.setEatingTextureSet(filmStripDict.get("dollEatingLeft"), 7,
+							filmStripDict.get("dollEatingRight"), 7,
+							filmStripDict.get("dollEatingBack"), 6,
+							filmStripDict.get("dollEatingFront"), 7);
+					avatar.setActionTextureSet(filmStripDict.get("dollCloningFront"), 12,
+							filmStripDict.get("dollCloningFront"), 12,
+							filmStripDict.get("dollCloningFront"), 12,
+							filmStripDict.get("dollCloningFront"), 12);
+
+
+					level.setAvatar(avatar);
+
+				} else if (avatar.getTransformNumber() == 1){
+					avatar = avatar.transformToHerbivore();
+					avatar.setCanBeSeen(true);
+
+					//Change the filter data
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = Dinosaur.herbCatBits;
+					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.wallCatBits|Dinosaur.enemyHerbCatBits|Dinosaur.goalCatBits;
+					avatar.setFilterData(filter);
+
+					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
+							filmStripDict.get("herbivoreRight"), 7,
+							filmStripDict.get("herbivoreBack"), 8,
+							filmStripDict.get("herbivoreFront"), 8);
+
+					avatar.setEatingTextureSet(filmStripDict.get("herbivoreEatingLeft"), 10,
+							filmStripDict.get("herbivoreEatingRight"), 10,
+							filmStripDict.get("herbivoreEatingBack"), 10,
+							filmStripDict.get("herbivoreEatingFront"), 10);
+					avatar.setActionLoadingTextureSet(filmStripDict.get("herbivorePlaceCamoLeft"), 12, 0,
+							filmStripDict.get("herbivorePlaceCamoRight"), 12, 0,
+							filmStripDict.get("herbivorePlaceCamoBack"), 10, 0,
+							filmStripDict.get("herbivorePlaceCamoFront"),  12, 0);
+
+
+					level.setAvatar(avatar);
+				} else {
+					avatar = avatar.transformToCarnivore();
+					avatar.setCanBeSeen(true);
+
+					Filter filter = avatar.getFilterData();
+					filter.categoryBits = Dinosaur.carnCatBits;
+					filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits|Dinosaur.goalCatBits;
+					avatar.setFilterData(filter);
+					avatar.setTextureSet(filmStripDict.get("carnivoreLeft"), 10,
+							filmStripDict.get("carnivoreRight"), 10,
+							filmStripDict.get("carnivoreBack"), 8,
+							filmStripDict.get("carnivoreFront"), 10);
+					avatar.setEatingTextureSet(filmStripDict.get("carnivoreEatingLeft"), 8,
+							filmStripDict.get("carnivoreEatingRight"), 8,
+							filmStripDict.get("carnivoreEatingBack"), 8,
+							filmStripDict.get("carnivoreEatingFront"), 12);
+					avatar.setActionLoadingTextureSet(filmStripDict.get("carnivoreChargeLeft"), 15, 12,
+							filmStripDict.get("carnivoreChargeRight"), 15, 12,
+							filmStripDict.get("carnivoreChargeBack"), 8, 4,
+							filmStripDict.get("carnivoreChargeFront"),  11, 5);
+					avatar.setActionTextureSet(filmStripDict.get("carnivoreAttackLeft"), 9,
+							filmStripDict.get("carnivoreAttackRight"), 9,
+							filmStripDict.get("carnivoreAttackBack"), 6,
+							filmStripDict.get("carnivoreAttackFront"), 10);
+
+					level.setAvatar(avatar);
 				}
 			}
 
@@ -2283,7 +2333,7 @@ public class GameController implements ContactListener, Screen {
 				} else if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
 					level.getAvatar().useAction();
 					GameObject tmp = level.objectInFrontOfAvatar();
-					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 6.6f) {
+					if (tmp != null && tmp.getType() == EDIBLEWALL && tmp.getPosition().dst2(avatar.getPosition()) < 7f) {
 						SoundController.getInstance().playMunch();
 						avatar.setCanBeSeen(false);
 						avatar.setTextureSet(filmStripDict.get("herbivoreCamoLeft"), 7,

@@ -49,6 +49,7 @@ public class Level {
     private PooledList<FireFly> fireFlies = new PooledList<FireFly>();
     private PooledList<Switch> switches = new PooledList<Switch>();
     private PooledList<Wall> doors = new PooledList<Wall>();
+    private PooledList<River> patchRivers = new PooledList<River>();
 
     private GameObject[][] grid;
     private PooledList<Vector2> cottonFlowerList = new PooledList<Vector2>();//for shadow duggi
@@ -72,9 +73,13 @@ public class Level {
     private int levelWidth;
     private int levelHeight;
 
+    private int levelTime;
+
     private boolean isNight;
 
     private int currentLevel;
+
+    private Hashtable<String, TextureRegion> textureDict;
 
     public Level(World world, int lvl) {
         this.bounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -345,8 +350,11 @@ public class Level {
 
     public PooledList<Vector2>getCottonFlowerList(){return cottonFlowerList;}
 
+    public int getLevelTime() { return levelTime; }
+
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
+        this.textureDict = textureDict;
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
 
         SaveFileParser savefileparser = new SaveFileParser();
@@ -381,6 +389,11 @@ public class Level {
         levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).y));
         levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).x));
 
+
+        levelTime = (int)((double)((float)parser.getLevelTime(currentLevel)));
+
+
+
         bounds.x = levelWidth/pixelFactor;
         bounds.y = levelHeight/pixelFactor;
 
@@ -394,8 +407,8 @@ public class Level {
         // in the objects list
         dwidth = textureDict.get("clone").getRegionWidth() / (scale.x * 2);
 
-
         tmp = parser.getAssetList(currentLevel, "Player");
+        int facing = parser.getPlayerInitialOrientation(currentLevel);
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y - 1;
@@ -421,7 +434,7 @@ public class Level {
             Filter filter = avatar.getFilterData();
             filter.categoryBits = 0x0004;
             avatar.setFilterData(filter);
-
+            avatar.setDirection(facing);
             addObject(avatar);
             avatarLight.attachToBody(avatar.getBody(), avatarLight.getX(), avatarLight.getY(), avatarLight.getDirection());
         }
@@ -459,11 +472,10 @@ public class Level {
             addObject(riv);
             grid[(int)riv.getGridLocation().x][(int)riv.getGridLocation().y] = riv;
         }
-
+        
         for(River river:rivers){
             setRiverTexture(river,textureDict);
         }
-
 
         dwidth = textureDict.get("boulder").getRegionWidth() / scale.x;
         dheight = textureDict.get("boulder").getRegionHeight() / scale.y;
@@ -584,9 +596,6 @@ public class Level {
             if (et.equals("Carni")) type = Enemy.CARNIVORE_ENEMY;
             else if (et.equals("Herbi")) type = Enemy.HERBIVORE_ENEMY;
             else if (et.equals("Unkillable")) type = Enemy.UNKILLABLE_ENEMY;
-            System.out.println(type);
-            System.out.println(et);
-            System.out.println("d is " + d);
             en.setType(ENEMY);
             en.setDrawScale(scale);
             if (type == Enemy.UNKILLABLE_ENEMY){
@@ -631,10 +640,10 @@ public class Level {
                         filmStripDict.get("carnivoreEatingFront"), 12);
             }
             else {
-                en.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 8,
-                        filmStripDict.get("herbivoreSwimmingRight"), 8,
-                        filmStripDict.get("herbivoreSwimmingBack"), 4,
-                        filmStripDict.get("herbivoreSwimmingFront"), 4);
+                en.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 7,
+                        filmStripDict.get("herbivoreSwimmingRight"), 7,
+                        filmStripDict.get("herbivoreSwimmingBack"), 8,
+                        filmStripDict.get("herbivoreSwimmingFront"), 7);
             }
             en.setDirection(d);
             en.setEnemyType(type);
@@ -726,8 +735,26 @@ public class Level {
         canvas.endShadows();
 
         canvas.begin();
-        for(GameObject g : blockObjects)
+        for(GameObject g : blockObjects) {
             g.draw(canvas);
+            if (g.getType() == RIVER && textureDict !=null) {
+                float dwidth = textureDict.get("river").getRegionWidth() / scale.x;
+                float dheight = textureDict.get("river").getRegionHeight() / scale.y;
+
+                if (setPatchRivers((River) g, textureDict) != null){
+                    TextureRegion[] list = setPatchRivers((River) g, textureDict);
+                    for (int i = 0; i < list.length; i++){
+                        if (list[i] != null){
+                            TextureRegion riverTexture = list[i];
+                            Vector2 origin = new Vector2(riverTexture.getRegionWidth()/2.0f, riverTexture.getRegionHeight()/2.0f);
+                            canvas.draw(riverTexture, Color.WHITE,origin.x,origin.y,(g.getX()
+                                    *g.getDrawScale().x),(g.getY()*g.getDrawScale().x) +12f,0,1,1);
+                        }
+                    }
+
+                }
+            }
+        }
         canvas.end();
 
         canvas.beginProgressCircle();
@@ -918,6 +945,7 @@ public class Level {
             isBotRiver = false;
         }
 
+
         if (isTopRiver && isBotRiver && isLeftRiver && isRightRiver){
             // Center Tile
             river.setTexture(riverCenter);
@@ -967,6 +995,132 @@ public class Level {
         else {
             river.setTexture(textureDict.get("river"));
         }
+
+    }
+
+    public TextureRegion[] setPatchRivers(River river,Hashtable<String, TextureRegion> textureDict){
+
+        TextureRegion cornerBottomLeft = textureDict.get("cornerBottomLeft");
+        TextureRegion cornerBottomRight = textureDict.get("cornerBottomRight");
+        TextureRegion cornerTopLeft = textureDict.get("cornerTopLeft");
+        TextureRegion cornerTopRight = textureDict.get("cornerTopRight");
+        GameObject left = grid[(int)river.getGridLocation().x-1][(int)river.getGridLocation().y];
+        GameObject right = grid[(int)river.getGridLocation().x+1][(int)river.getGridLocation().y];
+        GameObject top = grid[(int)river.getGridLocation().x][(int)river.getGridLocation().y+1];
+        GameObject bot = grid[(int)river.getGridLocation().x][(int)river.getGridLocation().y-1];
+
+        boolean isLeftRiver = false;
+        boolean isRightRiver = false;
+        boolean isTopRiver = false;
+        boolean isBotRiver = false;
+
+        GameObject northwest = grid[(int)river.getGridLocation().x-1][(int)river.getGridLocation().y+1];
+        GameObject northeast = grid[(int)river.getGridLocation().x+1][(int)river.getGridLocation().y+1];
+        GameObject southwest = grid[(int)river.getGridLocation().x-1][(int)river.getGridLocation().y-1];
+        GameObject southeast = grid[(int)river.getGridLocation().x+1][(int)river.getGridLocation().y-1];
+
+        boolean isSouthEastRiver = false;
+        boolean isNorthEastRiver = false;
+        boolean isSouthWestRiver = false;
+        boolean isNorthWestRiver = false;
+
+        // set the booleans for each neighbor
+        if (left != null){
+            if (left.getType() == RIVER){
+                isLeftRiver = true;
+            } else {
+                isLeftRiver = false;
+            }
+        } else {
+            isLeftRiver = false;
+        }
+
+        if (right != null){
+            if (right.getType() == RIVER){
+                isRightRiver = true;
+            } else {
+                isRightRiver = false;
+            }
+        } else {
+            isRightRiver = false;
+        }
+
+        if (top != null){
+            if (top.getType() == RIVER){
+                isTopRiver = true;
+            } else {
+                isTopRiver = false;
+            }
+        } else {
+            isTopRiver = false;
+        }
+
+        if (bot != null){
+            if (bot.getType() == RIVER){
+                isBotRiver = true;
+            } else {
+                isBotRiver = false;
+            }
+        } else {
+            isBotRiver = false;
+        }
+        if (northeast != null){
+            if (northeast.getType() == RIVER){
+                isNorthEastRiver = true;
+            } else {
+                isNorthEastRiver = false;
+            }
+        } else {
+            isNorthEastRiver = false;
+        }
+
+        if (northwest != null){
+            if (northwest.getType() == RIVER){
+                isNorthWestRiver = true;
+            } else {
+                isNorthWestRiver = false;
+            }
+        } else {
+            isNorthWestRiver = false;
+        }
+
+        if (southwest != null){
+            if (southwest.getType() == RIVER){
+                isSouthWestRiver = true;
+            } else {
+                isSouthWestRiver = false;
+            }
+        } else {
+            isSouthWestRiver = false;
+        }
+
+        if (southeast != null){
+            if (southeast.getType() == RIVER){
+                isSouthEastRiver = true;
+            } else {
+                isSouthEastRiver = false;
+            }
+        } else {
+            isSouthEastRiver = false;
+        }
+
+        TextureRegion[] list = new TextureRegion[4];
+
+        // Add patch rivers
+        if (isTopRiver && isLeftRiver && !isNorthWestRiver){
+            list[0] = cornerTopLeft;
+        }
+        if (isTopRiver && isRightRiver && !isNorthEastRiver){
+            list[1] = cornerTopRight;
+        }
+        if (isRightRiver && isBotRiver && !isSouthEastRiver){
+            list[2] = cornerBottomRight;
+        }
+        if (isBotRiver && isLeftRiver && !isSouthWestRiver){
+            list[3] = cornerBottomLeft;
+        }
+        return list;
+
     }
 
     /** drawing on screen */

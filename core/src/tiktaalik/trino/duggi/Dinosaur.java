@@ -21,16 +21,16 @@ public abstract class Dinosaur extends GameObject {
     public static final int CARNIVORE_FORM = 2;
 
     // Category Bits
-    public static final short dollCatBits = 0x0001;
-    public static final short herbCatBits = 0x0002;
-    public static final short carnCatBits = 0x0004;
-    public static final short enemyCatBits = 0x0008;
-    public static final short riverCatBits = 0x0010;
-    public static final short cloneCatBits = 0x0011;
-    public static final short switchCatBits = 0x0012;
-    public static final short wallCatBits = 0x0014;
-    public static final short goalCatBits = 0x0018;
-    public static final short enemyHerbCatBits = 0x0100;
+    public static final short dollCatBits = 2;
+    public static final short herbCatBits = 4;
+    public static final short carnCatBits = 8;
+    public static final short enemyCatBits = 16;
+    public static final short riverCatBits = 32;
+    public static final short cloneCatBits = 64;
+    public static final short switchCatBits = 128;
+    public static final short wallCatBits = 256;
+    public static final short goalCatBits = 512;
+    public static final short enemyHerbCatBits = 1024;
 
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
@@ -57,6 +57,7 @@ public abstract class Dinosaur extends GameObject {
     protected boolean actionInProgress, actionComplete, actionReady, coolingAction, loadingAction, eating;
     protected float actionCooldown, actionLoad;
     private boolean canBeSeen = true;
+    private boolean transform = false;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
     protected int direction;
@@ -66,6 +67,7 @@ public abstract class Dinosaur extends GameObject {
     private Color tint = Color.WHITE;
     private int canBeSeenTimeStamp = 0;
     private int stealthDuration = 1000;
+    private int transformToForm = 0;
 
     public static final int ACTION_LOADING_LEFT = 4;
     public static final int ACTION_LOADING_RIGHT = 5;
@@ -79,6 +81,7 @@ public abstract class Dinosaur extends GameObject {
     public static final int EATING_RIGHT = 13;
     public static final int EATING_UP = 14;
     public static final int EATING_DOWN = 15;
+    public static final int TRANSFORM = 16;
 
     public Doll transformToDoll() {
         return new Doll(this);
@@ -110,8 +113,8 @@ public abstract class Dinosaur extends GameObject {
         upDown = d.upDown;
         direction = d.direction;
 
-        textureSet = new FilmStrip[16];
-        numFrames = new int[16];
+        textureSet = new FilmStrip[17];
+        numFrames = new int[17];
         numLoopFrames = new int[4];
         animeframe = 0;
         resourceCnt = 0;
@@ -155,14 +158,15 @@ public abstract class Dinosaur extends GameObject {
 
         // Gameplay attributes
         direction = RIGHT;
-        textureSet = new FilmStrip[16];
-        numFrames = new int[16];
+        textureSet = new FilmStrip[17];
+        numFrames = new int[17];
         numLoopFrames = new int[4];
         animeframe = 0;
         resourceCnt = 0;
         canExit = false;
         actionAnimating = false;
         eating = false;
+        transform = false;
 
         // Actions
         actionComplete = false;
@@ -229,6 +233,11 @@ public abstract class Dinosaur extends GameObject {
         textureSet[EATING_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
     }
 
+    public void setTransformTextureSet(Texture transform, int nFrames) {
+        numFrames[TRANSFORM] = nFrames;
+        textureSet[TRANSFORM] = new FilmStrip(transform,1,nFrames,nFrames);
+    }
+
     public float getActionLoadValue(){return actionLoad;}
     public boolean getActionReady(){return actionReady;}
     public boolean getActionAnimating(){return actionAnimating;}
@@ -255,8 +264,11 @@ public abstract class Dinosaur extends GameObject {
      * @param value left/right movement of this character.
      */
     public void setLeftRight(float value) {
-        if (eating) {
+        if (eating || transform) {
             leftRight = 0;
+            if (transform){
+                direction = DOWN;
+            }
             return;
         }
 
@@ -273,8 +285,11 @@ public abstract class Dinosaur extends GameObject {
      * @param value up/down movement of this character.
      */
     public void setUpDown(float value) {
-        if (eating) {
+        if (eating || transform) {
             upDown = 0;
+            if (transform){
+                direction = DOWN;
+            }
             return;
         }
 
@@ -340,6 +355,29 @@ public abstract class Dinosaur extends GameObject {
         this.canExit = canExit;
     }
 
+    public void setTransform(boolean canTransform){
+        if (canTransform){
+            actionAnimating = false;
+            loadingAction = false;
+            actionInProgress = false;
+            actionReady = false;
+            actionLoad = 0.0f;
+            animeframe = 0;
+            eating = false;
+        }
+        transform  = canTransform;
+    }
+
+    public boolean getTransform(){return transform;}
+
+    public void setTransformNumber(int i){
+        transformToForm = i;
+    }
+
+    public int getTransformNumber(){
+        return transformToForm;
+    }
+
     public int getDirection() {
         return direction;
     }
@@ -390,6 +428,10 @@ public abstract class Dinosaur extends GameObject {
         canBeSeen = assignment;
     }
 
+    public void setTransformToForm(int value){
+        transformToForm = value;
+    }
+
     /**
      * Applies the force to the body of the dinosaur
      */
@@ -416,7 +458,7 @@ public abstract class Dinosaur extends GameObject {
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
         filter.categoryBits = Dinosaur.dollCatBits;
-        filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
+        filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits|Dinosaur.goalCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
@@ -453,7 +495,14 @@ public abstract class Dinosaur extends GameObject {
 
         tint = Color.WHITE;
 
-        if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
+        if (transform){
+            animeframe += 0.35f;
+            if (animeframe >= numFrames[16]) {
+                animeframe = 0;
+                transform = false;
+            }
+        }
+        else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 4]) {
                 if (this.getForm() == CARNIVORE_FORM ) {
@@ -525,12 +574,16 @@ public abstract class Dinosaur extends GameObject {
      */
     public void draw(Canvas canvas, float offsetX, float offsetY) {
         int filmStripItem = direction;
-        if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null)
+        if (transform)
+            filmStripItem = 16;
+        else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null)
             filmStripItem += 4;
         else if (actionInProgress)
             filmStripItem += 8;
         else if (eating)
             filmStripItem += 12;
+
+        //System.out.println("filmstrip item number is " + filmStripItem + "and animeframe is " + animeframe);
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {

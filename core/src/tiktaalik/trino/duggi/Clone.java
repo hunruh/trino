@@ -115,7 +115,7 @@ public class Clone extends GameObject {
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
         filter.categoryBits = Dinosaur.cloneCatBits;
-        filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
+        filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits|Dinosaur.enemyHerbCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }

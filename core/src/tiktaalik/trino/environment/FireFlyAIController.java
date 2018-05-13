@@ -27,6 +27,8 @@ public class FireFlyAIController {
         goal = position;
     }
 
+    public Vector2 getGoal(){return goal;}
+
     /**
      * Returns a movement direction that moves towards a goal tile.
      *

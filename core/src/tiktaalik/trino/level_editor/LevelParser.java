@@ -39,6 +39,11 @@ public class LevelParser {
         return (new Vector2((Long)tmp.get("width"), (Long)tmp.get("height")));
     }
 
+    public Long getLevelTime(int level) {
+        Long tmp = (Long)((JSONObject)(levels.get(level))).get("Time");
+        return tmp;
+    }
+
     /**
      * the key should only be switch goal or player
      * @param level
@@ -51,12 +56,15 @@ public class LevelParser {
     }
 
     public int getPlayerInitialOrientation(int level){
-        JSONObject tmp = (JSONObject)((JSONObject)(levels.get(level))).get("Player");
-        String orientation = (String)tmp.get("Orientation");
-        if (orientation == "Left") return Dinosaur.LEFT;
-        else if (orientation == "Right") return Dinosaur.RIGHT;
-        else if (orientation == "Up") return Dinosaur.UP;
-        else if (orientation == "Down") return Dinosaur.DOWN;
+        JSONArray tmp = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Player");
+        System.out.println("---");
+        System.out.println(((levels.get(level))));
+        String orientation = (String)((JSONObject)(tmp.get(0))).get("direction");
+        System.out.println((JSONObject)(tmp.get(0)));
+        if (orientation.equals("Left")) return Dinosaur.LEFT;
+        else if (orientation.equals("Right")) return Dinosaur.RIGHT;
+        else if (orientation.equals("Up")) return Dinosaur.UP;
+        else if (orientation.equals("Down")) return Dinosaur.DOWN;
         else return -1;
     }
 
