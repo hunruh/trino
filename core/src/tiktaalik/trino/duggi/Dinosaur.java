@@ -458,7 +458,7 @@ public abstract class Dinosaur extends GameObject {
         geometry = body.createFixture(fixture);
         Filter filter = geometry.getFilterData();
         filter.categoryBits = Dinosaur.dollCatBits;
-        filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits;
+        filter.maskBits = Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.wallCatBits|Dinosaur.goalCatBits;
         geometry.setFilterData(filter);
         markDirty(false);
     }
