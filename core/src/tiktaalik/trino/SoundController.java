@@ -66,6 +66,7 @@ public class SoundController {
     private float carnivoreEndTime = 362.397f;
     private int currentForm = Dinosaur.DOLL_FORM;
     public boolean playing = true;
+    private float backgroundMusicVolume = 0.025f;
 
     private static SoundController theController = null;
 
@@ -111,7 +112,7 @@ public class SoundController {
         if (GameController.musicState) {
             GDXRoot.musicScreen = false;
             bgMusic.setLooping(true);
-            bgMusic.setVolume(0.10f);
+            bgMusic.setVolume(backgroundMusicVolume);
             bgMusic.play();
             bgMusic.pause();
             bgMusic.setPosition(0f);
@@ -331,17 +332,17 @@ public class SoundController {
     public void changeBackground(int form){
         if (GameController.musicState) {
             if (form == Dinosaur.DOLL_FORM){
-                bgMusic.setVolume(0.10f);
+                bgMusic.setVolume(backgroundMusicVolume);
                 bgHerb.setVolume(0.0f);
                 bgCarn.setVolume(0.0f);
             } else if (form == Dinosaur.HERBIVORE_FORM){
-                bgHerb.setVolume(0.10f);
+                bgHerb.setVolume(backgroundMusicVolume);
                 bgMusic.setVolume(0.0f);
                 bgCarn.setVolume(0.0f);
             } else {
                 bgHerb.setVolume(0.0f);
                 bgMusic.setVolume(0.0f);
-                bgCarn.setVolume(0.10f);
+                bgCarn.setVolume(backgroundMusicVolume);
             }
         }
         else {
