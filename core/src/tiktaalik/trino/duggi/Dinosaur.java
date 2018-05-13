@@ -166,6 +166,7 @@ public abstract class Dinosaur extends GameObject {
         canExit = false;
         actionAnimating = false;
         eating = false;
+        transform = false;
 
         // Actions
         actionComplete = false;
@@ -362,6 +363,7 @@ public abstract class Dinosaur extends GameObject {
             actionReady = false;
             actionLoad = 0.0f;
             animeframe = 0;
+            eating = false;
         }
         transform  = canTransform;
     }
@@ -572,14 +574,16 @@ public abstract class Dinosaur extends GameObject {
      */
     public void draw(Canvas canvas, float offsetX, float offsetY) {
         int filmStripItem = direction;
-        if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null)
+        if (transform)
+            filmStripItem = 16;
+        else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null)
             filmStripItem += 4;
         else if (actionInProgress)
             filmStripItem += 8;
         else if (eating)
             filmStripItem += 12;
-        else if (transform)
-            filmStripItem = 16;
+
+        //System.out.println("filmstrip item number is " + filmStripItem + "and animeframe is " + animeframe);
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {
