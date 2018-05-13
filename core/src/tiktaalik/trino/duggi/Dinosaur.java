@@ -58,6 +58,7 @@ public abstract class Dinosaur extends GameObject {
     protected float actionCooldown, actionLoad;
     private boolean canBeSeen = true;
     private boolean transform = false;
+    private boolean isSwimming = false;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
     protected int direction;
@@ -378,6 +379,8 @@ public abstract class Dinosaur extends GameObject {
         return transformToForm;
     }
 
+    public void setIsSwimming(boolean value){isSwimming = value;}
+
     public int getDirection() {
         return direction;
     }
@@ -582,6 +585,11 @@ public abstract class Dinosaur extends GameObject {
             filmStripItem += 8;
         else if (eating)
             filmStripItem += 12;
+
+        if (isSwimming){
+            System.out.println("reached 20 offset");
+            offsetY = -20f;
+        }
 
         //System.out.println("filmstrip item number is " + filmStripItem + "and animeframe is " + animeframe);
 

@@ -2019,6 +2019,7 @@ public class GameController implements ContactListener, Screen {
 				controls.get(i).step();
 
 			if (avatar.getForm() == Dinosaur.HERBIVORE_FORM){
+				avatar.setIsSwimming(true);
 				int frames = 7;
 				if (avatar.getDirection() == Dinosaur.UP){
 					frames = 8;
@@ -2034,6 +2035,7 @@ public class GameController implements ContactListener, Screen {
 
 				}
 				else if (isOnRiverTile()){
+					avatar.setIsSwimming(true);
 
 					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 7,
 							filmStripDict.get("herbivoreSwimmingRight"), 7,
@@ -2042,6 +2044,7 @@ public class GameController implements ContactListener, Screen {
 
 				}
 				else if (avatar.getCanBeSeen()){
+					avatar.setIsSwimming(false);
 					avatar.setTextureSet(filmStripDict.get("herbivoreLeft"), 7,
 							filmStripDict.get("herbivoreRight"), 7,
 							filmStripDict.get("herbivoreBack"), 8,
