@@ -746,7 +746,6 @@ public class Level {
                     for (int i = 0; i < list.length; i++){
                         if (list[i] != null){
                             TextureRegion riverTexture = list[i];
-                            System.out.println("reached draw patch texture for " + i);
                             Vector2 origin = new Vector2(riverTexture.getRegionWidth()/2.0f, riverTexture.getRegionHeight()/2.0f);
                             canvas.draw(riverTexture, Color.WHITE,origin.x,origin.y,(g.getX()
                                     *g.getDrawScale().x),(g.getY()*g.getDrawScale().x) +12f,0,1,1);
