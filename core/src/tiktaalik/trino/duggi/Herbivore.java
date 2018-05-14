@@ -127,7 +127,7 @@ public class Herbivore extends Dinosaur {
 
     public void draw(Canvas canvas) {
         int offsetX = 0;
-        if (eating) {
+        if (eating || actionAnimating) {
             if (direction == LEFT)
                 offsetX = -37;
         }
