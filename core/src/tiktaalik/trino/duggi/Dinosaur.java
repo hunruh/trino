@@ -592,10 +592,39 @@ public abstract class Dinosaur extends GameObject {
         else if (eating)
             filmStripItem += 12;
 
-        if (isSwimming){
+        if (transform){
+
+            if (getForm() == DOLL_FORM){
+                if (transformToForm == HERBIVORE_FORM){
+                    offsetX = -10f;
+                    offsetY = -10f;
+                } else if (transformToForm == CARNIVORE_FORM){
+                    offsetX = -10f;
+                    offsetY = -10f;
+                }
+            }
+            else if (getForm() == HERBIVORE_FORM){
+                if (transformToForm == DOLL_FORM){
+                    offsetX = 5f;
+                    offsetY = 0;
+                } else if (transformToForm == CARNIVORE_FORM){
+                    offsetX = 5f;
+                    offsetY = 0;
+                }
+            }
+            else if (getForm() == CARNIVORE_FORM){
+                if (transformToForm == DOLL_FORM){
+                    offsetX = 8f;
+                    offsetY = 8f;
+                } else if (transformToForm == HERBIVORE_FORM){
+                    offsetX = 8f;
+                    offsetY = 8f;
+                }
+            }
+        }
+        else if (isSwimming){
             offsetY = offsetSwim;
         }
-        System.out.println("offsetSwim is " +  offsetSwim);
 
         //System.out.println("filmstrip item number is " + filmStripItem + "and animeframe is " + animeframe);
 

@@ -2583,7 +2583,7 @@ public class GameController implements ContactListener, Screen {
 		float detectionRadius = 1.5f;
 		float offsetX = 0;
 		float offsetY = 0;
-		
+
 		for (River r: level.getRivers()){
 			float distance = Vector2.dst(r.getX()+offsetX,r.getY()+offsetY, level.getAvatar().getX(), level.getAvatar().getY());
 			if (distance < smallestDistance){
