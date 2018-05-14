@@ -299,7 +299,7 @@ public class SoundController {
     public void playDoorOpen(){
         doorOpenSound.pause();
         if (GameController.soundState) {
-            doorOpenSound.play(0.1f);
+            doorOpenSound.play(0.3f);
         }
         else {
             doorOpenSound.play(0.0f);

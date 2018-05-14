@@ -58,6 +58,9 @@ public abstract class Dinosaur extends GameObject {
     protected float actionCooldown, actionLoad;
     private boolean canBeSeen = true;
     private boolean transform = false;
+    private boolean isSwimming = false;
+    private float offsetSwim;
+    private float maxOffsetSwim = -20f;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
     protected int direction;
@@ -68,6 +71,7 @@ public abstract class Dinosaur extends GameObject {
     private int canBeSeenTimeStamp = 0;
     private int stealthDuration = 1000;
     private int transformToForm = 0;
+    private boolean endTransform;
 
     public static final int ACTION_LOADING_LEFT = 4;
     public static final int ACTION_LOADING_RIGHT = 5;
@@ -378,6 +382,12 @@ public abstract class Dinosaur extends GameObject {
         return transformToForm;
     }
 
+    public void setIsSwimming(boolean value){isSwimming = value;}
+
+    public void setOffsetSwim(float value){offsetSwim = value;}
+
+    public float getmaxOffsetSwim(){return maxOffsetSwim;}
+
     public int getDirection() {
         return direction;
     }
@@ -498,8 +508,9 @@ public abstract class Dinosaur extends GameObject {
         if (transform){
             animeframe += 0.35f;
             if (animeframe >= numFrames[16]) {
-                animeframe = 0;
                 transform = false;
+                endTransform = true;
+                animeframe -= 0.35f;
             }
         }
         else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
@@ -574,7 +585,7 @@ public abstract class Dinosaur extends GameObject {
      */
     public void draw(Canvas canvas, float offsetX, float offsetY) {
         int filmStripItem = direction;
-        if (transform)
+        if (transform || endTransform)
             filmStripItem = 16;
         else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null)
             filmStripItem += 4;
@@ -582,6 +593,40 @@ public abstract class Dinosaur extends GameObject {
             filmStripItem += 8;
         else if (eating)
             filmStripItem += 12;
+
+        if (transform|| endTransform){
+
+            if (getForm() == DOLL_FORM){
+                if (transformToForm == HERBIVORE_FORM){
+                    offsetX = -10f;
+                    offsetY = -10f;
+                } else if (transformToForm == CARNIVORE_FORM){
+                    offsetX = -10f;
+                    offsetY = -10f;
+                }
+            }
+            else if (getForm() == HERBIVORE_FORM){
+                if (transformToForm == DOLL_FORM){
+                    offsetX = 5f;
+                    offsetY = 0;
+                } else if (transformToForm == CARNIVORE_FORM){
+                    offsetX = 5f;
+                    offsetY = 0;
+                }
+            }
+            else if (getForm() == CARNIVORE_FORM){
+                if (transformToForm == DOLL_FORM){
+                    offsetX = 8f;
+                    offsetY = 8f;
+                } else if (transformToForm == HERBIVORE_FORM){
+                    offsetX = 8f;
+                    offsetY = 8f;
+                }
+            }
+        }
+        else if (isSwimming){
+            offsetY = offsetSwim;
+        }
 
         //System.out.println("filmstrip item number is " + filmStripItem + "and animeframe is " + animeframe);
 
@@ -628,6 +673,10 @@ public abstract class Dinosaur extends GameObject {
         }
 
 
+    }
+
+    public void forceFrame(int frame){
+        animeframe = frame;
     }
 
     /**

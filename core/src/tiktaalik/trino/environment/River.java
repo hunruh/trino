@@ -17,6 +17,11 @@ public class River extends GameObject {
 
     private boolean edible;
     private boolean lowered;
+    private boolean isCenterTile = false;
+    private boolean isTopRiver;
+    private boolean isBotRiver;
+    private boolean isRightRiver;
+    private boolean isLeftRiver;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -61,6 +66,16 @@ public class River extends GameObject {
 
     public boolean getLowered() { return lowered; }
     public void setLowered(boolean lowered) { this.lowered = lowered; }
+    public void setCenterTile(boolean center){this.isCenterTile = center;}
+    public boolean getisCenterTile() {return isCenterTile;}
+    public void setTop(boolean value){isTopRiver = value;}
+    public void setBot(boolean value){isBotRiver = value;}
+    public void setRight(boolean value){isRightRiver = value;}
+    public void setLeft(boolean value){isLeftRiver = value;}
+    public boolean getIsTopRiver(){return isTopRiver;}
+    public boolean getIsBotRiver(){return isBotRiver;}
+    public boolean getIsRightRiver(){return isRightRiver;}
+    public boolean getIsLeftRiver(){return isLeftRiver;}
 
     /**
      * Returns the dimensions of this box

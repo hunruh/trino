@@ -424,6 +424,8 @@ public class Enemy extends EdibleObject {
         if (enemyType == UNKILLABLE_ENEMY) {
             offsetX = -9f;
             offsetY = 5;
+        } else if (enemyType == HERBIVORE_ENEMY){
+            offsetY = -20f;
         }
 
         if (eatInProgress && eatenTextureSet != null) {

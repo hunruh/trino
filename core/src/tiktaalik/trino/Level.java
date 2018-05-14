@@ -566,10 +566,12 @@ public class Level {
             goalDoor.setType(GOAL);
             if (i == 0) {
                 goalDoor.setGoal(true);
+                goalDoor.setVineTextureSet(filmStripDict.get("vineDrop"),12);
             }
             else {
                 goalDoor.setGoal(false);
             }
+
             addObject(goalDoor);
             grid[(int) goalDoor.getGridLocation().x][(int) goalDoor.getGridLocation().y] = goalDoor;
         }
@@ -634,8 +636,8 @@ public class Level {
                         filmStripDict.get("enemyStunnedRight"), 3,
                         filmStripDict.get("enemyStunnedBack"), 3,
                         filmStripDict.get("enemyStunnedFront"), 3);
-                en.setEatingTextureSet(filmStripDict.get("enemyEatingFront"), 12,
-                        filmStripDict.get("enemyEatingFront"), 12,
+                en.setEatingTextureSet(filmStripDict.get("enemyEatingLeft"), 8,
+                        filmStripDict.get("enemyEatingRight"), 8,
                         filmStripDict.get("enemyEatingBack"), 9,
                         filmStripDict.get("enemyEatingFront"), 12);
             }
@@ -945,10 +947,16 @@ public class Level {
             isBotRiver = false;
         }
 
+        river.setRight(isRightRiver);
+        river.setLeft(isLeftRiver);
+        river.setTop(isTopRiver);
+        river.setBot(isBotRiver);
+
 
         if (isTopRiver && isBotRiver && isLeftRiver && isRightRiver){
             // Center Tile
             river.setTexture(riverCenter);
+            river.setCenterTile(true);
         }
         else if (!isTopRiver && !isLeftRiver && isBotRiver && isRightRiver){
             river.setTexture(riverCornerLeftTop);
