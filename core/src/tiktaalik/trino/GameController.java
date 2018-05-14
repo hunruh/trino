@@ -2195,6 +2195,7 @@ public class GameController implements ContactListener, Screen {
 
 			if (transform && !avatar.getTransform()){
 				transform = false;
+				avatar.forceFrame(0);
 				if (avatar.getTransformNumber() == 0){
 					avatar = avatar.transformToDoll();
 					avatar.setCanBeSeen(true);

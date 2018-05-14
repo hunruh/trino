@@ -71,6 +71,7 @@ public abstract class Dinosaur extends GameObject {
     private int canBeSeenTimeStamp = 0;
     private int stealthDuration = 1000;
     private int transformToForm = 0;
+    private boolean endTransform;
 
     public static final int ACTION_LOADING_LEFT = 4;
     public static final int ACTION_LOADING_RIGHT = 5;
@@ -508,7 +509,8 @@ public abstract class Dinosaur extends GameObject {
             animeframe += 0.35f;
             if (animeframe >= numFrames[16]) {
                 transform = false;
-                animeframe = 0;
+                endTransform = true;
+                animeframe -= 0.35f;
             }
         }
         else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
@@ -583,7 +585,7 @@ public abstract class Dinosaur extends GameObject {
      */
     public void draw(Canvas canvas, float offsetX, float offsetY) {
         int filmStripItem = direction;
-        if (transform)
+        if (transform || endTransform)
             filmStripItem = 16;
         else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null)
             filmStripItem += 4;
@@ -592,7 +594,7 @@ public abstract class Dinosaur extends GameObject {
         else if (eating)
             filmStripItem += 12;
 
-        if (transform){
+        if (transform|| endTransform){
 
             if (getForm() == DOLL_FORM){
                 if (transformToForm == HERBIVORE_FORM){
