@@ -80,10 +80,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_SWIMMING_STRIP_RIGHT  = "trino/herbivore_right_swimming_strip.png";
 	private static final String HERBIVORE_SWIMMING_STRIP_FRONT  = "trino/herbivore_front_swimming_strip.png";
 	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_BACK = "trino/herbivore_enemy_back_swimming_strip.png";
-	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_LEFT  = "trino/herbivore_left_swimming_strip.png";
-	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_RIGHT  = "trino/herbivore_right_swimming_strip.png";
-	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_FRONT  = "trino/herbivore_front_swimming_strip.png";
-	private static final String HERBIVORE_SWIMMING_STRIP_BACK = "trino/herbivore_back_swimming_strip.png";
+	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_LEFT  = "trino/herbivore_enemy_left_swimming_strip.png";
+	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_RIGHT  = "trino/herbivore_enemy_right_swimming_strip.png";
+	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_FRONT  = "trino/herbivore_enemy_front_swimming_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_BACK = "trino/herbivore_enemy_back_swimming_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_FRONT  = "trino/herbivore_front_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_LEFT  = "trino/herbivore_left_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_RIGHT  = "trino/herbivore_right_eating_strip.png";
