@@ -4,11 +4,13 @@ import static tiktaalik.trino.duggi.Dinosaur.*;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.EdibleObject;
 import tiktaalik.trino.GameObject;
+import tiktaalik.trino.SoundController;
 import tiktaalik.trino.duggi.Clone;
 import tiktaalik.trino.duggi.Dinosaur;
 import tiktaalik.util.FilmStrip;
@@ -50,6 +52,7 @@ public class Enemy extends EdibleObject {
     private float totalTime = 1.0f;
     private boolean alert = false;
     private int enemyType = CARNIVORE_ENEMY;
+    private int ticks;
 
     private static final int STUNNED_LEFT = 12;
     private static final int STUNNED_RIGHT = 13;
@@ -291,6 +294,8 @@ public class Enemy extends EdibleObject {
     public Vector2 getGridLocation(){
         return gridLocation;
     }
+
+
     /**
      * Create new fixtures for this body, defining the shape
      */
@@ -330,12 +335,22 @@ public class Enemy extends EdibleObject {
     public void update(float dt) {
         super.update(dt);
         timeElapsed += dt;
+        ticks++;
         if (timeElapsed > totalTime) {
             alert = false;
         }
 
         // Change the collision filter for herbivore enemy
         if (enemyType == HERBIVORE_ENEMY) {
+
+            if (ticks % 100 == 0){
+                System.out.println("reached sound");
+                int random = MathUtils.random(1);
+                if (random == 0){
+                    SoundController.getInstance().playWaterSplash();
+                }
+            }
+
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.enemyHerbCatBits;
             filter.maskBits = Dinosaur.wallCatBits|Dinosaur.carnCatBits|Dinosaur.herbCatBits|
