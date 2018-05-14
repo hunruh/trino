@@ -1856,8 +1856,10 @@ public class GameController implements ContactListener, Screen {
 			else {
 				if (level.getClone() != null){
 					for (int i = 0; i < level.getSwitches().size(); i++){
-						if (Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) < 1f &&
-								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.70f){
+						if ((Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) < 1f &&
+								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.70f)||
+								(Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
+										Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1.70f)){
 							//////System.out.println("success");
 
 							if (i == 0) {
@@ -1910,20 +1912,51 @@ public class GameController implements ContactListener, Screen {
 					}
 				} else {
 
-					for (int i = 0; i < level.getDoors().size(); i++) {
-						level.getAvatar().setCanExit(false);
-						level.getDoor(i).setLowered(false);
-						if (i == 0) {
-							level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
-						}
-						else if (i == 1) {
-							level.getDoor(i).setTexture(textureDict.get("doorClosedTileOne"));
-						}
-						else if (i == 2) {
-							level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
-						}
-						else if (i == 3) {
-							level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
+					for (int i = 0; i < level.getSwitches().size(); i++) {
+						if (Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
+								Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1.70f
+								&& level.getAvatar().getForm() == Dinosaur.DOLL_FORM) {
+							//////System.out.println("success");
+
+							if (i == 0) {
+								level.getAvatar().setCanExit(true);
+							} else {
+								level.getAvatar().setCanExit(false);
+							}
+							level.getDoor(i).setLowered(true);
+							if (i == 0) {
+								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
+								level.getSwitch(0).setTexture(textureDict.get("switchoff"));
+							} else if (i == 1) {
+								level.getDoor(i).setTexture(textureDict.get("doorOpenTileOne"));
+								level.getSwitch(1).setTexture(textureDict.get("switchoneoff"));
+							} else if (i == 2) {
+								level.getDoor(i).setTexture(textureDict.get("doorOpenTileTwo"));
+								level.getSwitch(2).setTexture(textureDict.get("switchtwooff"));
+							} else if (i == 3) {
+								level.getDoor(i).setTexture(textureDict.get("doorOpenTileThree"));
+								level.getSwitch(3).setTexture(textureDict.get("switchthreeoff"));
+							}
+						} else if (!doorHasEnemyOnTop(level.getDoor(i)) && !doorHasPlayerOnTop(level.getDoor(i))) {
+
+							if (i == 0) {
+								level.getAvatar().setCanExit(false);
+							}
+							level.getDoor(i).setLowered(false);
+							if (i == 0) {
+								level.getDoor(i).setTexture(textureDict.get("goalClosedTile"));
+								level.getSwitch(0).setTexture(textureDict.get("switch"));
+							} else if (i == 1) {
+								level.getDoor(i).setTexture(textureDict.get("doorClosedTileOne"));
+								level.getSwitch(1).setTexture(textureDict.get("switchone"));
+							} else if (i == 2) {
+								level.getDoor(i).setTexture(textureDict.get("doorClosedTileTwo"));
+								level.getSwitch(2).setTexture(textureDict.get("switchtwo"));
+							} else if (i == 3) {
+								level.getDoor(i).setTexture(textureDict.get("doorClosedTileThree"));
+								level.getSwitch(3).setTexture(textureDict.get("switchthree"));
+							}
+
 						}
 					}
 				}
