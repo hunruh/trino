@@ -1863,7 +1863,7 @@ public class GameController implements ContactListener, Screen {
 						if ((Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) < 1f &&
 								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.70f)||
 								(Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
-										Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1.70f)){
+										Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1f)){
 							//////System.out.println("success");
 
 							if (i == 0) {
@@ -1918,7 +1918,7 @@ public class GameController implements ContactListener, Screen {
 
 					for (int i = 0; i < level.getSwitches().size(); i++) {
 						if (Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
-								Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1.70f) {
+								Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1f) {
 							//////System.out.println("success");
 
 							if (i == 0) {
