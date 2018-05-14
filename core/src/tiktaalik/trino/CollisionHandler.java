@@ -2,6 +2,7 @@ package tiktaalik.trino;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.MathUtils;
 import tiktaalik.trino.duggi.Carnivore;
 import tiktaalik.trino.duggi.Clone;
 import tiktaalik.trino.duggi.Dinosaur;
@@ -147,6 +148,12 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Dinosaur d, River r) {
+        System.out.println("reached river and dino collision");
+
+        int random = MathUtils.random(1);
+        if (random == 0){
+            SoundController.getInstance().playWaterSplash();
+        }
 
     }
 
