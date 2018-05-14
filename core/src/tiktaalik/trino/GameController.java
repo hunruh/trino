@@ -79,7 +79,11 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_SWIMMING_STRIP_LEFT  = "trino/herbivore_left_swimming_strip.png";
 	private static final String HERBIVORE_SWIMMING_STRIP_RIGHT  = "trino/herbivore_right_swimming_strip.png";
 	private static final String HERBIVORE_SWIMMING_STRIP_FRONT  = "trino/herbivore_front_swimming_strip.png";
-	private static final String HERBIVORE_SWIMMING_STRIP_BACK = "trino/herbivore_back_swimming_strip.png";
+	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_BACK = "trino/herbivore_enemy_back_swimming_strip.png";
+	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_LEFT  = "trino/herbivore_enemy_left_swimming_strip.png";
+	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_RIGHT  = "trino/herbivore_enemy_right_swimming_strip.png";
+	private static final String HERBIVORE_ENEMY_SWIMMING_STRIP_FRONT  = "trino/herbivore_enemy_front_swimming_strip.png";
+	private static final String HERBIVORE_SWIMMING_STRIP_BACK = "trino/herbivore_enemy_back_swimming_strip.png";
 	private static final String HERBIVORE_GOING_IN_STRIP_FRONT = "trino/herbivore_front_going_in_strip.png";
 	private static final String HERBIVORE_GOING_IN_STRIP_BACK = "trino/herbivore_back_going_in_strip.png";
 	private static final String HERBIVORE_GOING_IN_STRIP_LEFT = "trino/herbivore_left_going_in_strip.png";
@@ -429,6 +433,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_SWIMMING_STRIP_BACK);
 		manager.load(HERBIVORE_SWIMMING_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_SWIMMING_STRIP_FRONT);
+		manager.load(HERBIVORE_ENEMY_SWIMMING_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_ENEMY_SWIMMING_STRIP_LEFT);
+		manager.load(HERBIVORE_ENEMY_SWIMMING_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_ENEMY_SWIMMING_STRIP_RIGHT);
+		manager.load(HERBIVORE_ENEMY_SWIMMING_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_ENEMY_SWIMMING_STRIP_BACK);
+		manager.load(HERBIVORE_ENEMY_SWIMMING_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_ENEMY_SWIMMING_STRIP_FRONT);
 		manager.load(HERBIVORE_GOING_IN_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_GOING_IN_STRIP_FRONT);
 		manager.load(HERBIVORE_GOING_IN_STRIP_BACK, Texture.class);
@@ -939,6 +951,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreSwimmingRight", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_RIGHT));
 		filmStripDict.put("herbivoreSwimmingFront", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_FRONT));
 		filmStripDict.put("herbivoreSwimmingBack", createFilmTexture(manager,HERBIVORE_SWIMMING_STRIP_BACK));
+		filmStripDict.put("herbivoreEnemySwimmingLeft", createFilmTexture(manager,HERBIVORE_ENEMY_SWIMMING_STRIP_LEFT));
+		filmStripDict.put("herbivoreEnemySwimmingRight", createFilmTexture(manager,HERBIVORE_ENEMY_SWIMMING_STRIP_RIGHT));
+		filmStripDict.put("herbivoreEnemySwimmingFront", createFilmTexture(manager,HERBIVORE_ENEMY_SWIMMING_STRIP_FRONT));
+		filmStripDict.put("herbivoreEnemySwimmingBack", createFilmTexture(manager,HERBIVORE_ENEMY_SWIMMING_STRIP_BACK));
 		filmStripDict.put("herbivoreGoingInFront", createFilmTexture(manager, HERBIVORE_GOING_IN_STRIP_FRONT));
 		filmStripDict.put("herbivoreGoingInBack", createFilmTexture(manager, HERBIVORE_GOING_IN_STRIP_BACK));
 		filmStripDict.put("herbivoreGoingInRight", createFilmTexture(manager, HERBIVORE_GOING_IN_STRIP_RIGHT));
