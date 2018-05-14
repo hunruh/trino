@@ -774,7 +774,7 @@ public class Level {
         Vector2 origin = new Vector2(vine.getRegionWidth()/2.0f, vine.getRegionHeight()/2.0f);
         if (avatar.canExit()){
             vineGoingUpCounter = 0;
-            vineGoingDownCounter += 0.10f;
+            vineGoingDownCounter += 0.05f;
             vineCurrentOffset = vineCurrentOffset- vineGoingDownCounter;
 
             if (vineCurrentOffset < 300f){
@@ -787,7 +787,7 @@ public class Level {
 
         } else {
             vineGoingDownCounter = 0;
-            vineGoingUpCounter+= 0.10f;
+            vineGoingUpCounter+= 0.05f;
             vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
 
             if (vineCurrentOffset > vineHeightOffset){
