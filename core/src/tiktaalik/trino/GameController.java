@@ -1287,8 +1287,9 @@ public class GameController implements ContactListener, Screen {
 		ffLights = new LightSource[level.getFireFlies().size()];
 		ffLightDsts = new float[level.getFireFlies().size()];
 		ffLightChanges = new float[level.getFireFlies().size()];
+		Rectangle levelBounds = new Rectangle(0f,0f,level.getLevelWidth()/80.0f, level.getLevelHeight()/80.0f );
 		for (int i = 0; i < level.getFireFlies().size(); i++) {
-			fireFlyControls.add(new FireFlyAIController(i, level.getFireFlies(), level.getBounds()));
+			fireFlyControls.add(new FireFlyAIController(i, level.getFireFlies(), levelBounds));
 
 
 			PointSource fireLight = new PointSource(rayhandler, 256, Color.WHITE, 2, 0, 0);
@@ -2029,14 +2030,15 @@ public class GameController implements ContactListener, Screen {
 			//System.out.println("raycamera position is " + raycamera.position);
 
 			// Process FireFly updates
+			Rectangle levelBounds = new Rectangle(0f,0f,level.getLevelWidth()/80.0f, level.getLevelHeight()/80.0f );
 			for (int i = 0; i < fireFlyControls.size(); i++) {
 				if (level.getAvatar().canExit()) {
 					fireFlyControls.get(i).setGoal(level.getDoor(0).getPosition());
 					fireFlyControls.get(i).getMoveToGoal(level.getDoor(0).getPosition());
 				} else {
 					if (fireFlyControls.get(i).getGoal().equals(level.getDoor(0).getPosition())){
-						fireFlyControls.get(i).setGoal(new Vector2(MathUtils.random(level.getBounds().x),
-								2 * MathUtils.random(level.getBounds().y)));
+						fireFlyControls.get(i).setGoal(new Vector2(2*MathUtils.random(levelBounds.x),
+								2 * MathUtils.random(levelBounds.y)));
 					}
 					fireFlyControls.get(i).getMoveAlongPath();
 				}

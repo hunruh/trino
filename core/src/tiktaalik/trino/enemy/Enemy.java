@@ -343,8 +343,7 @@ public class Enemy extends EdibleObject {
         // Change the collision filter for herbivore enemy
         if (enemyType == HERBIVORE_ENEMY) {
 
-            if (ticks % 100 == 0){
-                System.out.println("reached sound");
+            if (ticks % 200 == 0){
                 int random = MathUtils.random(1);
                 if (random == 0){
                     SoundController.getInstance().playWaterSplash();
