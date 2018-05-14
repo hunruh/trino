@@ -2077,20 +2077,31 @@ public class GameController implements ContactListener, Screen {
 				if (avatar.getDirection() == Dinosaur.UP){
 					frames = 8;
 				}
-				if (animationFrameForGoingIn(frames, avatar.getDirection()) != -1){
-					System.out.println("reached the going in");
+				if (animationFrameForNotCenterTile() != -1){
+					//System.out.println("reached the going in");
 					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
 							filmStripDict.get("herbivoreGoingInRight"), 7,
 							filmStripDict.get("herbivoreGoingInBack"), 8,
 							filmStripDict.get("herbivoreGoingInFront"), 7);
 
-					avatar.forceFrame(animationFrameForGoingIn(frames, avatar.getDirection()));
-					avatar.setOffsetSwim(((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
-						avatar.getmaxOffsetSwim());
-					System.out.println("setting offsetswim to " + ((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
+					avatar.forceFrame(animationFrameForNotCenterTile());
+					avatar.setOffsetSwim(((float)animationFrameForNotCenterTile()/(float)frames)*
 							avatar.getmaxOffsetSwim());
-
 				}
+//				else if (animationFrameForGoingIn(frames, avatar.getDirection()) != -1){
+//					System.out.println("reached the going in");
+//					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
+//							filmStripDict.get("herbivoreGoingInRight"), 7,
+//							filmStripDict.get("herbivoreGoingInBack"), 8,
+//							filmStripDict.get("herbivoreGoingInFront"), 7);
+//
+//					avatar.forceFrame(animationFrameForGoingIn(frames, avatar.getDirection()));
+//					avatar.setOffsetSwim(((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
+//						avatar.getmaxOffsetSwim());
+//					System.out.println("setting offsetswim to " + ((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
+//							avatar.getmaxOffsetSwim());
+//
+//				}
 				else if (isOnRiverTile()){
 					avatar.setCanBeSeen(true);
 					avatar.setOffsetSwim(avatar.getmaxOffsetSwim());
@@ -2629,6 +2640,13 @@ public class GameController implements ContactListener, Screen {
 	private boolean isOnRiverTile(){
 		for (River r : level.getRivers()){
 			if (r.getGridLocation().x == level.getAvatarGridX() && r.getGridLocation().y == level.getAvatarGridY()){
+//				if (r.getIsBotRiver()){
+//					return true;
+//				} else {
+//					if (level.getAvatar().getX() > r.getPosition().x + 2.5f){
+//						return true;
+//					}
+//				}
 				return true;
 			}
 		}
@@ -2638,42 +2656,48 @@ public class GameController implements ContactListener, Screen {
 	private int animationFrameForGoingIn(int numFrames, int direction){
 		float smallestDistance = Float.MAX_VALUE;
 		River river = null;
-		float detectionRadius = 1.5f;
+		float detectionRadius = 1.6f;
 		float offsetX = 0;
 		float offsetY = 0;
 
-		for (River r: level.getRivers()){
-			float distance = Vector2.dst(r.getX()+offsetX,r.getY()+offsetY, level.getAvatar().getX(), level.getAvatar().getY());
-			if (distance < smallestDistance){
-				smallestDistance = distance;
-				river = r;
+		GameObject g;
+		if (direction == Dinosaur.UP){
+			g = level.getGridObject(level.getAvatarGridX(),level.getAvatarGridY()+1);
+			if (g != null){
+				if (g.getType() == RIVER){
+					river = (River) g;
+				}
+			}
+		} else if (direction == Dinosaur.DOWN){
+			g = level.getGridObject(level.getAvatarGridX(),level.getAvatarGridY()-1);
+			if (g != null){
+				if (g.getType() == RIVER){
+					river = (River) g;
+				}
+			}
+		} else if (direction == Dinosaur.LEFT){
+			g = level.getGridObject(level.getAvatarGridX()-1,level.getAvatarGridY());
+			if (g != null){
+				if (g.getType() == RIVER){
+					river = (River) g;
+				}
+			}
+		} else if (direction == Dinosaur.RIGHT){
+			g = level.getGridObject(level.getAvatarGridX()+1,level.getAvatarGridY());
+			if (g != null){
+				if (g.getType() == RIVER){
+					river = (River) g;
+				}
 			}
 		}
+
+		//System.out.println("smallest distance is " + smallestDistance);
 		if (river == null){
 			return -1;
+		} else {
+			smallestDistance = Vector2.dst(level.getAvatar().getX(), level.getAvatar().getY(), river.getX(),
+					river.getY());
 		}
-
-
-		if (direction == Dinosaur.DOWN){
-			if (river.getGridLocation().y != level.getAvatarGridY() - 1){
-				return -1;
-			}
-		}
-		else if (direction == Dinosaur.UP){
-			if (river.getGridLocation().y != level.getAvatarGridY() + 1){
-				return -1;
-			}
-		}
-		else if (direction == Dinosaur.RIGHT){
-			if (river.getGridLocation().x != level.getAvatarGridX() + 1){
-				return -1;
-			}
-		}
-		else if (direction == Dinosaur.LEFT){
-			if (river.getGridLocation().x != level.getAvatarGridX() - 1){
-				return -1;
-			}
- 		}
 
 		if (direction == Dinosaur.DOWN || direction == Dinosaur.UP){
 			if (river.getIsBotRiver() && river.getIsTopRiver()){
@@ -2687,10 +2711,9 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		// Offset the smallest distance so animation doesn't cut off
-		smallestDistance = smallestDistance - 0.25f;
-
 		if (smallestDistance <= detectionRadius && !river.getisCenterTile()){
 			int frame = numFrames - (int)((smallestDistance/detectionRadius) * (float)numFrames);
+			//System.out.println("frame number is " + frame);
 			if (smallestDistance < 0){
 				frame = 0;
 			}
@@ -2698,6 +2721,149 @@ public class GameController implements ContactListener, Screen {
 		} else {
 			return -1;
 		}
+	}
+
+	public int animationFrameForNotCenterTile(){
+		if (!isOnRiverTile()){
+			return -1;
+		}
+
+		River theRiverImOn;
+		theRiverImOn = (River) level.getGridObject(level.getAvatarGridX(),level.getAvatarGridY());
+		float x0 = theRiverImOn.getX() - 1f;
+		float x1 = theRiverImOn.getX() - 5/7f;
+		float x2 = theRiverImOn.getX() - 3/7f;
+		float x3 = theRiverImOn.getX() - 1/7f;
+		float x4 = theRiverImOn.getX() + 1/7f;
+		float x5 = theRiverImOn.getX() + 3/7f;
+		float x6 = theRiverImOn.getX() + 5/7f;
+		float x7 = theRiverImOn.getX() + 1f;
+
+		float y0 = theRiverImOn.getY() - 1f;
+		float y1 = theRiverImOn.getY() - 5/7f;
+		float y2 = theRiverImOn.getY() - 3/7f;
+		float y3 = theRiverImOn.getY() - 1/7f;
+		float y4 = theRiverImOn.getY() + 1/7f;
+		float y5 = theRiverImOn.getY() + 3/7f;
+		float y6 = theRiverImOn.getY() + 5/7f;
+		float y7 = theRiverImOn.getY() + 1f;
+
+		float avatarX = level.getAvatar().getX();
+		float avatarY = level.getAvatar().getY();
+
+		if (!theRiverImOn.getisCenterTile()){
+			if (level.getAvatar().getDirection() == Dinosaur.RIGHT){
+				if (!theRiverImOn.getIsRightRiver() || (!theRiverImOn.getIsTopRiver() && theRiverImOn.getIsLeftRiver())
+						|| (!theRiverImOn.getIsBotRiver() && theRiverImOn.getIsLeftRiver())){
+					return -1;
+				}
+
+				if (avatarX > x0 &&  avatarX < x1){
+					return 0;
+				}
+				else if (avatarX > x1 && avatarX < x2){
+					return 1;
+				}
+				else if (avatarX > x2 && avatarX < x3){
+					return 2;
+				}
+				else if (avatarX > x3 && avatarX < x4){
+					return 3;
+				}
+				else if (avatarX > x4 && avatarX < x5){
+					return 4;
+				}
+				else if (avatarX > x5 && avatarX < x6){
+					return 5;
+				}
+				else {
+					return 6;
+				}
+			} else if (level.getAvatar().getDirection() == Dinosaur.LEFT){
+
+				if (!theRiverImOn.getIsLeftRiver() || (!theRiverImOn.getIsBotRiver() && theRiverImOn.getIsRightRiver())
+						|| (!theRiverImOn.getIsTopRiver() && theRiverImOn.getIsRightRiver()) ){
+					return -1;
+				}
+				if (avatarX > x0 &&  avatarX < x1){
+					return 6;
+				}
+				else if (avatarX > x1 && avatarX < x2){
+					return 5;
+				}
+				else if (avatarX > x2 && avatarX < x3){
+					return 4;
+				}
+				else if (avatarX > x3 && avatarX < x4){
+					return 3;
+				}
+				else if (avatarX > x4 && avatarX < x5){
+					return 2;
+				}
+				else if (avatarX > x5 && avatarX < x6){
+					return 1;
+				}
+				else {
+					return 0;
+				}
+			} else if (level.getAvatar().getDirection() == Dinosaur.DOWN){
+
+				if (!theRiverImOn.getIsBotRiver() || (!theRiverImOn.getIsRightRiver() && theRiverImOn.getIsTopRiver())
+						|| (!theRiverImOn.getIsLeftRiver() && theRiverImOn.getIsTopRiver())){
+					return -1;
+				}
+				if (avatarY > y0 &&  avatarY < y1){
+					return 6;
+				}
+				else if (avatarY > y1 && avatarY < y2){
+					return 5;
+				}
+				else if (avatarY > y2 && avatarY < y3){
+					return 4;
+				}
+				else if (avatarY > y3 && avatarY < y4){
+					return 3;
+				}
+				else if (avatarY > y4 && avatarY < y5){
+					return 2;
+				}
+				else if (avatarY> y5 && avatarY < y6){
+					return 1;
+				}
+				else {
+					return 0;
+				}
+			}
+			else if (level.getAvatar().getDirection() == Dinosaur.UP){
+				if (!theRiverImOn.getIsTopRiver() || (!theRiverImOn.getIsRightRiver() && theRiverImOn.getIsBotRiver())
+						|| (!theRiverImOn.getIsLeftRiver() && theRiverImOn.getIsBotRiver())){
+					return -1;
+				}
+				if (avatarY > y0 &&  avatarY < y1){
+					return 0;
+				}
+				else if (avatarY > y1 && avatarY < y2){
+					return 1;
+				}
+				else if (avatarY > y2 && avatarY < y3){
+					return 2;
+				}
+				else if (avatarY > y3 && avatarY < y4){
+					return 3;
+				}
+				else if (avatarY > y4 && avatarY < y5){
+					return 4;
+				}
+				else if (avatarY> y5 && avatarY < y6){
+					return 5;
+				}
+				else {
+					return 6;
+				}
+			}
+
+		}
+		return -1;
 	}
 
 
