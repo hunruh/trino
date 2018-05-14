@@ -342,6 +342,7 @@ public class GameController implements ContactListener, Screen {
 	private float intensity;
 	private boolean fireflyCanGoToGoal;
 	private boolean transform = false;
+	private Vector2 currentRiver;
 
 	/** Timer */
 	float levelTime = 60;
@@ -2316,6 +2317,10 @@ public class GameController implements ContactListener, Screen {
 
 			}
 
+			if (avatar.getForm() == Dinosaur.HERBIVORE_FORM && isOnRiverTile()){
+				enterRiverTileFirst(new Vector2(level.getAvatarGridX(), level.getAvatarGridY()));
+			}
+
 			if (level.getClone() != null && (removeClone || level.getClone().getRemoved())) {
 				removeClone = false;
 				level.removeClone();
@@ -2686,6 +2691,21 @@ public class GameController implements ContactListener, Screen {
 			}
 
 		return false;
+	}
+
+	private void enterRiverTileFirst(Vector2 position){
+		if (currentRiver == null){
+			currentRiver = position;
+		}
+
+		if (!currentRiver.equals(position)){
+			int random = MathUtils.random(1);
+			if (random == 0){
+				SoundController.getInstance().playWaterSplash();
+			}
+			currentRiver = position;
+		}
+
 	}
 
 	private void resetCamera(){

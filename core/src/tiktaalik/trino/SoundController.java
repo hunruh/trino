@@ -35,6 +35,7 @@ public class SoundController {
     private static String BUBBLE_3_FILE = "trino/bubble3.mp3";
     private static String BUBBLE_4_FILE = "trino/bubble4.mp3";
     private static String LEVEL_WIN_FILE = "trino/levelWin.mp3";
+    private static String WATER_SPLASH_FILE = "trino/waterSplash.mp3";
 
     private Music bgMusic;
     private Music bgDoll;
@@ -57,6 +58,7 @@ public class SoundController {
     private Sound bubbleSound;
     private Sound chargeSound;
     private Sound levelWin;
+    private Sound waterSplash;
 
     private float dollStartTime = 9.056f;
     private float herbivoreStartTime = 131.387f;
@@ -98,6 +100,7 @@ public class SoundController {
         bubbleSound = Gdx.audio.newSound(Gdx.files.internal(BUBBLE_1_FILE));
         chargeSound =  Gdx.audio.newSound(Gdx.files.internal(POP_3_FILE));
         levelWin = Gdx.audio.newSound(Gdx.files.internal(LEVEL_WIN_FILE));
+        waterSplash = Gdx.audio.newSound(Gdx.files.internal(WATER_SPLASH_FILE));
 
     }
 
@@ -314,19 +317,18 @@ public class SoundController {
             levelWin.play(0.0f);
         }
     }
-
-    public void playBubbleLoop(){
-        bubbleSound.pause();
+    public void playWaterSplash(){
+        waterSplash.pause();
         if (GameController.soundState) {
-            bubbleSound.play(0.1f);
+            waterSplash.play(0.1f);
         }
         else {
-            bubbleSound.stop();
+            waterSplash.play(0.0f);
         }
     }
-    public void stopBubbleLoop(){
-        bubbleSound.stop();
-    }
+
+
+
 
     /** Change the music based on timestamp */
     public void changeBackground(int form){

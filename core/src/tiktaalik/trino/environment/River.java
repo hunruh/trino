@@ -185,6 +185,7 @@ public class River extends GameObject {
         filter.categoryBits = Dinosaur.riverCatBits;
         filter.maskBits = Dinosaur.dollCatBits|Dinosaur.carnCatBits|Dinosaur.enemyCatBits|
                 Dinosaur.cloneCatBits|Dinosaur.wallCatBits;
+
         geometry.setFilterData(filter);
         markDirty(false);
     }
