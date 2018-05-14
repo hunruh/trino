@@ -235,6 +235,7 @@ public class GameController implements ContactListener, Screen {
     private static final String CORNER_BOTTOM_RIGHT = "trino/corner_bottom_right.png";
     private static final String CORNER_TOP_LEFT = "trino/corner_top_left.png";
     private static final String CORNER_TOP_RIGHT = "trino/corner_top_right.png";
+    private static final String LONG_VINE_FILE = "trino/vine_long.png";
 
 	// Tutorial menus
 	private static final String TUT_ONE_A = "tutorial/move1.png";
@@ -736,6 +737,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CORNER_TOP_LEFT);
 		manager.load(CORNER_TOP_RIGHT, Texture.class);
 		assets.add(CORNER_TOP_RIGHT);
+		manager.load(LONG_VINE_FILE, Texture.class);
+		assets.add(LONG_VINE_FILE);
 		manager.load(TUT_ONE_A, Texture.class);
 		assets.add(TUT_ONE_A);
 		manager.load(TUT_ONE_B, Texture.class);
@@ -850,6 +853,7 @@ public class GameController implements ContactListener, Screen {
         textureDict.put("cornerBottomRight", createTexture(manager, CORNER_BOTTOM_RIGHT, false));
         textureDict.put("cornerTopLeft", createTexture(manager, CORNER_TOP_LEFT, false));
         textureDict.put("cornerTopRight", createTexture(manager, CORNER_TOP_RIGHT, false));
+        textureDict.put("longVine", createTexture(manager, LONG_VINE_FILE, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
 		textureDict.put("gameover", createTexture(manager, GAMEOVER_FILE, false));
@@ -1914,8 +1918,7 @@ public class GameController implements ContactListener, Screen {
 
 					for (int i = 0; i < level.getSwitches().size(); i++) {
 						if (Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
-								Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1.70f
-								&& level.getAvatar().getForm() == Dinosaur.DOLL_FORM) {
+								Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1.70f) {
 							//////System.out.println("success");
 
 							if (i == 0) {

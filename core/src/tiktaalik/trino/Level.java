@@ -65,6 +65,11 @@ public class Level {
 
     private GameObject objectCache;
     private Vector2 locationCache;
+    private Vector2 vineLocation;
+    private float vineHeightOffset;
+    private float vineCurrentOffset;
+    private float vineGoingDownCounter = 0;
+    private float vineGoingUpCounter = 0;
 
     private TextureRegion background;
     private TextureRegion cloneTexture;
@@ -397,6 +402,9 @@ public class Level {
         bounds.x = levelWidth/pixelFactor;
         bounds.y = levelHeight/pixelFactor;
 
+        vineHeightOffset = levelHeight + 307f;
+        vineCurrentOffset = levelHeight + 307f;
+
         // Set permanent textures
         background = textureDict.get("background");
         cloneTexture = textureDict.get("clone");
@@ -566,6 +574,7 @@ public class Level {
             goalDoor.setType(GOAL);
             if (i == 0) {
                 goalDoor.setGoal(true);
+                vineLocation = goalDoor.getGridLocation();
                 goalDoor.setVineTextureSet(filmStripDict.get("vineDrop"),12);
             }
             else {
@@ -758,6 +767,40 @@ public class Level {
             }
         }
         canvas.end();
+
+        canvas.begin();
+        // Draw the vine if can exit
+        TextureRegion vine = textureDict.get("longVine");
+        Vector2 origin = new Vector2(vine.getRegionWidth()/2.0f, vine.getRegionHeight()/2.0f);
+        if (avatar.canExit()){
+            vineGoingUpCounter = 0;
+            vineGoingDownCounter += 0.10f;
+            vineCurrentOffset = vineCurrentOffset- vineGoingDownCounter;
+
+            if (vineCurrentOffset < 300f){
+                vineCurrentOffset = 300f;
+            }
+
+            canvas.draw(vine, Color.WHITE,origin.x,origin.y,(getDoor(0).getX()
+                    *getDoor(0).getDrawScale().x)+ 10f,(getDoor(0).getY()*getDoor(0).getDrawScale().x) +
+                    vineCurrentOffset,0,1,1);
+
+        } else {
+            vineGoingDownCounter = 0;
+            vineGoingUpCounter+= 0.10f;
+            vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
+
+            if (vineCurrentOffset > vineHeightOffset){
+                vineCurrentOffset = vineHeightOffset;
+            }
+
+            canvas.draw(vine, Color.WHITE,origin.x,origin.y,(getDoor(0).getX()
+                    *getDoor(0).getDrawScale().x) + 10f,(getDoor(0).getY()*getDoor(0).getDrawScale().x)
+                    +vineCurrentOffset,0,1,1);
+        }
+        canvas.end();
+
+
 
         canvas.beginProgressCircle();
         avatar.drawProgressCircle(canvas, avatar.getActionLoadValue());
