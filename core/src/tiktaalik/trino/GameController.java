@@ -2032,9 +2032,15 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("herbivoreGoingInFront"), 7);
 
 					avatar.forceFrame(animationFrameForGoingIn(frames, avatar.getDirection()));
+					avatar.setOffsetSwim(((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
+						avatar.getmaxOffsetSwim());
+					System.out.println("setting offsetswim to " + ((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
+							avatar.getmaxOffsetSwim());
 
 				}
 				else if (isOnRiverTile()){
+					System.out.println("reache river tile");
+					avatar.setOffsetSwim(avatar.getmaxOffsetSwim());
 					avatar.setIsSwimming(true);
 
 					avatar.setTextureSet(filmStripDict.get("herbivoreSwimmingLeft"), 7,
@@ -2574,9 +2580,12 @@ public class GameController implements ContactListener, Screen {
 	private int animationFrameForGoingIn(int numFrames, int direction){
 		float smallestDistance = Float.MAX_VALUE;
 		River river = null;
-		float detectionRadius = 2.0f;
+		float detectionRadius = 1.5f;
+		float offsetX = 0;
+		float offsetY = 0;
+		
 		for (River r: level.getRivers()){
-			float distance = Vector2.dst(r.getX(),r.getY(), level.getAvatar().getX(), level.getAvatar().getY());
+			float distance = Vector2.dst(r.getX()+offsetX,r.getY()+offsetY, level.getAvatar().getX(), level.getAvatar().getY());
 			if (distance < smallestDistance){
 				smallestDistance = distance;
 				river = r;
@@ -2619,8 +2628,14 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 
+		// Offset the smallest distance so animation doesn't cut off
+		smallestDistance = smallestDistance - 0.25f;
+
 		if (smallestDistance <= detectionRadius && !river.getisCenterTile()){
 			int frame = numFrames - (int)((smallestDistance/detectionRadius) * (float)numFrames);
+			if (smallestDistance < 0){
+				frame = 0;
+			}
 			return frame;
 		} else {
 			return -1;

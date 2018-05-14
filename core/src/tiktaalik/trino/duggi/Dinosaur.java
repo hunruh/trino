@@ -59,6 +59,8 @@ public abstract class Dinosaur extends GameObject {
     private boolean canBeSeen = true;
     private boolean transform = false;
     private boolean isSwimming = false;
+    private float offsetSwim;
+    private float maxOffsetSwim = -20f;
     private float leftRight; // The current horizontal movement of the character
     private float upDown; // The current vertical movement of the character
     protected int direction;
@@ -381,6 +383,10 @@ public abstract class Dinosaur extends GameObject {
 
     public void setIsSwimming(boolean value){isSwimming = value;}
 
+    public void setOffsetSwim(float value){offsetSwim = value;}
+
+    public float getmaxOffsetSwim(){return maxOffsetSwim;}
+
     public int getDirection() {
         return direction;
     }
@@ -587,9 +593,9 @@ public abstract class Dinosaur extends GameObject {
             filmStripItem += 12;
 
         if (isSwimming){
-            System.out.println("reached 20 offset");
-            offsetY = -20f;
+            offsetY = offsetSwim;
         }
+        System.out.println("offsetSwim is " +  offsetSwim);
 
         //System.out.println("filmstrip item number is " + filmStripItem + "and animeframe is " + animeframe);
 
