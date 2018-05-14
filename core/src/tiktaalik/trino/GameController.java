@@ -2092,7 +2092,7 @@ public class GameController implements ContactListener, Screen {
 
 				}
 				else if (isOnRiverTile()){
-					System.out.println("reache river tile");
+					avatar.setCanBeSeen(true);
 					avatar.setOffsetSwim(avatar.getmaxOffsetSwim());
 					avatar.setIsSwimming(true);
 

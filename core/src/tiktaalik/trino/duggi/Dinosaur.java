@@ -665,7 +665,7 @@ public abstract class Dinosaur extends GameObject {
             canvas.drawProgressCircle(progressCircle,newColor,0,getX()*drawScale.x,getY()*drawScale.x,drawScale.x);
         }
 
-        if (canBeSeenTimeStamp - ticks > 0){
+        if (canBeSeenTimeStamp - ticks > 0 && !canBeSeen){
             newColor = new Color(0.133f, 0.545f, 0.133f, 1);
             CircleShape progressCircle = new CircleShape();
             progressCircle.setRadius((float)(canBeSeenTimeStamp - ticks)/10000f);
