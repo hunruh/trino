@@ -767,7 +767,7 @@ public class Level {
                 }
 
                 // Add rocks
-                if (((River) g).getRock() == null){
+                if (((River) g).getRock() == null && ((River)g).getHasRockOnit()){
                     TextureRegion rock;
                     int random = MathUtils.random(2);
                     if (random == 0){
@@ -775,14 +775,15 @@ public class Level {
                     }
                     else if (random == 1){
                         rock = textureDict.get("rock2");
-                    } else {
+                    }
+                    else {
                         rock = textureDict.get("rock3");
                     }
 
-                    float minX = g.getX() - 0.4f;
-                    float maxX = g.getX() + 0.4f;
-                    float minY = g.getY() - 0.4f;
-                    float maxY = g.getY() + 0.4f;
+                    float minX = g.getX() - 0.3f;
+                    float maxX = g.getX() + 0.3f;
+                    float minY = g.getY() - 0.3f;
+                    float maxY = g.getY() + 0.3f;
 
                     ((River) g).setRock(rock);
                     ((River) g).setRockPosition(new Vector2(MathUtils.random(minX*g.getDrawScale().x,
@@ -791,10 +792,14 @@ public class Level {
 
                 }
 
-                Vector2 origin = new Vector2(((River) g).getRock().getRegionWidth()/2.0f,
-                        ((River) g).getRock().getRegionHeight()/2.0f);
-                canvas.draw(((River) g).getRock(), Color.WHITE, origin.x,origin.y, ((River) g).getRockPosition().x,
-                        ((River) g).getRockPosition().y,0,1,1);
+                if (((River)g).getHasRockOnit()){
+                    Vector2 origin = new Vector2(((River) g).getRock().getRegionWidth()/2.0f,
+                            ((River) g).getRock().getRegionHeight()/2.0f);
+                    canvas.draw(((River) g).getRock(), Color.WHITE, origin.x,origin.y, ((River) g).getRockPosition().x,
+                            ((River) g).getRockPosition().y,0,1,1);
+
+                }
+
 
             }
         }
