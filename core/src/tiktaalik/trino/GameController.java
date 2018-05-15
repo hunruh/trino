@@ -1777,7 +1777,7 @@ public class GameController implements ContactListener, Screen {
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
 							}
-							
+
 							level.getDoor(i).setLowered(true);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));

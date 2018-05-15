@@ -24,6 +24,7 @@ public class River extends GameObject {
     private boolean isBotRiver;
     private boolean isRightRiver;
     private boolean isLeftRiver;
+    private boolean hasRockOnIt;
     private TextureRegion rock;
     private Vector2 rockPosition;
 
@@ -62,6 +63,12 @@ public class River extends GameObject {
 
         this.edible = edible;
         gridLocation = new Vector2(gx, gy);
+
+        // Has rock on it
+        int random = MathUtils.random(2);
+        if (random == 0){
+            hasRockOnIt = true;
+        }
     }
 
     public boolean getEdible() {
@@ -84,6 +91,8 @@ public class River extends GameObject {
     public TextureRegion getRock(){return rock;}
     public void setRockPosition(Vector2 position){rockPosition = position;}
     public Vector2 getRockPosition(){return rockPosition;}
+    public void setHasRockOnIt(boolean value){this.hasRockOnIt = value;}
+    public boolean getHasRockOnit() {return hasRockOnIt;}
 
     /**
      * Returns the dimensions of this box
