@@ -24,11 +24,6 @@ import com.badlogic.gdx.math.*;
  * a controller via the new XBox360Controller class.
  */
 public class InputHandler {
-	// Sensitivity for moving crosshair with gameplay
-	private static final float GP_ACCELERATE = 1.0f;
-	private static final float GP_MAX_SPEED  = 10.0f;
-	private static final float GP_THRESHOLD  = 0.01f;
-
 	/** The singleton instance of the input controller */
 	private static InputHandler theController = null;
 	
@@ -69,11 +64,8 @@ public class InputHandler {
 	private boolean exitPrevious;
 	/**transformation */
 	private boolean dollFormPressed;
-	private boolean dollFormPrevious;
 	private boolean herbiFormPressed;
-	private boolean herbiFormPrevious;
 	private boolean carniFormPressed;
-	private boolean carniFormPrevious;
 	private boolean actionPressed;
 	private boolean actionPrevious;
 	private boolean pausePressed;
@@ -88,12 +80,6 @@ public class InputHandler {
 	private float horizontal;
 	/** How much did we move vertically? */
 	private float vertical;
-	/** The crosshair position (for raddoll) */
-	private Vector2 crosshair;
-	/** The crosshair cache (for using as a return value) */
-	private Vector2 crosscache;
-	/** For the gamepad crosshair control */
-	private float momentum;
 
 	private float prevHorizontal = 0f;
 	private float prevVertical = 0f;
@@ -118,57 +104,6 @@ public class InputHandler {
 	 */
 	public float getVertical() {
 		return vertical;
-	}
-	
-	/**
-	 * Returns the current position of the crosshairs on the screen.
-	 *
-	 * This value does not return the actual reference to the crosshairs position.
-	 * That way this method can be called multiple times without any fair that 
-	 * the position has been corrupted.  However, it does return the same object
-	 * each time.  So if you modify the object, the object will be reset in a
-	 * subsequent call to this getter.
-	 *
-	 * @return the current position of the crosshairs on the screen.
-	 */
-	/*public Vector2 getCrossHair() {
-		return crosscache.set(crosshair);
-	}*/
-
-	/**
-	 * Returns true if the primary action button was pressed.
-	 *
-	 * This is a one-press button. It only returns true at the moment it was
-	 * pressed, and returns false at any frame afterwards.
-	 *
-	 * @return true if the primary action button was pressed.
-	 */
-	public boolean didPrimary() {
-		return primePressed && !primePrevious;
-	}
-
-	/**
-	 * Returns true if the secondary action button was pressed.
-	 *
-	 * This is a one-press button. It only returns true at the moment it was
-	 * pressed, and returns false at any frame afterwards.
-	 *
-	 * @return true if the secondary action button was pressed.
-	 */
-	public boolean didSecondary() {
-		return secondPressed && !secondPrevious;
-	}
-
-	/**
-	 * Returns true if the tertiary action button was pressed.
-	 *
-	 * This is a sustained button. It will returns true as long as the player
-	 * holds it down.
-	 *
-	 * @return true if the secondary action button was pressed.
-	 */
-	public boolean didTertiary() {
-		return tertiaryPressed;
 	}
 
 	/**
@@ -297,34 +232,17 @@ public class InputHandler {
 				&& ((Gdx.input.getX() >= 597) && (Gdx.input.getX() <= 684)) &&
 				((Gdx.input.getY() >= 226) && (Gdx.input.getY() <= 421)));
 	}
-	/**
-	 * Returns true if the player wants to go toggle the debug mode.
-	 *
-	 * @return true if the player wants to go toggle the debug mode.
-	 */
-	public boolean didDebug() {
-		return debugPressed && !debugPrevious;
-	}
-	
-	/**
-	 * Returns true if the exit button was pressed.
-	 *
-	 * @return true if the exit button was pressed.
-	 */
-	public boolean didExit() {
-		return exitPressed && !exitPrevious;
-	}
 
 	public boolean didTransformDoll(){
-		return dollFormPressed && !dollFormPrevious;
+		return dollFormPressed;
 	}
 
 	public boolean didTransformHerbi(){
-		return herbiFormPressed && !herbiFormPrevious;
+		return herbiFormPressed;
 	}
 
 	public boolean didTransformCarni(){
-		return carniFormPressed && !carniFormPrevious;
+		return carniFormPressed;
 	}
 
 	public boolean didTransform() {
@@ -341,18 +259,6 @@ public class InputHandler {
 
 	public boolean isNextLevelPressed() {
 		return nextLevelPressed;
-	}
-
-	/**
-	 * Creates a new input controller
-	 * 
-	 * The input controller attempts to connect to the X-Box controller at device 0,
-	 * if it exists.  Otherwise, it falls back to the keyboard control.
-	 */
-	public InputHandler() {
-		// If we have a game-pad for id, then use it.
-		crosshair = new Vector2();
-		crosscache = new Vector2();
 	}
 
 	/**
@@ -388,12 +294,11 @@ public class InputHandler {
 		pausePressed = Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
 		mousePressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
 		helpPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-		//debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		debugPressed = (Gdx.input.isKeyPressed(Input.Keys.D));
 		primePressed = (Gdx.input.isKeyPressed(Input.Keys.UP));
 		nextLevelPressed = (Gdx.input.isKeyPressed(Input.Keys.S)||Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT));
-
 		exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.E));
+
 		// Directional controls
 		prevHorizontal = horizontal;
 		prevVertical = vertical;
@@ -448,20 +353,5 @@ public class InputHandler {
 		
 		// Mouse results
         tertiaryPressed = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-		//crosshair.set(Gdx.input.getX(), Gdx.input.getY());
-		//crosshair.scl(1/scale.x,-1/scale.y);
-		//crosshair.y += bounds.height;
-		//clampPosition(bounds);
 	}
-	
-	/**
-	 * Clamp the cursor position so that it does not go outside the window
-	 *
-	 * While this is not usually a problem with mouse control, this is critical 
-	 * for the gamepad controls.
-	 *//*
-	private void clampPosition(Rectangle bounds) {
-		crosshair.x = Math.max(bounds.x, Math.min(bounds.x+bounds.width, crosshair.x));
-		crosshair.y = Math.max(bounds.y, Math.min(bounds.y+bounds.height, crosshair.y));
-	}*/
 }

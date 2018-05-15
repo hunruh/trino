@@ -4,7 +4,6 @@ import java.util.*;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.assets.*;
@@ -300,7 +299,6 @@ public class GameController implements ContactListener, Screen {
 	protected RayHandler rayhandler; // The rayhandler for storing lights, and drawing them
 	private LightSource duggiLight; // Duggi's light
 	private LightSource[] ffLights; // FireFly lights
-	private LightSource[] enemyLights; // Enemy lights
 	private float ffLightDsts[];
 	private float ffLightChanges[];
 
@@ -308,12 +306,9 @@ public class GameController implements ContactListener, Screen {
 	private Level level;
 
 	private int currentLevel;
-	private int currentCotton = 0; //for shadow duggi
-	private PooledList<Vector2> cottonFlowers= new PooledList<Vector2>();
 
 	private PooledList<AIController> controls = new PooledList<AIController>();
 	private PooledList<FireFlyAIController> fireFlyControls = new PooledList<FireFlyAIController>();
-	private PooledList<Vector2> AIPath = new PooledList<Vector2>();
 
 	private boolean active; // Whether or not this is an active controller
 	private boolean complete; // Whether we have completed this level
@@ -321,18 +316,9 @@ public class GameController implements ContactListener, Screen {
 	private boolean timeOut; // Whether time ran out or not
 	private int countdown; // Countdown active for winning or losing
 	private boolean removeClone; // Whether or not the clone should be removed
-	private boolean isSwitch; // Whether the tile in front is a switch or not
-	private boolean isCotton; // Whether the tile in front is a cotton flower or not
-	GameObject tmp;
-	float tmpx;
-	float tmpy;
-	private boolean shadowDuggiGotCotton = true;
 	public static int menuNum = 0;
 	public static boolean musicState = true;
 	public static boolean soundState = true;
-	public static int mouseCooldown = 0;
-	public static int tutSwitch = 0;
-	public static int tenSec;
 	private int playDoorDown = 0;
 	private int playDoorUp = 0;
 	private int playDoorSound = -1;
@@ -341,7 +327,6 @@ public class GameController implements ContactListener, Screen {
 	private float radius;
 	private float randomAngle;
 	private float intensity;
-	private boolean fireflyCanGoToGoal;
 	private boolean transform = false;
 	private Vector2 currentRiver;
 
@@ -1173,12 +1158,6 @@ public class GameController implements ContactListener, Screen {
 		cameraBounds = new Rectangle(0,0, 32.0f,18.0f);
 		collisionHandler = new CollisionHandler(this);
 		hud = new HUDController();
-		shadowDuggiGotCotton = true;
-		//cottonFlowers = level.getCottonFlowerList();
-		//////System.out.println("cotton flowers "+cottonFlowers);
-
-		isSwitch = false;
-		isCotton = false;
 
 		state = GAME_READY;
 	}
@@ -1196,19 +1175,13 @@ public class GameController implements ContactListener, Screen {
 		cameraBounds = new Rectangle(0,0, 32.0f,18.0f);
 		collisionHandler = new CollisionHandler(this);
 		hud = new HUDController();
-		shadowDuggiGotCotton = true;
-		//cottonFlowers = level.getCottonFlowerList();
-		//////System.out.println("cotton flowers "+cottonFlowers);
-
-		isSwitch = false;
-		isCotton = false;
 
 		state = GAME_READY;
 	}
 
 	public void nextLevel(){
 
-		if (currentLevel == 18)
+		if (currentLevel == 19)
 			currentLevel = 0;
 		else
 			currentLevel++;
@@ -1259,11 +1232,8 @@ public class GameController implements ContactListener, Screen {
 
 		// Init the level
 		level = new Level(world, currentLevel);
-		////System.out.println("before populate");
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
-		//cottonFlowers = level.getCottonFlowerList();
 		collisionHandler.setLevel(level);
-		//shadowDuggiGotCotton = true;
 
 		// Set the lighting
 		float value = 1.0f - level.getCurrentLevel()/40.0f;
@@ -1316,31 +1286,6 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		playDoorSound = -1;
-
-//		enemyLights = new LightSource[level.getEnemies().size()];
-//
-//		for(int i = 0; i < level.getEnemies().size(); i++) {
-//
-//			if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
-//				////System.out.println("reached right enemy eyes");
-//				PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
-//				enemyEyes.setColor(1, 0, 0, 1);
-//				enemyEyes.setXray(true);
-//				enemyEyes.setActive(true);
-//				enemyLights[i] = enemyEyes;
-//				enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
-//			} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
-//				////System.out.println("reached left enemy eyes");
-//				PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
-//				enemyEyes2.setColor(1, 0, 0, 1);
-//				enemyEyes2.setXray(true);
-//				enemyEyes2.setActive(true);
-//				enemyLights[i] = enemyEyes2;
-//				enemyEyes2.attachToBody(level.getEnemy(i).getBody(), 0f, .75f, enemyEyes2.getDirection());
-//			}
-//
-//		}
-
 	}
 
 	/**
@@ -1360,9 +1305,7 @@ public class GameController implements ContactListener, Screen {
 		if (input.didReset())
 			reset();
 
-		// Temporary hardcoding
 		// Handle nightmode
-
 		if (input.didNight()) {
 			if (duggiLight.isActive()) {
 				duggiLight.setActive(false);
@@ -1571,7 +1514,6 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("gameover"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("gameover").getRegionWidth() * .75f / 2,
 						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
 						textureDict.get("gameover").getRegionWidth() * .75f, textureDict.get("gameover").getRegionHeight() * .75f);
-				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 				canvas.end();
 			}
 			else if (timeOut) {
@@ -1580,7 +1522,6 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("gameover"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("gameover").getRegionWidth() * .75f / 2,
 						canvas.getHeight() / 2 - textureDict.get("gameover").getRegionHeight() * .75f / 2,
 						textureDict.get("gameover").getRegionWidth() * .75f, textureDict.get("gameover").getRegionHeight() * .75f);
-				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 				canvas.end();
 			}
 		}
@@ -1617,7 +1558,6 @@ public class GameController implements ContactListener, Screen {
 					}
 					else if (InputHandler.getInstance().didHelp()) {
 						menuNum = 2;
-						System.out.println("hello you have reached the help button. pls leave a message after the beep");
 					}
 					else if (InputHandler.getInstance().didRestart()) {
 						menuNum = 0;
@@ -1657,11 +1597,9 @@ public class GameController implements ContactListener, Screen {
 					}
 					else if (InputHandler.getInstance().didDollHelp()) {
 						menuNum = 7;
-						System.out.println("PRESSED THE DOLL!!!!");
 					}
 					else if (InputHandler.getInstance().didHerbivoreHelp()) {
 						menuNum = 8;
-						System.out.println("PRESSED THE HERBIVORE!!!!");
 					}
 				}
 				if (menuNum == 7) {
@@ -1778,8 +1716,6 @@ public class GameController implements ContactListener, Screen {
 	 * @param dt Number of seconds since last animation frame
 	 */
 	public void update(float dt) {
-		//SoundController.getInstance().checkMusicEnd();
-
 		switch (state) {
 			case GAME_READY:
 				updateReady();
@@ -1813,45 +1749,6 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_OVER;
 		}
 		else {
-
-			////System.out.println("path size " + AIPath.size());
-//			// clear the old lights
-//			for(LightSource l: enemyLights){
-//
-//			}
-//
-//			for(int i = 0; i < level.getEnemies().size(); i++) {
-//
-//				if (level.getEnemy(i).getDirection() == Dinosaur.RIGHT){
-//					PointSource enemyEyes = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
-//					enemyEyes.setColor(1, 0, 0, 1);
-//					enemyEyes.setXray(true);
-//					if (!level.getEnemy(i).getStunned() &&
-//							!level.getEnemy(i).getCharging() && !level.getEnemy(i).getCollided() && !level.getEnemy(i).getLoadingCharge()
-//							&& !level.getEnemy(i).getEaten()){
-//						enemyEyes.setActive(true);
-//					} else {
-//						enemyEyes.setActive(false);
-//					}
-//					enemyLights[i] = enemyEyes;
-//					enemyEyes.attachToBody(level.getEnemy(i).getBody(), 0.2f, .75f, enemyEyes.getDirection());
-//				} else if (level.getEnemy(i).getDirection() == Dinosaur.LEFT){
-//					PointSource enemyEyes2 = new PointSource(rayhandler, 256, Color.RED, 0.5f, 0, 0);
-//					enemyEyes2.setColor(1, 0, 0, 1);
-//					enemyEyes2.setXray(true);
-//					if (!level.getEnemy(i).getStunned() &&
-//							!level.getEnemy(i).getCharging() && !level.getEnemy(i).getCollided() && !level.getEnemy(i).getLoadingCharge()
-//							&& !level.getEnemy(i).getEaten()){
-//						enemyEyes2.setActive(true);
-//					} else {
-//						enemyEyes2.setActive(false);
-//					}
-//					enemyLights[i] = enemyEyes2;
-//					enemyEyes2.attachToBody(level.getEnemy(i).getBody(), 0f, .75f, enemyEyes2.getDirection());
-//				}
-//
-//			}
-
 			if (level.getSwitches().size() == 0) {
 				level.getAvatar().setCanExit(true);
 				level.getDoor(0).setLowered(true);
@@ -1862,11 +1759,9 @@ public class GameController implements ContactListener, Screen {
 				if (level.getClone() != null){
 					for (int i = 0; i < level.getSwitches().size(); i++){
 						if ((Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) < 1f &&
-								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.70f)||
-								(Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
-										Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1f)){
-							//////System.out.println("success");
-
+								Math.abs(level.getClone().getY() - 0.75f - level.getSwitch(i).getY()) < 1f)||
+								(Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1.5f &&
+										Math.abs(level.getAvatar().getY() - 0.75f - level.getSwitch(i).getY()) < 1f)){
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
 							}
@@ -1916,12 +1811,9 @@ public class GameController implements ContactListener, Screen {
 						}
 					}
 				} else {
-
 					for (int i = 0; i < level.getSwitches().size(); i++) {
-						if (Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
-								Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1f) {
-							//////System.out.println("success");
-
+						if (Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1.5f &&
+								Math.abs(level.getAvatar().getY() - 0.75f - level.getSwitch(i).getY()) < 1f) {
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
 							} else {
@@ -2027,7 +1919,6 @@ public class GameController implements ContactListener, Screen {
 			canvas.getCamera().update();
 			raycamera.update();
 			rayhandler.setCombinedMatrix(raycamera);
-			//System.out.println("raycamera position is " + raycamera.position);
 
 			// Process FireFly updates
 			Rectangle levelBounds = new Rectangle(0f,0f,level.getLevelWidth()/80.0f, level.getLevelHeight()/80.0f );
@@ -2080,7 +1971,6 @@ public class GameController implements ContactListener, Screen {
 					frames = 8;
 				}
 				if (animationFrameForNotCenterTile() != -1){
-					//System.out.println("reached the going in");
 					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
 							filmStripDict.get("herbivoreGoingInRight"), 7,
 							filmStripDict.get("herbivoreGoingInBack"), 8,
@@ -2124,77 +2014,6 @@ public class GameController implements ContactListener, Screen {
 				}
 
 			}
-
-			//this is hard coded in rn
-			//also naming stuff real bad bc im lazy
-			/*
-			int inFrontOfShadowDuggi = 0;
-			boolean block = false;
-			Enemy sd = level.getShadowDuggi();
-			Vector2 shadowDuggi = level.getShadowDuggi().getGridLocation();
-			for (int i = 0; i < level.getEnemies().size()-1; i++)
-				controls.get(i).step(level.objectInFrontOfEnemy(level.getEnemy(i)));
-
-				if (shadowDuggi.y == tmp.y && (((shadowDuggi.x - tmp.x) == 1 &&
-						(sd.getDirection() == Dinosaur.LEFT && etmp.getDirection() == Dinosaur.RIGHT)) ||
-						((shadowDuggi.x - tmp.x) == -1 &&
-						(sd.getDirection() == Dinosaur.RIGHT && etmp.getDirection() == Dinosaur.LEFT)))){
-					inFrontOfShadowDuggi = -1;
-				}
-				else if (shadowDuggi.x == tmp.x && (shadowDuggi.y - tmp.y == -1 &&
-						(sd.getDirection() == Dinosaur.UP && etmp.getDirection() == Dinosaur.DOWN) ||
-						shadowDuggi.y - tmp.y == 1 &&
-						(sd.getDirection() == Dinosaur.DOWN && etmp.getDirection() == Dinosaur.UP))){
-					inFrontOfShadowDuggi = 1;
-				}
-				else{
-					float dx = shadowDuggi.x - tmp.x;
-					float dy = shadowDuggi.y - tmp.y;
-					int typex = -1;
-					int typey = -1;
-					if (tmp.x-dx >= 0 && tmp.x-dx < level.getLevelWidth()) {
-						//System.out.println(level.getGrid()[(int) (tmp.x - dx)][(int) (tmp.y)]);
-						if (Math.abs(dx) <= 1 && level.getGrid()[(int) (tmp.x - dx)][(int) (tmp.y)] != null)
-							typex = level.getGrid()[(int) (tmp.x - dx)][(int) (tmp.y)].getType();
-					}
-					if (tmp.y-dy >= 0 && tmp.y-dy < level.getLevelHeight()) {
-						if (Math.abs(dy) <= 1 && level.getGrid()[(int) (tmp.x)][(int) (tmp.y - dy)] != null)
-							typey = level.getGridObject((int) (tmp.x), (int) (tmp.y - dy)).getType();
-					}
-					if (Math.abs(dx) <= 1 && (typex == WALL || typex == EDIBLEWALL || typex == RIVER ||
-							typex == BOULDER || typex == GOAL)){
-						inFrontOfShadowDuggi = -1;
-					}
-					else if (Math.abs(dy) <= 1 && (typey == WALL || typey == EDIBLEWALL || typey == RIVER ||
-							typey == BOULDER || typey == GOAL)){
-						inFrontOfShadowDuggi = 1;
-					}
-				}
-
-				if ((shadowDuggi.x - tmp.x) == -1 && shadowDuggi.y == tmp.y && sd.getDirection() == Dinosaur.RIGHT
-						&&(etmp.getDirection() != Dinosaur.RIGHT && etmp.getDirection() != Dinosaur.LEFT)){
-					block = true;
-				}
-				else if ((shadowDuggi.x - tmp.x) == 1 && shadowDuggi.y == tmp.y && sd.getDirection() == Dinosaur.LEFT
-						&&(etmp.getDirection() != Dinosaur.RIGHT && etmp.getDirection() != Dinosaur.LEFT)){
-					block = true;
-				}
-				else if ((shadowDuggi.y - tmp.y) == -1 && shadowDuggi.x == tmp.x && sd.getDirection() == Dinosaur.UP
-						&&(etmp.getDirection() != Dinosaur.UP && etmp.getDirection() != Dinosaur.DOWN)){
-					block = true;
-				}
-				else if ((shadowDuggi.y - tmp.y) == 1 && shadowDuggi.x == tmp.x && sd.getDirection() == Dinosaur.DOWN
-						&&(etmp.getDirection() != Dinosaur.UP && etmp.getDirection() != Dinosaur.DOWN)){
-					block = true;
-				}
-
-			}
-			shadowDuggiGotCotton = controls.get(level.getEnemies().size()-1).step(AIPath, block, inFrontOfShadowDuggi);
-			if(shadowDuggiGotCotton) {
-				//System.out.println("i shouldnt be doingthe ai tbh");
-				//cottonFlowers.remove(currentCotton);
-			}
-			*/
 
 			// Process avatar updates
 			int direction = avatar.getDirection();
@@ -2375,15 +2194,6 @@ public class GameController implements ContactListener, Screen {
 				level.removeClone();
 			}
 
-			// Check if Duggi or Clone is on top of button
-			//		if (level.getClone() != null && level.getClone().getGridLocation() != null &&
-			//				level.getClone().getGridLocation().equals(new Vector2(12,4))) {
-			//			avatar.setCanExit(true);
-			//			level.getGoalDoor().setTexture(textureDict.get("goalOpenTile"));
-			//		} else {
-			//			avatar.setCanExit(false);
-			//			level.getGoalDoor().setTexture(textureDict.get("goalClosedTile"));
-			//		}
 			if (InputHandler.getInstance().didAction()) {
 				if (avatar.getForm() == Dinosaur.DOLL_FORM) {
 					GameObject cotton = level.getGridObject(level.getAvatarGridX(), level.getAvatarGridY());
@@ -2641,14 +2451,7 @@ public class GameController implements ContactListener, Screen {
 
 	private boolean isOnRiverTile(){
 		for (River r : level.getRivers()){
-			if (r.getGridLocation().x == level.getAvatarGridX() && r.getGridLocation().y == level.getAvatarGridY()){
-//				if (r.getIsBotRiver()){
-//					return true;
-//				} else {
-//					if (level.getAvatar().getX() > r.getPosition().x + 2.5f){
-//						return true;
-//					}
-//				}
+			if (r.getGridLocation().x == level.getAvatarGridX() && r.getGridLocation().y == level.getAvatarGridY()) {
 				return true;
 			}
 		}
@@ -2693,7 +2496,6 @@ public class GameController implements ContactListener, Screen {
 			}
 		}
 
-		//System.out.println("smallest distance is " + smallestDistance);
 		if (river == null){
 			return -1;
 		} else {
@@ -2715,7 +2517,6 @@ public class GameController implements ContactListener, Screen {
 		// Offset the smallest distance so animation doesn't cut off
 		if (smallestDistance <= detectionRadius && !river.getisCenterTile()){
 			int frame = numFrames - (int)((smallestDistance/detectionRadius) * (float)numFrames);
-			//System.out.println("frame number is " + frame);
 			if (smallestDistance < 0){
 				frame = 0;
 			}
@@ -2933,7 +2734,6 @@ public class GameController implements ContactListener, Screen {
 
 		level = null;
 		ffLights = null;
-		enemyLights = null;
 		controls = null;
 		fireFlyControls = null;
 		world = null;

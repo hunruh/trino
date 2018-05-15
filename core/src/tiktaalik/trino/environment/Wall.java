@@ -24,20 +24,8 @@ public class Wall extends EdibleObject {
     private FilmStrip[] textureSet;
     private int numFrames[];
     private float animeframe;
-    private Vector2 vineOrigin;
 
-    private static final int VINE_DROP= 0;
-
-    /**
-     * Creates a new dinosaur at the origin.
-     *
-     * @param width	    The object width in physics units
-     * @param height	The object height in physics units
-     * @param edible	If the wall can be consumed by the herbivore
-     */
-    public Wall(float width, float height, boolean edible) {
-        this(0,0,0,0,width,height, edible);
-    }
+    private static final int VINE_DROP = 0;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -69,10 +57,6 @@ public class Wall extends EdibleObject {
         animeframe = 0;
     }
 
-    public boolean getEdible() {
-        return edible;
-    }
-
     public boolean getLowered() { return lowered; }
     public void setLowered(boolean lowered) {
         this.lowered = lowered;
@@ -80,16 +64,8 @@ public class Wall extends EdibleObject {
     }
 
     public boolean getGoal() { return goal; }
-    public void setGoal(boolean goal) { this.goal = goal; }
 
-    /**
-     * Returns the dimensions of this box
-     *
-     * @return the dimensions of this box
-     */
-    public Vector2 getDimension() {
-        return sizeCache.set(dimension);
-    }
+    public void setGoal(boolean goal) { this.goal = goal; }
 
     /**
      * Sets the dimensions of this box
@@ -153,11 +129,6 @@ public class Wall extends EdibleObject {
     public void setVineTextureSet(Texture vine, int vineFrames) {
         numFrames[VINE_DROP] = vineFrames;
         textureSet[VINE_DROP] = new FilmStrip(vine,1,vineFrames,vineFrames);
-        vineOrigin = new Vector2(textureSet[VINE_DROP].getRegionWidth()/2.0f, textureSet[VINE_DROP].getRegionHeight()/2.0f);
-    }
-
-    public void setGridLocation(Vector2 location){
-        this.gridLocation = location;
     }
 
     public Vector2 getGridLocation(){
@@ -248,20 +219,7 @@ public class Wall extends EdibleObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-
         super.draw(canvas, 0, 7, edible);
-
-        float offsetX = 0;
-        float offsetY = 0;
-
-//        if (lowered){
-//            textureSet[VINE_DROP].setFrame((int)animeframe);
-//            if (textureSet[VINE_DROP] != null) {
-//                //canvas.draw(textureSet[VINE_DROP], Color.WHITE,vineOrigin.x,vineOrigin.y,getX()*drawScale.x + offsetX,
-//                        //getY()*drawScale.x + offsetY,0,1,1);
-//            }
-//        }
-
     }
 
     /**

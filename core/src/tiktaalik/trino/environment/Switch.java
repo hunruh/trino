@@ -15,6 +15,8 @@ public class Switch extends GameObject {
     private float[] vertices; // Cache of the polygon vertices (for resizing)
     private Vector2 gridLocation;
 
+    private int doorID;
+
     /**
      * Creates a new dinosaur at the origin.
      *
@@ -48,13 +50,8 @@ public class Switch extends GameObject {
         resize(width, height);
     }
 
-    /**
-     * Returns the dimensions of this box
-     *
-     * @return the dimensions of this box
-     */
-    public Vector2 getDimension() {
-        return sizeCache.set(dimension);
+    public void setDoorID(int doorID) {
+        this.doorID = doorID;
     }
 
     /**
@@ -114,15 +111,6 @@ public class Switch extends GameObject {
     public void setHeight(float value) {
         sizeCache.set(dimension.x,value);
         setDimension(sizeCache);
-    }
-
-    public void setGridLocation(Vector2 location){
-        this.gridLocation = location;
-    }
-
-    public void setGridLocation(float x, float y) {
-        gridLocation.x = x;
-        gridLocation.y = y;
     }
 
     public Vector2 getGridLocation(){

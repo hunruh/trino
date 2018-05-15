@@ -386,7 +386,8 @@ public class Enemy extends EdibleObject {
             if (getLinearVelocity().len2() < 5)
                 setBodyType(BodyDef.BodyType.StaticBody);
 
-            stunCooldown += dt;
+            if (!eatInProgress)
+                stunCooldown += dt;
             if (stunCooldown > STUN_DURATION) {
                 setBodyType(BodyDef.BodyType.DynamicBody);
                 setLinearDamping(0);
@@ -436,8 +437,13 @@ public class Enemy extends EdibleObject {
         }
 
         if (enemyType == UNKILLABLE_ENEMY) {
-            offsetX = -9f;
-            offsetY = 5;
+            if (direction == UP || direction == DOWN) {
+                offsetX = 1f;
+                offsetY = 13f;
+            } else {
+                offsetX = -9f;
+                offsetY = 5;
+            }
         } else if (enemyType == HERBIVORE_ENEMY){
             offsetY = -20f;
         }

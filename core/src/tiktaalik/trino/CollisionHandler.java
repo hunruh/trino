@@ -1,7 +1,5 @@
 package tiktaalik.trino;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import tiktaalik.trino.duggi.Carnivore;
 import tiktaalik.trino.duggi.Clone;
