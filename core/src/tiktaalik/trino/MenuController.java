@@ -19,6 +19,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String PROGRESS_FILE_ONE = "trino/load1.png";
 	private static final String PROGRESS_FILE_TWO = "trino/load2.png";
 	private static final String PROGRESS_FILE_THREE = "trino/load3.png";
+	private static final String STUDIO_FILE = "trino/studioLogo.png";
 	private static final String PLAY_BTN_FILE = "trino/startButton.png";
 	private static final String LEVEL_SELECT_BTN_FILE = "trino/levelSelectButton.png";
 
@@ -31,6 +32,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private Texture statusOne; // Loading texture 1
 	private Texture statusTwo; // Loading texture 2
 	private Texture statusThree; // Loading texture 3
+	private Texture studioLogo; // Studio logo
 
 	private static int DEFAULT_BUDGET = 15; // Default budget for asset loader (do nothing but load 60 fps)
 	private static int STANDARD_WIDTH  = 1280; // Standard window size (for scaling)
@@ -62,6 +64,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private int   budget;
 	/** Whether or not this player mode is still active */
 	private boolean active;
+	Long startTime = System.currentTimeMillis();
 
 	public static int currState = 0;
 
@@ -131,6 +134,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		statusOne  = new Texture(PROGRESS_FILE_ONE);
 		statusTwo  = new Texture(PROGRESS_FILE_TWO);
 		statusThree  = new Texture(PROGRESS_FILE_THREE);
+		studioLogo = new Texture(STUDIO_FILE);
 
 		// No progress so far.
 		progress   = 0;
@@ -153,6 +157,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 statusOne.dispose();
 		 statusTwo.dispose();
 		 statusThree.dispose();
+		 studioLogo.dispose();
 		 background = null;
 		 statusOne  = null;
 		 statusTwo = null;
@@ -173,18 +178,19 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		if (playButton == null) {
-			manager.update(budget);
-			this.progress = manager.getProgress();
-			if (progress >= 1.0f) {
-				this.progress = 1.0f;
-				background = new Texture(BACKGROUND_FILE);
-				playButton = new Texture(PLAY_BTN_FILE);
-				playButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-				levelSelectButton = new Texture(LEVEL_SELECT_BTN_FILE);
-				levelSelectButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-				listener.exitScreen(this, 0);
-			}
+		if (playButton == null && (System.currentTimeMillis()-startTime)/1000 >= 5) {
+				manager.update(budget);
+				this.progress = manager.getProgress();
+				if (progress >= 1.0f) {
+					this.progress = 1.0f;
+					background = new Texture(BACKGROUND_FILE);
+					playButton = new Texture(PLAY_BTN_FILE);
+					playButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+					levelSelectButton = new Texture(LEVEL_SELECT_BTN_FILE);
+					levelSelectButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+					listener.exitScreen(this, 0);
+				}
+
 		}
 	}
 
@@ -193,29 +199,34 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 */
 	private void draw() {
 		canvas.begin();
-		if (playButton == null) {
-			drawProgress(canvas);
-		} else {
-			canvas.draw(background, 0,0);
-			Color playTint;
-			if (playPressState == 1)
-				playTint = selectColor;
-			else if (playHoverState == 1)
-				playTint = hoverColor;
-			else
-				playTint = Color.WHITE;
-			canvas.draw(playButton, playTint, playButton.getWidth()/2, playButton.getHeight()/2,
-					centerX, centerY+75, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+		if ((System.currentTimeMillis()-startTime)/1000 < 5) {
+			canvas.draw(studioLogo,0,0);
+		}
+		else {
+			if (playButton == null) {
+				drawProgress(canvas);
+			} else {
+				canvas.draw(background, 0, 0);
+				Color playTint;
+				if (playPressState == 1)
+					playTint = selectColor;
+				else if (playHoverState == 1)
+					playTint = hoverColor;
+				else
+					playTint = Color.WHITE;
+				canvas.draw(playButton, playTint, playButton.getWidth() / 2, playButton.getHeight() / 2,
+						centerX, centerY + 75, 0, BUTTON_SCALE * scale, BUTTON_SCALE * scale);
 
-			Color levelTint;
-			if (levelPressState == 1)
-				levelTint = selectColor;
-			else if (levelHoverState == 1)
-				levelTint = hoverColor;
-			else
-				levelTint = Color.WHITE;
-			canvas.draw(levelSelectButton, levelTint, levelSelectButton.getWidth()/2, levelSelectButton.getHeight()/2,
-					centerX, centerY-25, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+				Color levelTint;
+				if (levelPressState == 1)
+					levelTint = selectColor;
+				else if (levelHoverState == 1)
+					levelTint = hoverColor;
+				else
+					levelTint = Color.WHITE;
+				canvas.draw(levelSelectButton, levelTint, levelSelectButton.getWidth() / 2, levelSelectButton.getHeight() / 2,
+						centerX, centerY - 25, 0, BUTTON_SCALE * scale, BUTTON_SCALE * scale);
+			}
 		}
 		canvas.end();
 	}
@@ -227,7 +238,6 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @param canvas The drawing context
 	 */
 	private void drawProgress(Canvas canvas) {
-
 		if (progress < 0.2f)
 			canvas.draw(statusOne, 0,0);
 		else if (progress >= 0.2f && progress < 0.6f)
