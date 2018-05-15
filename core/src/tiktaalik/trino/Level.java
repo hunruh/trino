@@ -775,7 +775,8 @@ public class Level {
                     }
                     else if (random == 1){
                         rock = textureDict.get("rock2");
-                    } else {
+                    }
+                    else {
                         rock = textureDict.get("rock3");
                     }
 

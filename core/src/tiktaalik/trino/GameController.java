@@ -154,6 +154,9 @@ public class GameController implements ContactListener, Screen {
 	private static final String ROCK_1_FILE = "trino/rock1.png";
 	private static final String ROCK_2_FILE = "trino/rock2.png";
 	private static final String ROCK_3_FILE = "trino/rock3.png";
+	private static final String FISH_1_FILE = "trino/fish1.png";
+	private static final String FISH_2_FILE = "trino/fish2.png";
+	private static final String FISH_3_FILE = "trino/fish3.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
 	private static final String EDIBLE_WALL_EATING_STRIP = "trino/ediblewall_decay_strip.png";
@@ -581,6 +584,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(ROCK_2_FILE);
 		manager.load(ROCK_3_FILE, Texture.class);
 		assets.add(ROCK_3_FILE);
+		manager.load(FISH_1_FILE, Texture.class);
+		assets.add(FISH_1_FILE);
+		manager.load(FISH_2_FILE, Texture.class);
+		assets.add(FISH_2_FILE);
+		manager.load(FISH_3_FILE, Texture.class);
+		assets.add(FISH_3_FILE);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
@@ -819,6 +828,9 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("rock1", createTexture(manager, ROCK_1_FILE, false));
 		textureDict.put("rock2", createTexture(manager, ROCK_2_FILE, false));
 		textureDict.put("rock3", createTexture(manager, ROCK_3_FILE, false));
+		textureDict.put("fish1", createTexture(manager, FISH_1_FILE, false));
+		textureDict.put("fish2", createTexture(manager, FISH_2_FILE, false));
+		textureDict.put("fish3", createTexture(manager, FISH_3_FILE, false));
 		textureDict.put("wall", createTexture(manager,WALL_FILE,false));
 		textureDict.put("edibleWall", createTexture(manager, EDIBLE_WALL_FILE, false));
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
