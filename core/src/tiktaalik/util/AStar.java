@@ -137,11 +137,9 @@ public class AStar {
             Cell current = grid[endI][endJ];
             while (current.parent != null) {
                 coords.add(0, new Vector2(current.parent.i, current.parent.j));
-                System.out.print(current + "<-");
                 current = current.parent;
             }
         }
-        System.out.println("final size is " + coords.size());
 
         return coords;
     }

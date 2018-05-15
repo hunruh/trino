@@ -50,21 +50,8 @@ public class Switch extends GameObject {
         resize(width, height);
     }
 
-    public int getDoorID() {
-        return doorID;
-    }
-
     public void setDoorID(int doorID) {
         this.doorID = doorID;
-    }
-
-    /**
-     * Returns the dimensions of this box
-     *
-     * @return the dimensions of this box
-     */
-    public Vector2 getDimension() {
-        return sizeCache.set(dimension);
     }
 
     /**
@@ -124,15 +111,6 @@ public class Switch extends GameObject {
     public void setHeight(float value) {
         sizeCache.set(dimension.x,value);
         setDimension(sizeCache);
-    }
-
-    public void setGridLocation(Vector2 location){
-        this.gridLocation = location;
-    }
-
-    public void setGridLocation(float x, float y) {
-        gridLocation.x = x;
-        gridLocation.y = y;
     }
 
     public Vector2 getGridLocation(){

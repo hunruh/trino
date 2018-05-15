@@ -142,21 +142,15 @@ public class AIController {
     }
 
     public boolean step(PooledList<Vector2> path, boolean obstacle, int inFront){
-        //System.out.println("inFront " + inFront);
         if (obstacle) return false;
         if (path.size() == 0) return false;
-        //if (enemy.getCollided()) return;
+
         int x = getEnemyGridX();
         int y = getEnemyGridY();
-        //System.out.println("current ["+x+","+y+"]");
         float tmpx = enemy.getX();
         float tmpy = enemy.getY();
-        //System.out.println("current ["+tmpx+","+tmpy+"]");
-
         float gridx = path.getHead().x*2+1;
         float gridy = path.getHead().y*2+1;
-        //System.out.println("gridx " + gridx + ", gridy " + gridy );
-        //System.out.println("path head [" + path.getHead().x + "," + path.getHead().y + "]");
         float dx = gridx - tmpx;
         float dy = gridy - tmpy;
 
@@ -179,12 +173,10 @@ public class AIController {
                 if (justAvoided) justAvoided = false;
             }
             else{
-                //System.out.println("adjusting stuff, dx " + dx + ", dy" + dy);
                 if (dx < -OFFSET) tmpx = tmpx - SHADOW_DUGGI_SPEED;
                 else if (dx > OFFSET) tmpx = tmpx + SHADOW_DUGGI_SPEED;
                 if (dy < -OFFSET) tmpy = tmpy - SHADOW_DUGGI_SPEED;
                 else if (dy > OFFSET) tmpy = tmpy + SHADOW_DUGGI_SPEED;
-                //System.out.println("after adjust, x " + tmpx +", y" + tmpy);
                 enemy.setPosition(tmpx, tmpy);
                 return false;
             }
@@ -323,7 +315,7 @@ public class AIController {
         else {
             tmpy -= SHADOW_DUGGI_SPEED;
         }
-        //System.out.println("after ["+x+","+y+"]");
+
         enemy.setPosition(tmpx, tmpy);
         enemy.setGridLocation(getEnemyGridX(), getEnemyGridY());
         return false;
@@ -497,8 +489,6 @@ public class AIController {
             if (g != null) {
                 if (g.getType() == RIVER) {
                     return true;
-                } else {
-                    System.out.println("No river at (" + ((int) locationCache.x-1) + ", " + ((int) locationCache.y) + ")");
                 }
             }
         }
@@ -507,8 +497,6 @@ public class AIController {
             if (g != null) {
                 if (g.getType() == RIVER) {
                     return true;
-                } else {
-                    System.out.println("No river at (" + ((int) locationCache.x+1) + ", " + ((int) locationCache.y) + ")");
                 }
             }
         }

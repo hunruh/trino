@@ -17,11 +17,8 @@ public class SaveFileParser {
 //        InputStream in = getClass().getResourceAsStream(path);
 //        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         FileReader reader = new FileReader(path);
-        //System.out.println("read file");
         obj = (JSONObject) parser.parse(reader);
-        //System.out.println("parsed");
         levels = (JSONArray) obj.get("Levels");
-        System.out.println(levels);
     }
 
     public boolean[] levelCompletionArray(){

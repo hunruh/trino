@@ -12,17 +12,12 @@ public class Clone extends GameObject {
     protected PolygonShape shape; // Shape information for this circle
     private Fixture geometry; // A cache value for thefixture (for resizing)
 
-    private boolean alive;
     private boolean removed = false;
     private Vector2 gridLocation;
 
     private float totalTime = 60.0f;
     private float timeElapsed;
     private Enemy enemyEating;
-
-    public Clone(float radius) {
-        this(0, 0, radius);
-    }
 
     public Clone(float x, float y, float radius) {
         super(x,y);
@@ -52,14 +47,6 @@ public class Clone extends GameObject {
 
     public float getCloneTime(){return timeElapsed;}
 
-    public boolean getAlive() {
-        return alive;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
     public boolean getRemoved() { return removed; }
 
     public void setRemoved(boolean removed) { this.removed = removed; }
@@ -77,7 +64,6 @@ public class Clone extends GameObject {
             if (enemyEating != null){
                 enemyEating.setEatingClone(false, this);
             }
-            alive = false;
             removed = true;
         }
     }
@@ -86,18 +72,9 @@ public class Clone extends GameObject {
         return gridLocation;
     }
 
-    public void setGridLocation(Vector2 location) {
-        gridLocation = location;
-    }
-
     public void setGridLocation(float x, float y) {
         gridLocation.x = x;
         gridLocation.y = y;
-    }
-
-    public void setLocation(float x, float y) {
-        setX(x);
-        setY(y);
     }
 
     /**

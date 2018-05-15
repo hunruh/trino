@@ -3,7 +3,6 @@ package tiktaalik.trino.environment;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import tiktaalik.trino.GameObject;
 import tiktaalik.util.PooledList;
 
 public class FireFlyAIController {
@@ -28,6 +27,10 @@ public class FireFlyAIController {
     }
 
     public Vector2 getGoal(){return goal;}
+
+    public void resetGoal(){
+        goal = new Vector2(MathUtils.random(2*gameBounds.width),MathUtils.random(2*gameBounds.height));
+    }
 
     /**
      * Returns a movement direction that moves towards a goal tile.
