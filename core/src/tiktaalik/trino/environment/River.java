@@ -1,6 +1,8 @@
 package tiktaalik.trino.environment;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
@@ -22,6 +24,8 @@ public class River extends GameObject {
     private boolean isBotRiver;
     private boolean isRightRiver;
     private boolean isLeftRiver;
+    private TextureRegion rock;
+    private Vector2 rockPosition;
 
     /**
      * Creates a new dinosaur at the origin.
@@ -76,6 +80,10 @@ public class River extends GameObject {
     public boolean getIsBotRiver(){return isBotRiver;}
     public boolean getIsRightRiver(){return isRightRiver;}
     public boolean getIsLeftRiver(){return isLeftRiver;}
+    public void setRock(TextureRegion rock){ this.rock = rock;}
+    public TextureRegion getRock(){return rock;}
+    public void setRockPosition(Vector2 position){rockPosition = position;}
+    public Vector2 getRockPosition(){return rockPosition;}
 
     /**
      * Returns the dimensions of this box

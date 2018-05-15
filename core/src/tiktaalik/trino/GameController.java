@@ -151,6 +151,9 @@ public class GameController implements ContactListener, Screen {
 	private static final String FIREFLY_PURPLE_FILE = "trino/ffPurple.png";
 	private static final String FIREFLY_BLUE_FILE = "trino/ffBlue.png";
 	private static final String FIREFLY_PINK_FILE = "trino/ffPink.png";
+	private static final String ROCK_1_FILE = "trino/rock1.png";
+	private static final String ROCK_2_FILE = "trino/rock2.png";
+	private static final String ROCK_3_FILE = "trino/rock3.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
 	private static final String EDIBLE_WALL_EATING_STRIP = "trino/ediblewall_decay_strip.png";
@@ -572,6 +575,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(FIREFLY_BLUE_FILE);
 		manager.load(FIREFLY_PINK_FILE, Texture.class);
 		assets.add(FIREFLY_PINK_FILE);
+		manager.load(ROCK_1_FILE, Texture.class);
+		assets.add(ROCK_1_FILE);
+		manager.load(ROCK_2_FILE, Texture.class);
+		assets.add(ROCK_2_FILE);
+		manager.load(ROCK_3_FILE, Texture.class);
+		assets.add(ROCK_3_FILE);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
@@ -807,6 +816,9 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("fireFlyPurple", createTexture(manager, FIREFLY_PURPLE_FILE, false));
 		textureDict.put("fireFlyBlue", createTexture(manager, FIREFLY_BLUE_FILE, false));
 		textureDict.put("fireFlyPink", createTexture(manager, FIREFLY_PINK_FILE, false));
+		textureDict.put("rock1", createTexture(manager, ROCK_1_FILE, false));
+		textureDict.put("rock2", createTexture(manager, ROCK_2_FILE, false));
+		textureDict.put("rock3", createTexture(manager, ROCK_3_FILE, false));
 		textureDict.put("wall", createTexture(manager,WALL_FILE,false));
 		textureDict.put("edibleWall", createTexture(manager, EDIBLE_WALL_FILE, false));
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
@@ -1765,9 +1777,7 @@ public class GameController implements ContactListener, Screen {
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
 							}
-							else {
-								level.getAvatar().setCanExit(false);
-							}
+							
 							level.getDoor(i).setLowered(true);
 							if (i == 0) {
 								level.getDoor(i).setTexture(textureDict.get("goalOpenTile"));
@@ -1816,8 +1826,6 @@ public class GameController implements ContactListener, Screen {
 								Math.abs(level.getAvatar().getY() - 0.75f - level.getSwitch(i).getY()) < 1f) {
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
-							} else {
-								level.getAvatar().setCanExit(false);
 							}
 							level.getDoor(i).setLowered(true);
 							if (i == 0) {

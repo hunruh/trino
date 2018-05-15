@@ -753,6 +753,7 @@ public class Level {
                 float dwidth = textureDict.get("river").getRegionWidth() / scale.x;
                 float dheight = textureDict.get("river").getRegionHeight() / scale.y;
 
+                // Patch up the corners of the rivers
                 if (setPatchRivers((River) g, textureDict) != null){
                     TextureRegion[] list = setPatchRivers((River) g, textureDict);
                     for (int i = 0; i < list.length; i++){
@@ -763,8 +764,38 @@ public class Level {
                                     *g.getDrawScale().x),(g.getY()*g.getDrawScale().x) +12f,0,1,1);
                         }
                     }
+                }
+
+                // Add rocks
+                if (((River) g).getRock() == null){
+                    TextureRegion rock;
+                    int random = MathUtils.random(2);
+                    if (random == 0){
+                        rock = textureDict.get("rock1");
+                    }
+                    else if (random == 1){
+                        rock = textureDict.get("rock2");
+                    } else {
+                        rock = textureDict.get("rock3");
+                    }
+
+                    float minX = g.getX() - 0.4f;
+                    float maxX = g.getX() + 0.4f;
+                    float minY = g.getY() - 0.4f;
+                    float maxY = g.getY() + 0.4f;
+
+                    ((River) g).setRock(rock);
+                    ((River) g).setRockPosition(new Vector2(MathUtils.random(minX*g.getDrawScale().x,
+                            maxX*g.getDrawScale().x), MathUtils.random(minY*g.getDrawScale().x,
+                            maxY*g.getDrawScale().x)));
 
                 }
+
+                Vector2 origin = new Vector2(((River) g).getRock().getRegionWidth()/2.0f,
+                        ((River) g).getRock().getRegionHeight()/2.0f);
+                canvas.draw(((River) g).getRock(), Color.WHITE, origin.x,origin.y, ((River) g).getRockPosition().x,
+                        ((River) g).getRockPosition().y,0,1,1);
+
             }
         }
         canvas.end();
