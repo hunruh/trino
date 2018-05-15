@@ -59,6 +59,7 @@ public abstract class Dinosaur extends GameObject {
     private boolean canBeSeen = true;
     private boolean transform = false;
     private boolean isSwimming = false;
+    protected float shadowOpacity;
     private float offsetSwim;
     private float maxOffsetSwim = -20f;
     private float leftRight; // The current horizontal movement of the character
@@ -126,6 +127,8 @@ public abstract class Dinosaur extends GameObject {
         actionAnimating = false;
         body.setUserData(this);
 
+        shadowOpacity = 0.0f;
+
         // Actions
         actionComplete = false;
         actionInProgress = false;
@@ -171,6 +174,8 @@ public abstract class Dinosaur extends GameObject {
         actionAnimating = false;
         eating = false;
         transform = false;
+
+        shadowOpacity = 1.0f;
 
         // Actions
         actionComplete = false;
@@ -506,6 +511,7 @@ public abstract class Dinosaur extends GameObject {
         tint = Color.WHITE;
 
         if (transform){
+            shadowOpacity -= 0.1f;
             animeframe += 0.35f;
             if (animeframe >= numFrames[16]) {
                 transform = false;
@@ -554,6 +560,10 @@ public abstract class Dinosaur extends GameObject {
             if (animeframe >= numFrames[direction]) {
                 animeframe -= numFrames[direction];
             }
+        }
+
+        if (shadowOpacity < 1.0f && !transform) {
+            shadowOpacity += 0.1f;
         }
 
         if (loadingAction) {
@@ -638,7 +648,7 @@ public abstract class Dinosaur extends GameObject {
     }
 
     public void drawShadow(Canvas canvas) {
-        canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x,2*radius*drawScale.x*.85f, radius*drawScale.x);
+        canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x,2*radius*drawScale.x*.85f, radius*drawScale.x, shadowOpacity);
     }
 
     public void drawProgressCircle(Canvas canvas, float value){

@@ -120,9 +120,9 @@ public class Herbivore extends Dinosaur {
 
     public void drawShadow(Canvas canvas) {
         if (upDown)
-            canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x + 8,1.25f*radius*drawScale.x, 1.6f*radius*drawScale.x);
+            canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x + 8,1.25f*radius*drawScale.x, 1.6f*radius*drawScale.x, shadowOpacity);
         else
-            canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x - 6,2*radius*drawScale.x, radius*drawScale.x);
+            canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x - 6,2*radius*drawScale.x, radius*drawScale.x, shadowOpacity);
     }
 
     public void draw(Canvas canvas) {

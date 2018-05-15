@@ -688,12 +688,20 @@ public class Canvas {
 	}
 
 	public void drawShadow(float x, float y, float w, float h) {
+		drawShadow(x, y, w, h, 1.0f);
+	}
+
+	public void drawShadow(float x, float y, float w, float h, float opacity) {
 		if (active != DrawPass.STANDARD) {
 			Gdx.app.error("Canvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
 		}
 
-		shadowRender.setColor(shadow);
+		if (opacity != 1.0f) {
+			shadowRender.setColor(new Color(0.19f, 0.22f, 0, 0.7f * opacity));
+		} else {
+			shadowRender.setColor(shadow);
+		}
 		shadowRender.ellipse(x-w/2, y-h, w, h, 20);
 	}
 
@@ -899,7 +907,7 @@ public class Canvas {
      * @param y  The y-coordinate of the shape position
      * @param angle  The shape angle of rotation
      */
-    public void drawPhysics(PolygonShape shape, Color color, float x, float y, float angle) {
+		public void drawPhysics(PolygonShape shape, Color color, float x, float y, float angle) {
 		if (active != DrawPass.DEBUG) {
 			Gdx.app.error("Canvas", "Cannot draw without active beginDebug()", new IllegalStateException());
 			return;

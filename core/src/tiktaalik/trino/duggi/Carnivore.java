@@ -126,7 +126,7 @@ public class Carnivore extends Dinosaur {
     }
 
     public void drawShadow(Canvas canvas) {
-        canvas.drawShadow(getX()*drawScale.x - 2,getY()*drawScale.x - 5,2*radius*1.15f*drawScale.x*.75f, radius*1.15f*drawScale.x);
+        canvas.drawShadow(getX()*drawScale.x - 2,getY()*drawScale.x - 5,2*radius*1.15f*drawScale.x*.75f, radius*1.15f*drawScale.x, shadowOpacity);
     }
 
     public void draw(Canvas canvas) {
