@@ -15,6 +15,8 @@ public class Switch extends GameObject {
     private float[] vertices; // Cache of the polygon vertices (for resizing)
     private Vector2 gridLocation;
 
+    private int doorID;
+
     /**
      * Creates a new dinosaur at the origin.
      *
@@ -46,6 +48,14 @@ public class Switch extends GameObject {
         setBodyType(BodyDef.BodyType.StaticBody);
         setName("switch");
         resize(width, height);
+    }
+
+    public int getDoorID() {
+        return doorID;
+    }
+
+    public void setDoorID(int doorID) {
+        this.doorID = doorID;
     }
 
     /**

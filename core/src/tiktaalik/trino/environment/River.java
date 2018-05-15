@@ -157,14 +157,14 @@ public class River extends GameObject {
      */
     private void resize(float width, float height) {
         // Make the box with the center in the center
-        vertices[0] = -width/2.0f;
-        vertices[1] = -height/1.3f;
-        vertices[2] = -width/2.0f;
-        vertices[3] =  height/1.1f;
-        vertices[4] =  width/2.0f;
-        vertices[5] =  height/1.1f;
-        vertices[6] =  width/2.0f;
-        vertices[7] = -height/1.3f;
+        vertices[0] = -width/2.1f;
+        vertices[1] = -height/2.5f;
+        vertices[2] = -width/2.1f;
+        vertices[3] =  height/1.2f;
+        vertices[4] =  width/2.1f;
+        vertices[5] =  height/1.2f;
+        vertices[6] =  width/2.1f;
+        vertices[7] = -height/2.5f;
         shape.set(vertices);
     }
 

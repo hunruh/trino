@@ -512,15 +512,19 @@ public class Level {
             switches.setBodyType(BodyDef.BodyType.StaticBody);
             switches.setDrawScale(scale);
             if (i == 0) {
+                switches.setDoorID(0);
                 switches.setTexture(textureDict.get("switch"));
             }
             else if (i == 1) {
+                switches.setDoorID(1);
                 switches.setTexture(textureDict.get("switchone"));
             }
             else if (i == 2) {
+                switches.setDoorID(2);
                 switches.setTexture(textureDict.get("switchtwo"));
             }
             else if (i == 3) {
+                switches.setDoorID(3);
                 switches.setTexture(textureDict.get("switchthree"));
             }
             switches.setType(SWITCH);

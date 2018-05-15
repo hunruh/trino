@@ -386,7 +386,8 @@ public class Enemy extends EdibleObject {
             if (getLinearVelocity().len2() < 5)
                 setBodyType(BodyDef.BodyType.StaticBody);
 
-            stunCooldown += dt;
+            if (!eatInProgress)
+                stunCooldown += dt;
             if (stunCooldown > STUN_DURATION) {
                 setBodyType(BodyDef.BodyType.DynamicBody);
                 setLinearDamping(0);

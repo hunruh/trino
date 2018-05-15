@@ -1862,11 +1862,9 @@ public class GameController implements ContactListener, Screen {
 				if (level.getClone() != null){
 					for (int i = 0; i < level.getSwitches().size(); i++){
 						if ((Math.abs(level.getClone().getX() - level.getSwitch(i).getX()) < 1f &&
-								Math.abs(level.getClone().getY() - level.getSwitch(i).getY()) < 1.70f)||
-								(Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
-										Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1f)){
-							//////System.out.println("success");
-
+								Math.abs(level.getClone().getY() - 0.75f - level.getSwitch(i).getY()) < 1f)||
+								(Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1.5f &&
+										Math.abs(level.getAvatar().getY() - 0.75f - level.getSwitch(i).getY()) < 1f)){
 							if (i == 0) {
 								level.getAvatar().setCanExit(true);
 							}
@@ -1916,10 +1914,9 @@ public class GameController implements ContactListener, Screen {
 						}
 					}
 				} else {
-
 					for (int i = 0; i < level.getSwitches().size(); i++) {
-						if (Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1f &&
-								Math.abs(level.getAvatar().getY() - level.getSwitch(i).getY()) < 1f) {
+						if (Math.abs(level.getAvatar().getX() - level.getSwitch(i).getX()) < 1.5f &&
+								Math.abs(level.getAvatar().getY() - 0.75f - level.getSwitch(i).getY()) < 1f) {
 							//////System.out.println("success");
 
 							if (i == 0) {
