@@ -28,17 +28,6 @@ public class Wall extends EdibleObject {
     private static final int VINE_DROP = 0;
 
     /**
-     * Creates a new dinosaur at the origin.
-     *
-     * @param width	    The object width in physics units
-     * @param height	The object height in physics units
-     * @param edible	If the wall can be consumed by the herbivore
-     */
-    public Wall(float width, float height, boolean edible) {
-        this(0,0,0,0,width,height, edible);
-    }
-
-    /**
      * Creates a new dinosaur at the given position.
      *
      * @param x  		Initial x position of the avatar center
@@ -68,10 +57,6 @@ public class Wall extends EdibleObject {
         animeframe = 0;
     }
 
-    public boolean getEdible() {
-        return edible;
-    }
-
     public boolean getLowered() { return lowered; }
     public void setLowered(boolean lowered) {
         this.lowered = lowered;
@@ -79,16 +64,8 @@ public class Wall extends EdibleObject {
     }
 
     public boolean getGoal() { return goal; }
-    public void setGoal(boolean goal) { this.goal = goal; }
 
-    /**
-     * Returns the dimensions of this box
-     *
-     * @return the dimensions of this box
-     */
-    public Vector2 getDimension() {
-        return sizeCache.set(dimension);
-    }
+    public void setGoal(boolean goal) { this.goal = goal; }
 
     /**
      * Sets the dimensions of this box
@@ -152,10 +129,6 @@ public class Wall extends EdibleObject {
     public void setVineTextureSet(Texture vine, int vineFrames) {
         numFrames[VINE_DROP] = vineFrames;
         textureSet[VINE_DROP] = new FilmStrip(vine,1,vineFrames,vineFrames);
-    }
-
-    public void setGridLocation(Vector2 location){
-        this.gridLocation = location;
     }
 
     public Vector2 getGridLocation(){

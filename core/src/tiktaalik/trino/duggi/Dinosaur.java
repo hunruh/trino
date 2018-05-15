@@ -2,7 +2,6 @@ package tiktaalik.trino.duggi;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
@@ -379,10 +378,6 @@ public abstract class Dinosaur extends GameObject {
 
     public boolean getTransform(){return transform;}
 
-    public void setTransformNumber(int i){
-        transformToForm = i;
-    }
-
     public int getTransformNumber(){
         return transformToForm;
     }
@@ -418,11 +413,6 @@ public abstract class Dinosaur extends GameObject {
         if (resourceCnt < MAX_RESOURCES) {
             resourceCnt += 1;
         }
-    }
-
-    public void decrementResources(){
-        if (resourceCnt > 0)
-            resourceCnt -= 1;
     }
 
     public int getResources() {
@@ -637,8 +627,6 @@ public abstract class Dinosaur extends GameObject {
         else if (isSwimming){
             offsetY = offsetSwim;
         }
-
-        //System.out.println("filmstrip item number is " + filmStripItem + "and animeframe is " + animeframe);
 
         textureSet[filmStripItem].setFrame((int)animeframe);
         if (textureSet[filmStripItem] != null) {

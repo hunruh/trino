@@ -390,7 +390,6 @@ public class Level {
         float dwidth;
         float dheight;
 
-        //System.out.println("rdjgheks"+parser.getLevelDimension(0).y);
         levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).y));
         levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).x));
 
@@ -591,7 +590,6 @@ public class Level {
 
         // Create enemy
         dwidth = filmStripDict.get("enemyFront").getWidth() / (10 * (scale.x * 2));
-        System.out.println("currentlevel " + currentLevel);
         tmp = parser.getAssetList(currentLevel, "Enemies");
         PooledList<String[]> dir = parser.getEnemiesInformation(currentLevel);
         for(int i = 0; i < tmp.size(); i++) {
@@ -600,7 +598,6 @@ public class Level {
             Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + 0.4f, dwidth, i+1);
             String sd = dir.get(i)[0];
             String et = dir.get(i)[1];
-            System.out.println(sd);
             int d = 0;
             int type = -1;
             if (sd.equals("Up")) d = 2;

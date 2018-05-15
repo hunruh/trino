@@ -95,7 +95,6 @@ public class GDXRoot extends Game implements ScreenListener {
 			}
 			if (MenuController.currState == 2) {
 //				menu.dispose();
-//				System.out.println("3");
 //				menu = null;
 				levels = new LevelController(canvas, manager, 1);
 				levels.setScreenListener(this);
@@ -116,7 +115,6 @@ public class GDXRoot extends Game implements ScreenListener {
 				MenuController.currState = 0;
 				SoundController.getInstance().playing = false;
 //				menu.dispose();
-//				System.out.println("3");
 //				menu = null;
 
 			}

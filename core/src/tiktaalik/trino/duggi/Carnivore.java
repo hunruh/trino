@@ -49,8 +49,6 @@ public class Carnivore extends Dinosaur {
         return pushing;
     }
 
-    public boolean getCollided() { return collided;}
-
     public boolean getShakeCamera(){return shakeCamera;}
 
     public void setShakeCamera(boolean assignment){shakeCamera = assignment;}

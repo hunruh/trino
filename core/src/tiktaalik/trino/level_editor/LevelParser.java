@@ -16,9 +16,7 @@ public class LevelParser {
 //        InputStream in = getClass().getResourceAsStream(path);
 //        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         FileReader reader = new FileReader(path);
-        //System.out.println("read file");
         obj = (JSONObject)parser.parse(reader);
-        //System.out.println(obj);
         levels = (JSONArray)obj.get("Levels");
     }
 
@@ -57,10 +55,7 @@ public class LevelParser {
 
     public int getPlayerInitialOrientation(int level){
         JSONArray tmp = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Player");
-        System.out.println("---");
-        System.out.println(((levels.get(level))));
         String orientation = (String)((JSONObject)(tmp.get(0))).get("direction");
-        System.out.println((JSONObject)(tmp.get(0)));
         if (orientation.equals("Left")) return Dinosaur.LEFT;
         else if (orientation.equals("Right")) return Dinosaur.RIGHT;
         else if (orientation.equals("Up")) return Dinosaur.UP;
@@ -73,7 +68,6 @@ public class LevelParser {
         JSONArray enemies = (JSONArray)((JSONObject)((JSONObject)(levels.get(level))).get("GameObjects")).get("Enemies");
         for (int i = 0; i < enemies.size(); i++){
             JSONObject e = (JSONObject)(enemies.get(i));
-            System.out.println("direction " + (String)e.get("direction") + " " + (Long)e.get("x") + " " + (Long)e.get("y"));
             tmp.add(new String[]{(String)e.get("direction"), (String)e.get("type"), (String)e.get("movement")});
         }
         return tmp;
