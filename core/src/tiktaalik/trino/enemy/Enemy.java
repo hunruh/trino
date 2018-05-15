@@ -343,12 +343,12 @@ public class Enemy extends EdibleObject {
         // Change the collision filter for herbivore enemy
         if (enemyType == HERBIVORE_ENEMY) {
 
-            if (ticks % 200 == 0){
-                int random = MathUtils.random(1);
-                if (random == 0){
-                    SoundController.getInstance().playWaterSplash();
-                }
-            }
+//            if (ticks % 200 == 0){
+//                int random = MathUtils.random(1);
+//                if (random == 0){
+//                    SoundController.getInstance().playWaterSplash();
+//                }
+//            }
 
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.enemyHerbCatBits;
