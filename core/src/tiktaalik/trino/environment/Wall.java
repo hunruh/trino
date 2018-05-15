@@ -44,12 +44,14 @@ public class Wall extends EdibleObject {
         vertices = new float[8];
         geometry = null;
 
+        this.edible = edible;
+
         // Initialize
         setBodyType(BodyDef.BodyType.StaticBody);
         setName("wall");
         resize(width, height);
 
-        this.edible = edible;
+
         gridLocation = new Vector2(gx, gy);
 
         textureSet = new FilmStrip[1];
@@ -139,10 +141,17 @@ public class Wall extends EdibleObject {
      */
     private void resize(float width, float height) {
         // Make the box with the center in the center
-        vertices[0] = -width/2.2f;
-        vertices[1] = -height/2.0f;
-        vertices[2] = -width/2.2f;
-        vertices[3] =  height/1.2f;
+        if (edible) {
+            vertices[0] = -width/2.5f;
+            vertices[1] = -height/2.0f;
+            vertices[2] = -width/2.5f;
+            vertices[3] =  height/1.2f;
+        } else {
+            vertices[0] = -width/2.2f;
+            vertices[1] = -height/2.0f;
+            vertices[2] = -width/2.2f;
+            vertices[3] =  height/1.2f;
+        }
         vertices[4] =  width/2.2f;
         vertices[5] =  height/1.2f;
         vertices[6] =  width/2.2f;

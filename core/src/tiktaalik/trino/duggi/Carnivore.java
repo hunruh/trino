@@ -124,18 +124,18 @@ public class Carnivore extends Dinosaur {
     }
 
     public void drawShadow(Canvas canvas) {
-        canvas.drawShadow(getX()*drawScale.x - 2,getY()*drawScale.x - 5,2*radius*1.15f*drawScale.x*.75f, radius*1.15f*drawScale.x, shadowOpacity);
+        canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x - 5,2*radius*1.2f*drawScale.x*.75f, radius*1.15f*drawScale.x, shadowOpacity);
     }
 
     public void draw(Canvas canvas) {
-        float offsetX = 0;
+        float offsetX = 1;
         float offsetY = 0;
         if (eating) {
             if (direction == LEFT)
-                offsetX = -16.4f;
+                offsetX = -15.4f;
         }
         else if (direction == UP || direction == DOWN) {
-            offsetX = 2.5f;
+            offsetX = 4.5f;
             offsetY = 9f;
         }
         super.draw(canvas, offsetX, offsetY);

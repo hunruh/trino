@@ -33,7 +33,7 @@ public class Herbivore extends Dinosaur {
                 break;
 
             vertices[ctr++] = (float)(radius * Math.cos(theta)); // x
-            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .5) - radius/4 - 0.3f; // y
+            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .6) - radius/4 - 0.3f; // y
         }
         shape.set(vertices);
 
@@ -106,7 +106,7 @@ public class Herbivore extends Dinosaur {
                     if (ctr >= 16)
                         break;
 
-                    vertices[ctr++] = (float)(radius * Math.cos(theta)); // x
+                    vertices[ctr++] = (float)(radius * Math.cos(theta) * 1.1f); // x
                     vertices[ctr++] = (float)(-radius * Math.sin(theta) * .5) - radius/4 - 0.3f; // y
                 }
                 shape.set(vertices);
@@ -120,9 +120,9 @@ public class Herbivore extends Dinosaur {
 
     public void drawShadow(Canvas canvas) {
         if (upDown)
-            canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x + 8,1.25f*radius*drawScale.x, 1.6f*radius*drawScale.x, shadowOpacity);
+            canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x + 8,1.25f*radius*drawScale.x, 1.8f*radius*drawScale.x, shadowOpacity);
         else
-            canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x - 6,2*radius*drawScale.x, radius*drawScale.x, shadowOpacity);
+            canvas.drawShadow(getX()*drawScale.x,getY()*drawScale.x - 6,2*radius*drawScale.x*1.12f, radius*drawScale.x, shadowOpacity);
     }
 
     public void draw(Canvas canvas) {
