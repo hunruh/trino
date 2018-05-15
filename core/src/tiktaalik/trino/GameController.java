@@ -1921,15 +1921,13 @@ public class GameController implements ContactListener, Screen {
 			rayhandler.setCombinedMatrix(raycamera);
 
 			// Process FireFly updates
-			Rectangle levelBounds = new Rectangle(0f,0f,level.getLevelWidth()/80.0f, level.getLevelHeight()/80.0f );
 			for (int i = 0; i < fireFlyControls.size(); i++) {
 				if (level.getAvatar().canExit()) {
 					fireFlyControls.get(i).setGoal(level.getDoor(0).getPosition());
 					fireFlyControls.get(i).getMoveToGoal(level.getDoor(0).getPosition());
 				} else {
 					if (fireFlyControls.get(i).getGoal().equals(level.getDoor(0).getPosition())){
-						fireFlyControls.get(i).setGoal(new Vector2(2*MathUtils.random(levelBounds.x),
-								2 * MathUtils.random(levelBounds.y)));
+						fireFlyControls.get(i).resetGoal();
 					}
 					fireFlyControls.get(i).getMoveAlongPath();
 				}
