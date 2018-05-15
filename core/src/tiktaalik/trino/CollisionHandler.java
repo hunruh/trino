@@ -146,12 +146,6 @@ public class CollisionHandler {
     }
 
     public void handleCollision(Dinosaur d, River r) {
-        System.out.println("reached river and dino collision");
-
-        int random = MathUtils.random(1);
-        if (random == 0){
-            SoundController.getInstance().playWaterSplash();
-        }
 
     }
 
