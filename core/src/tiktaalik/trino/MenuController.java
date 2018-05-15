@@ -178,9 +178,11 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		if (playButton == null && (System.currentTimeMillis()-startTime)/1000 >= 5) {
-				manager.update(budget);
-				this.progress = manager.getProgress();
+		if (playButton == null) {
+		    if ((System.currentTimeMillis()-startTime)/1000 >= 5) {
+                manager.update(budget);
+            }
+            this.progress = manager.getProgress();
 				if (progress >= 1.0f) {
 					this.progress = 1.0f;
 					background = new Texture(BACKGROUND_FILE);
@@ -199,7 +201,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 */
 	private void draw() {
 		canvas.begin();
-		if ((System.currentTimeMillis()-startTime)/1000 < 5) {
+		if ((System.currentTimeMillis()-startTime)/1000 < 5 && progress == 0 && playButton == null) {
 			canvas.draw(studioLogo,0,0);
 		}
 		else {
