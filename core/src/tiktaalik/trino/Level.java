@@ -541,7 +541,16 @@ public class Level {
             Wall iw = new Wall((int)x, (int)y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
             iw.setBodyType(BodyDef.BodyType.StaticBody);
             iw.setDrawScale(scale);
-            iw.setTexture(textureDict.get("wall"));
+            int random = MathUtils.random(2);
+            if (random == 0){
+                iw.setTexture(textureDict.get("wall"));
+            }
+            else if (random == 1){
+                iw.setTexture(textureDict.get("wall2"));
+            } else {
+                iw.setTexture(textureDict.get("wall3"));
+            }
+
             iw.setType(WALL);
             addObject(iw);
             grid[(int)iw.getGridLocation().x][(int)iw.getGridLocation().y] = iw;
@@ -579,9 +588,16 @@ public class Level {
                 goalDoor.setGoal(true);
                 vineLocation = goalDoor.getGridLocation();
                 goalDoor.setVineTextureSet(filmStripDict.get("vineDrop"),12);
-            }
-            else {
+                goalDoor.setDoorTextureSet(filmStripDict.get("yellowDoor"), 9);
+            } else if (i == 1) {
                 goalDoor.setGoal(false);
+                goalDoor.setDoorTextureSet(filmStripDict.get("greenDoor"), 9);
+            } else if (i == 2) {
+                goalDoor.setGoal(false);
+                goalDoor.setDoorTextureSet(filmStripDict.get("redDoor"), 9);
+            } else if (i == 3) {
+                goalDoor.setGoal(false);
+                goalDoor.setDoorTextureSet(filmStripDict.get("blueDoor"), 9);
             }
 
             addObject(goalDoor);
@@ -699,7 +715,7 @@ public class Level {
             PooledList<GameObject>.Entry entry = iterator.next();
             GameObject g = entry.getValue();
             if (g.getType() == COTTON || g.getType() == SWITCH ||
-                    (g.getType() == GOAL && ((Wall) g).getLowered()))
+                    (g.getType() == GOAL && ((Wall) g).getAnimLowered()))
                 groundObjects.add(entry.getValue());
             else
                 blockObjects.add(entry.getValue());
