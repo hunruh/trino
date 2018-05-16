@@ -54,6 +54,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String OVERLAY_FILE = "trino/overlay.png";
 	private static final String GOAL_FILE = "trino/openExitPlaceHolder.png";
 	private static final String GOAL_CLOSED_FILE = "trino/exitClosedPlaceholder.png";
+	private static final String GREEN_DOOR_STRIP = "trino/green_door.png";
+	private static final String YELLOW_DOOR_STRIP = "trino/yellow_door.png";
+	private static final String BLUE_DOOR_STRIP = "trino/blue_door.png";
+	private static final String RED_DOOR_STRIP = "trino/red_door.png";
 	private static final String DOOR_FILE_ONE = "trino/openExitPlaceHolder1.png";
 	private static final String DOOR_CLOSED_FILE_ONE = "trino/exitClosedPlaceholder1.png";
 	private static final String DOOR_FILE_TWO = "trino/openExitPlaceHolder2.png";
@@ -378,6 +382,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(BACKGROUND_FILE);
 		manager.load(OVERLAY_FILE,Texture.class);
 		assets.add(OVERLAY_FILE);
+		manager.load(GREEN_DOOR_STRIP, Texture.class);
+		assets.add(GREEN_DOOR_STRIP);
+		manager.load(YELLOW_DOOR_STRIP, Texture.class);
+		assets.add(YELLOW_DOOR_STRIP);
+		manager.load(BLUE_DOOR_STRIP, Texture.class);
+		assets.add(BLUE_DOOR_STRIP);
+		manager.load(RED_DOOR_STRIP, Texture.class);
+		assets.add(RED_DOOR_STRIP);
 		manager.load(GOAL_FILE,Texture.class);
 		assets.add(GOAL_FILE);
 		manager.load(GOAL_CLOSED_FILE,Texture.class);
@@ -1042,6 +1054,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("carnToDoll", createFilmTexture(manager, CARN_TO_DOLL_STRIP));
 		filmStripDict.put("carnToHerb", createFilmTexture(manager, CARN_TO_HERB_STRIP));
 		filmStripDict.put("vineDrop", createFilmTexture(manager, VINE_DROP_STRIP));
+		filmStripDict.put("greenDoor", createFilmTexture(manager, GREEN_DOOR_STRIP));
+		filmStripDict.put("yellowDoor", createFilmTexture(manager, YELLOW_DOOR_STRIP));
+		filmStripDict.put("blueDoor", createFilmTexture(manager, BLUE_DOOR_STRIP));
+		filmStripDict.put("redDoor", createFilmTexture(manager, RED_DOOR_STRIP));
 
 		worldAssetState = AssetState.COMPLETE;
 	}

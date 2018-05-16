@@ -27,6 +27,7 @@ public class Wall extends EdibleObject {
     private float animeframe;
 
     private static final int VINE_DROP = 0;
+    private static final int DOOR = 1;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -55,12 +56,17 @@ public class Wall extends EdibleObject {
 
         gridLocation = new Vector2(gx, gy);
 
-        textureSet = new FilmStrip[1];
-        numFrames = new int[1];
+        textureSet = new FilmStrip[2];
+        numFrames = new int[2];
         animeframe = 0;
     }
 
     public boolean getLowered() { return lowered; }
+
+    public boolean getAnimLowered() {
+        return lowered && animeframe == numFrames[DOOR] - 1;
+    }
+
     public void setLowered(boolean lowered) {
         this.lowered = lowered;
 
@@ -134,6 +140,11 @@ public class Wall extends EdibleObject {
         textureSet[VINE_DROP] = new FilmStrip(vine,1,vineFrames,vineFrames);
     }
 
+    public void setDoorTextureSet(Texture door, int frames) {
+        numFrames[DOOR] = frames;
+        textureSet[DOOR] = new FilmStrip(door, 1, frames, frames);
+    }
+
     public Vector2 getGridLocation(){
         return gridLocation;
     }
@@ -205,20 +216,22 @@ public class Wall extends EdibleObject {
             geometry.setFilterData(filter);
             this.setSensor(true);
 
-            animeframe += ANIMATION_SPEED;
-
-            if (animeframe >= numFrames[VINE_DROP]) {
-                animeframe = numFrames[VINE_DROP];
-            }
-
+            if (animeframe < numFrames[DOOR] - 1)
+                animeframe += ANIMATION_SPEED;
+            else
+                animeframe = numFrames[DOOR] - 1;
         } else {
-            animeframe = 0;
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.wallCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits|
                     Dinosaur.enemyCatBits|Dinosaur.riverCatBits|Dinosaur.cloneCatBits|Dinosaur.switchCatBits;
             geometry.setFilterData(filter);
             this.setSensor(false);
+
+            if (animeframe > 0)
+                animeframe -= ANIMATION_SPEED;
+            else
+                animeframe = 0;
         }
 
     }
@@ -229,7 +242,13 @@ public class Wall extends EdibleObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-        super.draw(canvas, 0, 7, edible);
+        if (textureSet[DOOR] != null) {
+            System.out.println((int)animeframe);
+            textureSet[DOOR].setFrame((int)animeframe);
+            canvas.draw(textureSet[DOOR], Color.WHITE, origin.x, origin.y, getX() * drawScale.x - 7,
+                    getY() * drawScale.x - 7, 0, 1, 1);
+        } else
+            super.draw(canvas, 0, 7, edible);
     }
 
     /**

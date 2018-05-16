@@ -588,9 +588,16 @@ public class Level {
                 goalDoor.setGoal(true);
                 vineLocation = goalDoor.getGridLocation();
                 goalDoor.setVineTextureSet(filmStripDict.get("vineDrop"),12);
-            }
-            else {
+                goalDoor.setDoorTextureSet(filmStripDict.get("yellowDoor"), 9);
+            } else if (i == 1) {
                 goalDoor.setGoal(false);
+                goalDoor.setDoorTextureSet(filmStripDict.get("greenDoor"), 9);
+            } else if (i == 2) {
+                goalDoor.setGoal(false);
+                goalDoor.setDoorTextureSet(filmStripDict.get("redDoor"), 9);
+            } else if (i == 3) {
+                goalDoor.setGoal(false);
+                goalDoor.setDoorTextureSet(filmStripDict.get("blueDoor"), 9);
             }
 
             addObject(goalDoor);
@@ -708,7 +715,7 @@ public class Level {
             PooledList<GameObject>.Entry entry = iterator.next();
             GameObject g = entry.getValue();
             if (g.getType() == COTTON || g.getType() == SWITCH ||
-                    (g.getType() == GOAL && ((Wall) g).getLowered()))
+                    (g.getType() == GOAL && ((Wall) g).getAnimLowered()))
                 groundObjects.add(entry.getValue());
             else
                 blockObjects.add(entry.getValue());
