@@ -87,6 +87,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_GOING_IN_STRIP_BACK = "trino/herbivore_back_going_in_strip.png";
 	private static final String HERBIVORE_GOING_IN_STRIP_LEFT = "trino/herbivore_left_going_in_strip.png";
 	private static final String HERBIVORE_GOING_IN_STRIP_RIGHT = "trino/herbivore_right_going_in_strip.png";
+	private static final String HERBIVORE_GOING_OUT_STRIP_FRONT = "trino/herbivore_front_going_out_strip.png";
+	private static final String HERBIVORE_GOING_OUT_STRIP_BACK = "trino/herbivore_back_going_out_strip.png";
+	private static final String HERBIVORE_GOING_OUT_STRIP_RIGHT = "trino/herbivore_right_going_out_strip.png";
+	private static final String HERBIVORE_GOING_OUT_STRIP_LEFT = "trino/herbivore_left_going_out_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_FRONT  = "trino/herbivore_front_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_LEFT  = "trino/herbivore_left_eating_strip.png";
 	private static final String HERBIVORE_EATING_STRIP_RIGHT  = "trino/herbivore_right_eating_strip.png";
@@ -444,6 +448,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_GOING_IN_STRIP_LEFT);
 		manager.load(HERBIVORE_GOING_IN_STRIP_RIGHT, Texture.class);
 		assets.add(HERBIVORE_GOING_IN_STRIP_RIGHT);
+		manager.load(HERBIVORE_GOING_OUT_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_GOING_OUT_STRIP_FRONT);
+		manager.load(HERBIVORE_GOING_OUT_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_GOING_OUT_STRIP_BACK);
+		manager.load(HERBIVORE_GOING_OUT_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_GOING_OUT_STRIP_RIGHT);
+		manager.load(HERBIVORE_GOING_OUT_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_GOING_OUT_STRIP_LEFT);
 		manager.load(HERBIVORE_EATING_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_EATING_STRIP_FRONT);
 		manager.load(HERBIVORE_EATING_STRIP_LEFT, Texture.class);
@@ -981,6 +993,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreGoingInBack", createFilmTexture(manager, HERBIVORE_GOING_IN_STRIP_BACK));
 		filmStripDict.put("herbivoreGoingInRight", createFilmTexture(manager, HERBIVORE_GOING_IN_STRIP_RIGHT));
 		filmStripDict.put("herbivoreGoingInLeft", createFilmTexture(manager, HERBIVORE_GOING_IN_STRIP_LEFT));
+		filmStripDict.put("herbivoreGoingOutFront", createFilmTexture(manager, HERBIVORE_GOING_OUT_STRIP_FRONT));
+		filmStripDict.put("herbivoreGoingOutBack", createFilmTexture(manager, HERBIVORE_GOING_OUT_STRIP_BACK));
+		filmStripDict.put("herbivoreGoingOutRight", createFilmTexture(manager, HERBIVORE_GOING_OUT_STRIP_RIGHT));
+		filmStripDict.put("herbivoreGoingOutLeft", createFilmTexture(manager, HERBIVORE_GOING_OUT_STRIP_LEFT));
 		filmStripDict.put("herbivoreEatingLeft", createFilmTexture(manager,HERBIVORE_EATING_STRIP_LEFT));
 		filmStripDict.put("herbivoreEatingRight", createFilmTexture(manager,HERBIVORE_EATING_STRIP_RIGHT));
 		filmStripDict.put("herbivoreEatingFront", createFilmTexture(manager,HERBIVORE_EATING_STRIP_FRONT));
@@ -1996,14 +2012,25 @@ public class GameController implements ContactListener, Screen {
 				if (avatar.getDirection() == Dinosaur.UP){
 					frames = 8;
 				}
-				if (animationFrameForNotCenterTile() != -1){
+				if (animationFrameForNotCenterTileGoingIn() != -1){
 					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
 							filmStripDict.get("herbivoreGoingInRight"), 7,
 							filmStripDict.get("herbivoreGoingInBack"), 8,
 							filmStripDict.get("herbivoreGoingInFront"), 7);
 
-					avatar.forceFrame(animationFrameForNotCenterTile());
-					avatar.setOffsetSwim(((float)animationFrameForNotCenterTile()/(float)frames)*
+					avatar.forceFrame(animationFrameForNotCenterTileGoingIn());
+					avatar.setOffsetSwim(((float)animationFrameForNotCenterTileGoingIn()/(float)frames)*
+							avatar.getmaxOffsetSwim());
+				}
+				else if (animationFrameForNotCenterTileGoingOut() != -1){
+					System.out.println("reached river going out");
+					avatar.setTextureSet(filmStripDict.get("herbivoreGoingOutLeft"), 7,
+							filmStripDict.get("herbivoreGoingOutRight"), 7,
+							filmStripDict.get("herbivoreGoingOutBack"), 8,
+							filmStripDict.get("herbivoreGoingOutFront"), 7);
+
+					avatar.forceFrame(animationFrameForNotCenterTileGoingOut());
+					avatar.setOffsetSwim(((float)animationFrameForNotCenterTileGoingOut()/(float)frames)*
 							avatar.getmaxOffsetSwim());
 				}
 //				else if (animationFrameForGoingIn(frames, avatar.getDirection()) != -1){
@@ -2553,7 +2580,7 @@ public class GameController implements ContactListener, Screen {
 		}
 	}
 
-	public int animationFrameForNotCenterTile(){
+	public int animationFrameForNotCenterTileGoingIn(){
 		if (!isOnRiverTile()){
 			return -1;
 		}
@@ -2667,6 +2694,149 @@ public class GameController implements ContactListener, Screen {
 			else if (level.getAvatar().getDirection() == Dinosaur.UP){
 				if (!theRiverImOn.getIsTopRiver() || (!theRiverImOn.getIsRightRiver() && theRiverImOn.getIsBotRiver())
 						|| (!theRiverImOn.getIsLeftRiver() && theRiverImOn.getIsBotRiver())){
+					return -1;
+				}
+				if (avatarY > y0 &&  avatarY < y1){
+					return 0;
+				}
+				else if (avatarY > y1 && avatarY < y2){
+					return 1;
+				}
+				else if (avatarY > y2 && avatarY < y3){
+					return 2;
+				}
+				else if (avatarY > y3 && avatarY < y4){
+					return 3;
+				}
+				else if (avatarY > y4 && avatarY < y5){
+					return 4;
+				}
+				else if (avatarY> y5 && avatarY < y6){
+					return 5;
+				}
+				else {
+					return 6;
+				}
+			}
+
+		}
+		return -1;
+	}
+
+	public int animationFrameForNotCenterTileGoingOut(){
+		if (!isOnRiverTile()){
+			return -1;
+		}
+
+		River theRiverImOn;
+		theRiverImOn = (River) level.getGridObject(level.getAvatarGridX(),level.getAvatarGridY());
+		float x0 = theRiverImOn.getX() - 1f;
+		float x1 = theRiverImOn.getX() - 5/7f;
+		float x2 = theRiverImOn.getX() - 3/7f;
+		float x3 = theRiverImOn.getX() - 1/7f;
+		float x4 = theRiverImOn.getX() + 1/7f;
+		float x5 = theRiverImOn.getX() + 3/7f;
+		float x6 = theRiverImOn.getX() + 5/7f;
+		float x7 = theRiverImOn.getX() + 1f;
+
+		float y0 = theRiverImOn.getY() - 1f;
+		float y1 = theRiverImOn.getY() - 5/7f;
+		float y2 = theRiverImOn.getY() - 3/7f;
+		float y3 = theRiverImOn.getY() - 1/7f;
+		float y4 = theRiverImOn.getY() + 1/7f;
+		float y5 = theRiverImOn.getY() + 3/7f;
+		float y6 = theRiverImOn.getY() + 5/7f;
+		float y7 = theRiverImOn.getY() + 1f;
+
+		float avatarX = level.getAvatar().getX();
+		float avatarY = level.getAvatar().getY();
+
+		if (!theRiverImOn.getisCenterTile()){
+			if (level.getAvatar().getDirection() == Dinosaur.RIGHT){
+				if (theRiverImOn.getIsRightRiver() || (theRiverImOn.getIsTopRiver() && !theRiverImOn.getIsLeftRiver())
+						|| (theRiverImOn.getIsBotRiver() && !theRiverImOn.getIsLeftRiver())){
+					return -1;
+				}
+
+				if (avatarX > x0 &&  avatarX < x1){
+					return 0;
+				}
+				else if (avatarX > x1 && avatarX < x2){
+					return 1;
+				}
+				else if (avatarX > x2 && avatarX < x3){
+					return 2;
+				}
+				else if (avatarX > x3 && avatarX < x4){
+					return 3;
+				}
+				else if (avatarX > x4 && avatarX < x5){
+					return 4;
+				}
+				else if (avatarX > x5 && avatarX < x6){
+					return 5;
+				}
+				else {
+					return 6;
+				}
+			} else if (level.getAvatar().getDirection() == Dinosaur.LEFT){
+
+				if (theRiverImOn.getIsLeftRiver() || (theRiverImOn.getIsBotRiver() && !theRiverImOn.getIsRightRiver())
+						|| (theRiverImOn.getIsTopRiver() && !theRiverImOn.getIsRightRiver()) ){
+					return -1;
+				}
+				if (avatarX > x0 &&  avatarX < x1){
+					return 6;
+				}
+				else if (avatarX > x1 && avatarX < x2){
+					return 5;
+				}
+				else if (avatarX > x2 && avatarX < x3){
+					return 4;
+				}
+				else if (avatarX > x3 && avatarX < x4){
+					return 3;
+				}
+				else if (avatarX > x4 && avatarX < x5){
+					return 2;
+				}
+				else if (avatarX > x5 && avatarX < x6){
+					return 1;
+				}
+				else {
+					return 0;
+				}
+			} else if (level.getAvatar().getDirection() == Dinosaur.DOWN){
+
+				if (theRiverImOn.getIsBotRiver() || (theRiverImOn.getIsRightRiver() && !theRiverImOn.getIsTopRiver())
+						|| (theRiverImOn.getIsLeftRiver() && !theRiverImOn.getIsTopRiver())){
+					return -1;
+				}
+				if (avatarY > y0 &&  avatarY < y1){
+					return 6;
+				}
+				else if (avatarY > y1 && avatarY < y2){
+					return 5;
+				}
+				else if (avatarY > y2 && avatarY < y3){
+					return 4;
+				}
+				else if (avatarY > y3 && avatarY < y4){
+					return 3;
+				}
+				else if (avatarY > y4 && avatarY < y5){
+					return 2;
+				}
+				else if (avatarY> y5 && avatarY < y6){
+					return 1;
+				}
+				else {
+					return 0;
+				}
+			}
+			else if (level.getAvatar().getDirection() == Dinosaur.UP){
+				if (theRiverImOn.getIsTopRiver() || (theRiverImOn.getIsRightRiver() && !theRiverImOn.getIsBotRiver())
+						|| (theRiverImOn.getIsLeftRiver() && !theRiverImOn.getIsBotRiver())){
 					return -1;
 				}
 				if (avatarY > y0 &&  avatarY < y1){
