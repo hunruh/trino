@@ -64,6 +64,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOOR_CLOSED_FILE_TWO = "trino/exitClosedPlaceHolder2.png";
 	private static final String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
 	private static final String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
+	private static final String DOOR_FLASHING_STRIP = "trino/door_flashing.png";
 	private static final String CLONE_FILE  = "trino/clone.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
@@ -406,6 +407,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOOR_FILE_THREE);
 		manager.load(DOOR_CLOSED_FILE_THREE, Texture.class);
 		assets.add(DOOR_CLOSED_FILE_THREE);
+		manager.load(DOOR_FLASHING_STRIP, Texture.class);
+		assets.add(DOOR_FLASHING_STRIP);
 		manager.load(DOLL_STRIP_LEFT, Texture.class);
 		assets.add(DOLL_STRIP_LEFT);
 		manager.load(DOLL_STRIP_RIGHT, Texture.class);
@@ -1058,6 +1061,7 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("yellowDoor", createFilmTexture(manager, YELLOW_DOOR_STRIP));
 		filmStripDict.put("blueDoor", createFilmTexture(manager, BLUE_DOOR_STRIP));
 		filmStripDict.put("redDoor", createFilmTexture(manager, RED_DOOR_STRIP));
+		filmStripDict.put("doorFlashing", createFilmTexture(manager, DOOR_FLASHING_STRIP));
 
 		worldAssetState = AssetState.COMPLETE;
 	}
