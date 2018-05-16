@@ -423,6 +423,8 @@ public abstract class Dinosaur extends GameObject {
         return resourceCnt >= TRANSFORM_COST;
     }
 
+    public boolean getEating(){return eating;}
+
     public boolean getCanBeSeen(){
         return canBeSeen;
     }

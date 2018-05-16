@@ -1300,11 +1300,11 @@ public class GameController implements ContactListener, Screen {
 		collisionHandler.setLevel(level);
 
 		// Set the lighting
-		float value = 1.0f - level.getCurrentLevel()/40.0f;
-		if (level.getCurrentLevel() > 5){
-			duggiLight.setActive(true);
-		}
-		rayhandler.setAmbientLight(1.0f, value, value, value);
+//		float value = 1.0f - level.getCurrentLevel()/40.0f;
+//		if (level.getCurrentLevel() > 5){
+//			duggiLight.setActive(true);
+//		}
+//		rayhandler.setAmbientLight(1.0f, value, value, value);
 
 
 		// This should be set before init lighting - should be moved when we load in the json
@@ -1370,15 +1370,15 @@ public class GameController implements ContactListener, Screen {
 			reset();
 
 		// Handle nightmode
-		if (input.didNight()) {
-			if (duggiLight.isActive()) {
-				duggiLight.setActive(false);
-				rayhandler.setAmbientLight(1.0f, 1.0f, 1.0f, 1.0f);
-			} else {
-				duggiLight.setActive(true);
-				rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
-			}
-		}
+//		if (input.didNight()) {
+//			if (duggiLight.isActive()) {
+//				duggiLight.setActive(false);
+//				rayhandler.setAmbientLight(1.0f, 1.0f, 1.0f, 1.0f);
+//			} else {
+//				duggiLight.setActive(true);
+//				rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
+//			}
+//		}
 
 		if (input.isNextLevelPressed()){
 			nextLevel();
@@ -2030,7 +2030,7 @@ public class GameController implements ContactListener, Screen {
 				}
 
 				if (animationFrameForGoingIn(frames, avatar.getDirection()) != -1 && !isOnRiverTile() &&
-						avatar.getDirection() == Dinosaur.DOWN){
+						avatar.getDirection() == Dinosaur.DOWN && !avatar.getEating()){
 					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
 							filmStripDict.get("herbivoreGoingInRight"), 7,
 							filmStripDict.get("herbivoreGoingInBack"), 8,
@@ -2041,7 +2041,8 @@ public class GameController implements ContactListener, Screen {
 						avatar.getmaxOffsetSwim());
 
 				}
-				else if (animationFrameForNotCenterTileGoingIn() != -1 && avatar.getDirection() != Dinosaur.DOWN){
+				else if (animationFrameForNotCenterTileGoingIn() != -1 && avatar.getDirection() != Dinosaur.DOWN
+						&& !avatar.getEating()){
 					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
 							filmStripDict.get("herbivoreGoingInRight"), 7,
 							filmStripDict.get("herbivoreGoingInBack"), 8,
@@ -2051,7 +2052,7 @@ public class GameController implements ContactListener, Screen {
 					avatar.setOffsetSwim(((float)animationFrameForNotCenterTileGoingIn()/(float)frames)*
 							avatar.getmaxOffsetSwim());
 				}
-				else if (animationFrameForNotCenterTileGoingOut() != -1){
+				else if (animationFrameForNotCenterTileGoingOut() != -1 && !avatar.getEating()){
 					System.out.println("reached river going out");
 					avatar.setTextureSet(filmStripDict.get("herbivoreGoingOutLeft"), 7,
 							filmStripDict.get("herbivoreGoingOutRight"), 7,
@@ -2062,20 +2063,6 @@ public class GameController implements ContactListener, Screen {
 					avatar.setOffsetSwim(avatar.getmaxOffsetSwim() - (((float)animationFrameForNotCenterTileGoingOut()/(float)frames)*
 							avatar.getmaxOffsetSwim()));
 				}
-//				else if (animationFrameForGoingIn(frames, avatar.getDirection()) != -1){
-//					System.out.println("reached the going in");
-//					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
-//							filmStripDict.get("herbivoreGoingInRight"), 7,
-//							filmStripDict.get("herbivoreGoingInBack"), 8,
-//							filmStripDict.get("herbivoreGoingInFront"), 7);
-//
-//					avatar.forceFrame(animationFrameForGoingIn(frames, avatar.getDirection()));
-//					avatar.setOffsetSwim(((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
-//						avatar.getmaxOffsetSwim());
-//					System.out.println("setting offsetswim to " + ((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
-//							avatar.getmaxOffsetSwim());
-//
-//				}
 				else if (isOnRiverTile()){
 					avatar.setCanBeSeen(true);
 					avatar.setOffsetSwim(avatar.getmaxOffsetSwim());
@@ -2535,6 +2522,11 @@ public class GameController implements ContactListener, Screen {
 	private boolean isOnRiverTile(){
 		for (River r : level.getRivers()){
 			if (r.getGridLocation().x == level.getAvatarGridX() && r.getGridLocation().y == level.getAvatarGridY()) {
+				if (!r.getIsBotRiver()) {
+					if (level.getAvatar().getY() < r.getY()+.25f){
+						return false;
+					}
+				}
 				return true;
 			}
 		}
