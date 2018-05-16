@@ -348,7 +348,8 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y + i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER || g.getType() == GOAL)
+                                g.getType() == BOULDER || g.getType() == GOAL || level.isEnemyOnSquare((int)
+                                locationCache.x,(int) locationCache.y + i))
                             return false;
                     }
                 }
@@ -362,7 +363,8 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y - i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER || g.getType() == GOAL)
+                                g.getType() == BOULDER || g.getType() == GOAL || level.isEnemyOnSquare((int)
+                                locationCache.x,(int) locationCache.y - i))
                             return false;
                     }
                 }
@@ -377,7 +379,8 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x - i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER || g.getType() == GOAL)
+                                g.getType() == BOULDER || g.getType() == GOAL || level.isEnemyOnSquare((int)
+                                locationCache.x-i,(int) locationCache.y))
                             return false;
                     }
                 }
@@ -391,7 +394,8 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x + i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER || g.getType() == GOAL)
+                                g.getType() == BOULDER || g.getType() == GOAL || level.isEnemyOnSquare((int)
+                                locationCache.x + i,(int) locationCache.y))
                             return false;
                     }
                 }
@@ -414,7 +418,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y + i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER || g.getType() == GOAL)
+                                g.getType() == BOULDER || g.getType() == GOAL || g.getType() == ENEMY)
                             return false;
                     }
                 }
@@ -428,7 +432,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x][(int) locationCache.y - i];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER || g.getType() == GOAL)
+                                g.getType() == BOULDER || g.getType() == GOAL || g.getType() == ENEMY)
                             return false;
                     }
                 }
@@ -443,7 +447,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x - i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER || g.getType() == GOAL)
+                                g.getType() == BOULDER || g.getType() == GOAL || g.getType() == ENEMY)
                             return false;
                     }
                 }
@@ -457,7 +461,7 @@ public class AIController {
                     GameObject g = level.getGrid()[(int) locationCache.x + i][(int) locationCache.y];
                     if (g != null) {
                         if (g.getType() == RIVER || g.getType() == WALL || g.getType() == EDIBLEWALL ||
-                                g.getType() == BOULDER || g.getType() == GOAL)
+                                g.getType() == BOULDER || g.getType() == GOAL || g.getType() == ENEMY)
                             return false;
                     }
                 }

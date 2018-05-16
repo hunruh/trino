@@ -541,7 +541,16 @@ public class Level {
             Wall iw = new Wall((int)x, (int)y, screenToMaze(x), screenToMaze(y), dwidth, dheight, false);
             iw.setBodyType(BodyDef.BodyType.StaticBody);
             iw.setDrawScale(scale);
-            iw.setTexture(textureDict.get("wall"));
+            int random = MathUtils.random(2);
+            if (random == 0){
+                iw.setTexture(textureDict.get("wall"));
+            }
+            else if (random == 1){
+                iw.setTexture(textureDict.get("wall2"));
+            } else {
+                iw.setTexture(textureDict.get("wall3"));
+            }
+
             iw.setType(WALL);
             addObject(iw);
             grid[(int)iw.getGridLocation().x][(int)iw.getGridLocation().y] = iw;
