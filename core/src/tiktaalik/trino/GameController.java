@@ -1300,11 +1300,11 @@ public class GameController implements ContactListener, Screen {
 		collisionHandler.setLevel(level);
 
 		// Set the lighting
-		float value = 1.0f - level.getCurrentLevel()/40.0f;
-		if (level.getCurrentLevel() > 5){
-			duggiLight.setActive(true);
-		}
-		rayhandler.setAmbientLight(1.0f, value, value, value);
+//		float value = 1.0f - level.getCurrentLevel()/40.0f;
+//		if (level.getCurrentLevel() > 5){
+//			duggiLight.setActive(true);
+//		}
+//		rayhandler.setAmbientLight(1.0f, value, value, value);
 
 
 		// This should be set before init lighting - should be moved when we load in the json
@@ -1370,15 +1370,15 @@ public class GameController implements ContactListener, Screen {
 			reset();
 
 		// Handle nightmode
-		if (input.didNight()) {
-			if (duggiLight.isActive()) {
-				duggiLight.setActive(false);
-				rayhandler.setAmbientLight(1.0f, 1.0f, 1.0f, 1.0f);
-			} else {
-				duggiLight.setActive(true);
-				rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
-			}
-		}
+//		if (input.didNight()) {
+//			if (duggiLight.isActive()) {
+//				duggiLight.setActive(false);
+//				rayhandler.setAmbientLight(1.0f, 1.0f, 1.0f, 1.0f);
+//			} else {
+//				duggiLight.setActive(true);
+//				rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
+//			}
+//		}
 
 		if (input.isNextLevelPressed()){
 			nextLevel();
