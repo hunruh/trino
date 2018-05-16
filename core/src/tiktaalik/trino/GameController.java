@@ -2030,8 +2030,8 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("herbivoreGoingOutFront"), 7);
 
 					avatar.forceFrame(animationFrameForNotCenterTileGoingOut());
-					avatar.setOffsetSwim(((float)animationFrameForNotCenterTileGoingOut()/(float)frames)*
-							avatar.getmaxOffsetSwim());
+					avatar.setOffsetSwim(avatar.getmaxOffsetSwim() - (((float)animationFrameForNotCenterTileGoingOut()/(float)frames)*
+							avatar.getmaxOffsetSwim()));
 				}
 //				else if (animationFrameForGoingIn(frames, avatar.getDirection()) != -1){
 //					System.out.println("reached the going in");
