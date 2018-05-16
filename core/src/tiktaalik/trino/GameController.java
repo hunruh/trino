@@ -2012,7 +2012,20 @@ public class GameController implements ContactListener, Screen {
 				if (avatar.getDirection() == Dinosaur.UP){
 					frames = 8;
 				}
-				if (animationFrameForNotCenterTileGoingIn() != -1){
+
+				if (animationFrameForGoingIn(frames, avatar.getDirection()) != -1 && !isOnRiverTile() &&
+						avatar.getDirection() == Dinosaur.DOWN){
+					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
+							filmStripDict.get("herbivoreGoingInRight"), 7,
+							filmStripDict.get("herbivoreGoingInBack"), 8,
+							filmStripDict.get("herbivoreGoingInFront"), 7);
+
+					avatar.forceFrame(animationFrameForGoingIn(frames, avatar.getDirection()));
+					avatar.setOffsetSwim(((float)animationFrameForGoingIn(frames, avatar.getDirection())/(float)frames)*
+						avatar.getmaxOffsetSwim());
+
+				}
+				else if (animationFrameForNotCenterTileGoingIn() != -1 && avatar.getDirection() != Dinosaur.DOWN){
 					avatar.setTextureSet(filmStripDict.get("herbivoreGoingInLeft"), 7,
 							filmStripDict.get("herbivoreGoingInRight"), 7,
 							filmStripDict.get("herbivoreGoingInBack"), 8,
