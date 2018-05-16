@@ -604,9 +604,11 @@ public class Level {
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;
             float y = (tmp.get(i)).y-1;
-            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + 0.4f, dwidth, i+1);
+            float offsetY = 0;
             String sd = dir.get(i)[0];
             String et = dir.get(i)[1];
+            if (et.equals("Herbi")) offsetY = 0.4f;
+            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + offsetY, dwidth, i+1);
             int d = 0;
             int type = -1;
             if (sd.equals("Up")) d = 2;
