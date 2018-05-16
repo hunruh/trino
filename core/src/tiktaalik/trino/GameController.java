@@ -2522,6 +2522,11 @@ public class GameController implements ContactListener, Screen {
 	private boolean isOnRiverTile(){
 		for (River r : level.getRivers()){
 			if (r.getGridLocation().x == level.getAvatarGridX() && r.getGridLocation().y == level.getAvatarGridY()) {
+				if (!r.getIsBotRiver()) {
+					if (level.getAvatar().getY() < r.getY()+.25f){
+						return false;
+					}
+				}
 				return true;
 			}
 		}
