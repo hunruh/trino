@@ -22,6 +22,9 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String STUDIO_FILE = "trino/studioLogo.png";
 	private static final String PLAY_BTN_FILE = "trino/startButton.png";
 	private static final String LEVEL_SELECT_BTN_FILE = "trino/levelSelectButton.png";
+	private static final String LOADING_FILE = "trino/loading.png";
+	private static final String LOADING_DOLL_FILE = "trino/loading_doll.png";
+	private static final String BLACK_BACKGROUND_FILE = "trino/blackBackground.png";
 
 	private Color hoverColor = new Color(0.86f, 0.81f, 0.75f, 1);
 	private Color selectColor = new Color(0.76f, 0.69f, 0.63f, 1);
@@ -32,7 +35,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private Texture statusOne; // Loading texture 1
 	private Texture statusTwo; // Loading texture 2
 	private Texture statusThree; // Loading texture 3
+	private Texture blackBackground; // black background for loading
+	private Texture loadingText;
 	private Texture studioLogo; // Studio logo
+	private FilmStrip loadingDuggi; // Loading duggi walking animation
+	private float animeFrame;
+	private Texture duggiWalking;
 
 	private static int DEFAULT_BUDGET = 15; // Default budget for asset loader (do nothing but load 60 fps)
 	private static int STANDARD_WIDTH  = 1280; // Standard window size (for scaling)
@@ -134,7 +142,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		statusOne  = new Texture(PROGRESS_FILE_ONE);
 		statusTwo  = new Texture(PROGRESS_FILE_TWO);
 		statusThree  = new Texture(PROGRESS_FILE_THREE);
+		blackBackground = new Texture(BLACK_BACKGROUND_FILE);
+		loadingText = new Texture(LOADING_FILE);
 		studioLogo = new Texture(STUDIO_FILE);
+		duggiWalking = new Texture(LOADING_DOLL_FILE);
+		duggiWalking.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		loadingDuggi = new FilmStrip(duggiWalking,1,8, 8);
 
 		// No progress so far.
 		progress   = 0;
@@ -157,11 +170,17 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 statusOne.dispose();
 		 statusTwo.dispose();
 		 statusThree.dispose();
+		 blackBackground.dispose();
+		 loadingText.dispose();
+		 duggiWalking.dispose();
 		 studioLogo.dispose();
+		 blackBackground = null;
 		 background = null;
 		 statusOne  = null;
 		 statusTwo = null;
 		 statusThree = null;
+		 loadingText = null;
+		 duggiWalking = null;
 		 if (playButton != null) {
 			 playButton.dispose();
 			 playButton = null;
@@ -178,6 +197,11 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
+		animeFrame+=0.35f;
+		if (animeFrame >= 7){
+			animeFrame = 0;
+		}
+
 		if (playButton == null) {
 		    if ((System.currentTimeMillis()-startTime)/1000 >= 5) {
                 manager.update(budget);
@@ -240,12 +264,20 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @param canvas The drawing context
 	 */
 	private void drawProgress(Canvas canvas) {
-		if (progress < 0.2f)
-			canvas.draw(statusOne, 0,0);
-		else if (progress >= 0.2f && progress < 0.6f)
-			canvas.draw(statusTwo,  0, 0);
-		else if (progress >= 0.6f)
-			canvas.draw(statusThree, 0, 0);
+//		if (progress < 0.2f)
+//			canvas.draw(statusOne, 0,0);
+//		else if (progress >= 0.2f && progress < 0.6f)
+//			canvas.draw(statusTwo,  0, 0);
+//		else if (progress >= 0.6f)
+//			canvas.draw(statusThree, 0, 0);
+
+		canvas.draw(blackBackground, canvas.width/2.0f,canvas.height/2.0f);
+		canvas.draw(loadingText, 825, 50);
+		loadingDuggi.setFrame((int)animeFrame);
+		Vector2 origin = new Vector2(loadingDuggi.getRegionWidth()/ 2.0f, loadingDuggi.getRegionHeight()/2.0f);
+		if (loadingDuggi != null) {
+			canvas.draw(loadingDuggi, Color.WHITE,origin.x,origin.y,1200, 80,0,0.75f,0.75f);
+		}
 	}
 
 	/**
@@ -449,5 +481,14 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	/* Unused ControllerListener method */
 	public boolean accelerometerMoved(Controller controller, int accelerometerCode, Vector3 value) {
 		return true;
+	}
+
+	private Texture createFilmTexture(AssetManager manager, String file) {
+		if (manager.isLoaded(file)) {
+			Texture texture = manager.get(file, Texture.class);
+			texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			return texture;
+		}
+		return null;
 	}
 }
