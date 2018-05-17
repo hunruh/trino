@@ -156,6 +156,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARN_TO_DOLL_STRIP = "trino/carnToDoll.png";
 	private static final String CARN_TO_HERB_STRIP = "trino/carnToHerb.png";
 	private static final String VINE_DROP_STRIP = "trino/vine_falling.png";
+	private static final String EXCLAMATION_STRIP = "trino/exclamation.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String FIREFLY_PURPLE_FILE = "trino/ffPurple.png";
 	private static final String FIREFLY_BLUE_FILE = "trino/ffBlue.png";
@@ -610,6 +611,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(UNKILLABLE_ENEMY_STRIP_BACK);
 		manager.load(VINE_DROP_STRIP, Texture.class);
 		assets.add(VINE_DROP_STRIP);
+		manager.load(EXCLAMATION_STRIP, Texture.class);
+		assets.add(EXCLAMATION_STRIP);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
 		manager.load(FIREFLY_PURPLE_FILE, Texture.class);
@@ -1071,6 +1074,7 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("carnToDoll", createFilmTexture(manager, CARN_TO_DOLL_STRIP));
 		filmStripDict.put("carnToHerb", createFilmTexture(manager, CARN_TO_HERB_STRIP));
 		filmStripDict.put("vineDrop", createFilmTexture(manager, VINE_DROP_STRIP));
+		filmStripDict.put("exclamation", createFilmTexture(manager, EXCLAMATION_STRIP));
 		filmStripDict.put("greenDoor", createFilmTexture(manager, GREEN_DOOR_STRIP));
 		filmStripDict.put("yellowDoor", createFilmTexture(manager, YELLOW_DOOR_STRIP));
 		filmStripDict.put("blueDoor", createFilmTexture(manager, BLUE_DOOR_STRIP));
