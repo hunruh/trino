@@ -211,6 +211,39 @@ public class InputHandler {
 				((Gdx.input.getY() >= 186) && (Gdx.input.getY() <= 227));
 	}
 
+    /**
+     * Return the UI element that is being hovered over.
+     *
+     * @return the UI element that is being hovered over.
+     */
+    public int didHover() {
+        if (((Gdx.input.getX() >= 525) && (Gdx.input.getX() <= 725)) &&
+                ((Gdx.input.getY() >= 299) && (Gdx.input.getY() <= 335))) {
+            return 2; // hovering over main menu
+        }
+        else if (((Gdx.input.getX() >= 580) && (Gdx.input.getX() <= 670)) &&
+                ((Gdx.input.getY() >= 365) && (Gdx.input.getY() <= 401))) {
+            return 3; // hovering over help button
+        }
+        else if (((Gdx.input.getX() >= 546) && (Gdx.input.getX() <= 703)) &&
+                ((Gdx.input.getY() >= 432) && (Gdx.input.getY() <= 467))) {
+            return 4; // hovering over restart button
+        }
+        else if (((Gdx.input.getX() >= 553) && (Gdx.input.getX() <= 698)) &&
+                ((Gdx.input.getY() >= 497) && (Gdx.input.getY() <= 533))) {
+            return 5; // hovering over resume button
+        }
+        else if (((Gdx.input.getX() >= 509) && (Gdx.input.getX() <= 593)) &&
+                ((Gdx.input.getY() >= 217) && (Gdx.input.getY() <= 269))) {
+            return 0; // hovering over music button
+        }
+        else if (((Gdx.input.getX() >= 656) && (Gdx.input.getX() <= 740)) &&
+                ((Gdx.input.getY() >= 217) && (Gdx.input.getY() <= 269))) {
+            return 1; // hovering over sound button
+        }
+        return -1;
+    }
+
 	/**
 	 * Return true if the doll button was pressed.
 	 *
