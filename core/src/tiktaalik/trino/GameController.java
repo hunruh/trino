@@ -1687,24 +1687,29 @@ public class GameController implements ContactListener, Screen {
 					canvas.end();
 
 					if (InputHandler.getInstance().didReturn()) {
+						SoundController.getInstance().playClick();
 						menuNum = 1;
 						resetCamera();
 						listener.exitScreen(this, 0);
 						menuNum = 0;
 					}
 					else if (InputHandler.getInstance().didHelp()) {
+						SoundController.getInstance().playClick();
 						menuNum = 2;
 					}
 					else if (InputHandler.getInstance().didRestart()) {
+						SoundController.getInstance().playClick();
 						menuNum = 0;
 						reset();
 
 					}
 					else if (InputHandler.getInstance().didResume()) {
+						SoundController.getInstance().playClick();
 						menuNum = 0;
 						state = GAME_RUNNING;
 					}
 					else if (InputHandler.getInstance().didMusic()) {
+						SoundController.getInstance().playClick();
 //						menuNum = 5;
 						musicState = !musicState;
 						int form = level.getAvatar().getForm();
@@ -1712,6 +1717,7 @@ public class GameController implements ContactListener, Screen {
 
 					}
 					else if (InputHandler.getInstance().didSound()) {
+						SoundController.getInstance().playClick();
 //						menuNum = 6;
 						soundState = !soundState;
 					}
@@ -2469,6 +2475,7 @@ public class GameController implements ContactListener, Screen {
 			}
 
 			if (InputHandler.getInstance().didPause()) {
+				SoundController.getInstance().playClick();
 				state = GAME_PAUSED;
 				return;
 			}

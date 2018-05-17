@@ -5,6 +5,7 @@
 package tiktaalik.trino;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.assets.*;
@@ -27,6 +28,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String LOADING_DOLL_FILE = "trino/loading_doll.png";
 	private static final String BLACK_BACKGROUND_FILE = "trino/blackBackground.png";
 	private static final String LEVEL_BUTTON_FILE = "trino/wood.png";
+	private static final String CLICK_SOUND_FILE = "trino/click.mp3";
     private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
     private static int FONT_SIZE = 64;
     private BitmapFont displayFont;
@@ -48,6 +50,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private Texture duggiWalking;
 	private Texture levelButton;
 	private Vector2[] levelButtonPositions;
+	private Sound click;
 
 	private static int DEFAULT_BUDGET = 15; // Default budget for asset loader (do nothing but load 60 fps)
 	private static int STANDARD_WIDTH  = 1280; // Standard window size (for scaling)
@@ -190,6 +193,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 duggiWalking.dispose();
 		 levelButton.dispose();
 		 studioLogo.dispose();
+		 click.dispose();
 		 blackBackground = null;
 		 background = null;
 		 statusOne  = null;
@@ -198,6 +202,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 loadingText = null;
 		 duggiWalking = null;
 		 levelButton = null;
+		 click = null;
 		 if (playButton != null) {
 			 playButton.dispose();
 			 playButton = null;
@@ -252,6 +257,9 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
                     levelButton = new Texture(LEVEL_BUTTON_FILE);
                     levelButtonPositions = new Vector2[20];
+
+                    // Load the click sound
+					click = Gdx.audio.newSound(Gdx.files.internal(CLICK_SOUND_FILE));
 
                     // Load the font
                     FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
@@ -371,10 +379,17 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	            System.out.println("level " + (i+1) + "pressed");
 	            levelNum = i + 1;
 	            levelPressState = 1;
+	            playClick();
             }
 
         }
     }
+    private void playClick(){
+		if (click != null){
+			click.pause();
+			click.play();
+		}
+	}
 	/**
 	 * Called when the Screen should render itself.
 	 *
@@ -457,10 +472,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                 if ((screenX > centerX - playButton.getWidth()/2) && (screenX < centerX + playButton.getWidth()/2) &&
                         (screenY > centerY + 75 - playButton.getHeight()/2) && (screenY < centerY + 75 + playButton.getHeight()/2)) {
                     playPressState = 1;
+                    playClick();
                 }
                 if ((screenX > centerX - levelSelectButton.getWidth()/2) && (screenX < centerX + levelSelectButton.getWidth()/2) &&
                         (screenY > centerY - 25 - levelSelectButton.getHeight()/2) && (screenY < centerY - 25 + levelSelectButton.getHeight()/2)) {
                     panningToLevelSelect = true;
+                    playClick();
 
                 }
             } else {
@@ -471,6 +488,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                 if (screenX > 0f && screenX < 250f && screenY > 680 && screenY < 720){
                     panningToMainMenu = true;
                     onLevelSelectScreen = false;
+                    playClick();
                 }
                 checkLevelButtonPressed(screenX,screenY);
             }
