@@ -2462,6 +2462,7 @@ public class GameController implements ContactListener, Screen {
 					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
 						if (avatar.getResources() < 3){
 							SoundController.getInstance().playMunch();
+							avatar.setCanBeSeen(true);
 							if (!((EdibleObject) tmp).getEatInProgress()){
 								avatar.incrementResources();
 							}
