@@ -30,6 +30,7 @@ public class Enemy extends EdibleObject {
 
     private int numFrames[];
     private float animeframe;
+    private float animeframeForExclamation;
     private float collideCooldown;
     private float stunCooldown;
     private boolean faceRight;
@@ -53,6 +54,7 @@ public class Enemy extends EdibleObject {
     private boolean alert = false;
     private int enemyType = CARNIVORE_ENEMY;
     private int ticks;
+    private FilmStrip exclamation;
 
     private static final int STUNNED_LEFT = 12;
     private static final int STUNNED_RIGHT = 13;
@@ -109,6 +111,7 @@ public class Enemy extends EdibleObject {
         coolingCharge = false;
         chargeReady = false;
         eatingClone = false;
+
     }
 
     public void setAlert(boolean assignment){
@@ -205,6 +208,10 @@ public class Enemy extends EdibleObject {
         textureSet[18] = new FilmStrip(up,1,upFrames,upFrames);
         numFrames[19] = downFrames;
         textureSet[19] = new FilmStrip(down,1,downFrames,downFrames);
+    }
+
+    public void setExclamationTextureSet(Texture alert){
+        this.exclamation = new FilmStrip(alert,1,12,12);
     }
 
     public void beginEating() {
@@ -364,6 +371,14 @@ public class Enemy extends EdibleObject {
 
         }
 
+        if (alert){
+            animeframeForExclamation += 1.5f*ANIMATION_SPEED;
+            if (animeframeForExclamation >= 11){
+                alert = false;
+                animeframeForExclamation = 0;
+            }
+        }
+
         if (collideCooldown > 0)
             collideCooldown += dt;
 
@@ -446,6 +461,13 @@ public class Enemy extends EdibleObject {
             }
         } else if (enemyType == HERBIVORE_ENEMY){
             offsetY = -20f;
+        }
+
+        if (alert){
+            Vector2 originExclamation = new Vector2(exclamation.getRegionWidth()/2.0f, exclamation.getRegionHeight()/2.0f);
+            exclamation.setFrame((int)animeframeForExclamation);
+            canvas.draw(exclamation, Color.WHITE, originExclamation.x, originExclamation.y, (getX()-1)*drawScale.x,
+                    (getY()+0.5f)*drawScale.x, 0, 2,2);
         }
 
         if (eatInProgress && eatenTextureSet != null) {

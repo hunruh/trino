@@ -70,10 +70,13 @@ public class Wall extends EdibleObject {
     }
 
     public void setLowered(boolean lowered) {
-        this.lowered = lowered;
-        if (!lowered)
-            fullyLowered = false;
+        if (!lowered) {
+            if (fullyLowered)
+                animeframe = numFrames[DOOR];
 
+            fullyLowered = false;
+        }
+        this.lowered = lowered;
     }
 
     public boolean getGoal() { return goal; }
@@ -262,7 +265,7 @@ public class Wall extends EdibleObject {
     public void draw(Canvas canvas) {
         if (fullyLowered && textureSet[LOWERED] != null) {
             textureSet[LOWERED].setFrame((int)animeframe);
-            canvas.draw(textureSet[LOWERED], Color.WHITE, origin.x, origin.y, getX() * drawScale.x - 7,
+            canvas.draw(textureSet[LOWERED], Color.WHITE, origin.x, origin.y, getX() * drawScale.x - 7 - (0.3f * animeframe - 1),
                     getY() * drawScale.x - 2, 0, 1, 1);
         } else if (textureSet[DOOR] != null) {
             textureSet[DOOR].setFrame((int)animeframe);

@@ -156,6 +156,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARN_TO_DOLL_STRIP = "trino/carnToDoll.png";
 	private static final String CARN_TO_HERB_STRIP = "trino/carnToHerb.png";
 	private static final String VINE_DROP_STRIP = "trino/vine_falling.png";
+	private static final String EXCLAMATION_STRIP = "trino/exclamation.png";
 	private static final String FIREFLY_FILE = "trino/ffNick.png";
 	private static final String FIREFLY_PURPLE_FILE = "trino/ffPurple.png";
 	private static final String FIREFLY_BLUE_FILE = "trino/ffBlue.png";
@@ -186,6 +187,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String VICTORY_FILE = "trino/victoryImage.png";
 	private static final String GAMEOVER_FILE = "trino/gameoverImage.png";
 	private static final String TUTORIAL_FILE = "trino/tutorialOverlay.png";
+	private static final String SWING_OUT_STRIP = "trino/vineswingtocamera.png";
+	private static final String SWING_IN_STRIP = "trino/vineswingout.png";
 
 	// Pause menu assets
 	private static final String PAUSE_MENU_FILE = "pause/pauseMenu.png";
@@ -252,6 +255,7 @@ public class GameController implements ContactListener, Screen {
     private static final String CORNER_TOP_LEFT = "trino/corner_top_left.png";
     private static final String CORNER_TOP_RIGHT = "trino/corner_top_right.png";
     private static final String LONG_VINE_FILE = "trino/vine_long.png";
+    private static final String WATER_SHINE_FILE = "trino/watershine.png";
 
 	// Tutorial menus
 	private static final String TUT_ONE_A = "tutorial/move1.png";
@@ -319,6 +323,9 @@ public class GameController implements ContactListener, Screen {
 	private float ffLightDsts[];
 	private float ffLightChanges[];
 
+	private FilmStrip swingInStrip;
+	private FilmStrip swingOutStrip;
+
 	private World world;
 	private Level level;
 
@@ -339,6 +346,7 @@ public class GameController implements ContactListener, Screen {
 	private int playDoorDown = 0;
 	private int playDoorUp = 0;
 	private int playDoorSound = -1;
+	private float swingAnimeFrame = 0;
 	private float elapsed;
 	private float duration;
 	private float radius;
@@ -603,6 +611,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(UNKILLABLE_ENEMY_STRIP_BACK);
 		manager.load(VINE_DROP_STRIP, Texture.class);
 		assets.add(VINE_DROP_STRIP);
+		manager.load(EXCLAMATION_STRIP, Texture.class);
+		assets.add(EXCLAMATION_STRIP);
 		manager.load(FIREFLY_FILE, Texture.class);
 		assets.add(FIREFLY_FILE);
 		manager.load(FIREFLY_PURPLE_FILE, Texture.class);
@@ -775,6 +785,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CORNER_TOP_RIGHT);
 		manager.load(LONG_VINE_FILE, Texture.class);
 		assets.add(LONG_VINE_FILE);
+        manager.load(WATER_SHINE_FILE, Texture.class);
+        assets.add(WATER_SHINE_FILE);
+        manager.load(SWING_IN_STRIP, Texture.class);
+        assets.add(SWING_IN_STRIP);
+        manager.load(SWING_OUT_STRIP, Texture.class);
+        assets.add(SWING_OUT_STRIP);
 		manager.load(TUT_ONE_A, Texture.class);
 		assets.add(TUT_ONE_A);
 		manager.load(TUT_ONE_B, Texture.class);
@@ -898,6 +914,7 @@ public class GameController implements ContactListener, Screen {
         textureDict.put("cornerTopLeft", createTexture(manager, CORNER_TOP_LEFT, false));
         textureDict.put("cornerTopRight", createTexture(manager, CORNER_TOP_RIGHT, false));
         textureDict.put("longVine", createTexture(manager, LONG_VINE_FILE, false));
+        textureDict.put("watershine", createTexture(manager, WATER_SHINE_FILE, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
 		textureDict.put("gameover", createTexture(manager, GAMEOVER_FILE, false));
@@ -1057,11 +1074,15 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("carnToDoll", createFilmTexture(manager, CARN_TO_DOLL_STRIP));
 		filmStripDict.put("carnToHerb", createFilmTexture(manager, CARN_TO_HERB_STRIP));
 		filmStripDict.put("vineDrop", createFilmTexture(manager, VINE_DROP_STRIP));
+		filmStripDict.put("exclamation", createFilmTexture(manager, EXCLAMATION_STRIP));
 		filmStripDict.put("greenDoor", createFilmTexture(manager, GREEN_DOOR_STRIP));
 		filmStripDict.put("yellowDoor", createFilmTexture(manager, YELLOW_DOOR_STRIP));
 		filmStripDict.put("blueDoor", createFilmTexture(manager, BLUE_DOOR_STRIP));
 		filmStripDict.put("redDoor", createFilmTexture(manager, RED_DOOR_STRIP));
 		filmStripDict.put("doorFlashing", createFilmTexture(manager, DOOR_FLASHING_STRIP));
+
+		swingInStrip = new FilmStrip(createFilmTexture(manager, SWING_IN_STRIP),1,10,10);
+		swingOutStrip = new FilmStrip(createFilmTexture(manager, SWING_OUT_STRIP),1,11,11);
 
 		worldAssetState = AssetState.COMPLETE;
 	}
@@ -1397,10 +1418,6 @@ public class GameController implements ContactListener, Screen {
 			if (failed || timeOut) {
 				state = GAME_OVER;
 			}
-			else if (complete) {
-//				nextLevel();
-				state = GAME_OVER;
-			}
 		}
 
 		return true;
@@ -1545,6 +1562,16 @@ public class GameController implements ContactListener, Screen {
             canvas.end();
         }
 
+        if (state == GAME_LEVEL_END) {
+			swingOutStrip.setFrame((int)swingAnimeFrame);
+			if (swingOutStrip != null) {
+				canvas.beginOverlay();
+				canvas.draw(swingOutStrip, Color.WHITE,0,0,0,43,0,1,1);
+				canvas.end();
+			}
+		}
+
+
 		if (state == GAME_OVER) {
 			displayFont.setColor(Color.YELLOW);
 			if (complete && !failed) {
@@ -1555,7 +1582,7 @@ public class GameController implements ContactListener, Screen {
 						textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
 				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
 				if (totalTime >= 2*levelTime/3) {
-					System.out.println("THREE STAR!");
+//					System.out.println("THREE STAR!");
 					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
 							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
@@ -1564,7 +1591,7 @@ public class GameController implements ContactListener, Screen {
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
 				}
 				else if (totalTime >= levelTime/3) {
-					System.out.println("TWO STAR!");
+//					System.out.println("TWO STAR!");
 					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
 							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
 							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
@@ -1814,7 +1841,8 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_OVER;
 		}
 		else if (complete && !failed) {
-			state = GAME_OVER;
+			state = GAME_LEVEL_END;
+			swingAnimeFrame = 0;
 		}
 		else {
 			if (level.getSwitches().size() == 0) {
@@ -2057,7 +2085,6 @@ public class GameController implements ContactListener, Screen {
 							avatar.getmaxOffsetSwim());
 				}
 				else if (animationFrameForNotCenterTileGoingOut() != -1 && !avatar.getEating()){
-					System.out.println("reached river going out");
 					avatar.setTextureSet(filmStripDict.get("herbivoreGoingOutLeft"), 7,
 							filmStripDict.get("herbivoreGoingOutRight"), 7,
 							filmStripDict.get("herbivoreGoingOutBack"), 8,
@@ -2419,7 +2446,10 @@ public class GameController implements ContactListener, Screen {
 	}
 
 	private void updateLevelEnd() {
-		state = GAME_READY;
+		swingAnimeFrame += 0.175f;
+		if (swingAnimeFrame >= 11) {
+			state = GAME_OVER;
+		}
 	}
 
 	private void updateGameOver() {
