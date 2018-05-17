@@ -787,16 +787,20 @@ public class Level {
                 // Add rocks
                 if (((River) g).getRock() == null && ((River)g).getHasRockOnit()){
                     TextureRegion rock;
-                    int random = MathUtils.random(2);
+                    int random = MathUtils.random(5);
                     if (random == 0){
                         rock = textureDict.get("rock1");
                     }
                     else if (random == 1){
                         rock = textureDict.get("rock2");
                     }
-                    else {
+                    else if (random == 2) {
                         rock = textureDict.get("rock3");
                     }
+                    else {
+                        rock = textureDict.get("watershine");
+                    }
+
 
                     float minX = g.getX() - 0.3f;
                     float maxX = g.getX() + 0.3f;
