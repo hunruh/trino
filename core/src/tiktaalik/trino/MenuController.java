@@ -221,7 +221,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private void update(float delta) {
 		//System.out.println("menu curr state is " + currState);
 	    if (panningToLevelSelect){
-            canvas.getCamera().position.x += 10;
+            canvas.getCamera().position.x += 20;
             if (canvas.getCamera().position.x >= 1920){
                 canvas.getCamera().position.x = 1920;
                 onLevelSelectScreen = true;
@@ -229,7 +229,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
             }
             canvas.getCamera().update();
         } else if (panningToMainMenu){
-            canvas.getCamera().position.x -= 10;
+            canvas.getCamera().position.x -= 20;
             if (canvas.getCamera().position.x <= 640){
                 canvas.getCamera().position.x = 640;
                 panningToMainMenu = false;
