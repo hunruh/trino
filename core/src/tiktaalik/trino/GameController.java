@@ -1599,23 +1599,23 @@ public class GameController implements ContactListener, Screen {
 				if (menuNum == 0) {
 					canvas.beginOverlay();
 					canvas.draw(textureDict.get("grayOut"), -9, 0);
-					canvas.draw(textureDict.get("pauseMenu"), 396, 109);
+					canvas.draw(textureDict.get("pauseMenu"), 297, 110);
 					if (musicState) {
-						canvas.draw(textureDict.get("musicOn"), 725, 181); // music button
+						canvas.draw(textureDict.get("musicOn"), 510, 451); // music button
 					}
 					else {
-						canvas.draw(textureDict.get("musicOff"), 725, 181); // music button
+						canvas.draw(textureDict.get("musicOff"), 510, 451); // music button
 					}
 					if (soundState) {
-						canvas.draw(textureDict.get("soundOn"), 782, 181); // sound button
+						canvas.draw(textureDict.get("soundOn"), 656, 451); // sound button
 					}
 					else {
-						canvas.draw(textureDict.get("soundOff"), 782, 181); // sound button
+						canvas.draw(textureDict.get("soundOff"), 656, 451); // sound button
 					}
-					canvas.draw(textureDict.get("menuText"), 573, 459); // menu text
-					canvas.draw(textureDict.get("helpText"), 583, 389); // help text
-					canvas.draw(textureDict.get("restartText"), 557, 320); // restart text
-					canvas.draw(textureDict.get("resumeText"),565, 255); // resume text
+					canvas.draw(textureDict.get("menuText"), 525, 385); // menu text
+					canvas.draw(textureDict.get("helpText"), 580, 320); // help text
+					canvas.draw(textureDict.get("restartText"), 546, 253); // restart text
+					canvas.draw(textureDict.get("resumeText"),553, 187); // resume text
 					canvas.end();
 
 					if (InputHandler.getInstance().didReturn()) {

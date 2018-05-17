@@ -302,6 +302,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			musicScreen = false;
 			Gdx.app.exit();
 		}
+
 	}
 
 }
