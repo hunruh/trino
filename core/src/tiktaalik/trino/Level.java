@@ -589,6 +589,7 @@ public class Level {
                 vineLocation = goalDoor.getGridLocation();
                 goalDoor.setVineTextureSet(filmStripDict.get("vineDrop"),12);
                 goalDoor.setDoorTextureSet(filmStripDict.get("yellowDoor"), 9);
+                goalDoor.setLoweredTextureSet(filmStripDict.get("doorFlashing"), 9);
             } else if (i == 1) {
                 goalDoor.setGoal(false);
                 goalDoor.setDoorTextureSet(filmStripDict.get("greenDoor"), 9);
