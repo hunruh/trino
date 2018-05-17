@@ -589,6 +589,7 @@ public class Level {
                 vineLocation = goalDoor.getGridLocation();
                 goalDoor.setVineTextureSet(filmStripDict.get("vineDrop"),12);
                 goalDoor.setDoorTextureSet(filmStripDict.get("yellowDoor"), 9);
+                goalDoor.setLoweredTextureSet(filmStripDict.get("doorFlashing"), 9);
             } else if (i == 1) {
                 goalDoor.setGoal(false);
                 goalDoor.setDoorTextureSet(filmStripDict.get("greenDoor"), 9);
@@ -787,16 +788,20 @@ public class Level {
                 // Add rocks
                 if (((River) g).getRock() == null && ((River)g).getHasRockOnit()){
                     TextureRegion rock;
-                    int random = MathUtils.random(2);
+                    int random = MathUtils.random(5);
                     if (random == 0){
                         rock = textureDict.get("rock1");
                     }
                     else if (random == 1){
                         rock = textureDict.get("rock2");
                     }
-                    else {
+                    else if (random == 2) {
                         rock = textureDict.get("rock3");
                     }
+                    else {
+                        rock = textureDict.get("watershine");
+                    }
+
 
                     float minX = g.getX() - 0.3f;
                     float maxX = g.getX() + 0.3f;

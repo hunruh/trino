@@ -64,6 +64,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOOR_CLOSED_FILE_TWO = "trino/exitClosedPlaceHolder2.png";
 	private static final String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
 	private static final String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
+	private static final String DOOR_FLASHING_STRIP = "trino/door_flashing.png";
 	private static final String CLONE_FILE  = "trino/clone.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
@@ -251,6 +252,7 @@ public class GameController implements ContactListener, Screen {
     private static final String CORNER_TOP_LEFT = "trino/corner_top_left.png";
     private static final String CORNER_TOP_RIGHT = "trino/corner_top_right.png";
     private static final String LONG_VINE_FILE = "trino/vine_long.png";
+    private static final String WATER_SHINE_FILE = "trino/watershine.png";
 
 	// Tutorial menus
 	private static final String TUT_ONE_A = "tutorial/move1.png";
@@ -406,6 +408,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOOR_FILE_THREE);
 		manager.load(DOOR_CLOSED_FILE_THREE, Texture.class);
 		assets.add(DOOR_CLOSED_FILE_THREE);
+		manager.load(DOOR_FLASHING_STRIP, Texture.class);
+		assets.add(DOOR_FLASHING_STRIP);
 		manager.load(DOLL_STRIP_LEFT, Texture.class);
 		assets.add(DOLL_STRIP_LEFT);
 		manager.load(DOLL_STRIP_RIGHT, Texture.class);
@@ -772,6 +776,8 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CORNER_TOP_RIGHT);
 		manager.load(LONG_VINE_FILE, Texture.class);
 		assets.add(LONG_VINE_FILE);
+        manager.load(WATER_SHINE_FILE, Texture.class);
+        assets.add(WATER_SHINE_FILE);
 		manager.load(TUT_ONE_A, Texture.class);
 		assets.add(TUT_ONE_A);
 		manager.load(TUT_ONE_B, Texture.class);
@@ -895,6 +901,7 @@ public class GameController implements ContactListener, Screen {
         textureDict.put("cornerTopLeft", createTexture(manager, CORNER_TOP_LEFT, false));
         textureDict.put("cornerTopRight", createTexture(manager, CORNER_TOP_RIGHT, false));
         textureDict.put("longVine", createTexture(manager, LONG_VINE_FILE, false));
+        textureDict.put("watershine", createTexture(manager, WATER_SHINE_FILE, false));
 		textureDict.put("boulder", createTexture(manager, BOULDER_FILE, false));
 		textureDict.put("victory", createTexture(manager, VICTORY_FILE, false));
 		textureDict.put("gameover", createTexture(manager, GAMEOVER_FILE, false));
@@ -1058,6 +1065,7 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("yellowDoor", createFilmTexture(manager, YELLOW_DOOR_STRIP));
 		filmStripDict.put("blueDoor", createFilmTexture(manager, BLUE_DOOR_STRIP));
 		filmStripDict.put("redDoor", createFilmTexture(manager, RED_DOOR_STRIP));
+		filmStripDict.put("doorFlashing", createFilmTexture(manager, DOOR_FLASHING_STRIP));
 
 		worldAssetState = AssetState.COMPLETE;
 	}

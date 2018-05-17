@@ -19,6 +19,7 @@ public class Wall extends EdibleObject {
 
     private boolean edible;
     private boolean lowered = false;
+    private boolean fullyLowered = false;
     private boolean goal;
 
     private static final float ANIMATION_SPEED = 0.175f;
@@ -28,6 +29,7 @@ public class Wall extends EdibleObject {
 
     private static final int VINE_DROP = 0;
     private static final int DOOR = 1;
+    private static final int LOWERED = 2;
 
     /**
      * Creates a new dinosaur at the given position.
@@ -56,20 +58,25 @@ public class Wall extends EdibleObject {
 
         gridLocation = new Vector2(gx, gy);
 
-        textureSet = new FilmStrip[2];
-        numFrames = new int[2];
+        textureSet = new FilmStrip[3];
+        numFrames = new int[3];
         animeframe = 0;
     }
 
     public boolean getLowered() { return lowered; }
 
     public boolean getAnimLowered() {
-        return lowered && animeframe == numFrames[DOOR] - 1;
+        return fullyLowered;
     }
 
     public void setLowered(boolean lowered) {
-        this.lowered = lowered;
+        if (!lowered) {
+            if (fullyLowered)
+                animeframe = numFrames[DOOR];
 
+            fullyLowered = false;
+        }
+        this.lowered = lowered;
     }
 
     public boolean getGoal() { return goal; }
@@ -145,6 +152,11 @@ public class Wall extends EdibleObject {
         textureSet[DOOR] = new FilmStrip(door, 1, frames, frames);
     }
 
+    public void setLoweredTextureSet(Texture door, int frames) {
+        numFrames[LOWERED] = frames;
+        textureSet[LOWERED] = new FilmStrip(door, 1, frames, frames);
+    }
+
     public Vector2 getGridLocation(){
         return gridLocation;
     }
@@ -209,7 +221,11 @@ public class Wall extends EdibleObject {
      */
     public void update(float dt) {
         super.update(dt);
-        if (lowered){
+        if (fullyLowered && textureSet[LOWERED] != null) {
+            animeframe += ANIMATION_SPEED;
+            if (animeframe >= numFrames[LOWERED])
+                animeframe -= numFrames[LOWERED];
+        } else if (lowered){
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.goalCatBits;
             filter.maskBits = Dinosaur.dollCatBits|Dinosaur.herbCatBits|Dinosaur.carnCatBits;
@@ -218,8 +234,13 @@ public class Wall extends EdibleObject {
 
             if (animeframe < numFrames[DOOR] - 1)
                 animeframe += ANIMATION_SPEED;
-            else
-                animeframe = numFrames[DOOR] - 1;
+            else {
+                fullyLowered = true;
+                if (textureSet[LOWERED] != null)
+                    animeframe = 0;
+                else
+                    animeframe = numFrames[DOOR] - 1;
+            }
         } else {
             Filter filter = geometry.getFilterData();
             filter.categoryBits = Dinosaur.wallCatBits;
@@ -242,8 +263,11 @@ public class Wall extends EdibleObject {
      * @param canvas Drawing context
      */
     public void draw(Canvas canvas) {
-        if (textureSet[DOOR] != null) {
-            System.out.println((int)animeframe);
+        if (fullyLowered && textureSet[LOWERED] != null) {
+            textureSet[LOWERED].setFrame((int)animeframe);
+            canvas.draw(textureSet[LOWERED], Color.WHITE, origin.x, origin.y, getX() * drawScale.x - 7 - (0.3f * animeframe - 1),
+                    getY() * drawScale.x - 2, 0, 1, 1);
+        } else if (textureSet[DOOR] != null) {
             textureSet[DOOR].setFrame((int)animeframe);
             canvas.draw(textureSet[DOOR], Color.WHITE, origin.x, origin.y, getX() * drawScale.x - 7,
                     getY() * drawScale.x - 7, 0, 1, 1);
