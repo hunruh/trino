@@ -463,12 +463,6 @@ public class Enemy extends EdibleObject {
             offsetY = -20f;
         }
 
-        if (alert){
-            Vector2 originExclamation = new Vector2(exclamation.getRegionWidth()/2.0f, exclamation.getRegionHeight()/2.0f);
-            exclamation.setFrame((int)animeframeForExclamation);
-            canvas.draw(exclamation, Color.WHITE, originExclamation.x, originExclamation.y, (getX()-1)*drawScale.x,
-                    (getY()+0.5f)*drawScale.x, 0, 2,2);
-        }
 
         if (eatInProgress && eatenTextureSet != null) {
             if (animeframe >= numEatenFrames)
@@ -495,6 +489,21 @@ public class Enemy extends EdibleObject {
         if (textureSet[filmStripItem] != null) {
             canvas.draw(textureSet[filmStripItem], Color.WHITE,origin.x,origin.y,getX()*drawScale.x + offsetX,
                     getY()*drawScale.x + offsetY,0,1,1);
+        }
+
+        if (alert){
+            Vector2 originExclamation = new Vector2(exclamation.getRegionWidth()/2.0f, exclamation.getRegionHeight()/2.0f);
+            exclamation.setFrame((int)animeframeForExclamation);
+            float xOffset = 0;
+            if (getDirection() == Dinosaur.LEFT){
+                xOffset = -1f;
+            } else if (getDirection() == Dinosaur.RIGHT){
+                xOffset = 0;
+            } else {
+                xOffset = -0.5f;
+            }
+            canvas.draw(exclamation, Color.WHITE, originExclamation.x, originExclamation.y, (getX()+xOffset)*drawScale.x,
+                    (getY()+1.35f)*drawScale.x, 0, 1,1);
         }
     }
 
