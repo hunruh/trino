@@ -219,6 +219,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
+		System.out.println("menu curr state is " + currState);
 	    if (panningToLevelSelect){
             canvas.getCamera().position.x += 10;
             if (canvas.getCamera().position.x >= 1920){
@@ -366,7 +367,9 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
         // Draw the level buttons
         canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
                 1400, 720, 0,0.50f,0.50f );
-        canvas.drawText("MAIN MENU",displayFont,1320f,715f);
+        canvas.drawText("BACK",displayFont,1350f,715f);
+
+        canvas.drawText("LEVEL SELECT", displayFont, 1800, 715);
 
     }
 
@@ -466,7 +469,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 
 
-		if (!panningToLevelSelect && !panningToMainMenu){
+		if (!panningToLevelSelect && !panningToMainMenu && currState == 0){
             if (!onLevelSelectScreen){
                 // Play button is a circle.
                 if ((screenX > centerX - playButton.getWidth()/2) && (screenX < centerX + playButton.getWidth()/2) &&
@@ -480,7 +483,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                     playClick();
 
                 }
-            } else {
+            } else if (onLevelSelectScreen) {
                 System.out.println("reached checklevelbuttonpressed from touchdown");
                 System.out.println("screenX is " +screenX);
                 System.out.println("screenY is " +screenY);
