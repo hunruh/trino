@@ -43,6 +43,10 @@ public class HUDController  {
     private static final String CLONE_FILE = "trino/clone.png";
     private static final String WOOD_FILE = "trino/wood.png";
     private static final String CLOCK_FILE = "hud/clockImage.png";
+    private static final String ONE_FILE = "hud/one.png";
+    private static final String TWO_FILE = "hud/two.png";
+    private static final String THREE_FILE = "hud/three.png";
+    private static final String CLONE_BACKGROUND_FILE = "hud/cloneBackground.png";
 
     private BitmapFont displayFont;
 
@@ -67,6 +71,10 @@ public class HUDController  {
     private TextureRegion cloneImage;
     private TextureRegion wood;
     private TextureRegion clock;
+    private TextureRegion one;
+    private TextureRegion two;
+    private TextureRegion three;
+    private TextureRegion cloneBackground;
 
     private Texture cloneCircle;
 
@@ -78,6 +86,7 @@ public class HUDController  {
     private float levelTimerCount;
     private boolean flashResourceRed;
     private float stopFlashTime;
+    private boolean cloneActive = false;
 
     public HUDController() {
         assets = new Array<String>();
@@ -144,6 +153,14 @@ public class HUDController  {
         assets.add(WOOD_FILE);
         manager.load(CLOCK_FILE, Texture.class);
         assets.add(CLOCK_FILE);
+        manager.load(ONE_FILE, Texture.class);
+        assets.add(ONE_FILE);
+        manager.load(TWO_FILE, Texture.class);
+        assets.add(TWO_FILE);
+        manager.load(THREE_FILE, Texture.class);
+        assets.add(THREE_FILE);
+        manager.load(CLONE_BACKGROUND_FILE, Texture.class);
+        assets.add(CLONE_BACKGROUND_FILE);
     }
 
     public void loadContent(AssetManager manager) {
@@ -177,6 +194,10 @@ public class HUDController  {
         cloneImage = createTexture(manager, CLONE_FILE, true);
         wood = createTexture(manager, WOOD_FILE, true);
         clock = createTexture(manager, CLOCK_FILE, true);
+        one = createTexture(manager, ONE_FILE, true);
+        two = createTexture(manager, TWO_FILE, true);
+        three = createTexture(manager, THREE_FILE, true);
+        cloneBackground = createTexture(manager, CLONE_BACKGROUND_FILE, true);
 
         cloneCircle = createFilmTexture(manager,CLONE_CIRCLE_FILE);
 
@@ -239,14 +260,20 @@ public class HUDController  {
         cloneImage = null;
         wood = null;
         clock = null;
+        one = null;
+        two = null;
+        three = null;
+        cloneBackground = null;
     }
 
     public void update(int numResources, int transformation, Clone clone, float levelTimerCount) {
         this.numResources = numResources;
         this.transformation = transformation;
         if (clone != null){
+            cloneActive = true;
             this.cloneTime = clone.getCloneTime();
         } else {
+            cloneActive = false;
             this.cloneTime = 60.0f;
         }
         this.levelTimerCount = levelTimerCount;
@@ -291,35 +318,40 @@ public class HUDController  {
         }
         canvas.draw(dinometerBackground, 0,635);
         if (transformation == Dinosaur.DOLL_FORM) {
-            canvas.draw(herbivoreSecondary, 7, canvas.getHeight() - 65);
-            canvas.draw(outlineSecondary, 7, canvas.getHeight() - 65);
-            canvas.draw(carnivoreSecondary, 83, canvas.getHeight() - 65);
-            canvas.draw(outlineSecondary, 83, canvas.getHeight() - 65);
-            canvas.draw(dollPrimary, 30, canvas.getHeight() - 65);
-            canvas.draw(outlinePrimary, 30, canvas.getHeight() - 65);
+            canvas.draw(herbivoreSecondary, 24, canvas.getHeight() - 69);
+            canvas.draw(outlineSecondary, 24, canvas.getHeight() - 69);
+            canvas.draw(carnivoreSecondary, 110, canvas.getHeight() - 69);
+            canvas.draw(outlineSecondary, 110, canvas.getHeight() - 69);
+            canvas.draw(dollPrimary, 50, canvas.getHeight() - 70);
+            canvas.draw(outlinePrimary, 50, canvas.getHeight() - 70);
+            canvas.draw(two, 37, canvas.getHeight() - 29);
+            canvas.draw(three, 122, canvas.getHeight() - 29);
         }
         else if (transformation == Dinosaur.HERBIVORE_FORM) {
-            canvas.draw(herbivorePrimary, 7, canvas.getHeight() - 82);
-            canvas.draw(outlinePrimary, 7, canvas.getHeight() - 82);
-            canvas.draw(dollSecondary, 70, canvas.getHeight() - 76);
-            canvas.draw(outlineSecondary, 70, canvas.getHeight() - 76);
-            canvas.draw(carnivoreSecondary, 54, canvas.getHeight() - 92);
-            canvas.draw(outlineSecondary, 54, canvas.getHeight() - 92);
+            canvas.draw(dollSecondary, 24, canvas.getHeight() - 69);
+            canvas.draw(outlineSecondary, 24, canvas.getHeight() - 69);
+            canvas.draw(carnivoreSecondary, 110, canvas.getHeight() - 69);
+            canvas.draw(outlineSecondary, 110, canvas.getHeight() - 69);
+            canvas.draw(herbivorePrimary, 50, canvas.getHeight() - 70);
+            canvas.draw(outlinePrimary, 50, canvas.getHeight() - 70);
+            canvas.draw(one, 37, canvas.getHeight() - 29);
+            canvas.draw(three, 122, canvas.getHeight() - 29);
         }
         else {
-            canvas.draw(carnivorePrimary, 7, canvas.getHeight() - 82);
-            canvas.draw(outlinePrimary, 7, canvas.getHeight() - 82);
-            canvas.draw(dollSecondary, 70, canvas.getHeight() - 76);
-            canvas.draw(outlineSecondary, 70, canvas.getHeight() - 76);
-            canvas.draw(herbivoreSecondary, 54, canvas.getHeight() - 92);
-            canvas.draw(outlineSecondary, 54, canvas.getHeight() - 92);;
+            canvas.draw(dollSecondary, 24, canvas.getHeight() - 69);
+            canvas.draw(outlineSecondary, 24, canvas.getHeight() - 69);
+            canvas.draw(herbivoreSecondary, 110, canvas.getHeight() - 69);
+            canvas.draw(outlineSecondary, 110, canvas.getHeight() - 69);
+            canvas.draw(carnivorePrimary, 50, canvas.getHeight() - 70);
+            canvas.draw(outlinePrimary, 50, canvas.getHeight() - 70);
+            canvas.draw(one, 37, canvas.getHeight() - 29);
+            canvas.draw(two, 122, canvas.getHeight() - 29);
         }
     }
 
     private void drawDinoMeter(Canvas canvas) {
-        int padding = 6;
-        int rootX = 171 + padding;
-        float width = dinometerBackground.getRegionWidth() - 2 * padding;
+        int padding = 8;
+        int rootX = 153 + padding;
 
         TextureRegion resource, lightResource;
         if (transformation == Dinosaur.DOLL_FORM) {
@@ -337,9 +369,9 @@ public class HUDController  {
 
         //canvas.draw(dinometerBackground, 120, canvas.getHeight() - 67);
         for (int i = 0; i < numResources; i++)
-            canvas.draw(resource, rootX + i*lightResource.getRegionWidth(),659);
+            canvas.draw(resource, rootX + i*lightResource.getRegionWidth()+i*padding,660);
         for (int i = numResources; i < Dinosaur.MAX_RESOURCES; i++)
-            canvas.draw(lightResource, rootX + i*lightResource.getRegionWidth(),659);
+            canvas.draw(lightResource, rootX + i*lightResource.getRegionWidth()+i*padding,660);
 
     }
 
@@ -361,12 +393,16 @@ public class HUDController  {
         if (cloneTime >= 60.0f){
             color = new Color(0.75f,0.75f,0.75f,1);
         }
-
-        canvas.draw(fs, color,origin.x,origin.y, 45.0f,
-                canvas.getHeight()/2.0f + 215.0f,0,0.10f,0.10f);
-        origin = new Vector2(cloneImage.getRegionWidth()/2.0f, cloneImage.getRegionHeight()/2.0f);
-        canvas.draw(cloneImage, color, origin.x, origin.y, 45.0f,canvas.getHeight()/2.0f + 230.0f
-                ,0,.75f,.75f);
+        if (cloneActive) {
+//            canvas.draw(fs, color,origin.x,origin.y, 45.0f,
+//                    canvas.getHeight()/2.0f + 215.0f,0,0.10f,0.10f);
+            origin = new Vector2(cloneImage.getRegionWidth()/2.0f, cloneImage.getRegionHeight()/2.0f);
+            canvas.draw(cloneBackground,557,631);
+            canvas.draw(fs, color, origin.x, origin.y, 604+cloneImage.getRegionHeight()/8.0f,
+                    649+cloneImage.getRegionHeight()/8.0f,0,0.12f, 0.12f);
+            canvas.draw(cloneImage, color, origin.x, origin.y, 604+4.5f*cloneImage.getRegionHeight()/10.0f,
+                    649+7*cloneImage.getRegionHeight()/10.0f,0,1f,1f);
+        }
 
     }
 
