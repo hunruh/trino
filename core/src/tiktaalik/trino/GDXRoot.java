@@ -20,6 +20,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private LevelController levels; // Player mode for the asset level selection screen
 	private GameController controller; // The game controller
 	public static boolean musicScreen = true;
+	public static boolean shownStudioLogo;
 
 	public GDXRoot() {
 		manager = new AssetManager();
@@ -96,12 +97,24 @@ public class GDXRoot extends Game implements ScreenListener {
 			if (MenuController.currState == 2) {
 //				menu.dispose();
 //				menu = null;
-				levels = new LevelController(canvas, manager, 1);
-				levels.setScreenListener(this);
+//				levels = new LevelController(canvas, manager, 1);
+//				levels.setScreenListener(this);
+//				setScreen(null);
+//				screen = levels;
+//				setScreen(levels);
+//				MenuController.currState = 0;
+
+				System.out.println("loading up level " +(MenuController.levelNum - 1));
+				controller.setCurrentLevel(MenuController.levelNum - 1);
+				controller.loadContent(manager);
+				controller.setScreenListener(this);
+				controller.setCanvas(canvas);
+				controller.reset();
 				setScreen(null);
-				screen = levels;
-				setScreen(levels);
+				screen = controller;
+				setScreen(controller);
 				MenuController.currState = 0;
+
 
 			}
 			else if (MenuController.currState == 1) {
