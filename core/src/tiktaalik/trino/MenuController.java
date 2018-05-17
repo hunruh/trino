@@ -219,7 +219,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		System.out.println("menu curr state is " + currState);
+		//System.out.println("menu curr state is " + currState);
 	    if (panningToLevelSelect){
             canvas.getCamera().position.x += 10;
             if (canvas.getCamera().position.x >= 1920){
@@ -376,10 +376,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
     private void checkLevelButtonPressed(float x, float y){
 	    float size = 250f;
 	    for (int i = 0; i < levelButtonPositions.length; i++){
-	        System.out.println("item " + i + "is " + levelButtonPositions[i]);
+	        //System.out.println("item " + i + "is " + levelButtonPositions[i]);
 	        if (x > (levelButtonPositions[i].x - size/3f) && x < (levelButtonPositions[i].x + size/3f) &&
                     y > (levelButtonPositions[i].y - size/5f) && y < (levelButtonPositions[i].y + size/5f)){
-	            System.out.println("level " + (i+1) + "pressed");
+	            //System.out.println("level " + (i+1) + "pressed");
 	            levelNum = i + 1;
 	            levelPressState = 1;
 	            playClick();
@@ -484,9 +484,9 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
                 }
             } else if (onLevelSelectScreen) {
-                System.out.println("reached checklevelbuttonpressed from touchdown");
-                System.out.println("screenX is " +screenX);
-                System.out.println("screenY is " +screenY);
+                //System.out.println("reached checklevelbuttonpressed from touchdown");
+                //System.out.println("screenX is " +screenX);
+                //System.out.println("screenY is " +screenY);
                 // Check if main menu in level select is pressed
                 if (screenX > 0f && screenX < 250f && screenY > 680 && screenY < 720){
                     panningToMainMenu = true;
