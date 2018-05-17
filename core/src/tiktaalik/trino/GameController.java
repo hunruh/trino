@@ -173,6 +173,9 @@ public class GameController implements ContactListener, Screen {
 	private static final String EDIBLE_WALL_FILE = "trino/ediblewall_long.png";
 	private static final String EDIBLE_WALL_EATING_STRIP = "trino/ediblewall_decay_strip.png";
 	private static final String COTTON_FLOWER_FILE = "trino/cotton.png";
+	private static final String FLOWER_1_FILE = "trino/flower.png";
+	private static final String FLOWER_2_FILE = "trino/flower2.png";
+	private static final String FLOWER_3_FILE = "trino/flower3.png";
 	private static final String PATH_FILE = "trino/path.png";
 	private static final String SWITCH_FILE = "trino/button.png";
 	private static final String SWITCH_FILE_ONE = "trino/button1.png";
@@ -560,6 +563,12 @@ public class GameController implements ContactListener, Screen {
 		assets.add(EDIBLE_WALL_EATING_STRIP);
 		manager.load(COTTON_FLOWER_FILE, Texture.class);
 		assets.add(COTTON_FLOWER_FILE);
+        manager.load(FLOWER_1_FILE, Texture.class);
+        assets.add(FLOWER_1_FILE);
+        manager.load(FLOWER_2_FILE, Texture.class);
+        assets.add(FLOWER_2_FILE);
+        manager.load(FLOWER_3_FILE, Texture.class);
+        assets.add(FLOWER_3_FILE);
 		manager.load(ENEMY_STRIP_FRONT, Texture.class);
 		assets.add(ENEMY_STRIP_FRONT);
 		manager.load(ENEMY_STRIP_LEFT, Texture.class);
@@ -886,6 +895,9 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("wall3", createTexture(manager,WALL_3_FILE,false));
 		textureDict.put("edibleWall", createTexture(manager, EDIBLE_WALL_FILE, false));
 		textureDict.put("cotton", createTexture(manager, COTTON_FLOWER_FILE, false));
+        textureDict.put("flower1", createTexture(manager, FLOWER_1_FILE, false));
+        textureDict.put("flower2", createTexture(manager, FLOWER_2_FILE, false));
+        textureDict.put("flower3", createTexture(manager, FLOWER_3_FILE, false));
 		textureDict.put("switch", createTexture(manager, SWITCH_FILE, false));
 		textureDict.put("switchone", createTexture(manager, SWITCH_FILE_ONE, false));
 		textureDict.put("switchtwo", createTexture(manager, SWITCH_FILE_TWO, false));
@@ -2450,6 +2462,7 @@ public class GameController implements ContactListener, Screen {
 					if (tmp != null && tmp.getType() == EDIBLEWALL && dist < 6.5) {
 						if (avatar.getResources() < 3){
 							SoundController.getInstance().playMunch();
+							avatar.setCanBeSeen(true);
 							if (!((EdibleObject) tmp).getEatInProgress()){
 								avatar.incrementResources();
 							}

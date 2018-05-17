@@ -770,7 +770,33 @@ public class Level {
         canvas.begin();
         for(GameObject g : blockObjects) {
             g.draw(canvas);
+            if (g.getType() == EDIBLEWALL && !((EdibleObject)g).getEatInProgress()&& !((EdibleObject)g).getEaten()){
+                float dwidth = textureDict.get("flower1").getRegionWidth() / scale.x;
+                float dheight = textureDict.get("flower1").getRegionHeight() / scale.y;
+
+                TextureRegion flowerTexture = null;
+
+                if (((Wall)g).getEdibleWallType() == 0){
+                    flowerTexture = textureDict.get("flower1");
+                }
+                else if (((Wall)g).getEdibleWallType() == 1){
+                    flowerTexture = textureDict.get("flower2");
+                }
+                else if (((Wall)g).getEdibleWallType() == 2){
+                    flowerTexture = textureDict.get("flower3");
+                }
+
+                if (flowerTexture != null){
+                    Vector2 origin = new Vector2(flowerTexture.getRegionWidth()/2.0f, flowerTexture.getRegionHeight()/2.0f);
+                    canvas.draw(flowerTexture, Color.WHITE,origin.x,origin.y,(g.getX()
+                            *g.getDrawScale().x),((g.getY()+1f)*g.getDrawScale().x),0,1,1);
+                }
+
+
+
+            }
             if (g.getType() == RIVER && textureDict !=null) {
+
                 float dwidth = textureDict.get("river").getRegionWidth() / scale.x;
                 float dheight = textureDict.get("river").getRegionHeight() / scale.y;
 
