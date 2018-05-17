@@ -57,6 +57,7 @@ public abstract class Dinosaur extends GameObject {
     protected float actionCooldown, actionLoad;
     private boolean canBeSeen = true;
     private boolean transform = false;
+    private boolean isSwinging = false;
     private boolean isSwimming = false;
     protected float shadowOpacity;
     private float offsetSwim;
@@ -380,6 +381,14 @@ public abstract class Dinosaur extends GameObject {
 
     public int getTransformNumber(){
         return transformToForm;
+    }
+
+    public boolean getSwinging() {
+        return isSwinging;
+    }
+
+    public void setSwinging(boolean isSwinging) {
+        this.isSwinging = isSwinging;
     }
 
     public void setIsSwimming(boolean value){isSwimming = value;}

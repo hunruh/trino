@@ -31,6 +31,7 @@ public class GameController implements ContactListener, Screen {
 	static final int GAME_PAUSED = 2;
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
+	static final int GAME_LEVEL_START = 5;
 
 	int state;
 
@@ -326,6 +327,20 @@ public class GameController implements ContactListener, Screen {
 	private FilmStrip swingInStrip;
 	private FilmStrip swingOutStrip;
 
+	private float vineHeightOffset;
+	private float vineCurrentOffset;
+	private float vineGoingDownCounter = 0;
+	private float vineGoingUpCounter = 0;
+	private float vineDropX;
+	private float avatarTargetY;
+	private float avatarStartDir;
+	private boolean swingingUp = false;
+	private boolean swingingDown = false;
+	private boolean vineAvatarDrop = false;
+	private float swingAnimeFrame = 0;
+
+	private boolean readyForSwing = false;
+
 	private World world;
 	private Level level;
 
@@ -346,7 +361,6 @@ public class GameController implements ContactListener, Screen {
 	private int playDoorDown = 0;
 	private int playDoorUp = 0;
 	private int playDoorSound = -1;
-	private float swingAnimeFrame = 0;
 	private float elapsed;
 	private float duration;
 	private float radius;
@@ -1325,6 +1339,12 @@ public class GameController implements ContactListener, Screen {
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
 		collisionHandler.setLevel(level);
 
+		vineHeightOffset = level.getLevelHeight() + 307f;
+		vineCurrentOffset = level.getLevelHeight() + 307f;
+		swingingUp = false;
+		swingAnimeFrame = 0;
+		readyForSwing = false;
+
 		// Set the lighting
 //		float value = 1.0f - level.getCurrentLevel()/40.0f;
 //		if (level.getCurrentLevel() > 5){
@@ -1469,10 +1489,22 @@ public class GameController implements ContactListener, Screen {
 
 		level.draw(canvas);
 
+		canvas.begin();
+		TextureRegion vine = textureDict.get("longVine");
+		float x = (level.getDoor(0).getX() * level.getDoor(0).getDrawScale().x)+ 10f;
+		float y = (level.getDoor(0).getY()*level.getDoor(0).getDrawScale().x) + vineCurrentOffset;
+		if (vineAvatarDrop) {
+			x = (vineDropX * level.getDoor(0).getDrawScale().x) + 11f;
+			y = vineCurrentOffset;
+		}
+		canvas.draw(vine, Color.WHITE,vine.getRegionWidth()/2.0f,vine.getRegionHeight()/2.0f,
+				x, y,0,1,1);
+
+		canvas.end();
+
 		// Now draw the shadows
 		if (rayhandler != null)
 			rayhandler.render();
-
 
 		canvas.beginOverlay();
 		canvas.draw(textureDict.get("overlay"),0,0);
@@ -1563,11 +1595,20 @@ public class GameController implements ContactListener, Screen {
             canvas.end();
         }
 
+		if (state == GAME_LEVEL_START && swingingDown) {
+			swingInStrip.setFrame((int)swingAnimeFrame);
+			if (swingOutStrip != null) {
+				canvas.beginOverlay();
+				canvas.draw(swingInStrip, Color.WHITE,0,0,0,40,0,1,1);
+				canvas.end();
+			}
+		}
+
         if (state == GAME_LEVEL_END) {
 			swingOutStrip.setFrame((int)swingAnimeFrame);
 			if (swingOutStrip != null) {
 				canvas.beginOverlay();
-				canvas.draw(swingOutStrip, Color.WHITE,0,0,0,43,0,1,1);
+				canvas.draw(swingOutStrip, Color.WHITE,0,0,0,40,0,1,1);
 				canvas.end();
 			}
 		}
@@ -1869,18 +1910,29 @@ public class GameController implements ContactListener, Screen {
 				updatePaused();
 				break;
 			case GAME_LEVEL_END:
-				updateLevelEnd();
+				updateLevelEnd(dt);
 				break;
 			case GAME_OVER:
 				updateGameOver();
 				break;
+			case GAME_LEVEL_START:
+				updateLevelStart(dt);
 		}
 	}
 
 	private void updateReady() {
 		totalTime = level.getLevelTime();
 		levelTime = level.getLevelTime();
-		state = GAME_RUNNING;
+		vineDropX = level.getAvatar().getX();
+		avatarTargetY = level.getAvatar().getY() + 0.6f;
+		avatarStartDir = level.getAvatar().getDirection();
+		level.getAvatar().setY(level.screenToMaze(level.getHeight()));
+		level.getAvatar().setSwinging(true);
+		level.getAvatar().setDirection(Dinosaur.DOWN);
+		vineCurrentOffset = 1035;
+		swingingDown = true;
+		vineAvatarDrop = true;
+		state = GAME_LEVEL_START;
 	}
 
 	private void updateRunning(float dt) {
@@ -1890,6 +1942,20 @@ public class GameController implements ContactListener, Screen {
 		else if (complete && !failed) {
 			state = GAME_LEVEL_END;
 			swingAnimeFrame = 0;
+			readyForSwing = false;
+
+			if (level.getAvatar().getForm() != Dinosaur.DOLL_FORM) {
+				if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
+					level.getAvatar().setTransformTextureSet(filmStripDict.get("herbToDoll"), 11);
+				} else{
+					level.getAvatar().setTransformTextureSet(filmStripDict.get("carnToDoll"), 11);
+				}
+
+				transform = true;
+				level.getAvatar().setTransform(true);
+				level.getAvatar().setTransformToForm(0);
+				SoundController.getInstance().playTransform();
+			}
 		}
 		else {
 			if (level.getSwitches().size() == 0) {
@@ -2474,6 +2540,27 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 
+			// Update the vines
+			if (level.getAvatar().canExit() && !vineAvatarDrop){
+				vineGoingUpCounter = 0;
+				vineGoingDownCounter += 0.05f;
+				vineCurrentOffset = vineCurrentOffset- vineGoingDownCounter;
+
+				if (vineCurrentOffset < 300f){
+					vineCurrentOffset = 300f;
+				}
+
+			} else {
+				vineGoingDownCounter = 0;
+				vineGoingUpCounter+= 0.05f;
+				vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
+
+				if (vineCurrentOffset > vineHeightOffset){
+					vineAvatarDrop = false;
+					vineCurrentOffset = vineHeightOffset;
+				}
+			}
+
 			if (InputHandler.getInstance().didPause()) {
 				SoundController.getInstance().playClick();
 				state = GAME_PAUSED;
@@ -2493,10 +2580,74 @@ public class GameController implements ContactListener, Screen {
 		}
 	}
 
-	private void updateLevelEnd() {
-		swingAnimeFrame += 0.175f;
-		if (swingAnimeFrame >= 11) {
-			state = GAME_OVER;
+	private void updateLevelEnd(float dt) {
+		Dinosaur avatar = level.getAvatar();
+		if (!readyForSwing && !swingingUp)
+			avatar.update(dt);
+
+		if (transform && !avatar.getTransform()) {
+			transform = false;
+			avatar.forceFrame(0);
+			if (avatar.getTransformNumber() == 0) {
+				avatar = avatar.transformToDoll();
+
+				avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
+						filmStripDict.get("dollRight"), 8,
+						filmStripDict.get("dollBack"), 8,
+						filmStripDict.get("dollFront"), 8);
+
+				level.setAvatar(avatar);
+			}
+		}
+		else if (!readyForSwing && !swingingUp && !avatar.getTransform()) {
+			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
+				Wall door = level.getDoor(0);
+				float targetX = door.getX();
+				float targetY = door.getY() + 0.7f;
+
+				if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() < targetX) {
+					avatar.setLeftRight(1);
+					avatar.setX(avatar.getX() + 0.1f);
+					avatar.setUpDown(0);
+				} else if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() > targetX) {
+					avatar.setLeftRight(-1);
+					avatar.setX(avatar.getX() - 0.1f);
+					avatar.setUpDown(0);
+				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() < targetY) {
+					avatar.setLeftRight(0);
+					avatar.setUpDown(1);
+					avatar.setY(avatar.getY() + 0.1f);
+				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() > targetY) {
+					avatar.setLeftRight(0);
+					avatar.setUpDown(-1);
+					avatar.setY(avatar.getY() - 0.1f);
+				} else {
+					avatar.setLeftRight(0);
+					avatar.setUpDown(0);
+					avatar.setDirection(Dinosaur.DOWN);
+					avatar.update(dt);
+					avatar.forceFrame(0);
+					avatar.setSwinging(true);
+					swingingUp = true;
+				}
+			}
+		} else if (swingingUp) {
+			vineGoingDownCounter = 0;
+			vineGoingUpCounter += 0.15f;
+			vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
+			avatar.setY(avatar.getY() + (vineGoingUpCounter * .025f));
+
+			if (avatar.getY() > level.screenToMaze(level.getHeight())){
+				vineCurrentOffset = vineHeightOffset;
+				readyForSwing = true;
+				swingingUp = false;
+			}
+		}
+		else if (readyForSwing) {
+			swingAnimeFrame += 0.175f;
+			if (swingAnimeFrame >= 11) {
+				state = GAME_OVER;
+			}
 		}
 	}
 
@@ -2519,8 +2670,84 @@ public class GameController implements ContactListener, Screen {
 				nextLevel();
 			}
 		}
-
 	}
+
+	private void updateLevelStart(float dt) {
+		Dinosaur avatar = level.getAvatar();
+		if (!swingingDown)
+			avatar.update(dt);
+
+		if (swingingDown) {
+			swingAnimeFrame += 0.175f;
+			if (swingAnimeFrame >= 10) {
+				swingingDown = false;
+			}
+		} else {
+			vineGoingUpCounter = 0;
+			vineGoingDownCounter += 0.15f;
+			avatar.setY(avatar.getY() - (vineGoingDownCounter * .025f));
+			vineCurrentOffset = vineCurrentOffset- vineGoingDownCounter;
+
+			if (avatar.getY() < avatarTargetY) {
+				avatar.setY(avatarTargetY);
+				avatar.setSwinging(false);
+				avatar.setDirection(avatarStartDir);
+				state = GAME_RUNNING;
+				vineHeightOffset = level.getLevelHeight() + 307f;
+			}
+		}
+//		if (!readyForSwing && !swingingUp)
+//			avatar.update(dt);
+//
+//		if (!readyForSwing && !swingingUp) {
+//			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
+//				Wall door = level.getDoor(0);
+//				float targetX = door.getX();
+//				float targetY = door.getY() + 0.7f;
+//
+//				if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() < targetX) {
+//					avatar.setLeftRight(1);
+//					avatar.setX(avatar.getX() + 0.1f);
+//					avatar.setUpDown(0);
+//				} else if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() > targetX) {
+//					avatar.setLeftRight(-1);
+//					avatar.setX(avatar.getX() - 0.1f);
+//					avatar.setUpDown(0);
+//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() < targetY) {
+//					avatar.setLeftRight(0);
+//					avatar.setUpDown(1);
+//					avatar.setY(avatar.getY() + 0.1f);
+//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() > targetY) {
+//					avatar.setLeftRight(0);
+//					avatar.setUpDown(-1);
+//					avatar.setY(avatar.getY() - 0.1f);
+//				} else {
+//					avatar.setLeftRight(0);
+//					avatar.setUpDown(0);
+//					avatar.setDirection(Dinosaur.DOWN);
+//					avatar.update(dt);
+//					avatar.forceFrame(0);
+//					avatar.setSwinging(true);
+//					swingingUp = true;
+//				}
+//			}
+//		} else if (swingingUp) {
+//			vineGoingDownCounter = 0;
+//			vineGoingUpCounter += 0.1f;
+//			vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
+//			avatar.setY(avatar.getY() + (vineGoingUpCounter * .025f));
+//
+//			if (avatar.getY() > level.screenToMaze(level.getHeight())){
+//				vineCurrentOffset = vineHeightOffset;
+//				readyForSwing = true;
+//				swingingUp = false;
+//			}
+//		}
+//		else if (readyForSwing) {
+
+//		}
+	}
+
 	/**
 	 * Callback method for the start of a collision
 	 *
