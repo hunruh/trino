@@ -669,6 +669,8 @@ public class Level {
                         filmStripDict.get("enemyEatingRight"), 8,
                         filmStripDict.get("enemyEatingBack"), 9,
                         filmStripDict.get("enemyEatingFront"), 12);
+
+                en.setExclamationTextureSet(filmStripDict.get("exclamation"));
             }
             else {
                 en.setTextureSet(filmStripDict.get("herbivoreEnemySwimmingLeft"), 7,
@@ -866,9 +868,6 @@ public class Level {
         avatar.drawProgressCircle(canvas, avatar.getActionLoadValue());
         if (clone!= null){
             clone.drawProgressCircle(canvas);
-        }
-        for(Enemy e : enemies) {
-            e.drawProgressCircle(canvas);
         }
         canvas.endProgressCircle();
 
