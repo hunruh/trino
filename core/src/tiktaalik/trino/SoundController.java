@@ -333,10 +333,10 @@ public class SoundController {
     public void playClick(){
         click.pause();
         if (GameController.soundState) {
-            click.play();
+            click.play(0.10f);
         }
         else {
-            waterSplash.play(0.0f);
+            click.play(0.0f);
         }
     }
 

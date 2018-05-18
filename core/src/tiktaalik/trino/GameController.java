@@ -48,7 +48,9 @@ public class GameController implements ContactListener, Screen {
 
 	// Sounds files
 	private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
+	private static String TUTORIAL_FONT_FILE = "hud/silom/SilomBol.ttf";
 	private static int FONT_SIZE = 64;
+	private static int TUTORIAL_FONT_SIZE = 26;
 
 	// Texture files
 	private static final String BACKGROUND_FILE = "trino/background.png";
@@ -280,8 +282,12 @@ public class GameController implements ContactListener, Screen {
 	private static final String TUT_TWO_B = "tutorial/dollPickUpCotton2.png";
 	private static final String TUT_TWO_C = "tutorial/herbRiver1.png";
 	private static final String TUT_TWO_D = "tutorial/herbRiver2.png";
+	private static final String TUT_TWO_E = "tutorial/transform1a.png";
+	private static final String TUT_TWO_F = "tutorial/transform1b.png";
 	private static final String TUT_THREE_A = "tutorial/herbEating1.png";
     private static final String TUT_THREE_B = "tutorial/herbEating2.png";
+    private static final String TUT_THREE_C = "tutorial/transform2a.png";
+    private static final String TUT_THREE_D = "tutorial/transform2b.png";
 	private static final String TUT_FOUR_A = "tutorial/camo1.png";
 	private static final String TUT_FOUR_B = "tutorial/camo2.png";
 	private static final String TUT_SIX_A = "tutorial/stun1.png";
@@ -290,6 +296,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String TUT_SIX_D = "tutorial/carnEating2.png";
 	private static final String TUT_SEVEN_A = "tutorial/moveBoulder1.png";
 	private static final String TUT_SEVEN_B = "tutorial/moveBoulder2.png";
+	private static final String TUT_SEVEN_C = "tutorial/transform3a.png";
+	private static final String TUT_SEVEN_D = "tutorial/transform3b.png";
 	private static final String TUT_EIGHT_A = "tutorial/unkillableWarning.png";
 	private static final String TUT_NINE_A = "tutorial/multiSwitch1.png";
 	private static final String TUT_NINE_B = "tutorial/multiSwitch2.png";
@@ -307,6 +315,7 @@ public class GameController implements ContactListener, Screen {
 
 	// Texture assets variables
 	private BitmapFont displayFont;
+	private BitmapFont tutorialFont;
 	private Hashtable<String, TextureRegion> textureDict = new Hashtable<String, TextureRegion>();
 	private Hashtable<String, Texture> filmStripDict = new Hashtable<String, Texture>();
 
@@ -424,6 +433,12 @@ public class GameController implements ContactListener, Screen {
 		size2Params.fontParameters.size = FONT_SIZE;
 		manager.load(FONT_FILE, BitmapFont.class, size2Params);
 		assets.add(FONT_FILE);
+
+		size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		size2Params.fontFileName = TUTORIAL_FONT_FILE;
+		size2Params.fontParameters.size = TUTORIAL_FONT_SIZE;
+		manager.load(TUTORIAL_FONT_FILE, BitmapFont.class, size2Params);
+		assets.add(TUTORIAL_FONT_FILE);
 
 		// Load textures
 		manager.load(BACKGROUND_FILE,Texture.class);
@@ -876,10 +891,18 @@ public class GameController implements ContactListener, Screen {
 		assets.add(TUT_TWO_C);
 		manager.load(TUT_TWO_D, Texture.class);
 		assets.add(TUT_TWO_D);
+		manager.load(TUT_TWO_E, Texture.class);
+		assets.add(TUT_TWO_E);
+		manager.load(TUT_TWO_F, Texture.class);
+		assets.add(TUT_TWO_F);
 		manager.load(TUT_THREE_A, Texture.class);
 		assets.add(TUT_THREE_A);
 		manager.load(TUT_THREE_B, Texture.class);
 		assets.add(TUT_THREE_B);
+		manager.load(TUT_THREE_C, Texture.class);
+		assets.add(TUT_THREE_C);
+		manager.load(TUT_THREE_D, Texture.class);
+		assets.add(TUT_THREE_D);
 		manager.load(TUT_FOUR_A, Texture.class);
 		assets.add(TUT_FOUR_A);
 		manager.load(TUT_FOUR_B, Texture.class);
@@ -896,6 +919,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(TUT_SEVEN_A);
 		manager.load(TUT_SEVEN_B, Texture.class);
 		assets.add(TUT_SEVEN_B);
+		manager.load(TUT_SEVEN_C, Texture.class);
+		assets.add(TUT_SEVEN_C);
+		manager.load(TUT_SEVEN_D, Texture.class);
+		assets.add(TUT_SEVEN_D);
 		manager.load(TUT_EIGHT_A, Texture.class);
 		assets.add(TUT_EIGHT_A);
 		manager.load(TUT_NINE_A, Texture.class);
@@ -940,6 +967,11 @@ public class GameController implements ContactListener, Screen {
 			displayFont = manager.get(FONT_FILE,BitmapFont.class);
 		else
 			displayFont = null;
+
+		if (manager.isLoaded(TUTORIAL_FONT_FILE))
+			tutorialFont = manager.get(TUTORIAL_FONT_FILE,BitmapFont.class);
+		else
+			tutorialFont = null;
 
 		// Allocate the textures
 		textureDict.put("background", createTexture(manager,BACKGROUND_FILE,false));
@@ -1054,8 +1086,12 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("2b", createTexture(manager, TUT_TWO_B, false));
 		textureDict.put("2c", createTexture(manager, TUT_TWO_C, false));
 		textureDict.put("2d", createTexture(manager, TUT_TWO_D, false));
+		textureDict.put("2e", createTexture(manager, TUT_TWO_E, false));
+		textureDict.put("2f", createTexture(manager, TUT_TWO_F, false));
 		textureDict.put("3a", createTexture(manager, TUT_THREE_A, false));
 		textureDict.put("3b", createTexture(manager, TUT_THREE_B, false));
+		textureDict.put("3c", createTexture(manager, TUT_THREE_C, false));
+		textureDict.put("3d", createTexture(manager, TUT_THREE_D, false));
 		textureDict.put("4a", createTexture(manager, TUT_FOUR_A, false));
 		textureDict.put("4b", createTexture(manager, TUT_FOUR_B, false));
         textureDict.put("6a", createTexture(manager, TUT_SIX_A, false));
@@ -1064,6 +1100,8 @@ public class GameController implements ContactListener, Screen {
         textureDict.put("6d", createTexture(manager, TUT_SIX_D, false));
         textureDict.put("7a", createTexture(manager, TUT_SEVEN_A, false));
         textureDict.put("7b", createTexture(manager, TUT_SEVEN_B, false));
+		textureDict.put("7c", createTexture(manager, TUT_SEVEN_C, false));
+		textureDict.put("7d", createTexture(manager, TUT_SEVEN_D, false));
         textureDict.put("8a", createTexture(manager, TUT_EIGHT_A, false));
         textureDict.put("9a", createTexture(manager, TUT_NINE_A, false));
         textureDict.put("9b", createTexture(manager, TUT_NINE_B, false));
@@ -1590,6 +1628,9 @@ public class GameController implements ContactListener, Screen {
 		canvas.draw(vine, Color.WHITE,vine.getRegionWidth()/2.0f,vine.getRegionHeight()/2.0f,
 				x, y,0,1,1);
 
+        if (level.getAvatar().getSwinging())
+            level.getAvatar().draw(canvas);
+
 		canvas.end();
 
 		// Now draw the shadows
@@ -1610,19 +1651,27 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("1b"), 35, 260);
 				canvas.draw(textureDict.get("1d"), 1000, 260);
 			}
+
+			canvas.drawText("Hold Till Green!", tutorialFont, 1030,275);
 			canvas.end();
 		}
 
 		else if (currentLevel == 1) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("2a"), 35, 260);
+				canvas.draw(textureDict.get("2a"), 50, 360);
+				canvas.draw(textureDict.get("2e"), -30, 120);
 				canvas.draw(textureDict.get("2c"), 1000, 260);
 			}
 			else {
-				canvas.draw(textureDict.get("2b"), 35, 260);
+				canvas.draw(textureDict.get("2b"), 50, 360);
+				canvas.draw(textureDict.get("2f"), -30, 120);
 				canvas.draw(textureDict.get("2d"), 1000, 260);
 			}
+
+			canvas.drawText("Collect 3 to Transform!", tutorialFont, 30,410);
+			canvas.drawText("Herbivore Form", tutorialFont, 1020,475);
+			canvas.drawText("Can Cross Rivers!", tutorialFont, 1010,435);
 			canvas.end();
 		}
 
@@ -1630,58 +1679,73 @@ public class GameController implements ContactListener, Screen {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
 				canvas.draw(textureDict.get("3a"), 35, 260);
+				canvas.draw(textureDict.get("3c"), 920, 180);
 			}
 			else {
 				canvas.draw(textureDict.get("3b"), 35, 260);
+				canvas.draw(textureDict.get("3d"), 920, 180);
 			}
+			canvas.drawText("Collect 3 to Transform!", tutorialFont, 975, 500);
 			canvas.end();
 		}
 
 		else if (currentLevel == 3) {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
-				canvas.draw(textureDict.get("4a"), 35, 260);
+				canvas.draw(textureDict.get("4a"), 35, 220);
 			}
 			else {
-				canvas.draw(textureDict.get("4b"), 35, 260);
+				canvas.draw(textureDict.get("4b"), 35, 220);
 			}
+			canvas.drawText("Camouflage to", tutorialFont, 75, 510);
+			canvas.drawText("Evade Enemies!", tutorialFont, 70, 480);
 			canvas.end();
 		}
         else if (currentLevel == 5) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("6a"), 35, 260);
-                canvas.draw(textureDict.get("6c"), 1000, 260);
+                canvas.draw(textureDict.get("6a"), 35, 220);
+                canvas.draw(textureDict.get("6c"), 1000, 220);
             }
             else {
-                canvas.draw(textureDict.get("6b"), 35, 260);
-                canvas.draw(textureDict.get("6d"), 1000, 260);
+                canvas.draw(textureDict.get("6b"), 35, 220);
+                canvas.draw(textureDict.get("6d"), 1000, 220);
             }
+			canvas.drawText("Charge at Enemies", tutorialFont, 55, 500);
+			canvas.drawText("to Stun Them!", tutorialFont, 80, 470);
+			canvas.drawText("Eat Only Stunned", tutorialFont, 1025, 500);
+			canvas.drawText("Enemies!", tutorialFont, 1075,470 );
             canvas.end();
         }
         else if (currentLevel == 6) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
                 canvas.draw(textureDict.get("7a"), 35, 260);
+                canvas.draw(textureDict.get("7c"), 920, 180);
             }
             else {
                 canvas.draw(textureDict.get("7b"), 35, 260);
+				canvas.draw(textureDict.get("7d"), 920, 180);
             }
+			canvas.drawText("Collect 3 to Transform!", tutorialFont, 975, 500);
             canvas.end();
         }
         else if (currentLevel == 7) {
             canvas.beginOverlay();
             canvas.draw(textureDict.get("8a"), 35, 260);
+            canvas.drawText("UNKILLABLE", tutorialFont, 100, 280);
             canvas.end();
         }
         else if (currentLevel == 8) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("9a"), 35, 260);
+                canvas.draw(textureDict.get("9a"), -35, 160);
             }
             else {
-                canvas.draw(textureDict.get("9b"), 35, 260);
+                canvas.draw(textureDict.get("9b"), -35, 160);
             }
+            canvas.drawText("COLOR SWITCHES",tutorialFont,60,300);
+            canvas.drawText("MATCH COLOR DOORS!", tutorialFont, 40, 270);
             canvas.end();
         }
 
@@ -1689,7 +1753,7 @@ public class GameController implements ContactListener, Screen {
 			swingInStrip.setFrame((int)swingAnimeFrame);
 			if (swingOutStrip != null) {
 				canvas.beginOverlay();
-				canvas.draw(swingInStrip, Color.WHITE,0,0,0,40,0,1,1);
+				canvas.draw(swingInStrip, Color.WHITE,0,0,0,0,0,1,1);
 				canvas.end();
 			}
 		}
@@ -2076,7 +2140,7 @@ public class GameController implements ContactListener, Screen {
 		avatarStartDir = level.getAvatar().getDirection();
 		level.getAvatar().setY(level.screenToMaze(level.getHeight()));
 		level.getAvatar().setSwinging(true);
-		level.getAvatar().setDirection(Dinosaur.DOWN);
+		level.getAvatar().setDirection(Dinosaur.UP);
 		vineCurrentOffset = 1031;
 		swingingDown = true;
 		vineAvatarDrop = true;
@@ -2593,13 +2657,6 @@ public class GameController implements ContactListener, Screen {
 							SoundController.getInstance().playChargeSound();
 							avatar.loadAction();
 						}
-//						if (avatar.getActionLoadValue() == 0){
-//							SoundController.getInstance().playEat();
-//							((EdibleObject) tmp).beginEating();
-//							avatar.incrementResources();
-//						} else if (!avatar.inActionCycle()){
-//							avatar.loadAction();
-//						}
 					}
 				} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 					boolean ate = false;
@@ -2753,6 +2810,10 @@ public class GameController implements ContactListener, Screen {
 						filmStripDict.get("dollRight"), 8,
 						filmStripDict.get("dollBack"), 8,
 						filmStripDict.get("dollFront"), 8);
+                avatar.setIdleTextureSet(filmStripDict.get("dollIdleLeft"), 4,
+                        filmStripDict.get("dollIdleRight"), 4,
+                        filmStripDict.get("dollIdleBack"), 4,
+                        filmStripDict.get("dollIdleFront"), 4);
 
 				level.setAvatar(avatar);
 			}
@@ -2782,7 +2843,7 @@ public class GameController implements ContactListener, Screen {
 				} else {
 					avatar.setLeftRight(0);
 					avatar.setUpDown(0);
-					avatar.setDirection(Dinosaur.DOWN);
+					avatar.setDirection(Dinosaur.UP);
 					avatar.update(dt);
 					avatar.forceFrame(0);
 					avatar.setSwinging(true);
@@ -2832,6 +2893,36 @@ public class GameController implements ContactListener, Screen {
 
 	private void updateLevelStart(float dt) {
 		Dinosaur avatar = level.getAvatar();
+
+		// Process camera updates
+		float halfWidth = canvas.getCamera().viewportWidth / 2;
+		float halfHeight = canvas.getCamera().viewportHeight / 2;
+
+		if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth < halfWidth) {
+			canvas.getCamera().position.x = halfWidth;
+			raycamera.position.x = cameraBounds.width / 2;
+		} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > level.getLevelWidth() - halfWidth) {
+			canvas.getCamera().position.x = level.getLevelWidth() - halfWidth;
+			raycamera.position.x = 2*(level.getLevelWidth()/80.0f) - cameraBounds.width / 2;
+		} else {
+			canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
+			raycamera.position.x = avatar.getX();
+		}
+
+		if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight < halfHeight) {
+			canvas.getCamera().position.y = halfHeight;
+			raycamera.position.y = cameraBounds.height / 2;
+		} else if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight > level.getLevelHeight() - halfHeight) {
+			canvas.getCamera().position.y = level.getLevelHeight() - halfHeight;
+			raycamera.position.y = 2*(level.getLevelHeight()/80f) - cameraBounds.height / 2;
+		} else {
+			canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
+			raycamera.position.y = avatar.getY();
+		}
+		canvas.getCamera().update();
+		raycamera.update();
+		rayhandler.setCombinedMatrix(raycamera);
+
 		if (!swingingDown)
 			avatar.update(dt);
 
@@ -2854,56 +2945,6 @@ public class GameController implements ContactListener, Screen {
 				vineHeightOffset = level.getLevelHeight() + 307f;
 			}
 		}
-//		if (!readyForSwing && !swingingUp)
-//			avatar.update(dt);
-//
-//		if (!readyForSwing && !swingingUp) {
-//			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
-//				Wall door = level.getDoor(0);
-//				float targetX = door.getX();
-//				float targetY = door.getY() + 0.7f;
-//
-//				if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() < targetX) {
-//					avatar.setLeftRight(1);
-//					avatar.setX(avatar.getX() + 0.1f);
-//					avatar.setUpDown(0);
-//				} else if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() > targetX) {
-//					avatar.setLeftRight(-1);
-//					avatar.setX(avatar.getX() - 0.1f);
-//					avatar.setUpDown(0);
-//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() < targetY) {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(1);
-//					avatar.setY(avatar.getY() + 0.1f);
-//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() > targetY) {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(-1);
-//					avatar.setY(avatar.getY() - 0.1f);
-//				} else {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(0);
-//					avatar.setDirection(Dinosaur.DOWN);
-//					avatar.update(dt);
-//					avatar.forceFrame(0);
-//					avatar.setSwinging(true);
-//					swingingUp = true;
-//				}
-//			}
-//		} else if (swingingUp) {
-//			vineGoingDownCounter = 0;
-//			vineGoingUpCounter += 0.1f;
-//			vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
-//			avatar.setY(avatar.getY() + (vineGoingUpCounter * .025f));
-//
-//			if (avatar.getY() > level.screenToMaze(level.getHeight())){
-//				vineCurrentOffset = vineHeightOffset;
-//				readyForSwing = true;
-//				swingingUp = false;
-//			}
-//		}
-//		else if (readyForSwing) {
-
-//		}
 	}
 
 	/**

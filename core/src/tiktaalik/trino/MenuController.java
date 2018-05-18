@@ -21,13 +21,16 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String PROGRESS_FILE_ONE = "trino/load1.png";
 	private static final String PROGRESS_FILE_TWO = "trino/load2.png";
 	private static final String PROGRESS_FILE_THREE = "trino/load3.png";
-	private static final String STUDIO_FILE = "trino/studioLogo.png";
+	private static final String STUDIO_FILE = "trino/studioLogoFilmstrip.png";
 	private static final String PLAY_BTN_FILE = "trino/startButton.png";
 	private static final String LEVEL_SELECT_BTN_FILE = "trino/levelSelectButton.png";
 	private static final String LOADING_FILE = "trino/loading.png";
 	private static final String LOADING_DOLL_FILE = "trino/loading_doll.png";
 	private static final String BLACK_BACKGROUND_FILE = "trino/blackBackground.png";
+	private static final String WHITE_BACKGROUND_FILE = "trino/whiteBackground.png";
 	private static final String LEVEL_BUTTON_FILE = "trino/wood.png";
+	private static final String ARROW_LEFT = "trino/left_arrow.png";
+	private static final String ARROW_RIGHT = "trino/right_arrow.png";
 	private static final String CLICK_SOUND_FILE = "trino/click.mp3";
     private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
     private static int FONT_SIZE = 64;
@@ -43,12 +46,16 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private Texture statusTwo; // Loading texture 2
 	private Texture statusThree; // Loading texture 3
 	private Texture blackBackground; // black background for loading
+	private Texture whiteBackground; // white background for logo
 	private Texture loadingText;
 	private Texture studioLogo; // Studio logo
+	private FilmStrip logoAnimation;
 	private FilmStrip loadingDuggi; // Loading duggi walking animation
 	private float animeFrame;
 	private Texture duggiWalking;
 	private Texture levelButton;
+	private Texture arrowLeft;
+	private Texture arrowRight;
 	private Vector2[] levelButtonPositions;
 	private Sound click;
 
@@ -86,9 +93,13 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 	public static int currState = 0;
 
-	private boolean panningToLevelSelect;
+	private boolean panningToLevelSelectFromMainMenu;
+	private boolean panningToLevelSelectFromLevelSelect2;
+	private boolean panningToLevelSelect2;
 	private boolean panningToMainMenu;
 	private boolean onLevelSelectScreen;
+	private boolean onLevelSelectScreen2;
+	private boolean playedLogoAnimation;
 	private float cameraOffset;
 
     /** Level selected */
@@ -161,10 +172,13 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		statusTwo  = new Texture(PROGRESS_FILE_TWO);
 		statusThree  = new Texture(PROGRESS_FILE_THREE);
 		blackBackground = new Texture(BLACK_BACKGROUND_FILE);
+		whiteBackground = new Texture(WHITE_BACKGROUND_FILE);
 		loadingText = new Texture(LOADING_FILE);
 		studioLogo = new Texture(STUDIO_FILE);
+		studioLogo.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		duggiWalking = new Texture(LOADING_DOLL_FILE);
 		duggiWalking.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		logoAnimation = new FilmStrip(studioLogo, 1, 16, 16);
 		loadingDuggi = new FilmStrip(duggiWalking,1,8, 8);
 
 		// No progress so far.
@@ -189,12 +203,16 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 statusTwo.dispose();
 		 statusThree.dispose();
 		 blackBackground.dispose();
+		 whiteBackground.dispose();
 		 loadingText.dispose();
 		 duggiWalking.dispose();
 		 levelButton.dispose();
+		 arrowLeft.dispose();
+		 arrowRight.dispose();
 		 studioLogo.dispose();
 		 click.dispose();
 		 blackBackground = null;
+		 whiteBackground = null;
 		 background = null;
 		 statusOne  = null;
 		 statusTwo = null;
@@ -202,6 +220,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 loadingText = null;
 		 duggiWalking = null;
 		 levelButton = null;
+		 arrowLeft = null;
+		 arrowRight = null;
 		 click = null;
 		 if (playButton != null) {
 			 playButton.dispose();
@@ -220,15 +240,34 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 */
 	private void update(float delta) {
 		//System.out.println("menu curr state is " + currState);
-	    if (panningToLevelSelect){
+	    if (panningToLevelSelectFromMainMenu){
             canvas.getCamera().position.x += 20;
             if (canvas.getCamera().position.x >= 1920){
                 canvas.getCamera().position.x = 1920;
                 onLevelSelectScreen = true;
-                panningToLevelSelect = false;
+                panningToLevelSelectFromMainMenu = false;
             }
             canvas.getCamera().update();
-        } else if (panningToMainMenu){
+        }
+        else if (panningToLevelSelect2){
+			canvas.getCamera().position.x += 20;
+			if (canvas.getCamera().position.x >= 3200){
+				canvas.getCamera().position.x = 3200;
+				onLevelSelectScreen2 = true;
+				panningToLevelSelect2 = false;
+			}
+			canvas.getCamera().update();
+		}
+        else if (panningToLevelSelectFromLevelSelect2){
+			canvas.getCamera().position.x -= 20;
+			if (canvas.getCamera().position.x <= 1920){
+				canvas.getCamera().position.x = 1920;
+				onLevelSelectScreen = true;
+				panningToLevelSelectFromLevelSelect2 = false;
+			}
+			canvas.getCamera().update();
+		}
+        else if (panningToMainMenu){
             canvas.getCamera().position.x -= 20;
             if (canvas.getCamera().position.x <= 640){
                 canvas.getCamera().position.x = 640;
@@ -237,8 +276,16 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
             canvas.getCamera().update();
         }
 
-		animeFrame+=0.35f;
-		if (animeFrame >= 7){
+        if (playedLogoAnimation){
+			animeFrame+=0.35f;
+		} else {
+			animeFrame+=0.25f;
+		}
+
+		if (animeFrame >= 15 && !playedLogoAnimation){
+			animeFrame = 15;
+		}
+		else if (animeFrame >= 7 && playedLogoAnimation){
 			animeFrame = 0;
 		}
 
@@ -258,6 +305,9 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
                     levelButton = new Texture(LEVEL_BUTTON_FILE);
                     levelButtonPositions = new Vector2[20];
+
+                    arrowLeft = new Texture(ARROW_LEFT);
+                    arrowRight = new Texture(ARROW_RIGHT);
 
                     // Load the click sound
 					click = Gdx.audio.newSound(Gdx.files.internal(CLICK_SOUND_FILE));
@@ -285,9 +335,19 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
         canvas.clear();
 		canvas.begin();
 		if ((System.currentTimeMillis()-startTime)/1000 < 5 && progress == 0 && playButton == null && !GDXRoot.shownStudioLogo) {
-			canvas.draw(studioLogo,0,0);
+			//canvas.draw(studioLogo,0,0);
+			canvas.draw(whiteBackground, canvas.width/2.0f,canvas.height/2.0f);
+			logoAnimation.setFrame((int)animeFrame);
+			Vector2 origin = new Vector2(logoAnimation.getRegionWidth()/ 2.0f, logoAnimation.getRegionHeight()/2.0f);
+			if (logoAnimation != null) {
+				canvas.draw(logoAnimation, Color.WHITE, origin.x,origin.y,640, 360, 0,1,1);
+			}
 		}
 		else {
+			if (!playedLogoAnimation){
+				animeFrame = 0;
+				playedLogoAnimation = true;
+			}
             GDXRoot.shownStudioLogo = true;
 			if (playButton == null) {
 				drawProgress(canvas);
@@ -337,47 +397,95 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 		canvas.draw(blackBackground, canvas.width/2.0f,canvas.height/2.0f);
 		canvas.draw(loadingText, 825, 50);
-		loadingDuggi.setFrame((int)animeFrame);
-		Vector2 origin = new Vector2(loadingDuggi.getRegionWidth()/ 2.0f, loadingDuggi.getRegionHeight()/2.0f);
-		if (loadingDuggi != null) {
-			canvas.draw(loadingDuggi, Color.WHITE,origin.x,origin.y,1200, 80,0,0.75f,0.75f);
+		if (animeFrame < 8){
+			loadingDuggi.setFrame((int)animeFrame);
+			Vector2 origin = new Vector2(loadingDuggi.getRegionWidth()/ 2.0f, loadingDuggi.getRegionHeight()/2.0f);
+			if (loadingDuggi != null) {
+				canvas.draw(loadingDuggi, Color.WHITE,origin.x,origin.y,1200, 80,0,0.75f,0.75f);
+			}
 		}
+
 	}
 
 	private void drawLevelButtons(Canvas canvas, int numLevels){
 	    float size = 250f;
 	    float xCurrent = 1280 + size;
-	    float yCurrent = 720 - size/2;
+	    float yCurrent = 720 - .75f*size;
+	    int currentIndex = 0;
+
 	    for (int i = 0; i < numLevels; i++){
-	        if (xCurrent >= 2560 - size ){
-	            xCurrent = 1280 + size;
-	            yCurrent -= size/2;
-            }
+	    	if (i < 12){
+				if (xCurrent >= 2560 - size ){
+					xCurrent = 1280 + size;
+					yCurrent -= .75f*size;
+				}
 
-            // Draw the level buttons
-            canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-                    xCurrent, yCurrent, 0,0.50f,0.50f );
-	        canvas.drawText(""+(i+1),displayFont,xCurrent-15f,yCurrent+15f);
-	        levelButtonPositions[i] = new Vector2(xCurrent - 1280f,yCurrent);
+				// Draw the level buttons
+				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+						xCurrent, yCurrent, 0,0.50f,0.50f );
+				canvas.drawText("LEVEL "+(i+1),displayFont,xCurrent-70f,yCurrent+15f);
+				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
 
-	        xCurrent += size;
+				xCurrent += size;
+
+				if (i == 11) {
+					xCurrent = 2560 + size;
+					yCurrent = 720 - .75f*size;
+				}
+			} else if (i >= 12 && i < 24){
+				if (xCurrent >= 3840 - size ){
+					xCurrent = 2560 + size;
+					yCurrent -= .75f*size;
+				}
+
+				// Draw the level buttons
+				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+						xCurrent, yCurrent, 0,0.50f,0.50f );
+				canvas.drawText("LEVEL"+(i+1),displayFont,xCurrent-70f,yCurrent+15f);
+				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
+
+				xCurrent += size;
+
+				if (i == 23) {
+					xCurrent = 3840 + size;
+					yCurrent = 720 - .75f*size;
+				}
+			}
+
         }
 
         // Draw the mainmenu button
-        // Draw the level buttons
-        canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-                1400, 720, 0,0.50f,0.50f );
-        canvas.drawText("BACK",displayFont,1350f,715f);
+		// Draw the level buttons
 
-        canvas.drawText("LEVEL SELECT", displayFont, 1800, 715);
+		if (onLevelSelectScreen){
+			canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+					1400, 720, 0,0.50f,0.50f );
+			canvas.drawText("MENU",displayFont,1340f,715f);
+
+			canvas.draw(arrowLeft, Color.WHITE, arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
+					1340, 360, 0,1f,1f );
+
+			canvas.draw(arrowRight, Color.WHITE, arrowRight.getWidth()/2,arrowRight.getHeight()/2,
+					2500, 360, 0,1f,1f );
+		}
+
+		if (onLevelSelectScreen2){
+			canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+					2680, 720, 0,0.50f,0.50f );
+			canvas.drawText("MENU",displayFont,2620f,715f);
+
+			canvas.draw(arrowLeft, Color.WHITE, arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
+					2620, 360, 0,1f,1f );
+
+		}
 
     }
 
-    private void checkLevelButtonPressed(float x, float y){
+    private void checkLevelButtonPressed(float x, float y, float offset){
 	    float size = 250f;
 	    for (int i = 0; i < levelButtonPositions.length; i++){
 	        //System.out.println("item " + i + "is " + levelButtonPositions[i]);
-	        if (x > (levelButtonPositions[i].x - size/3f) && x < (levelButtonPositions[i].x + size/3f) &&
+	        if (x > (levelButtonPositions[i].x - offset - size/3f) && x < (levelButtonPositions[i].x - offset + size/3f) &&
                     y > (levelButtonPositions[i].y - size/5f) && y < (levelButtonPositions[i].y + size/5f)){
 	            //System.out.println("level " + (i+1) + "pressed");
 	            levelNum = i + 1;
@@ -390,7 +498,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
     private void playClick(){
 		if (click != null){
 			click.pause();
-			click.play();
+			click.play(0.1f);
 		}
 	}
 	/**
@@ -469,8 +577,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 
 
-		if (!panningToLevelSelect && !panningToMainMenu && currState == 0){
-            if (!onLevelSelectScreen){
+		if (!panningToLevelSelectFromMainMenu && !panningToMainMenu && currState == 0){
+            if (!onLevelSelectScreen && !onLevelSelectScreen2){
                 // Play button is a circle.
                 if ((screenX > centerX - playButton.getWidth()/2) && (screenX < centerX + playButton.getWidth()/2) &&
                         (screenY > centerY + 75 - playButton.getHeight()/2) && (screenY < centerY + 75 + playButton.getHeight()/2)) {
@@ -479,7 +587,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                 }
                 if ((screenX > centerX - levelSelectButton.getWidth()/2) && (screenX < centerX + levelSelectButton.getWidth()/2) &&
                         (screenY > centerY - 25 - levelSelectButton.getHeight()/2) && (screenY < centerY - 25 + levelSelectButton.getHeight()/2)) {
-                    panningToLevelSelect = true;
+                    panningToLevelSelectFromMainMenu = true;
                     playClick();
 
                 }
@@ -493,8 +601,37 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                     onLevelSelectScreen = false;
                     playClick();
                 }
-                checkLevelButtonPressed(screenX,screenY);
-            }
+
+				if (screenX > 33f && screenX < 87f && screenY > 325 && screenY < 396){
+					panningToMainMenu = true;
+					onLevelSelectScreen = false;
+					playClick();
+				}
+
+				if (screenX > 1193f && screenX < 1220f && screenY > 325 && screenY < 396){
+					panningToLevelSelect2 = true;
+					onLevelSelectScreen = false;
+					playClick();
+				}
+                checkLevelButtonPressed(screenX,screenY,1280);
+            } else if (onLevelSelectScreen2) {
+				//System.out.println("reached checklevelbuttonpressed from touchdown");
+				//System.out.println("screenX is " +screenX);
+				//System.out.println("screenY is " +screenY);
+				// Check if main menu in level select is pressed
+				if (screenX > 0f && screenX < 250f && screenY > 680 && screenY < 720){
+					panningToMainMenu = true;
+					onLevelSelectScreen2 = false;
+					playClick();
+				}
+				if (screenX > 33f && screenX < 87f && screenY > 325 && screenY < 396){
+					panningToLevelSelectFromLevelSelect2 = true;
+					onLevelSelectScreen2 = false;
+					playClick();
+				}
+
+				checkLevelButtonPressed(screenX,screenY,2560);
+			}
         }
 
 		return false;
