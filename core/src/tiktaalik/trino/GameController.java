@@ -2071,11 +2071,14 @@ public class GameController implements ContactListener, Screen {
 			if(saveFileParser.levelStarsArray()[currentLevel] < stars){
 				saveFileParser.changeLevelStars(currentLevel,stars);
 			}
+
+			//for clearing the file
+			saveFileParser.clearAll();
+
 			saveFileParser.changeLevelCompletion(currentLevel, true);
 			try {saveFileParser.writeToFile("jsons/save.json"); }
 			catch(Exception e){System.out.println("wow i fucked up pt 2");}
 
-			
 
 			if (level.getAvatar().getForm() != Dinosaur.DOLL_FORM) {
 				if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
