@@ -776,7 +776,7 @@ public class Level {
                 // Add rocks
                 if (((River) g).getRock() == null && ((River)g).getHasRockOnit()){
                     TextureRegion rock;
-                    int random = MathUtils.random(8);
+                    int random = MathUtils.random(12);
                     if (random == 0){
                         rock = textureDict.get("rock1");
                     }
