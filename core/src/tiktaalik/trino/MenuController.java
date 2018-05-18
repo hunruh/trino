@@ -86,9 +86,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 	public static int currState = 0;
 
-	private boolean panningToLevelSelect;
+	private boolean panningToLevelSelectFromMainMenu;
+	private boolean panningToLevelSelectFromLevelSelect2;
+	private boolean panningToLevelSelect2;
 	private boolean panningToMainMenu;
 	private boolean onLevelSelectScreen;
+	private boolean onLevelSelectScreen2;
 	private float cameraOffset;
 
     /** Level selected */
@@ -220,15 +223,34 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 */
 	private void update(float delta) {
 		//System.out.println("menu curr state is " + currState);
-	    if (panningToLevelSelect){
+	    if (panningToLevelSelectFromMainMenu){
             canvas.getCamera().position.x += 20;
             if (canvas.getCamera().position.x >= 1920){
                 canvas.getCamera().position.x = 1920;
                 onLevelSelectScreen = true;
-                panningToLevelSelect = false;
+                panningToLevelSelectFromMainMenu = false;
             }
             canvas.getCamera().update();
-        } else if (panningToMainMenu){
+        }
+        else if (panningToLevelSelect2){
+			canvas.getCamera().position.x += 20;
+			if (canvas.getCamera().position.x >= 3200){
+				canvas.getCamera().position.x = 3200;
+				onLevelSelectScreen2 = true;
+				panningToLevelSelect2 = false;
+			}
+			canvas.getCamera().update();
+		}
+        else if (panningToLevelSelectFromLevelSelect2){
+			canvas.getCamera().position.x -= 20;
+			if (canvas.getCamera().position.x <= 1920){
+				canvas.getCamera().position.x = 1920;
+				onLevelSelectScreen = true;
+				panningToLevelSelectFromLevelSelect2 = false;
+			}
+			canvas.getCamera().update();
+		}
+        else if (panningToMainMenu){
             canvas.getCamera().position.x -= 20;
             if (canvas.getCamera().position.x <= 640){
                 canvas.getCamera().position.x = 640;
@@ -347,37 +369,75 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private void drawLevelButtons(Canvas canvas, int numLevels){
 	    float size = 250f;
 	    float xCurrent = 1280 + size;
-	    float yCurrent = 720 - size/2;
+	    float yCurrent = 720 - .75f*size;
+	    int currentIndex = 0;
+
 	    for (int i = 0; i < numLevels; i++){
-	        if (xCurrent >= 2560 - size ){
-	            xCurrent = 1280 + size;
-	            yCurrent -= size/2;
-            }
+	    	if (i < 12){
+				if (xCurrent >= 2560 - size ){
+					xCurrent = 1280 + size;
+					yCurrent -= .75f*size;
+				}
 
-            // Draw the level buttons
-            canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-                    xCurrent, yCurrent, 0,0.50f,0.50f );
-	        canvas.drawText(""+(i+1),displayFont,xCurrent-15f,yCurrent+15f);
-	        levelButtonPositions[i] = new Vector2(xCurrent - 1280f,yCurrent);
+				// Draw the level buttons
+				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+						xCurrent, yCurrent, 0,0.50f,0.50f );
+				canvas.drawText(""+(i+1),displayFont,xCurrent-15f,yCurrent+15f);
+				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
 
-	        xCurrent += size;
+				xCurrent += size;
+
+				if (i == 11) {
+					xCurrent = 2560 + size;
+					yCurrent = 720 - .75f*size;
+				}
+			} else if (i >= 12 && i < 24){
+				if (xCurrent >= 3840 - size ){
+					xCurrent = 2560 + size;
+					yCurrent -= .75f*size;
+				}
+
+				// Draw the level buttons
+				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+						xCurrent, yCurrent, 0,0.50f,0.50f );
+				canvas.drawText(""+(i+1),displayFont,xCurrent-15f,yCurrent+15f);
+				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
+
+				xCurrent += size;
+
+				if (i == 23) {
+					xCurrent = 3840 + size;
+					yCurrent = 720 - .75f*size;
+				}
+			}
+
         }
 
         // Draw the mainmenu button
-        // Draw the level buttons
-        canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-                1400, 720, 0,0.50f,0.50f );
-        canvas.drawText("BACK",displayFont,1350f,715f);
+		// Draw the level buttons
+		canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+				1400, 720, 0,0.50f,0.50f );
+		canvas.drawText("BACK",displayFont,1350f,715f);
 
-        canvas.drawText("LEVEL SELECT", displayFont, 1800, 715);
+		canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+				2440, 720, 0,0.50f,0.50f );
+		canvas.drawText("NEXT",displayFont,2390f,715f);
+
+		canvas.drawText("LEVEL SELECT", displayFont, 1800, 715);
+
+		canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+				2680, 720, 0,0.50f,0.50f );
+		canvas.drawText("BACK",displayFont,2630,715f);
+
+		canvas.drawText("LEVEL SELECT", displayFont, 3080, 715);
 
     }
 
-    private void checkLevelButtonPressed(float x, float y){
+    private void checkLevelButtonPressed(float x, float y, float offset){
 	    float size = 250f;
 	    for (int i = 0; i < levelButtonPositions.length; i++){
 	        //System.out.println("item " + i + "is " + levelButtonPositions[i]);
-	        if (x > (levelButtonPositions[i].x - size/3f) && x < (levelButtonPositions[i].x + size/3f) &&
+	        if (x > (levelButtonPositions[i].x - offset - size/3f) && x < (levelButtonPositions[i].x - offset + size/3f) &&
                     y > (levelButtonPositions[i].y - size/5f) && y < (levelButtonPositions[i].y + size/5f)){
 	            //System.out.println("level " + (i+1) + "pressed");
 	            levelNum = i + 1;
@@ -469,8 +529,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 
 
-		if (!panningToLevelSelect && !panningToMainMenu && currState == 0){
-            if (!onLevelSelectScreen){
+		if (!panningToLevelSelectFromMainMenu && !panningToMainMenu && currState == 0){
+            if (!onLevelSelectScreen && !onLevelSelectScreen2){
                 // Play button is a circle.
                 if ((screenX > centerX - playButton.getWidth()/2) && (screenX < centerX + playButton.getWidth()/2) &&
                         (screenY > centerY + 75 - playButton.getHeight()/2) && (screenY < centerY + 75 + playButton.getHeight()/2)) {
@@ -479,7 +539,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                 }
                 if ((screenX > centerX - levelSelectButton.getWidth()/2) && (screenX < centerX + levelSelectButton.getWidth()/2) &&
                         (screenY > centerY - 25 - levelSelectButton.getHeight()/2) && (screenY < centerY - 25 + levelSelectButton.getHeight()/2)) {
-                    panningToLevelSelect = true;
+                    panningToLevelSelectFromMainMenu = true;
                     playClick();
 
                 }
@@ -493,8 +553,26 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                     onLevelSelectScreen = false;
                     playClick();
                 }
-                checkLevelButtonPressed(screenX,screenY);
-            }
+
+				if (screenX > 1030f && screenX < 1280f && screenY > 680 && screenY < 720){
+					panningToLevelSelect2 = true;
+					onLevelSelectScreen = false;
+					playClick();
+				}
+                checkLevelButtonPressed(screenX,screenY,1280);
+            } else if (onLevelSelectScreen2) {
+				//System.out.println("reached checklevelbuttonpressed from touchdown");
+				//System.out.println("screenX is " +screenX);
+				//System.out.println("screenY is " +screenY);
+				// Check if main menu in level select is pressed
+				if (screenX > 0f && screenX < 250f && screenY > 680 && screenY < 720){
+					panningToLevelSelectFromLevelSelect2 = true;
+					onLevelSelectScreen2 = false;
+					playClick();
+				}
+
+				checkLevelButtonPressed(screenX,screenY,2560);
+			}
         }
 
 		return false;
