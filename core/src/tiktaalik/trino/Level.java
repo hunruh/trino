@@ -730,6 +730,9 @@ public class Level {
                 if (g2.getType() == FIREFLY)
                     return -1;
 
+                if (Math.abs(g2.getY()*g2.getDrawScale().x - g1.getY()*g1.getDrawScale().x) < 0.1f)
+                    return (int)(g2.getX()*g2.getDrawScale().x - g1.getX()*g1.getDrawScale().x);
+
                 return (int)(g2.getY()*g2.getDrawScale().x - g1.getY()*g1.getDrawScale().x);
             }
         });

@@ -41,6 +41,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
     private static int FONT_SIZE = 64;
     private BitmapFont displayFont;
 
+    private Color levelHover = new Color (1f, .93f, .82f, 1);
 	private Color hoverColor = new Color(0.86f, 0.81f, 0.75f, 1);
 	private Color selectColor = new Color(0.76f, 0.69f, 0.63f, 1);
 
@@ -96,6 +97,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private int levelHoverState;
 	private int creditsPressState;
 	private int creditsHoverState;
+
+	// Level select screen
+	private int levelHovered;
+	private int leftArrowHoverState;
+	private int rightArrowHoverState;
+	private int menuHoverState;
 
 	/** The amount of time to devote to loading assets (as opposed to on screen hints, etc.) */
 	private int   budget;
@@ -207,6 +214,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		}
 
 		// No progress so far.
+		levelHovered = -1;
+		leftArrowHoverState = 0;
+		rightArrowHoverState = 0;
+		menuHoverState = 0;
 		progress   = 0;
 		playPressState = 0;
 		playHoverState = 0;
@@ -503,7 +514,11 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				}
 
 				// Draw the level buttons
-				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+				Color levelTint = Color.WHITE;
+				if (levelHovered == i)
+					levelTint = levelHover;
+
+				canvas.draw(levelButton, levelTint, levelButton.getWidth()/2,levelButton.getHeight()/2,
 						xCurrent, yCurrent, 0,0.50f,0.50f );
 				//System.out.println(displayFont.getColor());
 				if (i <= 10) {
@@ -556,7 +571,11 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				}
 
 				// Draw the level buttons
-				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+				Color levelTint = Color.WHITE;
+				if (levelHovered == i)
+					levelTint = levelHover;
+
+				canvas.draw(levelButton, levelTint, levelButton.getWidth()/2,levelButton.getHeight()/2,
 						xCurrent, yCurrent, 0,0.50f,0.50f );
 				if (i <= 10) {
 					canvas.drawText("LEVEL"+(i+1),displayFont,xCurrent-45f,yCurrent+40f);
@@ -603,24 +622,29 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		// Draw the level buttons
 
 		if (onLevelSelectScreen){
-			canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+			canvas.draw(levelButton, menuHoverState == 1 ? levelHover : Color.WHITE,
+					levelButton.getWidth()/2,levelButton.getHeight()/2,
 					1400, 720, 0,0.50f,0.50f );
 			canvas.drawText("MENU",displayFont,1360f,708f);
 
-			canvas.draw(arrowLeft, Color.WHITE, arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
+			canvas.draw(arrowLeft, leftArrowHoverState == 1 ? levelHover : Color.WHITE,
+					arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
 					1340, 360, 0,1f,1f );
 
-			canvas.draw(arrowRight, Color.WHITE, arrowRight.getWidth()/2,arrowRight.getHeight()/2,
+			canvas.draw(arrowRight, rightArrowHoverState == 1 ? levelHover : Color.WHITE,
+					arrowRight.getWidth()/2,arrowRight.getHeight()/2,
 					2500, 360, 0,1f,1f );
 		}
 
 		else if (onLevelSelectScreen2){
-			canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+			canvas.draw(levelButton, menuHoverState == 1 ? levelHover : Color.WHITE,
+					levelButton.getWidth()/2,levelButton.getHeight()/2,
 					2680, 720, 0,0.50f,0.50f );
 			canvas.drawText("MENU",displayFont,2640f,708f);
 
 
-			canvas.draw(arrowLeft, Color.WHITE, arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
+			canvas.draw(arrowLeft, leftArrowHoverState == 1 ? levelHover : Color.WHITE,
+					arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
 					2620, 360, 0,1f,1f );
 
 		}
@@ -632,8 +656,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	    float size = 250f;
 	    for (int i = 0; i < levelButtonPositions.length; i++){
 	        //System.out.println("item " + i + "is " + levelButtonPositions[i]);
-	        if (x > (levelButtonPositions[i].x - offset - size/3f) && x < (levelButtonPositions[i].x - offset + size/3f) &&
-                    y > (levelButtonPositions[i].y - size/5f) && y < (levelButtonPositions[i].y + size/5f)){
+	        if (x > (levelButtonPositions[i].x - offset - size/2.5f) && x < (levelButtonPositions[i].x - offset + size/2.5f) &&
+                    y > (levelButtonPositions[i].y - size/4.5f) && y < (levelButtonPositions[i].y + size/4.5f)){
 	            //System.out.println("level " + (i+1) + "pressed");
 	            levelNum = i + 1;
 	            levelPressState = 1;
@@ -851,6 +875,35 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				creditsHoverState = 1;
 			} else {
 				creditsHoverState = 0;
+			}
+		}
+
+		if (onLevelSelectScreen || onLevelSelectScreen2) {
+			levelHovered = -1;
+			menuHoverState = 0;
+			leftArrowHoverState = 0;
+			rightArrowHoverState = 0;
+
+			float size = 250f;
+			float offset = onLevelSelectScreen ? 1280 : 2560;
+			for (int i = 0; i < levelButtonPositions.length; i++){
+				if (screenX > (levelButtonPositions[i].x - offset - size/2.5f) && screenX < (levelButtonPositions[i].x - offset + size/2.5f) &&
+						screenY > (levelButtonPositions[i].y - size/4.5f) && screenY < (levelButtonPositions[i].y + size/4.5f)){
+					levelHovered = i;
+				}
+
+			}
+
+			if (screenX > 0f && screenX < 250f && screenY > 680 && screenY < 720){
+				menuHoverState = 1;
+			}
+
+			if (screenX > 33f && screenX < 87f && screenY > 325 && screenY < 396){
+				leftArrowHoverState = 1;
+			}
+
+			if (screenX > 1193f && screenX < 1220f && screenY > 325 && screenY < 396){
+				rightArrowHoverState = 1;
 			}
 		}
 
