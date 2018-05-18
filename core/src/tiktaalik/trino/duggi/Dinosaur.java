@@ -72,6 +72,8 @@ public abstract class Dinosaur extends GameObject {
     private int canBeSeenTimeStamp = 0;
     private int stealthDuration = 1000;
     private int transformToForm = 0;
+    private boolean idle;
+    private boolean lastIdle;
     private boolean endTransform;
 
     public static final int ACTION_LOADING_LEFT = 4;
@@ -87,6 +89,10 @@ public abstract class Dinosaur extends GameObject {
     public static final int EATING_UP = 14;
     public static final int EATING_DOWN = 15;
     public static final int TRANSFORM = 16;
+    public static final int IDLE_LEFT = 17;
+    public static final int IDLE_RIGHT = 18;
+    public static final int IDLE_UP = 19;
+    public static final int IDLE_DOWN = 20;
 
     public Doll transformToDoll() {
         return new Doll(this);
@@ -118,8 +124,8 @@ public abstract class Dinosaur extends GameObject {
         upDown = d.upDown;
         direction = d.direction;
 
-        textureSet = new FilmStrip[17];
-        numFrames = new int[17];
+        textureSet = new FilmStrip[21];
+        numFrames = new int[21];
         numLoopFrames = new int[4];
         animeframe = 0;
         resourceCnt = 0;
@@ -130,6 +136,8 @@ public abstract class Dinosaur extends GameObject {
         shadowOpacity = 0.0f;
 
         // Actions
+        idle = true;
+        lastIdle = true;
         actionComplete = false;
         actionInProgress = false;
         actionReady = false;
@@ -165,8 +173,8 @@ public abstract class Dinosaur extends GameObject {
 
         // Gameplay attributes
         direction = RIGHT;
-        textureSet = new FilmStrip[17];
-        numFrames = new int[17];
+        textureSet = new FilmStrip[21];
+        numFrames = new int[21];
         numLoopFrames = new int[4];
         animeframe = 0;
         resourceCnt = 0;
@@ -178,6 +186,8 @@ public abstract class Dinosaur extends GameObject {
         shadowOpacity = 1.0f;
 
         // Actions
+        idle = true;
+        lastIdle = true;
         actionComplete = false;
         actionInProgress = false;
         actionReady = false;
@@ -245,6 +255,18 @@ public abstract class Dinosaur extends GameObject {
     public void setTransformTextureSet(Texture transform, int nFrames) {
         numFrames[TRANSFORM] = nFrames;
         textureSet[TRANSFORM] = new FilmStrip(transform,1,nFrames,nFrames);
+    }
+
+    public void setIdleTextureSet(Texture left, int leftFrames, Texture right, int rightFrames, Texture up, int upFrames,
+                                  Texture down, int downFrames) {
+        numFrames[IDLE_LEFT] = leftFrames;
+        textureSet[IDLE_LEFT] = new FilmStrip(left,1,leftFrames,leftFrames);
+        numFrames[IDLE_RIGHT] = rightFrames;
+        textureSet[IDLE_RIGHT] = new FilmStrip(right,1,rightFrames,rightFrames);
+        numFrames[IDLE_UP] = upFrames;
+        textureSet[IDLE_UP] = new FilmStrip(up,1,upFrames,upFrames);
+        numFrames[IDLE_DOWN] = downFrames;
+        textureSet[IDLE_DOWN] = new FilmStrip(down,1,downFrames,downFrames);
     }
 
     public float getActionLoadValue(){return actionLoad;}
@@ -496,6 +518,11 @@ public abstract class Dinosaur extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
+        if (idle != lastIdle)
+            animeframe = 0;
+
+        lastIdle = idle;
+
         ticks++;
 
         if (ticks % 10 == 0){
@@ -521,6 +548,7 @@ public abstract class Dinosaur extends GameObject {
             }
         }
         else if ((loadingAction || (actionReady && !actionInProgress)) && textureSet[ACTION_LOADING_LEFT] != null) {
+            idle = false;
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 4]) {
                 if (this.getForm() == CARNIVORE_FORM ) {
@@ -530,6 +558,7 @@ public abstract class Dinosaur extends GameObject {
                 }
             }
         } else if (actionInProgress) {
+            idle = false;
             if (this.getForm() == CARNIVORE_FORM && direction == DOWN)
                 animeframe += 0.35f;
             else
@@ -540,17 +569,26 @@ public abstract class Dinosaur extends GameObject {
                     animeframe -= (numFrames[direction + 8]);
                 else {
                     stopAction();
+                    idle = true;
                     actionComplete = true;
                     animeframe = 0;
                 }
             }
         } else if (eating) {
+            idle = false;
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 12]) {
                 eating = false;
+                idle = true;
                 animeframe = 0;
             }
+        } else if (idle && getLinearVelocity().len2() == 0) {
+            animeframe += ANIMATION_SPEED;
+            if (animeframe >= numFrames[direction + 17]) {
+                animeframe -= numFrames[direction + 17];
+            }
         } else if (((int)animeframe != 0 || getLinearVelocity().len2() > 0) && !actionAnimating) {
+            idle = false;
             if (getLinearVelocity().len2() == 0 && (int)animeframe >= numFrames[direction] / 2)
                 animeframe += ANIMATION_SPEED;
             if (getLinearVelocity().len2() == 0 && (int)animeframe < numFrames[direction] / 2)
@@ -561,6 +599,14 @@ public abstract class Dinosaur extends GameObject {
             if (animeframe >= numFrames[direction]) {
                 animeframe -= numFrames[direction];
             }
+
+            if (getLinearVelocity().len2() == 0 && (int)animeframe == 0) {
+                idle = true;
+                animeframe = 0;
+            }
+        } else if (getLinearVelocity().len2() == 0 && (int)animeframe == 0) {
+            idle = true;
+            animeframe = 0;
         }
 
         if (shadowOpacity < 1.0f && !transform) {
@@ -604,9 +650,10 @@ public abstract class Dinosaur extends GameObject {
             filmStripItem += 8;
         else if (eating)
             filmStripItem += 12;
+        else if (idle)
+            filmStripItem += 17;
 
         if (transform|| endTransform){
-
             if (getForm() == DOLL_FORM){
                 if (transformToForm == HERBIVORE_FORM){
                     offsetX = -10f;

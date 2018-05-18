@@ -64,7 +64,6 @@ public class Level {
     private Vector2 locationCache;
 
     private TextureRegion background;
-    private TextureRegion cloneTexture;
 
     private int pixelFactor = 80;
     private int levelWidth;
@@ -77,6 +76,7 @@ public class Level {
     private int currentLevel;
 
     private Hashtable<String, TextureRegion> textureDict;
+    private Hashtable<String, Texture> filmStripDict;
 
     public Level(World world, int lvl) {
         this.bounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -217,7 +217,7 @@ public class Level {
         clone.setGridLocation(getAvatarGridX(), getAvatarGridY());
         clone.setDrawScale(scale);
         clone.setType(CLONE);
-        clone.setTexture(cloneTexture);
+        clone.setIdleTextureSet(filmStripDict.get("cloneIdle"), 4);
         clone.setBodyType(BodyDef.BodyType.StaticBody);
         addObject(clone);
     }
@@ -350,6 +350,7 @@ public class Level {
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
         this.textureDict = textureDict;
+        this.filmStripDict = filmStripDict;
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
 
         SaveFileParser savefileparser = new SaveFileParser();
@@ -388,13 +389,12 @@ public class Level {
 
         // Set permanent textures
         background = textureDict.get("background");
-        cloneTexture = textureDict.get("clone");
 
         PooledList<Vector2> tmp = new PooledList<Vector2>();
         // Create player character
         // It is important that this is always created first, as transformations must swap the first element
         // in the objects list
-        dwidth = textureDict.get("clone").getRegionWidth() / (scale.x * 2);
+        dwidth = 80 / (scale.x * 2);
 
         tmp = parser.getAssetList(currentLevel, "Player");
         int facing = parser.getPlayerInitialOrientation(currentLevel);
@@ -416,6 +416,10 @@ public class Level {
                     filmStripDict.get("dollCloningFront"), 12,
                     filmStripDict.get("dollCloningFront"), 12,
                     filmStripDict.get("dollCloningFront"), 12);
+            avatar.setIdleTextureSet(filmStripDict.get("dollIdleLeft"), 4,
+                    filmStripDict.get("dollIdleRight"), 4,
+                    filmStripDict.get("dollIdleBack"), 4,
+                    filmStripDict.get("dollIdleFront"), 4);
             avatar.setDrawScale(scale);
 
             //Change filter data to that of the doll form

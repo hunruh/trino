@@ -1,11 +1,13 @@
 package tiktaalik.trino.duggi;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import tiktaalik.trino.Canvas;
 import tiktaalik.trino.GameObject;
 import tiktaalik.trino.enemy.Enemy;
+import tiktaalik.util.FilmStrip;
 
 public class Clone extends GameObject {
     private float radius;
@@ -18,6 +20,10 @@ public class Clone extends GameObject {
     private float totalTime = 60.0f;
     private float timeElapsed;
     private Enemy enemyEating;
+
+    private FilmStrip idleTextureSet;
+    private int numIdleFrames;
+    private float animeframe;
 
     public Clone(float x, float y, float radius) {
         super(x,y);
@@ -41,6 +47,12 @@ public class Clone extends GameObject {
         this.radius = radius;
     }
 
+    public void setIdleTextureSet(Texture idle, int frames) {
+        numIdleFrames = frames;
+        idleTextureSet = new FilmStrip(idle,1,frames,frames);
+        origin.set(idle.getWidth()/(2.0f * frames), idle.getHeight()/2.0f);
+    }
+
     public void setEnemy(Enemy e){
         enemyEating = e;
     }
@@ -58,6 +70,10 @@ public class Clone extends GameObject {
      */
     public void update(float dt) {
         super.update(dt);
+
+        animeframe += Dinosaur.ANIMATION_SPEED;
+        if (animeframe >= numIdleFrames)
+            animeframe -= numIdleFrames;
 
         timeElapsed += dt;
         if (timeElapsed > totalTime) {
@@ -104,6 +120,14 @@ public class Clone extends GameObject {
         if (geometry != null) {
             body.destroyFixture(geometry);
             geometry = null;
+        }
+    }
+    
+    public void draw(Canvas canvas) {
+        idleTextureSet.setFrame((int)animeframe);
+        if (idleTextureSet != null) {
+            canvas.draw(idleTextureSet, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,
+                    getY()*drawScale.x,0,1,1);
         }
     }
 
