@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.controllers.*;
 import tiktaalik.util.*;
+import tiktaalik.trino.level_editor.SaveFileParser;
 
 public class MenuController implements Screen, InputProcessor, ControllerListener {
 
@@ -33,8 +34,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String LEVEL_BUTTON_FILE = "trino/wood.png";
 	private static final String ARROW_LEFT = "trino/left_arrow.png";
 	private static final String ARROW_RIGHT = "trino/right_arrow.png";
+	private static final String FILLED_FILE = "trino/smallFilled.png";
+	private static final String UNFILLED_FILE = "trino/smallUnfilled.png";
 	private static final String CLICK_SOUND_FILE = "trino/click.mp3";
-    private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
+	private static String FONT_FILE = "hud/gyparody/gyparody hv.ttf";
     private static int FONT_SIZE = 64;
     private BitmapFont displayFont;
 
@@ -60,6 +63,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private Texture levelButton;
 	private Texture arrowLeft;
 	private Texture arrowRight;
+	private Texture filled;
+	private Texture unfilled;
 	private Vector2[] levelButtonPositions;
 	private Sound click;
 
@@ -110,6 +115,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private boolean onCreditsScreen;
 	private boolean playedLogoAnimation;
 	private float cameraOffset;
+
+	private SaveFileParser saveFileParser;
 
     /** Level selected */
     public static int levelNum = 0;
@@ -191,6 +198,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		duggiWalking.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		logoAnimation = new FilmStrip(studioLogo, 1, 16, 16);
 		loadingDuggi = new FilmStrip(duggiWalking,1,8, 8);
+		displayFont = null;
+		saveFileParser = new SaveFileParser();
 
 		// No progress so far.
 		progress   = 0;
@@ -223,6 +232,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 levelButton.dispose();
 		 arrowLeft.dispose();
 		 arrowRight.dispose();
+		 filled.dispose();
+		 unfilled.dispose();
 		 studioLogo.dispose();
 		 click.dispose();
 		 blackBackground = null;
@@ -237,7 +248,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 levelButton = null;
 		 arrowLeft = null;
 		 arrowRight = null;
+		 filled = null;
+		 unfilled = null;
 		 click = null;
+		 displayFont = null;
 		 if (playButton != null) {
 			 playButton.dispose();
 			 playButton = null;
@@ -342,6 +356,9 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                     arrowLeft = new Texture(ARROW_LEFT);
                     arrowRight = new Texture(ARROW_RIGHT);
 
+                    filled = new Texture(FILLED_FILE);
+                    unfilled = new Texture(UNFILLED_FILE);
+
                     // Load the click sound
 					click = Gdx.audio.newSound(Gdx.files.internal(CLICK_SOUND_FILE));
 
@@ -352,10 +369,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                     manager.load(FONT_FILE, BitmapFont.class, size2Params);
 
                     // Allocate the font
-                    if (manager.isLoaded(FONT_FILE))
-                        displayFont = manager.get(FONT_FILE,BitmapFont.class);
-                    else
-                        displayFont = null;
+                    if (manager.isLoaded(FONT_FILE)) {
+						displayFont = manager.get(FONT_FILE, BitmapFont.class);
+					}
+                    else {
+						displayFont = null;
+					}
 				}
 
 		}
@@ -425,7 +444,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 					canvas.draw(credits,1280,0);
 					canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
 							1400, 720, 0,0.50f,0.50f );
-					canvas.drawText("MENU",displayFont,1340f,715f);
+					canvas.drawText("MENU",displayFont,1360f,708f);
 				}else if (!onCreditsScreen){
 					drawLevelButtons(canvas,20);
 				}
@@ -478,7 +497,39 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				// Draw the level buttons
 				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
 						xCurrent, yCurrent, 0,0.50f,0.50f );
-				canvas.drawText("LEVEL "+(i+1),displayFont,xCurrent-70f,yCurrent+15f);
+				//System.out.println(displayFont.getColor());
+				if (i <= 10) {
+					canvas.drawText("LEVEL"+(i+1),displayFont,xCurrent-45f,yCurrent+40f);
+				}
+				else {
+					canvas.drawText("LEVEL"+(i+1),displayFont,xCurrent-50f,yCurrent+40f);
+				}
+
+				// THESE ARE PLACEHOLDERS BECAUSE I CANT GET THE STARS PER LEVEL!!
+				canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+				canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+				canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+
+//				if (saveFileParser.levelStarsArray()[i] == 0 ) {
+//					canvas.draw(unfilled,xCurrent-60f,yCurrent-30f);
+//					canvas.draw(unfilled,xCurrent-20f,yCurrent-30f);
+//					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+//				}
+//				else if (saveFileParser.levelStarsArray()[i] == 1) {
+//					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+//					canvas.draw(unfilled,xCurrent-20f,yCurrent-30f);
+//					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+//				}
+//				else if (saveFileParser.levelStarsArray()[i] == 2) {
+//					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+//					canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+//					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+//				}
+//				else {
+//					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+//					canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+//					canvas.draw(filled,xCurrent+20f,yCurrent-30f);
+//				}
 				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
 
 				xCurrent += size;
@@ -496,7 +547,18 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				// Draw the level buttons
 				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
 						xCurrent, yCurrent, 0,0.50f,0.50f );
-				canvas.drawText("LEVEL"+(i+1),displayFont,xCurrent-70f,yCurrent+15f);
+				if (i <= 10) {
+					canvas.drawText("LEVEL"+(i+1),displayFont,xCurrent-45f,yCurrent+40f);
+				}
+				else {
+					canvas.drawText("LEVEL"+(i+1),displayFont,xCurrent-50f,yCurrent+40f);
+				}
+
+				// THESE ARE PLACEHOLDERS BECAUSE I CANT GET THE STARS PER LEVEL!!
+				canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+				canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+				canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+
 				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
 
 				xCurrent += size;
@@ -515,7 +577,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		if (onLevelSelectScreen){
 			canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
 					1400, 720, 0,0.50f,0.50f );
-			canvas.drawText("MENU",displayFont,1340f,715f);
+			canvas.drawText("MENU",displayFont,1360f,708f);
 
 			canvas.draw(arrowLeft, Color.WHITE, arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
 					1340, 360, 0,1f,1f );
@@ -527,7 +589,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		else if (onLevelSelectScreen2){
 			canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
 					2680, 720, 0,0.50f,0.50f );
-			canvas.drawText("MENU",displayFont,2620f,715f);
+			canvas.drawText("MENU",displayFont,2640f,708f);
+
 
 			canvas.draw(arrowLeft, Color.WHITE, arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
 					2620, 360, 0,1f,1f );

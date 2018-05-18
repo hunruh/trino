@@ -48,9 +48,9 @@ public class GameController implements ContactListener, Screen {
 	private Array<String> assets; // Track all loaded assets (for unloading purposes)
 
 	// Sounds files
-	private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
+	private static String FONT_FILE = "hud/gyparody/gyparody hv.ttf";
 	private static String TUTORIAL_FONT_FILE = "hud/silom/SilomBol.ttf";
-	private static int FONT_SIZE = 64;
+	private static int FONT_SIZE = 25;
 	private static int TUTORIAL_FONT_SIZE = 26;
 
 	// Texture files
@@ -1774,9 +1774,7 @@ public class GameController implements ContactListener, Screen {
 
 
 		if (state == GAME_OVER) {
-			displayFont.setColor(Color.YELLOW);
 			if (complete && !failed) {
-				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
 				canvas.draw(textureDict.get("pauseMenu"),313, 111);
 				canvas.draw(textureDict.get("restartLevel"),422, 184);
@@ -1810,7 +1808,6 @@ public class GameController implements ContactListener, Screen {
 
 			}
 			else if (failed && !complete) {
-				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
 				canvas.draw(textureDict.get("pauseMenu"),313, 111);
 				canvas.draw(textureDict.get("gameover"),543,474);
@@ -1833,7 +1830,6 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (timeOut) {
-				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
 				canvas.draw(textureDict.get("pauseMenu"),313, 111);
 				canvas.draw(textureDict.get("timeout"),557,474);
@@ -1858,7 +1854,6 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		if (state == GAME_PAUSED) {
-				displayFont.setColor(Color.YELLOW);
 				if (menuNum == 0) {
 					canvas.beginOverlay();
 					canvas.draw(textureDict.get("grayOut"), -9, 0);
@@ -2062,7 +2057,7 @@ public class GameController implements ContactListener, Screen {
 			swingAnimeFrame = 0;
 			readyForSwing = false;
 			try {saveFileParser.parse("jsons/save.json"); }
-			catch(Exception e){System.out.println("wow i fucked up");}
+			catch(Exception e){System.out.println("wow i messed up");}
 			int stars;
 			if (level.getStars(2) <= totalTime){stars = 3;}
 			else if (level.getStars(1) <= totalTime){stars = 2;}
