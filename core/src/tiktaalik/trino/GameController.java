@@ -1941,7 +1941,7 @@ public class GameController implements ContactListener, Screen {
 		level.getAvatar().setY(level.screenToMaze(level.getHeight()));
 		level.getAvatar().setSwinging(true);
 		level.getAvatar().setDirection(Dinosaur.DOWN);
-		vineCurrentOffset = 1035;
+		vineCurrentOffset = 1031;
 		swingingDown = true;
 		vineAvatarDrop = true;
 		state = GAME_LEVEL_START;
