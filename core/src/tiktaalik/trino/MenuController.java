@@ -293,7 +293,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				drawProgress(canvas);
 			} else {
 				canvas.draw(background, 0, 0);
-                canvas.draw(background, 1280, 0);
+                //canvas.draw(background, 1280, 0);
 				Color playTint;
 				if (playPressState == 1)
 					playTint = selectColor;
