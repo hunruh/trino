@@ -15,6 +15,7 @@ import tiktaalik.trino.duggi.*;
 import tiktaalik.trino.enemy.AIController;
 import tiktaalik.trino.enemy.Enemy;
 import tiktaalik.trino.environment.*;
+import tiktaalik.trino.level_editor.SaveFileParser;
 import tiktaalik.trino.lights.LightSource;
 import tiktaalik.trino.lights.PointSource;
 import tiktaalik.util.*;
@@ -367,6 +368,7 @@ public class GameController implements ContactListener, Screen {
 
 	private World world;
 	private Level level;
+	private SaveFileParser saveFileParser;
 
 	private int currentLevel;
 
@@ -1352,6 +1354,7 @@ public class GameController implements ContactListener, Screen {
 		assets = new Array<String>();
 		world = new World(gravity,false);
 		level = new Level(world, 0);
+		saveFileParser = new SaveFileParser();
 		complete = false;
 		failed = false;
 		timeOut = false;
@@ -1495,6 +1498,8 @@ public class GameController implements ContactListener, Screen {
 
 		playDoorSound = -1;
 	}
+
+
 
 	/**
 	 * Returns whether to process the update loop
@@ -2067,6 +2072,10 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_LEVEL_END;
 			swingAnimeFrame = 0;
 			readyForSwing = false;
+			try {saveFileParser.parse("jsons/save.json"); }
+			catch(Exception e){System.out.println("wow i fucked up");}
+
+			
 
 			if (level.getAvatar().getForm() != Dinosaur.DOLL_FORM) {
 				if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
