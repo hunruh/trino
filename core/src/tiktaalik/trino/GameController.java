@@ -2668,6 +2668,10 @@ public class GameController implements ContactListener, Screen {
 						filmStripDict.get("dollRight"), 8,
 						filmStripDict.get("dollBack"), 8,
 						filmStripDict.get("dollFront"), 8);
+                avatar.setIdleTextureSet(filmStripDict.get("dollIdleLeft"), 4,
+                        filmStripDict.get("dollIdleRight"), 4,
+                        filmStripDict.get("dollIdleBack"), 4,
+                        filmStripDict.get("dollIdleFront"), 4);
 
 				level.setAvatar(avatar);
 			}

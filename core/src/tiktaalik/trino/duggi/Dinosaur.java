@@ -615,7 +615,6 @@ public abstract class Dinosaur extends GameObject {
 
         if (loadingAction) {
             actionLoad += dt;
-
             if (actionLoad >= ACTION_LOAD_DURATION) {
                 loadingAction = false;
                 actionReady = true;
