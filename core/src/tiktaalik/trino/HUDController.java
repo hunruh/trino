@@ -350,8 +350,9 @@ public class HUDController  {
     }
 
     private void drawDinoMeter(Canvas canvas) {
-        int padding = 8;
-        int rootX = 153 + padding;
+        int rootX = 161;
+        int rootY = 650;
+        int maxWidth = 60;
 
         TextureRegion resource, lightResource;
         if (transformation == Dinosaur.DOLL_FORM) {
@@ -367,19 +368,22 @@ public class HUDController  {
             lightResource = meatLight;
         }
 
+        float paddingX = maxWidth - (lightResource.getRegionWidth() * 3) / 2;
+        float paddingY = (720 - rootY - lightResource.getRegionHeight()) / 2;
+
         //canvas.draw(dinometerBackground, 120, canvas.getHeight() - 67);
         for (int i = 0; i < numResources; i++)
-            canvas.draw(resource, rootX + i*lightResource.getRegionWidth()+i*padding,660);
+            canvas.draw(resource, rootX + i*lightResource.getRegionWidth()+i*paddingX,rootY + paddingY);
         for (int i = numResources; i < Dinosaur.MAX_RESOURCES; i++)
-            canvas.draw(lightResource, rootX + i*lightResource.getRegionWidth()+i*padding,660);
+            canvas.draw(lightResource, rootX + i*lightResource.getRegionWidth()+i*paddingX,rootY + paddingY);
 
     }
 
     private void drawPause(Canvas canvas) {
         //canvas.draw(pauseBackground, 1213, canvas.getHeight() - 67);
         Vector2 origin = new Vector2(wood.getRegionWidth()/2.0f, wood.getRegionHeight()/2.0f);
-        canvas.draw(pauseBackground, 1060, 631);
-        canvas.draw(pauseLight, 1209, 656);
+        canvas.draw(pauseBackground, 1060, 641);
+        canvas.draw(pauseLight, 1209, 661);
     }
 
     private void drawCloneCircle(Canvas canvas){
@@ -414,13 +418,13 @@ public class HUDController  {
         displayFont.setColor(Color.WHITE);
         if (seconds < 10) {
             canvas.drawText(Integer.toString(minutes) + ":0" + Integer.toString(seconds), displayFont,
-                    1105, 701);
+                    1105, 706);
         } else if (seconds == 60) {
             canvas.drawText(Integer.toString(minutes + 1) + ":00", displayFont,1105,
-                    701);
+                    706);
         } else {
             canvas.drawText(Integer.toString(minutes) + ":" + Integer.toString(seconds), displayFont,
-                    1105, 701);
+                    1105, 706);
         }
     }
 
