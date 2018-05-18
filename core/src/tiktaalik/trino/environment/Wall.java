@@ -19,7 +19,6 @@ public class Wall extends EdibleObject {
     private Vector2 gridLocation;
 
     private boolean edible;
-    private int edibleWallType;
     private boolean lowered = false;
     private boolean fullyLowered = false;
     private boolean goal;
@@ -52,11 +51,6 @@ public class Wall extends EdibleObject {
 
         this.edible = edible;
 
-        if (edible){
-            int random = MathUtils.random(6);
-            edibleWallType = random;
-        }
-
         // Initialize
         setBodyType(BodyDef.BodyType.StaticBody);
         setName("wall");
@@ -74,10 +68,6 @@ public class Wall extends EdibleObject {
 
     public boolean getAnimLowered() {
         return fullyLowered;
-    }
-
-    public int getEdibleWallType(){
-        return edibleWallType;
     }
 
     public void setLowered(boolean lowered) {
