@@ -2569,13 +2569,6 @@ public class GameController implements ContactListener, Screen {
 							SoundController.getInstance().playChargeSound();
 							avatar.loadAction();
 						}
-//						if (avatar.getActionLoadValue() == 0){
-//							SoundController.getInstance().playEat();
-//							((EdibleObject) tmp).beginEating();
-//							avatar.incrementResources();
-//						} else if (!avatar.inActionCycle()){
-//							avatar.loadAction();
-//						}
 					}
 				} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 					boolean ate = false;
@@ -2864,56 +2857,6 @@ public class GameController implements ContactListener, Screen {
 				vineHeightOffset = level.getLevelHeight() + 307f;
 			}
 		}
-//		if (!readyForSwing && !swingingUp)
-//			avatar.update(dt);
-//
-//		if (!readyForSwing && !swingingUp) {
-//			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
-//				Wall door = level.getDoor(0);
-//				float targetX = door.getX();
-//				float targetY = door.getY() + 0.7f;
-//
-//				if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() < targetX) {
-//					avatar.setLeftRight(1);
-//					avatar.setX(avatar.getX() + 0.1f);
-//					avatar.setUpDown(0);
-//				} else if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() > targetX) {
-//					avatar.setLeftRight(-1);
-//					avatar.setX(avatar.getX() - 0.1f);
-//					avatar.setUpDown(0);
-//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() < targetY) {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(1);
-//					avatar.setY(avatar.getY() + 0.1f);
-//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() > targetY) {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(-1);
-//					avatar.setY(avatar.getY() - 0.1f);
-//				} else {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(0);
-//					avatar.setDirection(Dinosaur.DOWN);
-//					avatar.update(dt);
-//					avatar.forceFrame(0);
-//					avatar.setSwinging(true);
-//					swingingUp = true;
-//				}
-//			}
-//		} else if (swingingUp) {
-//			vineGoingDownCounter = 0;
-//			vineGoingUpCounter += 0.1f;
-//			vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
-//			avatar.setY(avatar.getY() + (vineGoingUpCounter * .025f));
-//
-//			if (avatar.getY() > level.screenToMaze(level.getHeight())){
-//				vineCurrentOffset = vineHeightOffset;
-//				readyForSwing = true;
-//				swingingUp = false;
-//			}
-//		}
-//		else if (readyForSwing) {
-
-//		}
 	}
 
 	/**
