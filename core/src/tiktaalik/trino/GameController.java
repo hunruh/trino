@@ -403,7 +403,7 @@ public class GameController implements ContactListener, Screen {
 	private float intensity;
 	private boolean transform = false;
 	private Vector2 currentRiver;
-	private Color hoverColor = new Color(2.03f, 1.00f, 0.32f, 1); // for UI hovering
+	private Color hoverColor = new Color(1,1,1,0.80f); // for UI hovering
 
 	/** Timer */
 	float levelTime = 60;
@@ -1907,7 +1907,7 @@ public class GameController implements ContactListener, Screen {
 						canvas.draw(textureDict.get("restartText"), 568, 286); // restart text
 					}
 					if (InputHandler.getInstance().didHover() == 5) {
-						canvas.draw(textureDict.get("resumeText"),hoverColor,575, 220,145,35);
+						canvas.draw(textureDict.get("resumeText"),hoverColor,575, 220,145,36);
 					}
 					else {
 						canvas.draw(textureDict.get("resumeText"),575, 220); // resume text
