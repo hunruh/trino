@@ -66,7 +66,7 @@ public class River extends GameObject {
 
         // Has rock on it
         int random = MathUtils.random(2);
-        if (random == 0){
+        if (random < 2){
             hasRockOnIt = true;
         }
     }
