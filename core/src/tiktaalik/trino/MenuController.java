@@ -518,8 +518,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 //				canvas.draw(filled,xCurrent-20f,yCurrent-30f);
 //				canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
 
-				System.out.println(saveFileParser.levelStarsArray().length);
-				System.out.println(saveFileParser.levelStarsArray()[i]);
+				//System.out.println(saveFileParser.levelStarsArray().length);
+				//System.out.println(saveFileParser.levelStarsArray()[i]);
 
 				if (saveFileParser.levelStarsArray()[i] == 0 ) {
 					canvas.draw(unfilled,xCurrent-60f,yCurrent-30f);
