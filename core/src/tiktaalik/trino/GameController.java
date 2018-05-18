@@ -49,9 +49,10 @@ public class GameController implements ContactListener, Screen {
 
 	// Sounds files
 	private static String FONT_FILE = "hud/gyparody/gyparody hv.ttf";
-	private static String TUTORIAL_FONT_FILE = "hud/silom/SilomBol.ttf";
+	private static String TUTORIAL_FONT_FILE = "hud/gyparody/gyparody hv.ttf";
+//	private static String TUTORIAL_FONT_FILE = "hud/silom/SilomBol.ttf";
 	private static int FONT_SIZE = 25;
-	private static int TUTORIAL_FONT_SIZE = 26;
+	private static int TUTORIAL_FONT_SIZE = 12;
 
 	// Texture files
 	private static final String BACKGROUND_FILE = "trino/background.png";
@@ -436,10 +437,10 @@ public class GameController implements ContactListener, Screen {
 		manager.load(FONT_FILE, BitmapFont.class, size2Params);
 		assets.add(FONT_FILE);
 
-		size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-		size2Params.fontFileName = TUTORIAL_FONT_FILE;
-		size2Params.fontParameters.size = TUTORIAL_FONT_SIZE;
-		manager.load(TUTORIAL_FONT_FILE, BitmapFont.class, size2Params);
+		FreetypeFontLoader.FreeTypeFontLoaderParameter size2ParamsTutorial = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		size2ParamsTutorial.fontFileName = TUTORIAL_FONT_FILE;
+		size2ParamsTutorial.fontParameters.size = TUTORIAL_FONT_SIZE;
+		manager.load(TUTORIAL_FONT_FILE, BitmapFont.class, size2ParamsTutorial);
 		assets.add(TUTORIAL_FONT_FILE);
 
 		// Load textures
@@ -1674,7 +1675,7 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("2d"), 1000, 260);
 			}
 
-			canvas.drawText("Collect 3 to Transform!", tutorialFont, 30,410);
+			canvas.drawText("Collect 3 to Transform!", tutorialFont, 20,410);
 			canvas.drawText("Herbivore Form", tutorialFont, 1020,475);
 			canvas.drawText("Can Cross Rivers!", tutorialFont, 1010,435);
 			canvas.end();
@@ -1702,6 +1703,7 @@ public class GameController implements ContactListener, Screen {
 			else {
 				canvas.draw(textureDict.get("4b"), 35, 220);
 			}
+
 			canvas.drawText("Camouflage to", tutorialFont, 75, 510);
 			canvas.drawText("Evade Enemies!", tutorialFont, 70, 480);
 			canvas.end();
@@ -1717,8 +1719,14 @@ public class GameController implements ContactListener, Screen {
                 canvas.draw(textureDict.get("6d"), 1000, 220);
             }
 			canvas.drawText("Charge at Enemies", tutorialFont, 55, 500);
-			canvas.drawText("to Stun Them!", tutorialFont, 80, 470);
-			canvas.drawText("Eat Only Stunned", tutorialFont, 1025, 500);
+			canvas.drawText("to             Them!", tutorialFont, 80, 470);
+			tutorialFont.setColor(Color.GOLD);
+			canvas.drawText("Stun", tutorialFont, 120, 470);
+			tutorialFont.setColor(Color.WHITE);
+			canvas.drawText("Eat Only", tutorialFont, 1020, 500);
+			tutorialFont.setColor(Color.GOLD);
+			canvas.drawText("Stunned", tutorialFont, 1130, 500);
+			tutorialFont.setColor(Color.WHITE);
 			canvas.drawText("Enemies!", tutorialFont, 1075,470 );
             canvas.end();
         }
@@ -3380,6 +3388,8 @@ public class GameController implements ContactListener, Screen {
 		fireFlyControls = null;
 		world = null;
 		canvas = null;
+		displayFont = null;
+		tutorialFont = null;
 	}
 
 	/** Unused Screen method */

@@ -442,9 +442,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 				if (onCreditsScreen || panningToCredits){
 					canvas.draw(credits,1280,0);
-					canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-							1400, 720, 0,0.50f,0.50f );
-					canvas.drawText("MENU",displayFont,1360f,708f);
+					if (!panningToMainMenu && !panningToCredits){
+						canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+								1400, 720, 0,0.50f,0.50f );
+						canvas.drawText("MENU",displayFont,1360f,708f);
+					}
+
 				}else if (!onCreditsScreen){
 					drawLevelButtons(canvas,20);
 				}
@@ -483,14 +486,14 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 	private void drawLevelButtons(Canvas canvas, int numLevels){
 	    float size = 250f;
-	    float xCurrent = 1280 + size;
+	    float xCurrent = 1280 + 1.075f*size;
 	    float yCurrent = 720 - .75f*size;
 	    int currentIndex = 0;
 
 	    for (int i = 0; i < numLevels; i++){
 	    	if (i < 12){
 				if (xCurrent >= 2560 - size ){
-					xCurrent = 1280 + size;
+					xCurrent = 1280 + 1.075f*size;
 					yCurrent -= .75f*size;
 				}
 
@@ -535,12 +538,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				xCurrent += size;
 
 				if (i == 11) {
-					xCurrent = 2560 + size;
+					xCurrent = 2560 + 1.075f*size;
 					yCurrent = 720 - .75f*size;
 				}
 			} else if (i >= 12 && i < 24){
 				if (xCurrent >= 3840 - size ){
-					xCurrent = 2560 + size;
+					xCurrent = 2560 + 1.075f*size;
 					yCurrent -= .75f*size;
 				}
 
@@ -564,7 +567,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				xCurrent += size;
 
 				if (i == 23) {
-					xCurrent = 3840 + size;
+					xCurrent = 3840 + 1.075f*size;
 					yCurrent = 720 - .75f*size;
 				}
 			}
