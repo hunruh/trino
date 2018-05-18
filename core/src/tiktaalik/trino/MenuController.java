@@ -200,6 +200,11 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		loadingDuggi = new FilmStrip(duggiWalking,1,8, 8);
 		displayFont = null;
 		saveFileParser = new SaveFileParser();
+		try {
+			saveFileParser.parse("jsons/save.json");
+		} catch(Exception e) {
+			System.out.println("oops dude");
+		}
 
 		// No progress so far.
 		progress   = 0;
@@ -509,30 +514,33 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				}
 
 				// THESE ARE PLACEHOLDERS BECAUSE I CANT GET THE STARS PER LEVEL!!
-				canvas.draw(filled,xCurrent-60f,yCurrent-30f);
-				canvas.draw(filled,xCurrent-20f,yCurrent-30f);
-				canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+//				canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+//				canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+//				canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
 
-//				if (saveFileParser.levelStarsArray()[i] == 0 ) {
-//					canvas.draw(unfilled,xCurrent-60f,yCurrent-30f);
-//					canvas.draw(unfilled,xCurrent-20f,yCurrent-30f);
-//					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
-//				}
-//				else if (saveFileParser.levelStarsArray()[i] == 1) {
-//					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
-//					canvas.draw(unfilled,xCurrent-20f,yCurrent-30f);
-//					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
-//				}
-//				else if (saveFileParser.levelStarsArray()[i] == 2) {
-//					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
-//					canvas.draw(filled,xCurrent-20f,yCurrent-30f);
-//					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
-//				}
-//				else {
-//					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
-//					canvas.draw(filled,xCurrent-20f,yCurrent-30f);
-//					canvas.draw(filled,xCurrent+20f,yCurrent-30f);
-//				}
+				System.out.println(saveFileParser.levelStarsArray().length);
+				System.out.println(saveFileParser.levelStarsArray()[i]);
+
+				if (saveFileParser.levelStarsArray()[i] == 0 ) {
+					canvas.draw(unfilled,xCurrent-60f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent-20f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+				}
+				else if (saveFileParser.levelStarsArray()[i] == 1) {
+					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent-20f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+				}
+				else if (saveFileParser.levelStarsArray()[i] == 2) {
+					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+					canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+				}
+				else {
+					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+					canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+					canvas.draw(filled,xCurrent+20f,yCurrent-30f);
+				}
 				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
 
 				xCurrent += size;
@@ -558,9 +566,26 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				}
 
 				// THESE ARE PLACEHOLDERS BECAUSE I CANT GET THE STARS PER LEVEL!!
-				canvas.draw(filled,xCurrent-60f,yCurrent-30f);
-				canvas.draw(filled,xCurrent-20f,yCurrent-30f);
-				canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+				if (saveFileParser.levelStarsArray()[i] == 0 ) {
+					canvas.draw(unfilled,xCurrent-60f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent-20f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+				}
+				else if (saveFileParser.levelStarsArray()[i] == 1) {
+					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent-20f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+				}
+				else if (saveFileParser.levelStarsArray()[i] == 2) {
+					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+					canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+					canvas.draw(unfilled,xCurrent+20f,yCurrent-30f);
+				}
+				else {
+					canvas.draw(filled,xCurrent-60f,yCurrent-30f);
+					canvas.draw(filled,xCurrent-20f,yCurrent-30f);
+					canvas.draw(filled,xCurrent+20f,yCurrent-30f);
+				}
 
 				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
 
