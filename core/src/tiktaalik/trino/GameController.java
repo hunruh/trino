@@ -202,8 +202,6 @@ public class GameController implements ContactListener, Screen {
     private static final String SWITCH_DOWN_FILE_THREE = "trino/buttonPressed3.png";
 	private static final String RIVER_FILE = "trino/river.png";
 	private static final String BOULDER_FILE = "trino/boulder.png";
-	private static final String VICTORY_FILE = "trino/victoryImage.png";
-	private static final String GAMEOVER_FILE = "trino/gameoverImage.png";
 	private static final String TUTORIAL_FILE = "trino/tutorialOverlay.png";
 	private static final String SWING_OUT_STRIP = "trino/vineswingtocamera.png";
 	private static final String SWING_IN_STRIP = "trino/vineswingout.png";
@@ -303,6 +301,17 @@ public class GameController implements ContactListener, Screen {
 	private static final String TUT_EIGHT_A = "tutorial/unkillableWarning.png";
 	private static final String TUT_NINE_A = "tutorial/multiSwitch1.png";
 	private static final String TUT_NINE_B = "tutorial/multiSwitch2.png";
+
+	// Victory/game over screens
+	private static final String FILLED_FILE = "screens/filled.png";
+	private static final String UNFILLED_FILE = "screens/unfilled.png";
+	private static final String VICTORY_FILE = "screens/victory.png";
+	private static final String GAMEOVER_FILE = "screens/gameover.png";
+	private static final String TIMEOUT_FILE = "screens/time.png";
+	private static final String BACK_TO_MENU = "screens/menu.png";
+	private static final String NEXT_FILE = "screens/next.png";
+	private static final String RESTART_LEVEL_FILE = "screens/restart.png";
+	private static final String DEAD_FILE = "screens/dead.png";
 
 	// Texture assets variables
 	private BitmapFont displayFont;
@@ -920,6 +929,20 @@ public class GameController implements ContactListener, Screen {
 		assets.add(TUT_NINE_A);
         manager.load(TUT_NINE_B, Texture.class);
         assets.add(TUT_NINE_B);
+        manager.load(FILLED_FILE, Texture.class);
+        assets.add(FILLED_FILE);
+        manager.load(UNFILLED_FILE, Texture.class);
+        assets.add(UNFILLED_FILE);
+        manager.load(TIMEOUT_FILE, Texture.class);
+        assets.add(TIMEOUT_FILE);
+        manager.load(BACK_TO_MENU, Texture.class);
+        assets.add(BACK_TO_MENU);
+        manager.load(NEXT_FILE, Texture.class);
+        assets.add(NEXT_FILE);
+        manager.load(RESTART_LEVEL_FILE, Texture.class);
+        assets.add(RESTART_LEVEL_FILE);
+        manager.load(DEAD_FILE, Texture.class);
+        assets.add(DEAD_FILE);
 
 		jsonReader = new JsonReader();
 	}
@@ -1082,6 +1105,13 @@ public class GameController implements ContactListener, Screen {
         textureDict.put("8a", createTexture(manager, TUT_EIGHT_A, false));
         textureDict.put("9a", createTexture(manager, TUT_NINE_A, false));
         textureDict.put("9b", createTexture(manager, TUT_NINE_B, false));
+        textureDict.put("filled", createTexture(manager, FILLED_FILE, false));
+        textureDict.put("unfilled", createTexture(manager, UNFILLED_FILE, false));
+        textureDict.put("timeout", createTexture(manager, TIMEOUT_FILE, false));
+        textureDict.put("backMenu", createTexture(manager, BACK_TO_MENU, false));
+        textureDict.put("nextLevel", createTexture(manager, NEXT_FILE, false));
+        textureDict.put("restartLevel", createTexture(manager, RESTART_LEVEL_FILE,false));
+        textureDict.put("dead", createTexture(manager, DEAD_FILE, false));
 
 		filmStripDict.put("dollLeft", createFilmTexture(manager,DOLL_STRIP_LEFT));
 		filmStripDict.put("dollRight", createFilmTexture(manager,DOLL_STRIP_RIGHT));
@@ -1743,47 +1773,78 @@ public class GameController implements ContactListener, Screen {
 			if (complete && !failed) {
 				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
-				canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("victory").getRegionWidth() * .75f / 2,
-						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
-						textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
-				//canvas.drawTextCentered("EATEN ALIVE!", displayFont, 0.0f);
+				canvas.draw(textureDict.get("pauseMenu"),313, 111);
+				canvas.draw(textureDict.get("restartLevel"),422, 184);
+				canvas.draw(textureDict.get("nextLevel"), 758, 184);
+				canvas.draw(textureDict.get("victory"),541, 424);
+				canvas.draw(textureDict.get("filled"),470, 272);
 				if (totalTime >= 2*levelTime/3) {
 //					System.out.println("THREE STAR!");
-					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
-							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
-							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
-					canvas.draw(textureDict.get("victory"), Color.WHITE, 3*canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() *3 * .75f / 4,
-							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * 3 * .75f / 4,
-							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+					canvas.draw(textureDict.get("filled"),597, 272);
+					canvas.draw(textureDict.get("filled"),724, 272);
 				}
 				else if (totalTime >= levelTime/3) {
 //					System.out.println("TWO STAR!");
-					canvas.draw(textureDict.get("victory"), Color.WHITE, canvas.getWidth() / 4 - textureDict.get("victory").getRegionWidth() * .75f / 4,
-							canvas.getHeight() / 4 - textureDict.get("victory").getRegionHeight() * .75f / 4,
-							textureDict.get("victory").getRegionWidth() * .75f, textureDict.get("victory").getRegionHeight() * .75f);
+					canvas.draw(textureDict.get("filled"),597, 272);
+					canvas.draw(textureDict.get("unfilled"),724, 272);
 				}
-//				else {
-//					//one star here!
-//				}
-
+				else {
+					canvas.draw(textureDict.get("unfilled"),597, 272);
+					canvas.draw(textureDict.get("unfilled"),724, 272);
+				}
 				canvas.end();
+				if (InputHandler.getInstance().didRestartLevel()) {
+					SoundController.getInstance().playClick();
+					menuNum = 0;
+					reset();
+				}
+				else if (InputHandler.getInstance().didNextLevel()) {
+					SoundController.getInstance().playClick();
+					nextLevel();
+				}
 
 			}
 			else if (failed && !complete) {
 				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
-				canvas.draw(textureDict.get("gameover"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("gameover").getRegionWidth() * .75f / 2,
-						canvas.getHeight() / 2 - textureDict.get("victory").getRegionHeight() * .75f / 2,
-						textureDict.get("gameover").getRegionWidth() * .75f, textureDict.get("gameover").getRegionHeight() * .75f);
+				canvas.draw(textureDict.get("pauseMenu"),313, 111);
+				canvas.draw(textureDict.get("gameover"),543,474);
+				canvas.draw(textureDict.get("backMenu"),700, 184);
+				canvas.draw(textureDict.get("restartLevel"),422, 184);
+				canvas.draw(textureDict.get("dead"), 478, 233);
 				canvas.end();
+				if (InputHandler.getInstance().didDone()) {
+					menuNum = 1;
+					resetCamera();
+					listener.exitScreen(this, 0);
+					menuNum = 0;
+				}
+				else if (InputHandler.getInstance().didRestartLevel()) {
+					SoundController.getInstance().playClick();
+					menuNum = 0;
+					reset();
+				}
 			}
 			else if (timeOut) {
 				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
-				canvas.draw(textureDict.get("gameover"), Color.WHITE, canvas.getWidth() / 2 - textureDict.get("gameover").getRegionWidth() * .75f / 2,
-						canvas.getHeight() / 2 - textureDict.get("gameover").getRegionHeight() * .75f / 2,
-						textureDict.get("gameover").getRegionWidth() * .75f, textureDict.get("gameover").getRegionHeight() * .75f);
+				canvas.draw(textureDict.get("pauseMenu"),313, 111);
+				canvas.draw(textureDict.get("timeout"),557,474);
+				canvas.draw(textureDict.get("backMenu"),700, 184);
+				canvas.draw(textureDict.get("restartLevel"),422, 184);
+				canvas.draw(textureDict.get("dead"), 478, 233);
 				canvas.end();
+				if (InputHandler.getInstance().didDone()) {
+					menuNum = 1;
+					resetCamera();
+					listener.exitScreen(this, 0);
+					menuNum = 0;
+				}
+				else if (InputHandler.getInstance().didRestartLevel()) {
+					SoundController.getInstance().playClick();
+					menuNum = 0;
+					reset();
+				}
 			}
 		}
 
@@ -1792,62 +1853,62 @@ public class GameController implements ContactListener, Screen {
 				if (menuNum == 0) {
 					canvas.beginOverlay();
 					canvas.draw(textureDict.get("grayOut"), -9, 0);
-					canvas.draw(textureDict.get("pauseMenu"), 297, 110);
+					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
 					if (musicState) {
 						if (InputHandler.getInstance().didHover() == 0) {
-							canvas.draw(textureDict.get("musicOn"), hoverColor,510, 451,84,52);
+							canvas.draw(textureDict.get("musicOn"), hoverColor,526, 451,84,52);
 						}
 						else {
-							canvas.draw(textureDict.get("musicOn"), 510, 451); // music button
+							canvas.draw(textureDict.get("musicOn"), 526, 451); // music button
 						}
 					}
 					else {
 						if (InputHandler.getInstance().didHover() == 0) {
-							canvas.draw(textureDict.get("musicOff"), hoverColor,510, 451,84,52);
+							canvas.draw(textureDict.get("musicOff"), hoverColor,526, 451,84,52);
 						}
 						else {
-							canvas.draw(textureDict.get("musicOff"), 510, 451); // music button
+							canvas.draw(textureDict.get("musicOff"), 526, 451); // music button
 						}
 					}
 					if (soundState) {
 						if (InputHandler.getInstance().didHover() == 1) {
-							canvas.draw(textureDict.get("soundOn"), hoverColor,656, 451,84,52);
+							canvas.draw(textureDict.get("soundOn"), hoverColor,672, 451,84,52);
 						}
 						else {
-							canvas.draw(textureDict.get("soundOn"), 656, 451); // sound button
+							canvas.draw(textureDict.get("soundOn"), 672, 451); // sound button
 						}
 					}
 					else {
 						if (InputHandler.getInstance().didHover() == 1) {
-							canvas.draw(textureDict.get("soundOff"), hoverColor,656, 451,84,52);
+							canvas.draw(textureDict.get("soundOff"), hoverColor,672, 451,84,52);
 						}
 						else {
-							canvas.draw(textureDict.get("soundOff"), 656, 451); // sound button
+							canvas.draw(textureDict.get("soundOff"), 672, 451); // sound button
 						}
 					}
 					if (InputHandler.getInstance().didHover() == 2) {
-						canvas.draw(textureDict.get("menuText"),hoverColor,525,385,200,36);
+						canvas.draw(textureDict.get("menuText"),hoverColor,541,385,200,36);
 					}
 					else {
-						canvas.draw(textureDict.get("menuText"), 525, 385); // menu text
+						canvas.draw(textureDict.get("menuText"), 541, 385); // menu text
 					}
 					if (InputHandler.getInstance().didHover() == 3) {
-						canvas.draw(textureDict.get("helpText"), hoverColor,580, 320,90,36);
+						canvas.draw(textureDict.get("helpText"), hoverColor,596, 320,90,36);
 					}
 					else {
-						canvas.draw(textureDict.get("helpText"), 580, 320); // help text
+						canvas.draw(textureDict.get("helpText"), 596, 320); // help text
 					}
 					if (InputHandler.getInstance().didHover() == 4) {
-						canvas.draw(textureDict.get("restartText"), hoverColor,546, 253,157,35);
+						canvas.draw(textureDict.get("restartText"), hoverColor,562, 253,157,35);
 					}
 					else {
-						canvas.draw(textureDict.get("restartText"), 546, 253); // restart text
+						canvas.draw(textureDict.get("restartText"), 562, 253); // restart text
 					}
 					if (InputHandler.getInstance().didHover() == 5) {
-						canvas.draw(textureDict.get("resumeText"),hoverColor,553, 187,145,35);
+						canvas.draw(textureDict.get("resumeText"),hoverColor,569, 187,145,35);
 					}
 					else {
-						canvas.draw(textureDict.get("resumeText"),553, 187); // resume text
+						canvas.draw(textureDict.get("resumeText"),569, 187); // resume text
 					}
 					canvas.end();
 
@@ -1889,15 +1950,15 @@ public class GameController implements ContactListener, Screen {
 				}
 				if (menuNum == 2) {
 					canvas.beginOverlay();
-					canvas.draw(textureDict.get("helpMenu"), 127, 100);
-					canvas.draw(textureDict.get("exit"), 1100, 524);
-					canvas.draw(textureDict.get("dollForm"), 264, 173);
-					canvas.draw(textureDict.get("herbivoreForm"), 557, 173);
-					canvas.draw(textureDict.get("carnivoreForm"), 889, 173);
-					canvas.draw(textureDict.get("dollIcon"), 213, 223);
-					canvas.draw(textureDict.get("herbivoreIcon"), 595, 226);
-					canvas.draw(textureDict.get("carnivoreIcon"), 909, 224);
-					canvas.draw(textureDict.get("selectText"), 399, 514);
+					canvas.draw(textureDict.get("helpMenu"), 313, 111);
+					canvas.draw(textureDict.get("exit"), 892, 493);
+					canvas.draw(textureDict.get("dollForm"), 411, 223);
+					canvas.draw(textureDict.get("herbivoreForm"), 576, 223);
+					canvas.draw(textureDict.get("carnivoreForm"), 761, 223);
+					canvas.draw(textureDict.get("dollIcon"), 388, 279);
+					canvas.draw(textureDict.get("herbivoreIcon"), 609, 274);
+					canvas.draw(textureDict.get("carnivoreIcon"), 786, 276);
+					canvas.draw(textureDict.get("selectText"), 430, 451);
 					canvas.end();
 					if (InputHandler.getInstance().didExitButton()) {
 						menuNum = 0;
@@ -1908,24 +1969,27 @@ public class GameController implements ContactListener, Screen {
 					else if (InputHandler.getInstance().didHerbivoreHelp()) {
 						menuNum = 8;
 					}
+					else if (InputHandler.getInstance().didCarnivoreHelp()) {
+						menuNum = 9;
+					}
 				}
 				if (menuNum == 7) {
 					canvas.beginOverlay();
-					canvas.draw(textureDict.get("helpMenu"), 127, 100);
-					canvas.draw(textureDict.get("exit"), 1100, 524);
-					canvas.draw(textureDict.get("dollIcon"), 215, 222);
-					canvas.draw(textureDict.get("dollHeader"),496, 532);
-					canvas.draw(textureDict.get("pressText"), 480, 424);
-					canvas.draw(textureDict.get("pressText"), 480, 297);
-					canvas.draw(textureDict.get("holdText"), 480, 172);
-					canvas.draw(textureDict.get("oneKey"), 611, 379);
-					canvas.draw(textureDict.get("spaceKey"), 588, 267);
-					canvas.draw(textureDict.get("spaceKey"), 577, 146);
-					canvas.draw(textureDict.get("dollTransform"), 723, 402);
-					canvas.draw(textureDict.get("eat"), 823, 298);
+					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
+					canvas.draw(textureDict.get("exit"), 892, 493);
+					canvas.draw(textureDict.get("dollIcon"), 399, 257);
+					canvas.draw(textureDict.get("dollHeader"),494, 479);
+					canvas.draw(textureDict.get("pressText"), 536, 390);
+					canvas.draw(textureDict.get("pressText"), 533, 315);
+					canvas.draw(textureDict.get("holdText"), 537, 229);
+					canvas.draw(textureDict.get("oneKey"), 612, 378);
+					canvas.draw(textureDict.get("spaceKey"), 612, 307);
+					canvas.draw(textureDict.get("spaceKey"), 598, 221);
+					canvas.draw(textureDict.get("dollTransform"), 681, 378);
+					canvas.draw(textureDict.get("eat"), 760, 315);
 					canvas.draw(textureDict.get("dollResource"), 951, 280);
-					canvas.draw(textureDict.get("dollText"), 796, 150);
-					canvas.draw(textureDict.get("dollSpecial"), 992, 141);
+					canvas.draw(textureDict.get("dollText"), 747, 209);
+					canvas.draw(textureDict.get("dollSpecial"), 854, 203);
 					canvas.end();
 
 					if (InputHandler.getInstance().didExitButton()) {
@@ -1934,26 +1998,50 @@ public class GameController implements ContactListener, Screen {
 				}
 				if (menuNum == 8) {
 					canvas.beginOverlay();
-					canvas.draw(textureDict.get("helpMenu"), 127, 100);
-					canvas.draw(textureDict.get("exit"), 1100, 524);
-					canvas.draw(textureDict.get("herbivoreIcon"), 215, 222);
-					canvas.draw(textureDict.get("herbivoreHeader"),496, 532);
-					canvas.draw(textureDict.get("pressText"), 480, 424);
-					canvas.draw(textureDict.get("pressText"), 480, 297);
-					canvas.draw(textureDict.get("holdText"), 480, 172);
-					canvas.draw(textureDict.get("twoKey"), 611, 379);
-					canvas.draw(textureDict.get("spaceKey"), 588, 267);
-					canvas.draw(textureDict.get("spaceKey"), 577, 146);
-					canvas.draw(textureDict.get("herbivoreTransform"), 723, 402);
-					canvas.draw(textureDict.get("eat"), 823, 298);
-					canvas.draw(textureDict.get("herbivoreResource"), 964, 254);
-					canvas.draw(textureDict.get("herbivoreText"), 796, 150);
-					canvas.draw(textureDict.get("herbivoreSpecial"), 992, 141);
+					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
+					canvas.draw(textureDict.get("exit"), 892, 493);
+					canvas.draw(textureDict.get("herbivoreIcon"), 420, 257);
+					canvas.draw(textureDict.get("herbivoreHeader"),448, 456);
+					canvas.draw(textureDict.get("pressText"), 535, 390);
+					canvas.draw(textureDict.get("pressText"), 533, 315);
+					canvas.draw(textureDict.get("holdText"), 536, 229);
+					canvas.draw(textureDict.get("twoKey"), 612, 378);
+					canvas.draw(textureDict.get("spaceKey"), 612, 307);
+					canvas.draw(textureDict.get("spaceKey"), 598, 221);
+					canvas.draw(textureDict.get("herbivoreTransform"), 671, 377);
+					canvas.draw(textureDict.get("eat"), 758, 315);
+					canvas.draw(textureDict.get("herbivoreResource"), 851, 283);
+					canvas.draw(textureDict.get("herbivoreText"),737, 207);
+					canvas.draw(textureDict.get("herbivoreSpecial"), 844, 208);
+					canvas.end();
+
+					if (InputHandler.getInstance().didExitButton()) {
+						System.out.println("presesd");
+						menuNum = 0;
+					}
+				}
+				if (menuNum == 9) {
+					canvas.beginOverlay();
+					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
+					canvas.draw(textureDict.get("exit"), 892, 493);
+					canvas.draw(textureDict.get("herbivoreIcon"), 408, 257);
+					canvas.draw(textureDict.get("herbivoreHeader"),449, 479);
+					canvas.draw(textureDict.get("pressText"), 536, 390);
+					canvas.draw(textureDict.get("pressText"), 533, 315);
+					canvas.draw(textureDict.get("holdText"), 537, 229);
+					canvas.draw(textureDict.get("twoKey"), 612, 378);
+					canvas.draw(textureDict.get("spaceKey"), 612, 307);
+					canvas.draw(textureDict.get("spaceKey"), 598, 221);
+					canvas.draw(textureDict.get("herbivoreTransform"), 674, 377);
+					canvas.draw(textureDict.get("eat"), 759, 315);
+					canvas.draw(textureDict.get("herbivoreResource"), 846, 286);
+					canvas.draw(textureDict.get("herbivoreText"),746, 210);
+					canvas.draw(textureDict.get("herbivoreSpecial"), 842, 210);
 					canvas.end();
 
 					if (InputHandler.getInstance().didExitButton()) {
 						menuNum = 0;
-				}
+					}
 			}
 		}
 
@@ -2047,6 +2135,8 @@ public class GameController implements ContactListener, Screen {
 	private void updateReady() {
 		totalTime = level.getLevelTime();
 		levelTime = level.getLevelTime();
+		hud.update(level.getAvatar().getResources(), level.getAvatar().getForm(), level.getClone(), totalTime);
+
 		vineDropX = level.getAvatar().getX();
 		avatarTargetY = level.getAvatar().getY() + 0.6f;
 		avatarStartDir = level.getAvatar().getDirection();
