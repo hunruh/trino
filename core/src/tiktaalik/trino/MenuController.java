@@ -21,12 +21,13 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String PROGRESS_FILE_ONE = "trino/load1.png";
 	private static final String PROGRESS_FILE_TWO = "trino/load2.png";
 	private static final String PROGRESS_FILE_THREE = "trino/load3.png";
-	private static final String STUDIO_FILE = "trino/studioLogo.png";
+	private static final String STUDIO_FILE = "trino/studioLogoFilmstrip.png";
 	private static final String PLAY_BTN_FILE = "trino/startButton.png";
 	private static final String LEVEL_SELECT_BTN_FILE = "trino/levelSelectButton.png";
 	private static final String LOADING_FILE = "trino/loading.png";
 	private static final String LOADING_DOLL_FILE = "trino/loading_doll.png";
 	private static final String BLACK_BACKGROUND_FILE = "trino/blackBackground.png";
+	private static final String WHITE_BACKGROUND_FILE = "trino/whiteBackground.png";
 	private static final String LEVEL_BUTTON_FILE = "trino/wood.png";
 	private static final String CLICK_SOUND_FILE = "trino/click.mp3";
     private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
@@ -43,8 +44,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private Texture statusTwo; // Loading texture 2
 	private Texture statusThree; // Loading texture 3
 	private Texture blackBackground; // black background for loading
+	private Texture whiteBackground; // white background for logo
 	private Texture loadingText;
 	private Texture studioLogo; // Studio logo
+	private FilmStrip logoAnimation;
 	private FilmStrip loadingDuggi; // Loading duggi walking animation
 	private float animeFrame;
 	private Texture duggiWalking;
@@ -92,6 +95,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private boolean panningToMainMenu;
 	private boolean onLevelSelectScreen;
 	private boolean onLevelSelectScreen2;
+	private boolean playedLogoAnimation;
 	private float cameraOffset;
 
     /** Level selected */
@@ -164,10 +168,13 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		statusTwo  = new Texture(PROGRESS_FILE_TWO);
 		statusThree  = new Texture(PROGRESS_FILE_THREE);
 		blackBackground = new Texture(BLACK_BACKGROUND_FILE);
+		whiteBackground = new Texture(WHITE_BACKGROUND_FILE);
 		loadingText = new Texture(LOADING_FILE);
 		studioLogo = new Texture(STUDIO_FILE);
+		studioLogo.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		duggiWalking = new Texture(LOADING_DOLL_FILE);
 		duggiWalking.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+		logoAnimation = new FilmStrip(studioLogo, 1, 16, 16);
 		loadingDuggi = new FilmStrip(duggiWalking,1,8, 8);
 
 		// No progress so far.
@@ -192,12 +199,14 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 statusTwo.dispose();
 		 statusThree.dispose();
 		 blackBackground.dispose();
+		 whiteBackground.dispose();
 		 loadingText.dispose();
 		 duggiWalking.dispose();
 		 levelButton.dispose();
 		 studioLogo.dispose();
 		 click.dispose();
 		 blackBackground = null;
+		 whiteBackground = null;
 		 background = null;
 		 statusOne  = null;
 		 statusTwo = null;
@@ -259,8 +268,16 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
             canvas.getCamera().update();
         }
 
-		animeFrame+=0.35f;
-		if (animeFrame >= 7){
+        if (playedLogoAnimation){
+			animeFrame+=0.35f;
+		} else {
+			animeFrame+=0.25f;
+		}
+
+		if (animeFrame >= 15 && !playedLogoAnimation){
+			animeFrame = 15;
+		}
+		else if (animeFrame >= 7 && playedLogoAnimation){
 			animeFrame = 0;
 		}
 
@@ -307,9 +324,19 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
         canvas.clear();
 		canvas.begin();
 		if ((System.currentTimeMillis()-startTime)/1000 < 5 && progress == 0 && playButton == null && !GDXRoot.shownStudioLogo) {
-			canvas.draw(studioLogo,0,0);
+			//canvas.draw(studioLogo,0,0);
+			canvas.draw(whiteBackground, canvas.width/2.0f,canvas.height/2.0f);
+			logoAnimation.setFrame((int)animeFrame);
+			Vector2 origin = new Vector2(logoAnimation.getRegionWidth()/ 2.0f, logoAnimation.getRegionHeight()/2.0f);
+			if (logoAnimation != null) {
+				canvas.draw(logoAnimation, Color.WHITE, origin.x,origin.y,640, 360, 0,1,1);
+			}
 		}
 		else {
+			if (!playedLogoAnimation){
+				animeFrame = 0;
+				playedLogoAnimation = true;
+			}
             GDXRoot.shownStudioLogo = true;
 			if (playButton == null) {
 				drawProgress(canvas);
@@ -359,11 +386,14 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 		canvas.draw(blackBackground, canvas.width/2.0f,canvas.height/2.0f);
 		canvas.draw(loadingText, 825, 50);
-		loadingDuggi.setFrame((int)animeFrame);
-		Vector2 origin = new Vector2(loadingDuggi.getRegionWidth()/ 2.0f, loadingDuggi.getRegionHeight()/2.0f);
-		if (loadingDuggi != null) {
-			canvas.draw(loadingDuggi, Color.WHITE,origin.x,origin.y,1200, 80,0,0.75f,0.75f);
+		if (animeFrame < 8){
+			loadingDuggi.setFrame((int)animeFrame);
+			Vector2 origin = new Vector2(loadingDuggi.getRegionWidth()/ 2.0f, loadingDuggi.getRegionHeight()/2.0f);
+			if (loadingDuggi != null) {
+				canvas.draw(loadingDuggi, Color.WHITE,origin.x,origin.y,1200, 80,0,0.75f,0.75f);
+			}
 		}
+
 	}
 
 	private void drawLevelButtons(Canvas canvas, int numLevels){
