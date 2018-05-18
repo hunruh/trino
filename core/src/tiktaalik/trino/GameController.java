@@ -1541,10 +1541,6 @@ public class GameController implements ContactListener, Screen {
 		if (listener == null)
 			return true;
 
-		// Handle resets
-		if (input.didReset())
-			reset();
-
 		// Handle nightmode
 //		if (input.didNight()) {
 //			if (duggiLight.isActive()) {
@@ -1555,11 +1551,6 @@ public class GameController implements ContactListener, Screen {
 //				rayhandler.setAmbientLight(0.05f, 0.05f, 0.05f, 0.05f);
 //			}
 //		}
-
-		if (input.isNextLevelPressed()){
-			nextLevel();
-
-		}
 
 		// Reset level when colliding with enemy
 		if (countdown > 0) {
@@ -1782,16 +1773,26 @@ public class GameController implements ContactListener, Screen {
 				canvas.beginOverlay();
 				canvas.draw(textureDict.get("background"),0,0);
 				canvas.draw(textureDict.get("pauseMenu"),314, 115);
-				canvas.draw(textureDict.get("restartLevel"),422, 184);
-				canvas.draw(textureDict.get("nextLevel"), 758, 184);
+				if (InputHandler.getInstance().didHover() == 7) {
+					canvas.draw(textureDict.get("restartLevel"),hoverColor,422, 184,133,29);
+				}
+				else {
+					canvas.draw(textureDict.get("restartLevel"),422, 184);
+				}
+				if (InputHandler.getInstance().didHover2() == 1) {
+					canvas.draw(textureDict.get("nextLevel"), hoverColor, 758, 184,79,29);
+				}
+				else {
+					canvas.draw(textureDict.get("nextLevel"), 758, 184);
+				}
 				canvas.draw(textureDict.get("victory"),541, 424);
 				canvas.draw(textureDict.get("filled"),470, 272);
-				if (totalTime >= 2*levelTime/3) {
+				if (level.getStars(2) <= totalTime) {
 //					System.out.println("THREE STAR!");
 					canvas.draw(textureDict.get("filled"),597, 272);
 					canvas.draw(textureDict.get("filled"),724, 272);
 				}
-				else if (totalTime >= levelTime/3) {
+				else if (level.getStars(1) <= totalTime) {
 //					System.out.println("TWO STAR!");
 					canvas.draw(textureDict.get("filled"),597, 272);
 					canvas.draw(textureDict.get("unfilled"),724, 272);
@@ -1817,8 +1818,18 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("background"),0,0);
 				canvas.draw(textureDict.get("pauseMenu"),314, 115);
 				canvas.draw(textureDict.get("gameover"),543,474);
-				canvas.draw(textureDict.get("backMenu"),700, 184);
-				canvas.draw(textureDict.get("restartLevel"),422, 184);
+				if (InputHandler.getInstance().didHover() == 7) {
+					canvas.draw(textureDict.get("restartLevel"),hoverColor,422, 184,133,29);
+				}
+				else {
+					canvas.draw(textureDict.get("restartLevel"),422, 184);
+				}
+				if (InputHandler.getInstance().didHover() == 6) {
+					canvas.draw(textureDict.get("backMenu"),hoverColor, 700, 184,168,29);
+				}
+				else {
+					canvas.draw(textureDict.get("backMenu"),700, 184);
+				}
 				canvas.draw(textureDict.get("dead"), 478, 233);
 				canvas.end();
 				if (InputHandler.getInstance().didDone()) {
@@ -1840,8 +1851,18 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("background"),0,0);
 				canvas.draw(textureDict.get("pauseMenu"),314, 115);
 				canvas.draw(textureDict.get("timeout"),557,474);
-				canvas.draw(textureDict.get("backMenu"),700, 184);
-				canvas.draw(textureDict.get("restartLevel"),422, 184);
+				if (InputHandler.getInstance().didHover() == 7) {
+					canvas.draw(textureDict.get("restartLevel"),hoverColor,422, 184,133,29);
+				}
+				else {
+					canvas.draw(textureDict.get("restartLevel"),422, 184);
+				}
+				if (InputHandler.getInstance().didHover() == 6) {
+					canvas.draw(textureDict.get("backMenu"),hoverColor, 700, 184,168,29);
+				}
+				else {
+					canvas.draw(textureDict.get("backMenu"),700, 184);
+				}
 				canvas.draw(textureDict.get("dead"), 478, 233);
 				canvas.end();
 				if (InputHandler.getInstance().didDone()) {
@@ -2029,9 +2050,6 @@ public class GameController implements ContactListener, Screen {
 				break;
 			case GAME_LEVEL_END:
 				updateLevelEnd(dt);
-				break;
-			case GAME_OVER:
-				updateGameOver();
 				break;
 			case GAME_LEVEL_START:
 				updateLevelStart(dt);
@@ -2792,27 +2810,6 @@ public class GameController implements ContactListener, Screen {
 			swingAnimeFrame += 0.175f;
 			if (swingAnimeFrame >= 11) {
 				state = GAME_OVER;
-			}
-		}
-	}
-
-	private void updateGameOver() {
-		if (failed && !complete) {
-			if (InputHandler.getInstance().didPause()) {
-				state = GAME_RUNNING;
-				nextLevel();
-			}
-		} else if (timeOut) {
-			if (InputHandler.getInstance().didPause()) {
-				state = GAME_RUNNING;
-				nextLevel();
-			}
-		}
-
-		if (complete && !failed) {
-			if (InputHandler.getInstance().didPause()) {
-				state = GAME_RUNNING;
-				nextLevel();
 			}
 		}
 	}

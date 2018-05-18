@@ -248,8 +248,24 @@ public class InputHandler {
                 ((Gdx.input.getY() >= 235) && (Gdx.input.getY() <= 287))) {
             return 1; // hovering over sound button
         }
+        else if (((Gdx.input.getX() >= 700) && (Gdx.input.getX() <= 868)) &&
+				((Gdx.input.getY() >= 506) && (Gdx.input.getY() <= 535))) {
+			return 6; // hovering over return to main menu button on victory screen
+		}
+		else if (((Gdx.input.getX() >= 422) && (Gdx.input.getX() <= 555)) &&
+				((Gdx.input.getY() >= 506) && (Gdx.input.getY() <= 535))) {
+        	return 7; // hovering over the restart level button
+		}
         return -1;
     }
+
+    public int didHover2() {
+    	if (((Gdx.input.getX() >= 758) && (Gdx.input.getX() <= 837)) &&
+				((Gdx.input.getY() >= 506) && (Gdx.input.getY() <= 535))) {
+			return 1; // hovering over next level button
+		}
+		return -1;
+	}
 
 	public boolean didTransformDoll(){
 		return dollFormPressed;
