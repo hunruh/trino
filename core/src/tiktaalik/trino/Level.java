@@ -812,10 +812,6 @@ public class Level {
                 }
             }
         }
-
-        if (avatar.getSwinging())
-            avatar.draw(canvas);
-
         canvas.end();
 
         canvas.beginProgressCircle();

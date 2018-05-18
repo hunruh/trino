@@ -1598,6 +1598,9 @@ public class GameController implements ContactListener, Screen {
 		canvas.draw(vine, Color.WHITE,vine.getRegionWidth()/2.0f,vine.getRegionHeight()/2.0f,
 				x, y,0,1,1);
 
+        if (level.getAvatar().getSwinging())
+            level.getAvatar().draw(canvas);
+
 		canvas.end();
 
 		// Now draw the shadows
@@ -1720,7 +1723,7 @@ public class GameController implements ContactListener, Screen {
 			swingInStrip.setFrame((int)swingAnimeFrame);
 			if (swingOutStrip != null) {
 				canvas.beginOverlay();
-				canvas.draw(swingInStrip, Color.WHITE,0,0,0,40,0,1,1);
+				canvas.draw(swingInStrip, Color.WHITE,0,0,0,0,0,1,1);
 				canvas.end();
 			}
 		}
@@ -2049,7 +2052,7 @@ public class GameController implements ContactListener, Screen {
 		avatarStartDir = level.getAvatar().getDirection();
 		level.getAvatar().setY(level.screenToMaze(level.getHeight()));
 		level.getAvatar().setSwinging(true);
-		level.getAvatar().setDirection(Dinosaur.DOWN);
+		level.getAvatar().setDirection(Dinosaur.UP);
 		vineCurrentOffset = 1031;
 		swingingDown = true;
 		vineAvatarDrop = true;
@@ -2566,13 +2569,6 @@ public class GameController implements ContactListener, Screen {
 							SoundController.getInstance().playChargeSound();
 							avatar.loadAction();
 						}
-//						if (avatar.getActionLoadValue() == 0){
-//							SoundController.getInstance().playEat();
-//							((EdibleObject) tmp).beginEating();
-//							avatar.incrementResources();
-//						} else if (!avatar.inActionCycle()){
-//							avatar.loadAction();
-//						}
 					}
 				} else if (avatar.getForm() == Dinosaur.CARNIVORE_FORM) {
 					boolean ate = false;
@@ -2726,6 +2722,10 @@ public class GameController implements ContactListener, Screen {
 						filmStripDict.get("dollRight"), 8,
 						filmStripDict.get("dollBack"), 8,
 						filmStripDict.get("dollFront"), 8);
+                avatar.setIdleTextureSet(filmStripDict.get("dollIdleLeft"), 4,
+                        filmStripDict.get("dollIdleRight"), 4,
+                        filmStripDict.get("dollIdleBack"), 4,
+                        filmStripDict.get("dollIdleFront"), 4);
 
 				level.setAvatar(avatar);
 			}
@@ -2755,7 +2755,7 @@ public class GameController implements ContactListener, Screen {
 				} else {
 					avatar.setLeftRight(0);
 					avatar.setUpDown(0);
-					avatar.setDirection(Dinosaur.DOWN);
+					avatar.setDirection(Dinosaur.UP);
 					avatar.update(dt);
 					avatar.forceFrame(0);
 					avatar.setSwinging(true);
@@ -2805,6 +2805,36 @@ public class GameController implements ContactListener, Screen {
 
 	private void updateLevelStart(float dt) {
 		Dinosaur avatar = level.getAvatar();
+
+		// Process camera updates
+		float halfWidth = canvas.getCamera().viewportWidth / 2;
+		float halfHeight = canvas.getCamera().viewportHeight / 2;
+
+		if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth < halfWidth) {
+			canvas.getCamera().position.x = halfWidth;
+			raycamera.position.x = cameraBounds.width / 2;
+		} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > level.getLevelWidth() - halfWidth) {
+			canvas.getCamera().position.x = level.getLevelWidth() - halfWidth;
+			raycamera.position.x = 2*(level.getLevelWidth()/80.0f) - cameraBounds.width / 2;
+		} else {
+			canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
+			raycamera.position.x = avatar.getX();
+		}
+
+		if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight < halfHeight) {
+			canvas.getCamera().position.y = halfHeight;
+			raycamera.position.y = cameraBounds.height / 2;
+		} else if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight > level.getLevelHeight() - halfHeight) {
+			canvas.getCamera().position.y = level.getLevelHeight() - halfHeight;
+			raycamera.position.y = 2*(level.getLevelHeight()/80f) - cameraBounds.height / 2;
+		} else {
+			canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
+			raycamera.position.y = avatar.getY();
+		}
+		canvas.getCamera().update();
+		raycamera.update();
+		rayhandler.setCombinedMatrix(raycamera);
+
 		if (!swingingDown)
 			avatar.update(dt);
 
@@ -2827,56 +2857,6 @@ public class GameController implements ContactListener, Screen {
 				vineHeightOffset = level.getLevelHeight() + 307f;
 			}
 		}
-//		if (!readyForSwing && !swingingUp)
-//			avatar.update(dt);
-//
-//		if (!readyForSwing && !swingingUp) {
-//			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
-//				Wall door = level.getDoor(0);
-//				float targetX = door.getX();
-//				float targetY = door.getY() + 0.7f;
-//
-//				if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() < targetX) {
-//					avatar.setLeftRight(1);
-//					avatar.setX(avatar.getX() + 0.1f);
-//					avatar.setUpDown(0);
-//				} else if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() > targetX) {
-//					avatar.setLeftRight(-1);
-//					avatar.setX(avatar.getX() - 0.1f);
-//					avatar.setUpDown(0);
-//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() < targetY) {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(1);
-//					avatar.setY(avatar.getY() + 0.1f);
-//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() > targetY) {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(-1);
-//					avatar.setY(avatar.getY() - 0.1f);
-//				} else {
-//					avatar.setLeftRight(0);
-//					avatar.setUpDown(0);
-//					avatar.setDirection(Dinosaur.DOWN);
-//					avatar.update(dt);
-//					avatar.forceFrame(0);
-//					avatar.setSwinging(true);
-//					swingingUp = true;
-//				}
-//			}
-//		} else if (swingingUp) {
-//			vineGoingDownCounter = 0;
-//			vineGoingUpCounter += 0.1f;
-//			vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
-//			avatar.setY(avatar.getY() + (vineGoingUpCounter * .025f));
-//
-//			if (avatar.getY() > level.screenToMaze(level.getHeight())){
-//				vineCurrentOffset = vineHeightOffset;
-//				readyForSwing = true;
-//				swingingUp = false;
-//			}
-//		}
-//		else if (readyForSwing) {
-
-//		}
 	}
 
 	/**
