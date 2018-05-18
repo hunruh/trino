@@ -1792,7 +1792,8 @@ public class GameController implements ContactListener, Screen {
 		if (state == GAME_OVER) {
 			if (complete && !failed) {
 				canvas.beginOverlay();
-				canvas.draw(textureDict.get("pauseMenu"),313, 111);
+				canvas.draw(textureDict.get("background"),0,0);
+				canvas.draw(textureDict.get("pauseMenu"),314, 115);
 				canvas.draw(textureDict.get("restartLevel"),422, 184);
 				canvas.draw(textureDict.get("nextLevel"), 758, 184);
 				canvas.draw(textureDict.get("victory"),541, 424);
@@ -1825,7 +1826,8 @@ public class GameController implements ContactListener, Screen {
 			}
 			else if (failed && !complete) {
 				canvas.beginOverlay();
-				canvas.draw(textureDict.get("pauseMenu"),313, 111);
+				canvas.draw(textureDict.get("background"),0,0);
+				canvas.draw(textureDict.get("pauseMenu"),314, 115);
 				canvas.draw(textureDict.get("gameover"),543,474);
 				canvas.draw(textureDict.get("backMenu"),700, 184);
 				canvas.draw(textureDict.get("restartLevel"),422, 184);
@@ -1847,7 +1849,8 @@ public class GameController implements ContactListener, Screen {
 			}
 			else if (timeOut) {
 				canvas.beginOverlay();
-				canvas.draw(textureDict.get("pauseMenu"),313, 111);
+				canvas.draw(textureDict.get("background"),0,0);
+				canvas.draw(textureDict.get("pauseMenu"),314, 115);
 				canvas.draw(textureDict.get("timeout"),557,474);
 				canvas.draw(textureDict.get("backMenu"),700, 184);
 				canvas.draw(textureDict.get("restartLevel"),422, 184);
@@ -1873,7 +1876,7 @@ public class GameController implements ContactListener, Screen {
 				if (menuNum == 0) {
 					canvas.beginOverlay();
 					canvas.draw(textureDict.get("grayOut"), -9, 0);
-					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
+					canvas.draw(textureDict.get("pauseMenu"), 314, 115);
 					if (musicState) {
 						if (InputHandler.getInstance().didHover() == 0) {
 							canvas.draw(textureDict.get("musicOn"), hoverColor,532, 433,83,52);
