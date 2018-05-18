@@ -883,7 +883,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 			menuHoverState = 0;
 			leftArrowHoverState = 0;
 			rightArrowHoverState = 0;
-			
+
 			float size = 250f;
 			float offset = onLevelSelectScreen ? 1280 : 2560;
 			for (int i = 0; i < levelButtonPositions.length; i++){
