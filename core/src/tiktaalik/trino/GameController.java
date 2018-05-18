@@ -1560,6 +1560,9 @@ public class GameController implements ContactListener, Screen {
 		canvas.draw(vine, Color.WHITE,vine.getRegionWidth()/2.0f,vine.getRegionHeight()/2.0f,
 				x, y,0,1,1);
 
+        if (level.getAvatar().getSwinging())
+            level.getAvatar().draw(canvas);
+
 		canvas.end();
 
 		// Now draw the shadows
@@ -1659,7 +1662,7 @@ public class GameController implements ContactListener, Screen {
 			swingInStrip.setFrame((int)swingAnimeFrame);
 			if (swingOutStrip != null) {
 				canvas.beginOverlay();
-				canvas.draw(swingInStrip, Color.WHITE,0,0,0,40,0,1,1);
+				canvas.draw(swingInStrip, Color.WHITE,0,0,0,0,0,1,1);
 				canvas.end();
 			}
 		}
@@ -1988,7 +1991,7 @@ public class GameController implements ContactListener, Screen {
 		avatarStartDir = level.getAvatar().getDirection();
 		level.getAvatar().setY(level.screenToMaze(level.getHeight()));
 		level.getAvatar().setSwinging(true);
-		level.getAvatar().setDirection(Dinosaur.DOWN);
+		level.getAvatar().setDirection(Dinosaur.UP);
 		vineCurrentOffset = 1031;
 		swingingDown = true;
 		vineAvatarDrop = true;
@@ -2694,7 +2697,7 @@ public class GameController implements ContactListener, Screen {
 				} else {
 					avatar.setLeftRight(0);
 					avatar.setUpDown(0);
-					avatar.setDirection(Dinosaur.DOWN);
+					avatar.setDirection(Dinosaur.UP);
 					avatar.update(dt);
 					avatar.forceFrame(0);
 					avatar.setSwinging(true);
