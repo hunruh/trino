@@ -401,7 +401,7 @@ public class GameController implements ContactListener, Screen {
 	private float intensity;
 	private boolean transform = false;
 	private Vector2 currentRiver;
-	private Color hoverColor = new Color(2.55f, 2.48f, 2.40f, 1); // for UI hovering
+	private Color hoverColor = new Color(2.03f, 1.00f, 0.32f, 1); // for UI hovering
 
 	/** Timer */
 	float levelTime = 60;
@@ -1856,59 +1856,53 @@ public class GameController implements ContactListener, Screen {
 					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
 					if (musicState) {
 						if (InputHandler.getInstance().didHover() == 0) {
-							canvas.draw(textureDict.get("musicOn"), hoverColor,526, 451,84,52);
+							canvas.draw(textureDict.get("musicOn"), hoverColor,532, 433,83,52);
 						}
 						else {
-							canvas.draw(textureDict.get("musicOn"), 526, 451); // music button
+							canvas.draw(textureDict.get("musicOn"), 532, 433); // music button
 						}
 					}
 					else {
 						if (InputHandler.getInstance().didHover() == 0) {
-							canvas.draw(textureDict.get("musicOff"), hoverColor,526, 451,84,52);
+							canvas.draw(textureDict.get("musicOff"), hoverColor,532, 433,83,52);
 						}
 						else {
-							canvas.draw(textureDict.get("musicOff"), 526, 451); // music button
+							canvas.draw(textureDict.get("musicOff"), 532, 433); // music button
 						}
 					}
 					if (soundState) {
 						if (InputHandler.getInstance().didHover() == 1) {
-							canvas.draw(textureDict.get("soundOn"), hoverColor,672, 451,84,52);
+							canvas.draw(textureDict.get("soundOn"), hoverColor,678, 433,84,52);
 						}
 						else {
-							canvas.draw(textureDict.get("soundOn"), 672, 451); // sound button
+							canvas.draw(textureDict.get("soundOn"), 678, 433); // sound button
 						}
 					}
 					else {
 						if (InputHandler.getInstance().didHover() == 1) {
-							canvas.draw(textureDict.get("soundOff"), hoverColor,672, 451,84,52);
+							canvas.draw(textureDict.get("soundOff"), hoverColor,678, 433,84,52);
 						}
 						else {
-							canvas.draw(textureDict.get("soundOff"), 672, 451); // sound button
+							canvas.draw(textureDict.get("soundOff"), 678, 433); // sound button
 						}
 					}
 					if (InputHandler.getInstance().didHover() == 2) {
-						canvas.draw(textureDict.get("menuText"),hoverColor,541,385,200,36);
+						canvas.draw(textureDict.get("menuText"),hoverColor,547,350,200,36);
 					}
 					else {
-						canvas.draw(textureDict.get("menuText"), 541, 385); // menu text
-					}
-					if (InputHandler.getInstance().didHover() == 3) {
-						canvas.draw(textureDict.get("helpText"), hoverColor,596, 320,90,36);
-					}
-					else {
-						canvas.draw(textureDict.get("helpText"), 596, 320); // help text
+						canvas.draw(textureDict.get("menuText"), 547, 350); // menu text
 					}
 					if (InputHandler.getInstance().didHover() == 4) {
-						canvas.draw(textureDict.get("restartText"), hoverColor,562, 253,157,35);
+						canvas.draw(textureDict.get("restartText"), hoverColor,568, 286,157,35);
 					}
 					else {
-						canvas.draw(textureDict.get("restartText"), 562, 253); // restart text
+						canvas.draw(textureDict.get("restartText"), 568, 286); // restart text
 					}
 					if (InputHandler.getInstance().didHover() == 5) {
-						canvas.draw(textureDict.get("resumeText"),hoverColor,569, 187,145,35);
+						canvas.draw(textureDict.get("resumeText"),hoverColor,575, 220,145,35);
 					}
 					else {
-						canvas.draw(textureDict.get("resumeText"),569, 187); // resume text
+						canvas.draw(textureDict.get("resumeText"),575, 220); // resume text
 					}
 					canvas.end();
 

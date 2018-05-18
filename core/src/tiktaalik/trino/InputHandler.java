@@ -141,8 +141,8 @@ public class InputHandler {
  	 */
 	public boolean didReturn() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 541) && (Gdx.input.getX() <= 741)) &&
-				((Gdx.input.getY() >= 299) && (Gdx.input.getY() <= 335));
+				((Gdx.input.getX() >= 547) && (Gdx.input.getX() <= 747)) &&
+				((Gdx.input.getY() >= 334) && (Gdx.input.getY() <= 370));
 	}
 
 	/**
@@ -163,8 +163,8 @@ public class InputHandler {
 	 */
 	public boolean didRestart() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 562) && (Gdx.input.getX() <= 719)) &&
-				((Gdx.input.getY() >= 432) && (Gdx.input.getY() <= 467));
+				((Gdx.input.getX() >= 568) && (Gdx.input.getX() <= 725)) &&
+				((Gdx.input.getY() >= 399) && (Gdx.input.getY() <= 434));
 	}
 
 	/**
@@ -174,8 +174,8 @@ public class InputHandler {
 	 */
 	public boolean didResume() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 569) && (Gdx.input.getX() <= 714)) &&
-				((Gdx.input.getY() >= 497) && (Gdx.input.getY() <= 533));
+				((Gdx.input.getX() >= 575) && (Gdx.input.getX() <= 720)) &&
+				((Gdx.input.getY() >= 464) && (Gdx.input.getY() <= 500));
 	}
 
 	/**
@@ -185,8 +185,8 @@ public class InputHandler {
 	 */
 	public boolean didMusic() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 525) && (Gdx.input.getX() <= 609)) &&
-				((Gdx.input.getY() >= 217) && (Gdx.input.getY() <= 269));
+				((Gdx.input.getX() >= 532) && (Gdx.input.getX() <= 615)) &&
+				((Gdx.input.getY() >= 235) && (Gdx.input.getY() <= 287));
 	}
 
 	/**
@@ -196,8 +196,8 @@ public class InputHandler {
 	 */
 	public boolean didSound() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 672) && (Gdx.input.getX() <= 756)) &&
-				((Gdx.input.getY() >= 217) && (Gdx.input.getY() <= 269));
+				((Gdx.input.getX() >= 678) && (Gdx.input.getX() <= 762)) &&
+				((Gdx.input.getY() >= 235) && (Gdx.input.getY() <= 287));
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class InputHandler {
 	 * @return true if the main menu button is pressed after level is over.
 	 */
 	public boolean didDone() {
-		return ((Gdx.input.getX() >= 700) && (Gdx.input.getX() <= 868)) &&
+		return (mousePressed && (Gdx.input.getX() >= 700) && (Gdx.input.getX() <= 868)) &&
 				((Gdx.input.getY() >= 506) && (Gdx.input.getY() <= 535));
 	}
 
@@ -229,7 +229,7 @@ public class InputHandler {
 	 * @return true if the restart level button is pressed after level is over.
 	 */
 	public boolean didRestartLevel() {
-		return ((Gdx.input.getX() >= 422) && (Gdx.input.getX() <= 555)) &&
+		return (mousePressed && (Gdx.input.getX() >= 422) && (Gdx.input.getX() <= 555)) &&
 				((Gdx.input.getY() >= 506) && (Gdx.input.getY() <= 535));
 	}
 
@@ -250,28 +250,24 @@ public class InputHandler {
      * @return the UI element that is being hovered over.
      */
     public int didHover() {
-        if (((Gdx.input.getX() >= 525) && (Gdx.input.getX() <= 725)) &&
-                ((Gdx.input.getY() >= 299) && (Gdx.input.getY() <= 335))) {
+        if (((Gdx.input.getX() >= 547) && (Gdx.input.getX() <= 747)) &&
+                ((Gdx.input.getY() >= 334) && (Gdx.input.getY() <= 370))) {
             return 2; // hovering over main menu
         }
-        else if (((Gdx.input.getX() >= 580) && (Gdx.input.getX() <= 670)) &&
-                ((Gdx.input.getY() >= 365) && (Gdx.input.getY() <= 401))) {
-            return 3; // hovering over help button
-        }
-        else if (((Gdx.input.getX() >= 546) && (Gdx.input.getX() <= 703)) &&
-                ((Gdx.input.getY() >= 432) && (Gdx.input.getY() <= 467))) {
+        else if (((Gdx.input.getX() >= 568) && (Gdx.input.getX() <= 725)) &&
+                ((Gdx.input.getY() >= 399) && (Gdx.input.getY() <= 434))) {
             return 4; // hovering over restart button
         }
-        else if (((Gdx.input.getX() >= 553) && (Gdx.input.getX() <= 698)) &&
-                ((Gdx.input.getY() >= 497) && (Gdx.input.getY() <= 533))) {
+        else if (((Gdx.input.getX() >= 575) && (Gdx.input.getX() <= 720)) &&
+                ((Gdx.input.getY() >= 464) && (Gdx.input.getY() <= 500))) {
             return 5; // hovering over resume button
         }
-        else if (((Gdx.input.getX() >= 509) && (Gdx.input.getX() <= 593)) &&
-                ((Gdx.input.getY() >= 217) && (Gdx.input.getY() <= 269))) {
+        else if (((Gdx.input.getX() >= 532) && (Gdx.input.getX() <= 615)) &&
+                ((Gdx.input.getY() >= 235) && (Gdx.input.getY() <= 287))) {
             return 0; // hovering over music button
         }
-        else if (((Gdx.input.getX() >= 656) && (Gdx.input.getX() <= 740)) &&
-                ((Gdx.input.getY() >= 217) && (Gdx.input.getY() <= 269))) {
+        else if (((Gdx.input.getX() >= 678) && (Gdx.input.getX() <= 762)) &&
+                ((Gdx.input.getY() >= 235) && (Gdx.input.getY() <= 287))) {
             return 1; // hovering over sound button
         }
         return -1;
