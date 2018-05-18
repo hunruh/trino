@@ -66,7 +66,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
 	private static final String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
 	private static final String DOOR_FLASHING_STRIP = "trino/door_flashing.png";
-	private static final String CLONE_FILE  = "trino/clone.png";
+	private static final String CLONE_IDLE_STRIP = "trino/clone_idle.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
 	private static final String DOLL_STRIP_RIGHT  = "trino/doll_right_strip.png";
@@ -76,6 +76,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_EATING_STRIP_RIGHT  = "trino/doll_right_eating_strip.png";
 	private static final String DOLL_EATING_STRIP_BACK  = "trino/doll_back_eating_strip.png";
 	private static final String DOLL_CLONING_STRIP_FRONT  = "trino/doll_front_cloning_strip.png";
+	private static final String DOLL_IDLE_STRIP_FRONT = "trino/doll_front_idle_strip.png";
+	private static final String DOLL_IDLE_STRIP_LEFT = "trino/doll_front_idle_strip.png";
+	private static final String DOLL_IDLE_STRIP_RIGHT = "trino/doll_front_idle_strip.png";
+	private static final String DOLL_IDLE_STRIP_BACK = "trino/doll_front_idle_strip.png";
 	private static final String HERBIVORE_STRIP_FRONT  = "trino/herbivore_front_strip.png";
 	private static final String HERBIVORE_STRIP_LEFT  = "trino/herbivore_left_strip.png";
 	private static final String HERBIVORE_STRIP_RIGHT  = "trino/herbivore_right_strip.png";
@@ -109,6 +113,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_CAMO_STRIP_LEFT = "trino/herbivore_left_camo.png";
 	private static final String HERBIVORE_CAMO_STRIP_RIGHT = "trino/herbivore_right_camo.png";
 	private static final String HERBIVORE_CAMO_STRIP_BACK = "trino/herbivore_back_camo.png";
+	private static final String HERBIVORE_IDLE_STRIP_FRONT = "trino/herbivore_front_idle_strip.png";
+	private static final String HERBIVORE_IDLE_STRIP_LEFT = "trino/herbivore_front_idle_strip.png";
+	private static final String HERBIVORE_IDLE_STRIP_RIGHT = "trino/herbivore_front_idle_strip.png";
+	private static final String HERBIVORE_IDLE_STRIP_BACK = "trino/herbivore_front_idle_strip.png";
 	private static final String CARNIVORE_STRIP_FRONT  = "trino/carnivore_front_strip.png";
 	private static final String CARNIVORE_STRIP_LEFT  = "trino/carnivore_left_strip.png";
 	private static final String CARNIVORE_STRIP_RIGHT  = "trino/carnivore_right_strip.png";
@@ -125,6 +133,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARNIVORE_ATTACK_STRIP_LEFT = "trino/carnivore_left_attack_strip.png";
 	private static final String CARNIVORE_ATTACK_STRIP_RIGHT = "trino/carnivore_right_attack_strip.png";
 	private static final String CARNIVORE_ATTACK_STRIP_BACK = "trino/carnivore_back_attack_strip.png";
+	private static final String CARNIVORE_IDLE_STRIP_FRONT = "trino/carnivore_front_idle_strip.png";
+	private static final String CARNIVORE_IDLE_STRIP_LEFT = "trino/carnivore_front_idle_strip.png";
+	private static final String CARNIVORE_IDLE_STRIP_RIGHT = "trino/carnivore_front_idle_strip.png";
+	private static final String CARNIVORE_IDLE_STRIP_BACK = "trino/carnivore_front_idle_strip.png";
 	private static final String ENEMY_STRIP_FRONT = "trino/enemy_front_strip.png";
 	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
 	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
@@ -453,8 +465,16 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOLL_EATING_STRIP_BACK);
 		manager.load(DOLL_CLONING_STRIP_FRONT, Texture.class);
 		assets.add(DOLL_CLONING_STRIP_FRONT);
-		manager.load(CLONE_FILE, Texture.class);
-		assets.add(CLONE_FILE);
+		manager.load(DOLL_IDLE_STRIP_FRONT, Texture.class);
+		assets.add(DOLL_IDLE_STRIP_FRONT);
+		manager.load(DOLL_IDLE_STRIP_RIGHT, Texture.class);
+		assets.add(DOLL_IDLE_STRIP_RIGHT);
+		manager.load(DOLL_IDLE_STRIP_LEFT, Texture.class);
+		assets.add(DOLL_IDLE_STRIP_LEFT);
+		manager.load(DOLL_IDLE_STRIP_BACK, Texture.class);
+		assets.add(DOLL_IDLE_STRIP_BACK);
+		manager.load(CLONE_IDLE_STRIP, Texture.class);
+		assets.add(CLONE_IDLE_STRIP);
 		manager.load(HERBIVORE_STRIP_LEFT, Texture.class);
 		assets.add(HERBIVORE_STRIP_LEFT);
 		manager.load(HERBIVORE_STRIP_RIGHT, Texture.class);
@@ -521,6 +541,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_CAMO_STRIP_BACK);
 		manager.load(HERBIVORE_CAMO_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_CAMO_STRIP_FRONT);
+		manager.load(HERBIVORE_IDLE_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_IDLE_STRIP_FRONT);
+		manager.load(HERBIVORE_IDLE_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_IDLE_STRIP_RIGHT);
+		manager.load(HERBIVORE_IDLE_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_IDLE_STRIP_LEFT);
+		manager.load(HERBIVORE_IDLE_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_IDLE_STRIP_BACK);
 		manager.load(CARNIVORE_STRIP_LEFT, Texture.class);
 		assets.add(CARNIVORE_STRIP_LEFT);
 		manager.load(CARNIVORE_STRIP_RIGHT, Texture.class);
@@ -553,6 +581,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_ATTACK_STRIP_RIGHT);
 		manager.load(CARNIVORE_ATTACK_STRIP_BACK, Texture.class);
 		assets.add(CARNIVORE_ATTACK_STRIP_BACK);
+		manager.load(CARNIVORE_IDLE_STRIP_FRONT, Texture.class);
+		assets.add(CARNIVORE_IDLE_STRIP_FRONT);
+		manager.load(CARNIVORE_IDLE_STRIP_RIGHT, Texture.class);
+		assets.add(CARNIVORE_IDLE_STRIP_RIGHT);
+		manager.load(CARNIVORE_IDLE_STRIP_LEFT, Texture.class);
+		assets.add(CARNIVORE_IDLE_STRIP_LEFT);
+		manager.load(CARNIVORE_IDLE_STRIP_BACK, Texture.class);
+		assets.add(CARNIVORE_IDLE_STRIP_BACK);
 		manager.load(DOLL_TO_HERB_STRIP, Texture.class);
 		assets.add(DOLL_TO_HERB_STRIP);
 		manager.load(DOLL_TO_CARN_STRIP, Texture.class);
@@ -893,7 +929,6 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("doorClosedTileTwo", createTexture(manager,DOOR_CLOSED_FILE_TWO,false));
 		textureDict.put("doorOpenTileThree", createTexture(manager,DOOR_FILE_THREE, false));
 		textureDict.put("doorClosedTileThree", createTexture(manager,DOOR_CLOSED_FILE_THREE, false));
-		textureDict.put("clone", createTexture(manager,CLONE_FILE,false));
 		textureDict.put("fireFly", createTexture(manager, FIREFLY_FILE, false));
 		textureDict.put("fireFlyPurple", createTexture(manager, FIREFLY_PURPLE_FILE, false));
 		textureDict.put("fireFlyBlue", createTexture(manager, FIREFLY_BLUE_FILE, false));
@@ -1018,6 +1053,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("dollEatingRight", createFilmTexture(manager,DOLL_EATING_STRIP_RIGHT));
 		filmStripDict.put("dollEatingFront", createFilmTexture(manager,DOLL_EATING_STRIP_FRONT));
 		filmStripDict.put("dollEatingBack", createFilmTexture(manager,DOLL_EATING_STRIP_BACK));
+		filmStripDict.put("dollIdleLeft", createFilmTexture(manager,DOLL_IDLE_STRIP_LEFT));
+		filmStripDict.put("dollIdleRight", createFilmTexture(manager,DOLL_IDLE_STRIP_RIGHT));
+		filmStripDict.put("dollIdleFront", createFilmTexture(manager,DOLL_IDLE_STRIP_FRONT));
+		filmStripDict.put("dollIdleBack", createFilmTexture(manager,DOLL_IDLE_STRIP_BACK));
 		filmStripDict.put("dollCloningFront", createFilmTexture(manager,DOLL_CLONING_STRIP_FRONT));
 		filmStripDict.put("carnivoreLeft", createFilmTexture(manager,CARNIVORE_STRIP_LEFT));
 		filmStripDict.put("carnivoreRight", createFilmTexture(manager,CARNIVORE_STRIP_RIGHT));
@@ -1035,6 +1074,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("carnivoreAttackLeft", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_LEFT));
 		filmStripDict.put("carnivoreAttackRight", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_RIGHT));
 		filmStripDict.put("carnivoreAttackBack", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_BACK));
+		filmStripDict.put("carnivoreIdleLeft", createFilmTexture(manager,CARNIVORE_IDLE_STRIP_LEFT));
+		filmStripDict.put("carnivoreIdleRight", createFilmTexture(manager,CARNIVORE_IDLE_STRIP_RIGHT));
+		filmStripDict.put("carnivoreIdleFront", createFilmTexture(manager,CARNIVORE_IDLE_STRIP_FRONT));
+		filmStripDict.put("carnivoreIdleBack", createFilmTexture(manager,CARNIVORE_IDLE_STRIP_BACK));
 		filmStripDict.put("herbivoreLeft", createFilmTexture(manager,HERBIVORE_STRIP_LEFT));
 		filmStripDict.put("herbivoreRight", createFilmTexture(manager,HERBIVORE_STRIP_RIGHT));
 		filmStripDict.put("herbivoreFront", createFilmTexture(manager,HERBIVORE_STRIP_FRONT));
@@ -1068,6 +1111,11 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreCamoRight", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_RIGHT));
 		filmStripDict.put("herbivoreCamoFront", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_FRONT));
 		filmStripDict.put("herbivoreCamoBack", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_BACK));
+		filmStripDict.put("herbivoreIdleLeft", createFilmTexture(manager,HERBIVORE_IDLE_STRIP_LEFT));
+		filmStripDict.put("herbivoreIdleRight", createFilmTexture(manager,HERBIVORE_IDLE_STRIP_RIGHT));
+		filmStripDict.put("herbivoreIdleFront", createFilmTexture(manager,HERBIVORE_IDLE_STRIP_FRONT));
+		filmStripDict.put("herbivoreIdleBack", createFilmTexture(manager,HERBIVORE_IDLE_STRIP_BACK));
+		filmStripDict.put("cloneIdle", createFilmTexture(manager,CLONE_IDLE_STRIP));
 		filmStripDict.put("enemyLeft", createFilmTexture(manager,ENEMY_STRIP_LEFT));
 		filmStripDict.put("enemyRight", createFilmTexture(manager,ENEMY_STRIP_RIGHT));
 		filmStripDict.put("enemyFront", createFilmTexture(manager,ENEMY_STRIP_FRONT));
@@ -2328,7 +2376,10 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("dollCloningFront"), 12,
 							filmStripDict.get("dollCloningFront"), 12,
 							filmStripDict.get("dollCloningFront"), 12);
-
+					avatar.setIdleTextureSet(filmStripDict.get("dollIdleLeft"), 4,
+							filmStripDict.get("dollIdleRight"), 4,
+							filmStripDict.get("dollIdleBack"), 4,
+							filmStripDict.get("dollIdleFront"), 4);
 
 					level.setAvatar(avatar);
 
@@ -2346,7 +2397,6 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("herbivoreRight"), 7,
 							filmStripDict.get("herbivoreBack"), 8,
 							filmStripDict.get("herbivoreFront"), 8);
-
 					avatar.setEatingTextureSet(filmStripDict.get("herbivoreEatingLeft"), 10,
 							filmStripDict.get("herbivoreEatingRight"), 10,
 							filmStripDict.get("herbivoreEatingBack"), 10,
@@ -2355,7 +2405,10 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("herbivorePlaceCamoRight"), 12, 0,
 							filmStripDict.get("herbivorePlaceCamoBack"), 10, 0,
 							filmStripDict.get("herbivorePlaceCamoFront"),  12, 0);
-
+					avatar.setIdleTextureSet(filmStripDict.get("herbivoreIdleLeft"), 4,
+							filmStripDict.get("herbivoreIdleRight"), 4,
+							filmStripDict.get("herbivoreIdleBack"), 4,
+							filmStripDict.get("herbivoreIdleFront"), 4);
 
 					level.setAvatar(avatar);
 				} else {
@@ -2382,6 +2435,10 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("carnivoreAttackRight"), 9,
 							filmStripDict.get("carnivoreAttackBack"), 6,
 							filmStripDict.get("carnivoreAttackFront"), 10);
+					avatar.setIdleTextureSet(filmStripDict.get("carnivoreIdleLeft"), 4,
+							filmStripDict.get("carnivoreIdleRight"), 4,
+							filmStripDict.get("carnivoreIdleBack"), 4,
+							filmStripDict.get("carnivoreIdleFront"), 4);
 
 					level.setAvatar(avatar);
 				}
