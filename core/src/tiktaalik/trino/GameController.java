@@ -2129,6 +2129,8 @@ public class GameController implements ContactListener, Screen {
 	private void updateReady() {
 		totalTime = level.getLevelTime();
 		levelTime = level.getLevelTime();
+		hud.update(level.getAvatar().getResources(), level.getAvatar().getForm(), level.getClone(), totalTime);
+
 		vineDropX = level.getAvatar().getX();
 		avatarTargetY = level.getAvatar().getY() + 0.6f;
 		avatarStartDir = level.getAvatar().getDirection();
