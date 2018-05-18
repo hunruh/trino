@@ -498,7 +498,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
     private void playClick(){
 		if (click != null){
 			click.pause();
-			click.play();
+			click.play(0.1f);
 		}
 	}
 	/**
