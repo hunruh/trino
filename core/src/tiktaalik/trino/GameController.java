@@ -2812,6 +2812,36 @@ public class GameController implements ContactListener, Screen {
 
 	private void updateLevelStart(float dt) {
 		Dinosaur avatar = level.getAvatar();
+
+		// Process camera updates
+		float halfWidth = canvas.getCamera().viewportWidth / 2;
+		float halfHeight = canvas.getCamera().viewportHeight / 2;
+
+		if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth < halfWidth) {
+			canvas.getCamera().position.x = halfWidth;
+			raycamera.position.x = cameraBounds.width / 2;
+		} else if ((avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth > level.getLevelWidth() - halfWidth) {
+			canvas.getCamera().position.x = level.getLevelWidth() - halfWidth;
+			raycamera.position.x = 2*(level.getLevelWidth()/80.0f) - cameraBounds.width / 2;
+		} else {
+			canvas.getCamera().position.x = (avatar.getX() / cameraBounds.width) * canvas.getCamera().viewportWidth;
+			raycamera.position.x = avatar.getX();
+		}
+
+		if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight < halfHeight) {
+			canvas.getCamera().position.y = halfHeight;
+			raycamera.position.y = cameraBounds.height / 2;
+		} else if ((avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight > level.getLevelHeight() - halfHeight) {
+			canvas.getCamera().position.y = level.getLevelHeight() - halfHeight;
+			raycamera.position.y = 2*(level.getLevelHeight()/80f) - cameraBounds.height / 2;
+		} else {
+			canvas.getCamera().position.y = (avatar.getY() / cameraBounds.height) * canvas.getCamera().viewportHeight;
+			raycamera.position.y = avatar.getY();
+		}
+		canvas.getCamera().update();
+		raycamera.update();
+		rayhandler.setCombinedMatrix(raycamera);
+
 		if (!swingingDown)
 			avatar.update(dt);
 
