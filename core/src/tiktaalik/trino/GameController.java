@@ -31,6 +31,7 @@ public class GameController implements ContactListener, Screen {
 	static final int GAME_PAUSED = 2;
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
+	static final int GAME_LEVEL_START = 5;
 
 	int state;
 
@@ -67,7 +68,7 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOOR_FILE_THREE = "trino/openExitPlaceHolder3.png";
 	private static final String DOOR_CLOSED_FILE_THREE = "trino/exitClosedPlaceHolder3.png";
 	private static final String DOOR_FLASHING_STRIP = "trino/door_flashing.png";
-	private static final String CLONE_FILE  = "trino/clone.png";
+	private static final String CLONE_IDLE_STRIP = "trino/clone_idle.png";
 	private static final String DOLL_STRIP_FRONT  = "trino/doll_front_strip.png";
 	private static final String DOLL_STRIP_LEFT  = "trino/doll_left_strip.png";
 	private static final String DOLL_STRIP_RIGHT  = "trino/doll_right_strip.png";
@@ -77,6 +78,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String DOLL_EATING_STRIP_RIGHT  = "trino/doll_right_eating_strip.png";
 	private static final String DOLL_EATING_STRIP_BACK  = "trino/doll_back_eating_strip.png";
 	private static final String DOLL_CLONING_STRIP_FRONT  = "trino/doll_front_cloning_strip.png";
+	private static final String DOLL_IDLE_STRIP_FRONT = "trino/doll_front_idle_strip.png";
+	private static final String DOLL_IDLE_STRIP_LEFT = "trino/doll_left_idle_strip.png";
+	private static final String DOLL_IDLE_STRIP_RIGHT = "trino/doll_right_idle_strip.png";
+	private static final String DOLL_IDLE_STRIP_BACK = "trino/doll_back_idle_strip.png";
 	private static final String HERBIVORE_STRIP_FRONT  = "trino/herbivore_front_strip.png";
 	private static final String HERBIVORE_STRIP_LEFT  = "trino/herbivore_left_strip.png";
 	private static final String HERBIVORE_STRIP_RIGHT  = "trino/herbivore_right_strip.png";
@@ -110,6 +115,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String HERBIVORE_CAMO_STRIP_LEFT = "trino/herbivore_left_camo.png";
 	private static final String HERBIVORE_CAMO_STRIP_RIGHT = "trino/herbivore_right_camo.png";
 	private static final String HERBIVORE_CAMO_STRIP_BACK = "trino/herbivore_back_camo.png";
+	private static final String HERBIVORE_IDLE_STRIP_FRONT = "trino/herbivore_front_idle_strip.png";
+	private static final String HERBIVORE_IDLE_STRIP_LEFT = "trino/herbivore_left_idle_strip.png";
+	private static final String HERBIVORE_IDLE_STRIP_RIGHT = "trino/herbivore_right_idle_strip.png";
+	private static final String HERBIVORE_IDLE_STRIP_BACK = "trino/herbivore_back_idle_strip.png";
 	private static final String CARNIVORE_STRIP_FRONT  = "trino/carnivore_front_strip.png";
 	private static final String CARNIVORE_STRIP_LEFT  = "trino/carnivore_left_strip.png";
 	private static final String CARNIVORE_STRIP_RIGHT  = "trino/carnivore_right_strip.png";
@@ -126,6 +135,10 @@ public class GameController implements ContactListener, Screen {
 	private static final String CARNIVORE_ATTACK_STRIP_LEFT = "trino/carnivore_left_attack_strip.png";
 	private static final String CARNIVORE_ATTACK_STRIP_RIGHT = "trino/carnivore_right_attack_strip.png";
 	private static final String CARNIVORE_ATTACK_STRIP_BACK = "trino/carnivore_back_attack_strip.png";
+	private static final String CARNIVORE_IDLE_STRIP_FRONT = "trino/carnivore_front_idle_strip.png";
+	private static final String CARNIVORE_IDLE_STRIP_LEFT = "trino/carnivore_left_idle_strip.png";
+	private static final String CARNIVORE_IDLE_STRIP_RIGHT = "trino/carnivore_right_idle_strip.png";
+	private static final String CARNIVORE_IDLE_STRIP_BACK = "trino/carnivore_back_idle_strip.png";
 	private static final String ENEMY_STRIP_FRONT = "trino/enemy_front_strip.png";
 	private static final String ENEMY_STRIP_LEFT = "trino/enemy_left_strip.png";
 	private static final String ENEMY_STRIP_RIGHT = "trino/enemy_right_strip.png";
@@ -338,6 +351,20 @@ public class GameController implements ContactListener, Screen {
 	private FilmStrip swingInStrip;
 	private FilmStrip swingOutStrip;
 
+	private float vineHeightOffset;
+	private float vineCurrentOffset;
+	private float vineGoingDownCounter = 0;
+	private float vineGoingUpCounter = 0;
+	private float vineDropX;
+	private float avatarTargetY;
+	private float avatarStartDir;
+	private boolean swingingUp = false;
+	private boolean swingingDown = false;
+	private boolean vineAvatarDrop = false;
+	private float swingAnimeFrame = 0;
+
+	private boolean readyForSwing = false;
+
 	private World world;
 	private Level level;
 
@@ -358,7 +385,6 @@ public class GameController implements ContactListener, Screen {
 	private int playDoorDown = 0;
 	private int playDoorUp = 0;
 	private int playDoorSound = -1;
-	private float swingAnimeFrame = 0;
 	private float elapsed;
 	private float duration;
 	private float radius;
@@ -454,8 +480,16 @@ public class GameController implements ContactListener, Screen {
 		assets.add(DOLL_EATING_STRIP_BACK);
 		manager.load(DOLL_CLONING_STRIP_FRONT, Texture.class);
 		assets.add(DOLL_CLONING_STRIP_FRONT);
-		manager.load(CLONE_FILE, Texture.class);
-		assets.add(CLONE_FILE);
+		manager.load(DOLL_IDLE_STRIP_FRONT, Texture.class);
+		assets.add(DOLL_IDLE_STRIP_FRONT);
+		manager.load(DOLL_IDLE_STRIP_RIGHT, Texture.class);
+		assets.add(DOLL_IDLE_STRIP_RIGHT);
+		manager.load(DOLL_IDLE_STRIP_LEFT, Texture.class);
+		assets.add(DOLL_IDLE_STRIP_LEFT);
+		manager.load(DOLL_IDLE_STRIP_BACK, Texture.class);
+		assets.add(DOLL_IDLE_STRIP_BACK);
+		manager.load(CLONE_IDLE_STRIP, Texture.class);
+		assets.add(CLONE_IDLE_STRIP);
 		manager.load(HERBIVORE_STRIP_LEFT, Texture.class);
 		assets.add(HERBIVORE_STRIP_LEFT);
 		manager.load(HERBIVORE_STRIP_RIGHT, Texture.class);
@@ -522,6 +556,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(HERBIVORE_CAMO_STRIP_BACK);
 		manager.load(HERBIVORE_CAMO_STRIP_FRONT, Texture.class);
 		assets.add(HERBIVORE_CAMO_STRIP_FRONT);
+		manager.load(HERBIVORE_IDLE_STRIP_FRONT, Texture.class);
+		assets.add(HERBIVORE_IDLE_STRIP_FRONT);
+		manager.load(HERBIVORE_IDLE_STRIP_RIGHT, Texture.class);
+		assets.add(HERBIVORE_IDLE_STRIP_RIGHT);
+		manager.load(HERBIVORE_IDLE_STRIP_LEFT, Texture.class);
+		assets.add(HERBIVORE_IDLE_STRIP_LEFT);
+		manager.load(HERBIVORE_IDLE_STRIP_BACK, Texture.class);
+		assets.add(HERBIVORE_IDLE_STRIP_BACK);
 		manager.load(CARNIVORE_STRIP_LEFT, Texture.class);
 		assets.add(CARNIVORE_STRIP_LEFT);
 		manager.load(CARNIVORE_STRIP_RIGHT, Texture.class);
@@ -554,6 +596,14 @@ public class GameController implements ContactListener, Screen {
 		assets.add(CARNIVORE_ATTACK_STRIP_RIGHT);
 		manager.load(CARNIVORE_ATTACK_STRIP_BACK, Texture.class);
 		assets.add(CARNIVORE_ATTACK_STRIP_BACK);
+		manager.load(CARNIVORE_IDLE_STRIP_FRONT, Texture.class);
+		assets.add(CARNIVORE_IDLE_STRIP_FRONT);
+		manager.load(CARNIVORE_IDLE_STRIP_RIGHT, Texture.class);
+		assets.add(CARNIVORE_IDLE_STRIP_RIGHT);
+		manager.load(CARNIVORE_IDLE_STRIP_LEFT, Texture.class);
+		assets.add(CARNIVORE_IDLE_STRIP_LEFT);
+		manager.load(CARNIVORE_IDLE_STRIP_BACK, Texture.class);
+		assets.add(CARNIVORE_IDLE_STRIP_BACK);
 		manager.load(DOLL_TO_HERB_STRIP, Texture.class);
 		assets.add(DOLL_TO_HERB_STRIP);
 		manager.load(DOLL_TO_CARN_STRIP, Texture.class);
@@ -911,7 +961,6 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("doorClosedTileTwo", createTexture(manager,DOOR_CLOSED_FILE_TWO,false));
 		textureDict.put("doorOpenTileThree", createTexture(manager,DOOR_FILE_THREE, false));
 		textureDict.put("doorClosedTileThree", createTexture(manager,DOOR_CLOSED_FILE_THREE, false));
-		textureDict.put("clone", createTexture(manager,CLONE_FILE,false));
 		textureDict.put("fireFly", createTexture(manager, FIREFLY_FILE, false));
 		textureDict.put("fireFlyPurple", createTexture(manager, FIREFLY_PURPLE_FILE, false));
 		textureDict.put("fireFlyBlue", createTexture(manager, FIREFLY_BLUE_FILE, false));
@@ -1042,6 +1091,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("dollEatingRight", createFilmTexture(manager,DOLL_EATING_STRIP_RIGHT));
 		filmStripDict.put("dollEatingFront", createFilmTexture(manager,DOLL_EATING_STRIP_FRONT));
 		filmStripDict.put("dollEatingBack", createFilmTexture(manager,DOLL_EATING_STRIP_BACK));
+		filmStripDict.put("dollIdleLeft", createFilmTexture(manager,DOLL_IDLE_STRIP_LEFT));
+		filmStripDict.put("dollIdleRight", createFilmTexture(manager,DOLL_IDLE_STRIP_RIGHT));
+		filmStripDict.put("dollIdleFront", createFilmTexture(manager,DOLL_IDLE_STRIP_FRONT));
+		filmStripDict.put("dollIdleBack", createFilmTexture(manager,DOLL_IDLE_STRIP_BACK));
 		filmStripDict.put("dollCloningFront", createFilmTexture(manager,DOLL_CLONING_STRIP_FRONT));
 		filmStripDict.put("carnivoreLeft", createFilmTexture(manager,CARNIVORE_STRIP_LEFT));
 		filmStripDict.put("carnivoreRight", createFilmTexture(manager,CARNIVORE_STRIP_RIGHT));
@@ -1059,6 +1112,10 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("carnivoreAttackLeft", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_LEFT));
 		filmStripDict.put("carnivoreAttackRight", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_RIGHT));
 		filmStripDict.put("carnivoreAttackBack", createFilmTexture(manager,CARNIVORE_ATTACK_STRIP_BACK));
+		filmStripDict.put("carnivoreIdleLeft", createFilmTexture(manager,CARNIVORE_IDLE_STRIP_LEFT));
+		filmStripDict.put("carnivoreIdleRight", createFilmTexture(manager,CARNIVORE_IDLE_STRIP_RIGHT));
+		filmStripDict.put("carnivoreIdleFront", createFilmTexture(manager,CARNIVORE_IDLE_STRIP_FRONT));
+		filmStripDict.put("carnivoreIdleBack", createFilmTexture(manager,CARNIVORE_IDLE_STRIP_BACK));
 		filmStripDict.put("herbivoreLeft", createFilmTexture(manager,HERBIVORE_STRIP_LEFT));
 		filmStripDict.put("herbivoreRight", createFilmTexture(manager,HERBIVORE_STRIP_RIGHT));
 		filmStripDict.put("herbivoreFront", createFilmTexture(manager,HERBIVORE_STRIP_FRONT));
@@ -1092,6 +1149,11 @@ public class GameController implements ContactListener, Screen {
 		filmStripDict.put("herbivoreCamoRight", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_RIGHT));
 		filmStripDict.put("herbivoreCamoFront", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_FRONT));
 		filmStripDict.put("herbivoreCamoBack", createFilmTexture(manager,HERBIVORE_CAMO_STRIP_BACK));
+		filmStripDict.put("herbivoreIdleLeft", createFilmTexture(manager,HERBIVORE_IDLE_STRIP_LEFT));
+		filmStripDict.put("herbivoreIdleRight", createFilmTexture(manager,HERBIVORE_IDLE_STRIP_RIGHT));
+		filmStripDict.put("herbivoreIdleFront", createFilmTexture(manager,HERBIVORE_IDLE_STRIP_FRONT));
+		filmStripDict.put("herbivoreIdleBack", createFilmTexture(manager,HERBIVORE_IDLE_STRIP_BACK));
+		filmStripDict.put("cloneIdle", createFilmTexture(manager,CLONE_IDLE_STRIP));
 		filmStripDict.put("enemyLeft", createFilmTexture(manager,ENEMY_STRIP_LEFT));
 		filmStripDict.put("enemyRight", createFilmTexture(manager,ENEMY_STRIP_RIGHT));
 		filmStripDict.put("enemyFront", createFilmTexture(manager,ENEMY_STRIP_FRONT));
@@ -1375,6 +1437,12 @@ public class GameController implements ContactListener, Screen {
 		level.populate(textureDict, filmStripDict, duggiLight, canvas.getWidth(), canvas.getHeight());
 		collisionHandler.setLevel(level);
 
+		vineHeightOffset = level.getLevelHeight() + 307f;
+		vineCurrentOffset = level.getLevelHeight() + 307f;
+		swingingUp = false;
+		swingAnimeFrame = 0;
+		readyForSwing = false;
+
 		// Set the lighting
 //		float value = 1.0f - level.getCurrentLevel()/40.0f;
 //		if (level.getCurrentLevel() > 5){
@@ -1519,10 +1587,22 @@ public class GameController implements ContactListener, Screen {
 
 		level.draw(canvas);
 
+		canvas.begin();
+		TextureRegion vine = textureDict.get("longVine");
+		float x = (level.getDoor(0).getX() * level.getDoor(0).getDrawScale().x)+ 10f;
+		float y = (level.getDoor(0).getY()*level.getDoor(0).getDrawScale().x) + vineCurrentOffset;
+		if (vineAvatarDrop) {
+			x = (vineDropX * level.getDoor(0).getDrawScale().x) + 11f;
+			y = vineCurrentOffset;
+		}
+		canvas.draw(vine, Color.WHITE,vine.getRegionWidth()/2.0f,vine.getRegionHeight()/2.0f,
+				x, y,0,1,1);
+
+		canvas.end();
+
 		// Now draw the shadows
 		if (rayhandler != null)
 			rayhandler.render();
-
 
 		canvas.beginOverlay();
 		canvas.draw(textureDict.get("overlay"),0,0);
@@ -1636,11 +1716,20 @@ public class GameController implements ContactListener, Screen {
             canvas.end();
         }
 
+		if (state == GAME_LEVEL_START && swingingDown) {
+			swingInStrip.setFrame((int)swingAnimeFrame);
+			if (swingOutStrip != null) {
+				canvas.beginOverlay();
+				canvas.draw(swingInStrip, Color.WHITE,0,0,0,40,0,1,1);
+				canvas.end();
+			}
+		}
+
         if (state == GAME_LEVEL_END) {
 			swingOutStrip.setFrame((int)swingAnimeFrame);
 			if (swingOutStrip != null) {
 				canvas.beginOverlay();
-				canvas.draw(swingOutStrip, Color.WHITE,0,0,0,43,0,1,1);
+				canvas.draw(swingOutStrip, Color.WHITE,0,0,0,40,0,1,1);
 				canvas.end();
 			}
 		}
@@ -1942,18 +2031,29 @@ public class GameController implements ContactListener, Screen {
 				updatePaused();
 				break;
 			case GAME_LEVEL_END:
-				updateLevelEnd();
+				updateLevelEnd(dt);
 				break;
 			case GAME_OVER:
 				updateGameOver();
 				break;
+			case GAME_LEVEL_START:
+				updateLevelStart(dt);
 		}
 	}
 
 	private void updateReady() {
 		totalTime = level.getLevelTime();
 		levelTime = level.getLevelTime();
-		state = GAME_RUNNING;
+		vineDropX = level.getAvatar().getX();
+		avatarTargetY = level.getAvatar().getY() + 0.6f;
+		avatarStartDir = level.getAvatar().getDirection();
+		level.getAvatar().setY(level.screenToMaze(level.getHeight()));
+		level.getAvatar().setSwinging(true);
+		level.getAvatar().setDirection(Dinosaur.DOWN);
+		vineCurrentOffset = 1031;
+		swingingDown = true;
+		vineAvatarDrop = true;
+		state = GAME_LEVEL_START;
 	}
 
 	private void updateRunning(float dt) {
@@ -1963,6 +2063,20 @@ public class GameController implements ContactListener, Screen {
 		else if (complete && !failed) {
 			state = GAME_LEVEL_END;
 			swingAnimeFrame = 0;
+			readyForSwing = false;
+
+			if (level.getAvatar().getForm() != Dinosaur.DOLL_FORM) {
+				if (level.getAvatar().getForm() == Dinosaur.HERBIVORE_FORM){
+					level.getAvatar().setTransformTextureSet(filmStripDict.get("herbToDoll"), 11);
+				} else{
+					level.getAvatar().setTransformTextureSet(filmStripDict.get("carnToDoll"), 11);
+				}
+
+				transform = true;
+				level.getAvatar().setTransform(true);
+				level.getAvatar().setTransformToForm(0);
+				SoundController.getInstance().playTransform();
+			}
 		}
 		else {
 			if (level.getSwitches().size() == 0) {
@@ -2323,7 +2437,10 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("dollCloningFront"), 12,
 							filmStripDict.get("dollCloningFront"), 12,
 							filmStripDict.get("dollCloningFront"), 12);
-
+					avatar.setIdleTextureSet(filmStripDict.get("dollIdleLeft"), 4,
+							filmStripDict.get("dollIdleRight"), 4,
+							filmStripDict.get("dollIdleBack"), 4,
+							filmStripDict.get("dollIdleFront"), 4);
 
 					level.setAvatar(avatar);
 
@@ -2341,7 +2458,6 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("herbivoreRight"), 7,
 							filmStripDict.get("herbivoreBack"), 8,
 							filmStripDict.get("herbivoreFront"), 8);
-
 					avatar.setEatingTextureSet(filmStripDict.get("herbivoreEatingLeft"), 10,
 							filmStripDict.get("herbivoreEatingRight"), 10,
 							filmStripDict.get("herbivoreEatingBack"), 10,
@@ -2350,7 +2466,10 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("herbivorePlaceCamoRight"), 12, 0,
 							filmStripDict.get("herbivorePlaceCamoBack"), 10, 0,
 							filmStripDict.get("herbivorePlaceCamoFront"),  12, 0);
-
+					avatar.setIdleTextureSet(filmStripDict.get("herbivoreIdleLeft"), 4,
+							filmStripDict.get("herbivoreIdleRight"), 4,
+							filmStripDict.get("herbivoreIdleBack"), 4,
+							filmStripDict.get("herbivoreIdleFront"), 4);
 
 					level.setAvatar(avatar);
 				} else {
@@ -2377,6 +2496,10 @@ public class GameController implements ContactListener, Screen {
 							filmStripDict.get("carnivoreAttackRight"), 9,
 							filmStripDict.get("carnivoreAttackBack"), 6,
 							filmStripDict.get("carnivoreAttackFront"), 10);
+					avatar.setIdleTextureSet(filmStripDict.get("carnivoreIdleLeft"), 4,
+							filmStripDict.get("carnivoreIdleRight"), 4,
+							filmStripDict.get("carnivoreIdleBack"), 4,
+							filmStripDict.get("carnivoreIdleFront"), 4);
 
 					level.setAvatar(avatar);
 				}
@@ -2548,6 +2671,27 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 
+			// Update the vines
+			if (level.getAvatar().canExit() && !vineAvatarDrop){
+				vineGoingUpCounter = 0;
+				vineGoingDownCounter += 0.05f;
+				vineCurrentOffset = vineCurrentOffset- vineGoingDownCounter;
+
+				if (vineCurrentOffset < 300f){
+					vineCurrentOffset = 300f;
+				}
+
+			} else {
+				vineGoingDownCounter = 0;
+				vineGoingUpCounter+= 0.05f;
+				vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
+
+				if (vineCurrentOffset > vineHeightOffset){
+					vineAvatarDrop = false;
+					vineCurrentOffset = vineHeightOffset;
+				}
+			}
+
 			if (InputHandler.getInstance().didPause()) {
 				SoundController.getInstance().playClick();
 				state = GAME_PAUSED;
@@ -2567,10 +2711,74 @@ public class GameController implements ContactListener, Screen {
 		}
 	}
 
-	private void updateLevelEnd() {
-		swingAnimeFrame += 0.175f;
-		if (swingAnimeFrame >= 11) {
-			state = GAME_OVER;
+	private void updateLevelEnd(float dt) {
+		Dinosaur avatar = level.getAvatar();
+		if (!readyForSwing && !swingingUp)
+			avatar.update(dt);
+
+		if (transform && !avatar.getTransform()) {
+			transform = false;
+			avatar.forceFrame(0);
+			if (avatar.getTransformNumber() == 0) {
+				avatar = avatar.transformToDoll();
+
+				avatar.setTextureSet(filmStripDict.get("dollLeft"), 8,
+						filmStripDict.get("dollRight"), 8,
+						filmStripDict.get("dollBack"), 8,
+						filmStripDict.get("dollFront"), 8);
+
+				level.setAvatar(avatar);
+			}
+		}
+		else if (!readyForSwing && !swingingUp && !avatar.getTransform()) {
+			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
+				Wall door = level.getDoor(0);
+				float targetX = door.getX();
+				float targetY = door.getY() + 0.7f;
+
+				if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() < targetX) {
+					avatar.setLeftRight(1);
+					avatar.setX(avatar.getX() + 0.1f);
+					avatar.setUpDown(0);
+				} else if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() > targetX) {
+					avatar.setLeftRight(-1);
+					avatar.setX(avatar.getX() - 0.1f);
+					avatar.setUpDown(0);
+				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() < targetY) {
+					avatar.setLeftRight(0);
+					avatar.setUpDown(1);
+					avatar.setY(avatar.getY() + 0.1f);
+				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() > targetY) {
+					avatar.setLeftRight(0);
+					avatar.setUpDown(-1);
+					avatar.setY(avatar.getY() - 0.1f);
+				} else {
+					avatar.setLeftRight(0);
+					avatar.setUpDown(0);
+					avatar.setDirection(Dinosaur.DOWN);
+					avatar.update(dt);
+					avatar.forceFrame(0);
+					avatar.setSwinging(true);
+					swingingUp = true;
+				}
+			}
+		} else if (swingingUp) {
+			vineGoingDownCounter = 0;
+			vineGoingUpCounter += 0.15f;
+			vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
+			avatar.setY(avatar.getY() + (vineGoingUpCounter * .025f));
+
+			if (avatar.getY() > level.screenToMaze(level.getHeight())){
+				vineCurrentOffset = vineHeightOffset;
+				readyForSwing = true;
+				swingingUp = false;
+			}
+		}
+		else if (readyForSwing) {
+			swingAnimeFrame += 0.175f;
+			if (swingAnimeFrame >= 11) {
+				state = GAME_OVER;
+			}
 		}
 	}
 
@@ -2593,8 +2801,84 @@ public class GameController implements ContactListener, Screen {
 				nextLevel();
 			}
 		}
-
 	}
+
+	private void updateLevelStart(float dt) {
+		Dinosaur avatar = level.getAvatar();
+		if (!swingingDown)
+			avatar.update(dt);
+
+		if (swingingDown) {
+			swingAnimeFrame += 0.175f;
+			if (swingAnimeFrame >= 10) {
+				swingingDown = false;
+			}
+		} else {
+			vineGoingUpCounter = 0;
+			vineGoingDownCounter += 0.15f;
+			avatar.setY(avatar.getY() - (vineGoingDownCounter * .025f));
+			vineCurrentOffset = vineCurrentOffset- vineGoingDownCounter;
+
+			if (avatar.getY() < avatarTargetY) {
+				avatar.setY(avatarTargetY);
+				avatar.setSwinging(false);
+				avatar.setDirection(avatarStartDir);
+				state = GAME_RUNNING;
+				vineHeightOffset = level.getLevelHeight() + 307f;
+			}
+		}
+//		if (!readyForSwing && !swingingUp)
+//			avatar.update(dt);
+//
+//		if (!readyForSwing && !swingingUp) {
+//			if (avatar.getForm() == Dinosaur.DOLL_FORM) {
+//				Wall door = level.getDoor(0);
+//				float targetX = door.getX();
+//				float targetY = door.getY() + 0.7f;
+//
+//				if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() < targetX) {
+//					avatar.setLeftRight(1);
+//					avatar.setX(avatar.getX() + 0.1f);
+//					avatar.setUpDown(0);
+//				} else if (Math.abs(avatar.getX() - targetX) > 0.1f && avatar.getX() > targetX) {
+//					avatar.setLeftRight(-1);
+//					avatar.setX(avatar.getX() - 0.1f);
+//					avatar.setUpDown(0);
+//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() < targetY) {
+//					avatar.setLeftRight(0);
+//					avatar.setUpDown(1);
+//					avatar.setY(avatar.getY() + 0.1f);
+//				} else if (Math.abs(avatar.getY() - targetY) > 0.1f && avatar.getY() > targetY) {
+//					avatar.setLeftRight(0);
+//					avatar.setUpDown(-1);
+//					avatar.setY(avatar.getY() - 0.1f);
+//				} else {
+//					avatar.setLeftRight(0);
+//					avatar.setUpDown(0);
+//					avatar.setDirection(Dinosaur.DOWN);
+//					avatar.update(dt);
+//					avatar.forceFrame(0);
+//					avatar.setSwinging(true);
+//					swingingUp = true;
+//				}
+//			}
+//		} else if (swingingUp) {
+//			vineGoingDownCounter = 0;
+//			vineGoingUpCounter += 0.1f;
+//			vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
+//			avatar.setY(avatar.getY() + (vineGoingUpCounter * .025f));
+//
+//			if (avatar.getY() > level.screenToMaze(level.getHeight())){
+//				vineCurrentOffset = vineHeightOffset;
+//				readyForSwing = true;
+//				swingingUp = false;
+//			}
+//		}
+//		else if (readyForSwing) {
+
+//		}
+	}
+
 	/**
 	 * Callback method for the start of a collision
 	 *

@@ -61,18 +61,9 @@ public class Level {
 
     private Dinosaur avatar;
     private Clone clone;
-    private Enemy shadowDuggi;
-
-    private GameObject objectCache;
     private Vector2 locationCache;
-    private Vector2 vineLocation;
-    private float vineHeightOffset;
-    private float vineCurrentOffset;
-    private float vineGoingDownCounter = 0;
-    private float vineGoingUpCounter = 0;
 
     private TextureRegion background;
-    private TextureRegion cloneTexture;
 
     private int pixelFactor = 80;
     private int levelWidth;
@@ -85,6 +76,7 @@ public class Level {
     private int currentLevel;
 
     private Hashtable<String, TextureRegion> textureDict;
+    private Hashtable<String, Texture> filmStripDict;
 
     public Level(World world, int lvl) {
         this.bounds = new Rectangle(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -225,7 +217,7 @@ public class Level {
         clone.setGridLocation(getAvatarGridX(), getAvatarGridY());
         clone.setDrawScale(scale);
         clone.setType(CLONE);
-        clone.setTexture(cloneTexture);
+        clone.setIdleTextureSet(filmStripDict.get("cloneIdle"), 4);
         clone.setBodyType(BodyDef.BodyType.StaticBody);
         addObject(clone);
     }
@@ -349,8 +341,6 @@ public class Level {
         return objects;
     }
 
-    public Enemy getShadowDuggi(){return shadowDuggi;}
-
     public boolean getIsNight(){return isNight;}
 
     public PooledList<Vector2>getCottonFlowerList(){return cottonFlowerList;}
@@ -360,6 +350,7 @@ public class Level {
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
         this.textureDict = textureDict;
+        this.filmStripDict = filmStripDict;
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
 
         SaveFileParser savefileparser = new SaveFileParser();
@@ -377,8 +368,6 @@ public class Level {
             System.out.println("oops");
         }
 
-
-
         LevelParser parser = new LevelParser();
         try {
 //            parser.parse("/trino/example.json");
@@ -393,26 +382,19 @@ public class Level {
         levelHeight = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).y));
         levelWidth = pixelFactor * (int)((double)((float)parser.getLevelDimension(currentLevel).x));
 
-
         levelTime = (int)((double)((float)parser.getLevelTime(currentLevel)));
-
-
 
         bounds.x = levelWidth/pixelFactor;
         bounds.y = levelHeight/pixelFactor;
 
-        vineHeightOffset = levelHeight + 307f;
-        vineCurrentOffset = levelHeight + 307f;
-
         // Set permanent textures
         background = textureDict.get("background");
-        cloneTexture = textureDict.get("clone");
 
         PooledList<Vector2> tmp = new PooledList<Vector2>();
         // Create player character
         // It is important that this is always created first, as transformations must swap the first element
         // in the objects list
-        dwidth = textureDict.get("clone").getRegionWidth() / (scale.x * 2);
+        dwidth = 80 / (scale.x * 2);
 
         tmp = parser.getAssetList(currentLevel, "Player");
         int facing = parser.getPlayerInitialOrientation(currentLevel);
@@ -434,6 +416,10 @@ public class Level {
                     filmStripDict.get("dollCloningFront"), 12,
                     filmStripDict.get("dollCloningFront"), 12,
                     filmStripDict.get("dollCloningFront"), 12);
+            avatar.setIdleTextureSet(filmStripDict.get("dollIdleLeft"), 4,
+                    filmStripDict.get("dollIdleRight"), 4,
+                    filmStripDict.get("dollIdleBack"), 4,
+                    filmStripDict.get("dollIdleFront"), 4);
             avatar.setDrawScale(scale);
 
             //Change filter data to that of the doll form
@@ -586,7 +572,6 @@ public class Level {
             goalDoor.setType(GOAL);
             if (i == 0) {
                 goalDoor.setGoal(true);
-                vineLocation = goalDoor.getGridLocation();
                 goalDoor.setVineTextureSet(filmStripDict.get("vineDrop"),12);
                 goalDoor.setDoorTextureSet(filmStripDict.get("yellowDoor"), 9);
                 goalDoor.setLoweredTextureSet(filmStripDict.get("doorFlashing"), 16);
@@ -759,7 +744,8 @@ public class Level {
         canvas.end();
 
         canvas.beginShadows();
-        avatar.drawShadow(canvas);
+        if (!avatar.getSwinging())
+            avatar.drawShadow(canvas);
         for(Enemy e : enemies) {
             e.drawShadow(canvas);
         }
@@ -830,7 +816,6 @@ public class Level {
                         rock = textureDict.get("watershine");
                     }
 
-
                     float minX = g.getX() - 0.3f;
                     float maxX = g.getX() + 0.3f;
                     float minY = g.getY() - 0.3f;
@@ -850,45 +835,13 @@ public class Level {
                             ((River) g).getRockPosition().y,0,1,1);
 
                 }
-
-
             }
         }
+
+        if (avatar.getSwinging())
+            avatar.draw(canvas);
+
         canvas.end();
-
-        canvas.begin();
-        // Draw the vine if can exit
-        TextureRegion vine = textureDict.get("longVine");
-        Vector2 origin = new Vector2(vine.getRegionWidth()/2.0f, vine.getRegionHeight()/2.0f);
-        if (avatar.canExit()){
-            vineGoingUpCounter = 0;
-            vineGoingDownCounter += 0.05f;
-            vineCurrentOffset = vineCurrentOffset- vineGoingDownCounter;
-
-            if (vineCurrentOffset < 300f){
-                vineCurrentOffset = 300f;
-            }
-
-            canvas.draw(vine, Color.WHITE,origin.x,origin.y,(getDoor(0).getX()
-                    *getDoor(0).getDrawScale().x)+ 10f,(getDoor(0).getY()*getDoor(0).getDrawScale().x) +
-                    vineCurrentOffset,0,1,1);
-
-        } else {
-            vineGoingDownCounter = 0;
-            vineGoingUpCounter+= 0.05f;
-            vineCurrentOffset = vineCurrentOffset + vineGoingUpCounter;
-
-            if (vineCurrentOffset > vineHeightOffset){
-                vineCurrentOffset = vineHeightOffset;
-            }
-
-            canvas.draw(vine, Color.WHITE,origin.x,origin.y,(getDoor(0).getX()
-                    *getDoor(0).getDrawScale().x) + 10f,(getDoor(0).getY()*getDoor(0).getDrawScale().x)
-                    +vineCurrentOffset,0,1,1);
-        }
-        canvas.end();
-
-
 
         canvas.beginProgressCircle();
         avatar.drawProgressCircle(canvas, avatar.getActionLoadValue());
@@ -1145,20 +1098,13 @@ public class Level {
         GameObject top = grid[(int)river.getGridLocation().x][(int)river.getGridLocation().y+1];
         GameObject bot = grid[(int)river.getGridLocation().x][(int)river.getGridLocation().y-1];
 
-        boolean isLeftRiver = false;
-        boolean isRightRiver = false;
-        boolean isTopRiver = false;
-        boolean isBotRiver = false;
-
         GameObject northwest = grid[(int)river.getGridLocation().x-1][(int)river.getGridLocation().y+1];
         GameObject northeast = grid[(int)river.getGridLocation().x+1][(int)river.getGridLocation().y+1];
         GameObject southwest = grid[(int)river.getGridLocation().x-1][(int)river.getGridLocation().y-1];
         GameObject southeast = grid[(int)river.getGridLocation().x+1][(int)river.getGridLocation().y-1];
 
-        boolean isSouthEastRiver = false;
-        boolean isNorthEastRiver = false;
-        boolean isSouthWestRiver = false;
-        boolean isNorthWestRiver = false;
+        boolean isLeftRiver, isRightRiver, isTopRiver, isBotRiver;
+        boolean isSouthEastRiver, isNorthEastRiver, isSouthWestRiver, isNorthWestRiver;
 
         // set the booleans for each neighbor
         if (left != null){
@@ -1287,7 +1233,6 @@ public class Level {
         clone = null;
         scale = null;
         locationCache = null;
-        objectCache = null;
         switches = null;
         doors = null;
     }
