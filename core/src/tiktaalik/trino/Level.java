@@ -74,6 +74,9 @@ public class Level {
     private boolean isNight;
 
     private int currentLevel;
+    private int threeStars;
+    private int twoStars;
+    private int oneStar;
 
     private Hashtable<String, TextureRegion> textureDict;
     private Hashtable<String, Texture> filmStripDict;
@@ -347,26 +350,17 @@ public class Level {
 
     public int getLevelTime() { return levelTime; }
 
+    public int getStars(int star){
+        if (star == 2) return threeStars;
+        else if (star == 1) return twoStars;
+        else return oneStar;
+    }
+
     public void populate(Hashtable<String, TextureRegion> textureDict, Hashtable<String, Texture> filmStripDict,
                          LightSource avatarLight, int canvasWidth, int canvasHeight){
         this.textureDict = textureDict;
         this.filmStripDict = filmStripDict;
         scale = new Vector2(canvasWidth/bounds.getWidth(), canvasHeight/bounds.getHeight());
-
-        SaveFileParser savefileparser = new SaveFileParser();
-        try {
-            savefileparser.parse("jsons/save.json");
-        } catch(Exception e){
-            System.out.println("oops");
-        }
-        savefileparser.printObj();
-        savefileparser.changeLevelCompletion(0, true);
-        savefileparser.printObj();
-        try {
-            savefileparser.writeToFile("jsons/save.json");
-        } catch(Exception e){
-            System.out.println("oops");
-        }
 
         LevelParser parser = new LevelParser();
         try {
@@ -375,6 +369,10 @@ public class Level {
         } catch(Exception e) {
             System.out.println("oops dude");
         }
+
+        threeStars = (int)parser.getStarTime(currentLevel, 2);
+        twoStars = (int)parser.getStarTime(currentLevel, 1);
+        oneStar = (int)parser.getStarTime(currentLevel, 0);
 
         float dwidth;
         float dheight;
@@ -397,6 +395,7 @@ public class Level {
         dwidth = 80 / (scale.x * 2);
 
         tmp = parser.getAssetList(currentLevel, "Player");
+
         int facing = parser.getPlayerInitialOrientation(currentLevel);
         for(int i = 0; i < tmp.size(); i++) {
             float x = (tmp.get(i)).x;

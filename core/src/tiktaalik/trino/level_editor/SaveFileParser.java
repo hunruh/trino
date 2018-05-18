@@ -32,27 +32,27 @@ public class SaveFileParser {
         return results;
     }
 
-    public int[] levelScoreArray(){
-        int[] results = new int[levels.size()];
+    public long[] levelScoreArray(){
+        long[] results = new long[levels.size()];
         for (int i = 0; i < levels.size(); i++){
-            results[i] = (Integer)((JSONObject)(levels.get(i))).get("Score");
+            results[i] = (Long)((JSONObject)(levels.get(i))).get("Score");
         }
         return results;
     }
 
 
-    public int[] levelTimeArray(){
-        int[] results = new int[levels.size()];
+    public long[] levelTimeArray(){
+        long[] results = new long[levels.size()];
         for (int i = 0; i < levels.size(); i++){
-            results[i] = (Integer)((JSONObject)(levels.get(i))).get("Time");
+            results[i] = (Long)((JSONObject)(levels.get(i))).get("Time");
         }
         return results;
     }
 
-    public int[] levelStarsArray(){
-        int[] results = new int[levels.size()];
+    public long[] levelStarsArray(){
+        long[] results = new long[levels.size()];
         for (int i = 0; i < levels.size(); i++){
-            results[i] = (Integer)((JSONObject)(levels.get(i))).get("Stars");
+            results[i] = ((Long)((JSONObject)(levels.get(i))).get("Stars"));
         }
         return results;
     }

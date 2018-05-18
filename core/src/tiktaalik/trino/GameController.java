@@ -2063,6 +2063,17 @@ public class GameController implements ContactListener, Screen {
 			readyForSwing = false;
 			try {saveFileParser.parse("jsons/save.json"); }
 			catch(Exception e){System.out.println("wow i fucked up");}
+			int stars;
+			if (level.getStars(2) <= totalTime){stars = 3;}
+			else if (level.getStars(1) <= totalTime){stars = 2;}
+			else {stars = 1;}
+
+			if(saveFileParser.levelStarsArray()[currentLevel] < stars){
+				saveFileParser.changeLevelStars(currentLevel,stars);
+			}
+			saveFileParser.changeLevelCompletion(currentLevel, true);
+			try {saveFileParser.writeToFile("jsons/save.json"); }
+			catch(Exception e){System.out.println("wow i fucked up pt 2");}
 
 			
 

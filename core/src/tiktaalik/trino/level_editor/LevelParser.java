@@ -84,6 +84,16 @@ public class LevelParser {
         return tmp;
     }
 
+    public long getStarTime(int level, int star){
+        JSONObject tmp = (JSONObject)((JSONObject)(levels.get(level))).get("Stars");
+        if (star == 2)
+            return (Long)((tmp.get("three")));
+        else if (star == 1)
+            return (Long)(tmp.get("two"));
+        else
+            return (Long)(tmp.get("one"));
+    }
+
 
 
 
