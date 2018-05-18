@@ -84,4 +84,17 @@ public class SaveFileParser {
         writer.close();
 
     }
+
+    public void clearLevel(int level){
+        changeLevelCompletion(level, false);
+        changeLevelScore(level, 0);
+        changeLevelTime(level, 0);
+        changeLevelStars(level, 0);
+    }
+
+    public void clearAll(){
+        for (int i = 0; i < levels.size(); i++){
+            clearLevel(i);
+        }
+    }
 }
