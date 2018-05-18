@@ -1814,12 +1814,14 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("dead"), 478, 233);
 				canvas.end();
 				if (InputHandler.getInstance().didDone()) {
+                    SoundController.getInstance().playClick();
 					menuNum = 1;
 					resetCamera();
 					listener.exitScreen(this, 0);
 					menuNum = 0;
 				}
 				else if (InputHandler.getInstance().didRestartLevel()) {
+                    SoundController.getInstance().playClick();
 					SoundController.getInstance().playClick();
 					menuNum = 0;
 					reset();
@@ -1835,12 +1837,14 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("dead"), 478, 233);
 				canvas.end();
 				if (InputHandler.getInstance().didDone()) {
+                    SoundController.getInstance().playClick();
 					menuNum = 1;
 					resetCamera();
 					listener.exitScreen(this, 0);
 					menuNum = 0;
 				}
 				else if (InputHandler.getInstance().didRestartLevel()) {
+                    SoundController.getInstance().playClick();
 					SoundController.getInstance().playClick();
 					menuNum = 0;
 					reset();
@@ -1913,10 +1917,6 @@ public class GameController implements ContactListener, Screen {
 						listener.exitScreen(this, 0);
 						menuNum = 0;
 					}
-					else if (InputHandler.getInstance().didHelp()) {
-						SoundController.getInstance().playClick();
-						menuNum = 2;
-					}
 					else if (InputHandler.getInstance().didRestart()) {
 						SoundController.getInstance().playClick();
 						menuNum = 0;
@@ -1942,101 +1942,6 @@ public class GameController implements ContactListener, Screen {
 						soundState = !soundState;
 					}
 				}
-				if (menuNum == 2) {
-					canvas.beginOverlay();
-					canvas.draw(textureDict.get("helpMenu"), 313, 111);
-					canvas.draw(textureDict.get("exit"), 892, 493);
-					canvas.draw(textureDict.get("dollForm"), 411, 223);
-					canvas.draw(textureDict.get("herbivoreForm"), 576, 223);
-					canvas.draw(textureDict.get("carnivoreForm"), 761, 223);
-					canvas.draw(textureDict.get("dollIcon"), 388, 279);
-					canvas.draw(textureDict.get("herbivoreIcon"), 609, 274);
-					canvas.draw(textureDict.get("carnivoreIcon"), 786, 276);
-					canvas.draw(textureDict.get("selectText"), 430, 451);
-					canvas.end();
-					if (InputHandler.getInstance().didExitButton()) {
-						menuNum = 0;
-					}
-					else if (InputHandler.getInstance().didDollHelp()) {
-						menuNum = 7;
-					}
-					else if (InputHandler.getInstance().didHerbivoreHelp()) {
-						menuNum = 8;
-					}
-					else if (InputHandler.getInstance().didCarnivoreHelp()) {
-						menuNum = 9;
-					}
-				}
-				if (menuNum == 7) {
-					canvas.beginOverlay();
-					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
-					canvas.draw(textureDict.get("exit"), 892, 493);
-					canvas.draw(textureDict.get("dollIcon"), 399, 257);
-					canvas.draw(textureDict.get("dollHeader"),494, 479);
-					canvas.draw(textureDict.get("pressText"), 536, 390);
-					canvas.draw(textureDict.get("pressText"), 533, 315);
-					canvas.draw(textureDict.get("holdText"), 537, 229);
-					canvas.draw(textureDict.get("oneKey"), 612, 378);
-					canvas.draw(textureDict.get("spaceKey"), 612, 307);
-					canvas.draw(textureDict.get("spaceKey"), 598, 221);
-					canvas.draw(textureDict.get("dollTransform"), 681, 378);
-					canvas.draw(textureDict.get("eat"), 760, 315);
-					canvas.draw(textureDict.get("dollResource"), 951, 280);
-					canvas.draw(textureDict.get("dollText"), 747, 209);
-					canvas.draw(textureDict.get("dollSpecial"), 854, 203);
-					canvas.end();
-
-					if (InputHandler.getInstance().didExitButton()) {
-						menuNum = 0;
-					}
-				}
-				if (menuNum == 8) {
-					canvas.beginOverlay();
-					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
-					canvas.draw(textureDict.get("exit"), 892, 493);
-					canvas.draw(textureDict.get("herbivoreIcon"), 420, 257);
-					canvas.draw(textureDict.get("herbivoreHeader"),448, 456);
-					canvas.draw(textureDict.get("pressText"), 535, 390);
-					canvas.draw(textureDict.get("pressText"), 533, 315);
-					canvas.draw(textureDict.get("holdText"), 536, 229);
-					canvas.draw(textureDict.get("twoKey"), 612, 378);
-					canvas.draw(textureDict.get("spaceKey"), 612, 307);
-					canvas.draw(textureDict.get("spaceKey"), 598, 221);
-					canvas.draw(textureDict.get("herbivoreTransform"), 671, 377);
-					canvas.draw(textureDict.get("eat"), 758, 315);
-					canvas.draw(textureDict.get("herbivoreResource"), 851, 283);
-					canvas.draw(textureDict.get("herbivoreText"),737, 207);
-					canvas.draw(textureDict.get("herbivoreSpecial"), 844, 208);
-					canvas.end();
-
-					if (InputHandler.getInstance().didExitButton()) {
-						System.out.println("presesd");
-						menuNum = 0;
-					}
-				}
-				if (menuNum == 9) {
-					canvas.beginOverlay();
-					canvas.draw(textureDict.get("pauseMenu"), 313, 111);
-					canvas.draw(textureDict.get("exit"), 892, 493);
-					canvas.draw(textureDict.get("herbivoreIcon"), 408, 257);
-					canvas.draw(textureDict.get("herbivoreHeader"),449, 479);
-					canvas.draw(textureDict.get("pressText"), 536, 390);
-					canvas.draw(textureDict.get("pressText"), 533, 315);
-					canvas.draw(textureDict.get("holdText"), 537, 229);
-					canvas.draw(textureDict.get("twoKey"), 612, 378);
-					canvas.draw(textureDict.get("spaceKey"), 612, 307);
-					canvas.draw(textureDict.get("spaceKey"), 598, 221);
-					canvas.draw(textureDict.get("herbivoreTransform"), 674, 377);
-					canvas.draw(textureDict.get("eat"), 759, 315);
-					canvas.draw(textureDict.get("herbivoreResource"), 846, 286);
-					canvas.draw(textureDict.get("herbivoreText"),746, 210);
-					canvas.draw(textureDict.get("herbivoreSpecial"), 842, 210);
-					canvas.end();
-
-					if (InputHandler.getInstance().didExitButton()) {
-						menuNum = 0;
-					}
-			}
 		}
 
 	}

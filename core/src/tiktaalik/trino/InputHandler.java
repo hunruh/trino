@@ -146,17 +146,6 @@ public class InputHandler {
 	}
 
 	/**
-	 * Return true if the help button was pressed.
-	 *
-	 * @return true if the help button was pressed.
-	 */
-	public boolean didHelp() {
-		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 596) && (Gdx.input.getX() <= 686)) &&
-				((Gdx.input.getY() >= 365) && (Gdx.input.getY() <= 401));
-	}
-
-	/**
 	 * Return true if the restart button was pressed.
 	 *
 	 * @return true if the restart button was pressed.
@@ -198,17 +187,6 @@ public class InputHandler {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
 				((Gdx.input.getX() >= 678) && (Gdx.input.getX() <= 762)) &&
 				((Gdx.input.getY() >= 235) && (Gdx.input.getY() <= 287));
-	}
-
-	/**
-	 * Return true if the exit button was pressed.
-	 *
-	 * @return true if the exit button was pressed.
-	 */
-	public boolean didExitButton() {
-		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 892) && (Gdx.input.getX() <= 932)) &&
-				((Gdx.input.getY() >= 493) && (Gdx.input.getY() <= 534));
 	}
 
 	/**
@@ -272,39 +250,6 @@ public class InputHandler {
         }
         return -1;
     }
-
-	/**
-	 * Return true if the doll button was pressed.
-	 *
-	 * @return true if the doll button was pressed.
-	 */
-	public boolean didDollHelp() {
-		return (!helpPrevious && !mousePrevious && mousePressed && !actionPrevious
-				&& ((Gdx.input.getX() >= 388) && (Gdx.input.getX() <= 487)) &&
-				((Gdx.input.getY() >= 233) && (Gdx.input.getY() <= 398)));
-	}
-
-	/**
-	 * Return true if the herbivore button was pressed.
-	 *
-	 * @return true if the herbivore button was pressed.
-	 */
-	public boolean didHerbivoreHelp() {
-		return (!helpPrevious && !mousePressed
-				&& ((Gdx.input.getX() >= 576) && (Gdx.input.getX() <= 705)) &&
-				((Gdx.input.getY() >= 233) && (Gdx.input.getY() <= 401)));
-	}
-
-	/**
-	 * Return true if the carnivore button was pressed.
-	 *
-	 * @return true if the carnivore button was presesd.
-	 */
-	public boolean didCarnivoreHelp() {
-		return (!helpPrevious && !mousePrevious && mousePressed && !actionPrevious
-				&& ((Gdx.input.getX() >= 761) && (Gdx.input.getX() <= 892)) &&
-				((Gdx.input.getY() >= 221) && (Gdx.input.getY() <= 398)));
-	}
 
 	public boolean didTransformDoll(){
 		return dollFormPressed;
