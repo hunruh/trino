@@ -279,6 +279,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String TUT_ONE_B = "tutorial/move2.png";
 	private static final String TUT_ONE_C = "tutorial/cloneDrop1.png";
 	private static final String TUT_ONE_D = "tutorial/cloneDrop2.png";
+	private static final String TUT_ONE_E = "tutorial/goalDoorTutorial1.png";
+	private static final String TUT_ONE_F = "tutorial/goalDoorTutorial2.png";
 	private static final String TUT_TWO_A = "tutorial/dollPickUpCotton1.png";
 	private static final String TUT_TWO_B = "tutorial/dollPickUpCotton2.png";
 	private static final String TUT_TWO_C = "tutorial/herbRiver1.png";
@@ -883,6 +885,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(TUT_ONE_C);
 		manager.load(TUT_ONE_D, Texture.class);
 		assets.add(TUT_ONE_D);
+		manager.load(TUT_ONE_E, Texture.class);
+		assets.add(TUT_ONE_E);
+		manager.load(TUT_ONE_F, Texture.class);
+		assets.add(TUT_ONE_F);
 		manager.load(TUT_TWO_A, Texture.class);
 		assets.add(TUT_TWO_A);
 		manager.load(TUT_TWO_B, Texture.class);
@@ -1081,6 +1087,8 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("1b", createTexture(manager, TUT_ONE_B, false));
 		textureDict.put("1c", createTexture(manager, TUT_ONE_C, false));
 		textureDict.put("1d", createTexture(manager, TUT_ONE_D, false));
+		textureDict.put("1e", createTexture(manager, TUT_ONE_E, false));
+		textureDict.put("1f", createTexture(manager, TUT_ONE_F, false));
 		textureDict.put("2a", createTexture(manager, TUT_TWO_A, false));
 		textureDict.put("2b", createTexture(manager, TUT_TWO_B, false));
 		textureDict.put("2c", createTexture(manager, TUT_TWO_C, false));
@@ -1638,14 +1646,16 @@ public class GameController implements ContactListener, Screen {
 			canvas.beginOverlay();
 			if ((seconds % 4 >= 2)) {
 				canvas.draw(textureDict.get("1a"), 35, 260);
-				canvas.draw(textureDict.get("1c"), 1000, 260);
+				canvas.draw(textureDict.get("1c"), 1000, 150);
+				canvas.draw(textureDict.get("1e"), 1000, 360);
 			}
 			else {
 				canvas.draw(textureDict.get("1b"), 35, 260);
-				canvas.draw(textureDict.get("1d"), 1000, 260);
+				canvas.draw(textureDict.get("1d"), 1000, 150);
+				canvas.draw(textureDict.get("1f"), 1000, 360);
 			}
 
-			canvas.drawText("Hold Till Green!", tutorialFont, 1030,280);
+			canvas.drawText("Hold Till Green!", tutorialFont, 1030,170);
 			canvas.end();
 		}
 
@@ -1720,13 +1730,15 @@ public class GameController implements ContactListener, Screen {
         else if (currentLevel == 6) {
             canvas.beginOverlay();
             if ((seconds % 4 >= 2)) {
-                canvas.draw(textureDict.get("7a"), 35, 260);
+                canvas.draw(textureDict.get("7a"), 35, 220);
                 canvas.draw(textureDict.get("7c"), 920, 180);
             }
             else {
-                canvas.draw(textureDict.get("7b"), 35, 260);
+                canvas.draw(textureDict.get("7b"), 35, 220);
 				canvas.draw(textureDict.get("7d"), 920, 180);
             }
+			canvas.drawText("Charge to Move", tutorialFont, 70, 500);
+            canvas.drawText("Boulders!", tutorialFont, 97, 470);
 			canvas.drawText("Collect 3 to Transform!", tutorialFont, 975, 500);
             canvas.end();
         }
