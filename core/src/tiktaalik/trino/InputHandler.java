@@ -211,7 +211,40 @@ public class InputHandler {
 				((Gdx.input.getY() >= 493) && (Gdx.input.getY() <= 534));
 	}
 
-    /**
+	/**
+	 *
+	 * Return true if main menu button is pressed after level is over.
+	 *
+	 * @return true if the main menu button is pressed after level is over.
+	 */
+	public boolean didDone() {
+		return ((Gdx.input.getX() >= 700) && (Gdx.input.getX() <= 868)) &&
+				((Gdx.input.getY() >= 506) && (Gdx.input.getY() <= 535));
+	}
+
+	/**
+	 *
+	 * Return true if restart level button is pressed after level is over.
+	 *
+	 * @return true if the restart level button is pressed after level is over.
+	 */
+	public boolean didRestartLevel() {
+		return ((Gdx.input.getX() >= 422) && (Gdx.input.getX() <= 555)) &&
+				((Gdx.input.getY() >= 506) && (Gdx.input.getY() <= 535));
+	}
+
+	/**
+	 *
+	 * Return true if next level button is pressed after level is over.
+	 *
+	 * @return true if the next level button is pressed after level is over.
+	 */
+	public boolean didNextLevel() {
+		return (mousePressed && (Gdx.input.getX() >= 758) && (Gdx.input.getX() <= 837)) &&
+				((Gdx.input.getY() >= 506) && (Gdx.input.getY() <= 535));
+	}
+
+	/**
      * Return the UI element that is being hovered over.
      *
      * @return the UI element that is being hovered over.
