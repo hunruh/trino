@@ -600,10 +600,13 @@ public abstract class Dinosaur extends GameObject {
                 animeframe -= numFrames[direction];
             }
 
-            if (getLinearVelocity().len2() == 0 && animeframe < 1) {
+            if (getLinearVelocity().len2() == 0 && (int)animeframe == 0) {
                 idle = true;
                 animeframe = 0;
             }
+        } else if (getLinearVelocity().len2() == 0 && (int)animeframe == 0) {
+            idle = true;
+            animeframe = 0;
         }
 
         if (shadowOpacity < 1.0f && !transform) {
