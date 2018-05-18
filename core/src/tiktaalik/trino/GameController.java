@@ -48,10 +48,11 @@ public class GameController implements ContactListener, Screen {
 	private Array<String> assets; // Track all loaded assets (for unloading purposes)
 
 	// Sounds files
-	private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
-	private static String TUTORIAL_FONT_FILE = "hud/silom/SilomBol.ttf";
-	private static int FONT_SIZE = 64;
-	private static int TUTORIAL_FONT_SIZE = 26;
+	private static String FONT_FILE = "hud/gyparody/gyparody hv.ttf";
+	private static String TUTORIAL_FONT_FILE = "hud/gyparody/gyparody hv.ttf";
+//	private static String TUTORIAL_FONT_FILE = "hud/silom/SilomBol.ttf";
+	private static int FONT_SIZE = 25;
+	private static int TUTORIAL_FONT_SIZE = 12;
 
 	// Texture files
 	private static final String BACKGROUND_FILE = "trino/background.png";
@@ -183,6 +184,8 @@ public class GameController implements ContactListener, Screen {
 	private static final String FISH_1_FILE = "trino/fish1.png";
 	private static final String FISH_2_FILE = "trino/fish2.png";
 	private static final String FISH_3_FILE = "trino/fish3.png";
+	private static final String LEAF_1_FILE = "trino/leaf1.png";
+	private static final String LEAF_2_FILE = "trino/leaf2.png";
 	private static final String WALL_FILE = "trino/wall_long.png";
 	private static final String WALL_2_FILE = "trino/wall2.png";
 	private static final String WALL_3_FILE = "trino/wall3.png";
@@ -436,10 +439,10 @@ public class GameController implements ContactListener, Screen {
 		manager.load(FONT_FILE, BitmapFont.class, size2Params);
 		assets.add(FONT_FILE);
 
-		size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-		size2Params.fontFileName = TUTORIAL_FONT_FILE;
-		size2Params.fontParameters.size = TUTORIAL_FONT_SIZE;
-		manager.load(TUTORIAL_FONT_FILE, BitmapFont.class, size2Params);
+		FreetypeFontLoader.FreeTypeFontLoaderParameter size2ParamsTutorial = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		size2ParamsTutorial.fontFileName = TUTORIAL_FONT_FILE;
+		size2ParamsTutorial.fontParameters.size = TUTORIAL_FONT_SIZE;
+		manager.load(TUTORIAL_FONT_FILE, BitmapFont.class, size2ParamsTutorial);
 		assets.add(TUTORIAL_FONT_FILE);
 
 		// Load textures
@@ -719,6 +722,10 @@ public class GameController implements ContactListener, Screen {
 		assets.add(FISH_2_FILE);
 		manager.load(FISH_3_FILE, Texture.class);
 		assets.add(FISH_3_FILE);
+		manager.load(LEAF_1_FILE, Texture.class);
+		assets.add(LEAF_1_FILE);
+		manager.load(LEAF_2_FILE, Texture.class);
+		assets.add(LEAF_2_FILE);
 		manager.load(PATH_FILE, Texture.class);
 		assets.add(PATH_FILE);
 		manager.load(SWITCH_FILE, Texture.class);
@@ -996,6 +1003,8 @@ public class GameController implements ContactListener, Screen {
 		textureDict.put("fish1", createTexture(manager, FISH_1_FILE, false));
 		textureDict.put("fish2", createTexture(manager, FISH_2_FILE, false));
 		textureDict.put("fish3", createTexture(manager, FISH_3_FILE, false));
+		textureDict.put("leaf1", createTexture(manager, LEAF_1_FILE, false));
+		textureDict.put("leaf2", createTexture(manager, LEAF_2_FILE, false));
 		textureDict.put("wall", createTexture(manager,WALL_FILE,false));
 		textureDict.put("wall2", createTexture(manager,WALL_2_FILE,false));
 		textureDict.put("wall3", createTexture(manager,WALL_3_FILE,false));
@@ -1657,7 +1666,7 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("1d"), 1000, 260);
 			}
 
-			canvas.drawText("Hold Till Green!", tutorialFont, 1030,275);
+			canvas.drawText("Hold Till Green!", tutorialFont, 1030,280);
 			canvas.end();
 		}
 
@@ -1674,7 +1683,7 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("2d"), 1000, 260);
 			}
 
-			canvas.drawText("Collect 3 to Transform!", tutorialFont, 30,410);
+			canvas.drawText("Collect 3 to Transform!", tutorialFont, 20,410);
 			canvas.drawText("Herbivore Form", tutorialFont, 1020,475);
 			canvas.drawText("Can Cross Rivers!", tutorialFont, 1010,435);
 			canvas.end();
@@ -1702,6 +1711,7 @@ public class GameController implements ContactListener, Screen {
 			else {
 				canvas.draw(textureDict.get("4b"), 35, 220);
 			}
+
 			canvas.drawText("Camouflage to", tutorialFont, 75, 510);
 			canvas.drawText("Evade Enemies!", tutorialFont, 70, 480);
 			canvas.end();
@@ -1717,8 +1727,14 @@ public class GameController implements ContactListener, Screen {
                 canvas.draw(textureDict.get("6d"), 1000, 220);
             }
 			canvas.drawText("Charge at Enemies", tutorialFont, 55, 500);
-			canvas.drawText("to Stun Them!", tutorialFont, 80, 470);
-			canvas.drawText("Eat Only Stunned", tutorialFont, 1025, 500);
+			canvas.drawText("to             Them!", tutorialFont, 80, 470);
+			tutorialFont.setColor(Color.GOLD);
+			canvas.drawText("Stun", tutorialFont, 120, 470);
+			tutorialFont.setColor(Color.WHITE);
+			canvas.drawText("Eat Only", tutorialFont, 1020, 500);
+			tutorialFont.setColor(Color.GOLD);
+			canvas.drawText("Stunned", tutorialFont, 1130, 500);
+			tutorialFont.setColor(Color.WHITE);
 			canvas.drawText("Enemies!", tutorialFont, 1075,470 );
             canvas.end();
         }
@@ -1774,9 +1790,7 @@ public class GameController implements ContactListener, Screen {
 
 
 		if (state == GAME_OVER) {
-			displayFont.setColor(Color.YELLOW);
 			if (complete && !failed) {
-				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
 				canvas.draw(textureDict.get("pauseMenu"),313, 111);
 				canvas.draw(textureDict.get("restartLevel"),422, 184);
@@ -1810,7 +1824,6 @@ public class GameController implements ContactListener, Screen {
 
 			}
 			else if (failed && !complete) {
-				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
 				canvas.draw(textureDict.get("pauseMenu"),313, 111);
 				canvas.draw(textureDict.get("gameover"),543,474);
@@ -1833,7 +1846,6 @@ public class GameController implements ContactListener, Screen {
 				}
 			}
 			else if (timeOut) {
-				displayFont.setColor(Color.RED);
 				canvas.beginOverlay();
 				canvas.draw(textureDict.get("pauseMenu"),313, 111);
 				canvas.draw(textureDict.get("timeout"),557,474);
@@ -1858,7 +1870,6 @@ public class GameController implements ContactListener, Screen {
 		}
 
 		if (state == GAME_PAUSED) {
-				displayFont.setColor(Color.YELLOW);
 				if (menuNum == 0) {
 					canvas.beginOverlay();
 					canvas.draw(textureDict.get("grayOut"), -9, 0);
@@ -2062,7 +2073,7 @@ public class GameController implements ContactListener, Screen {
 			swingAnimeFrame = 0;
 			readyForSwing = false;
 			try {saveFileParser.parse("jsons/save.json"); }
-			catch(Exception e){System.out.println("wow i fucked up");}
+			catch(Exception e){System.out.println("wow i messed up");}
 			int stars;
 			if (level.getStars(2) <= totalTime){stars = 3;}
 			else if (level.getStars(1) <= totalTime){stars = 2;}
@@ -3388,6 +3399,8 @@ public class GameController implements ContactListener, Screen {
 		fireFlyControls = null;
 		world = null;
 		canvas = null;
+		displayFont = null;
+		tutorialFont = null;
 	}
 
 	/** Unused Screen method */

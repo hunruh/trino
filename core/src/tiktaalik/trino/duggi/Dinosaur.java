@@ -582,7 +582,7 @@ public abstract class Dinosaur extends GameObject {
                 idle = true;
                 animeframe = 0;
             }
-        } else if (idle && getLinearVelocity().len2() == 0 && canBeSeen) {
+        } else if (idle && getLinearVelocity().len2() == 0 && canBeSeen && !isSwimming) {
             animeframe += ANIMATION_SPEED;
             if (animeframe >= numFrames[direction + 17]) {
                 animeframe -= numFrames[direction + 17];
@@ -649,7 +649,7 @@ public abstract class Dinosaur extends GameObject {
             filmStripItem += 8;
         else if (eating)
             filmStripItem += 12;
-        else if (idle && canBeSeen)
+        else if (idle && canBeSeen && !isSwimming)
             filmStripItem += 17;
 
         if (transform|| endTransform){

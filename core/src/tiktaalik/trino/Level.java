@@ -776,7 +776,7 @@ public class Level {
                 // Add rocks
                 if (((River) g).getRock() == null && ((River)g).getHasRockOnit()){
                     TextureRegion rock;
-                    int random = MathUtils.random(5);
+                    int random = MathUtils.random(12);
                     if (random == 0){
                         rock = textureDict.get("rock1");
                     }
@@ -785,6 +785,27 @@ public class Level {
                     }
                     else if (random == 2) {
                         rock = textureDict.get("rock3");
+                    }
+                    else if (random == 3 || random == 4){
+                        int randomFish = MathUtils.random(2);
+                        if (randomFish == 0){
+                            rock = textureDict.get("fish1");
+                        }
+                        else if (randomFish == 1){
+                            rock = textureDict.get("fish2");
+                        }
+                        else{
+                            rock = textureDict.get("fish3");
+                        }
+                    }
+                    else if (random == 5 || random == 6){
+                        int randomLeaf = MathUtils.random(1);
+                        if (randomLeaf == 0){
+                            rock = textureDict.get("leaf1");
+                        }
+                        else{
+                            rock = textureDict.get("leaf2");
+                        }
                     }
                     else {
                         rock = textureDict.get("watershine");
