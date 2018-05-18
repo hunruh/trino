@@ -29,6 +29,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String BLACK_BACKGROUND_FILE = "trino/blackBackground.png";
 	private static final String WHITE_BACKGROUND_FILE = "trino/whiteBackground.png";
 	private static final String LEVEL_BUTTON_FILE = "trino/wood.png";
+	private static final String ARROW_LEFT = "trino/left_arrow.png";
+	private static final String ARROW_RIGHT = "trino/right_arrow.png";
 	private static final String CLICK_SOUND_FILE = "trino/click.mp3";
     private static String FONT_FILE = "hud/gyparody/gyparody rg.ttf";
     private static int FONT_SIZE = 64;
@@ -52,6 +54,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private float animeFrame;
 	private Texture duggiWalking;
 	private Texture levelButton;
+	private Texture arrowLeft;
+	private Texture arrowRight;
 	private Vector2[] levelButtonPositions;
 	private Sound click;
 
@@ -203,6 +207,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 loadingText.dispose();
 		 duggiWalking.dispose();
 		 levelButton.dispose();
+		 arrowLeft.dispose();
+		 arrowRight.dispose();
 		 studioLogo.dispose();
 		 click.dispose();
 		 blackBackground = null;
@@ -214,6 +220,8 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 loadingText = null;
 		 duggiWalking = null;
 		 levelButton = null;
+		 arrowLeft = null;
+		 arrowRight = null;
 		 click = null;
 		 if (playButton != null) {
 			 playButton.dispose();
@@ -297,6 +305,9 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
                     levelButton = new Texture(LEVEL_BUTTON_FILE);
                     levelButtonPositions = new Vector2[20];
+
+                    arrowLeft = new Texture(ARROW_LEFT);
+                    arrowRight = new Texture(ARROW_RIGHT);
 
                     // Load the click sound
 					click = Gdx.audio.newSound(Gdx.files.internal(CLICK_SOUND_FILE));
@@ -412,7 +423,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				// Draw the level buttons
 				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
 						xCurrent, yCurrent, 0,0.50f,0.50f );
-				canvas.drawText(""+(i+1),displayFont,xCurrent-15f,yCurrent+15f);
+				canvas.drawText("LEVEL "+(i+1),displayFont,xCurrent-70f,yCurrent+15f);
 				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
 
 				xCurrent += size;
@@ -430,7 +441,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				// Draw the level buttons
 				canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
 						xCurrent, yCurrent, 0,0.50f,0.50f );
-				canvas.drawText(""+(i+1),displayFont,xCurrent-15f,yCurrent+15f);
+				canvas.drawText("LEVEL"+(i+1),displayFont,xCurrent-70f,yCurrent+15f);
 				levelButtonPositions[i] = new Vector2(xCurrent,yCurrent);
 
 				xCurrent += size;
@@ -445,21 +456,28 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
         // Draw the mainmenu button
 		// Draw the level buttons
-		canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-				1400, 720, 0,0.50f,0.50f );
-		canvas.drawText("BACK",displayFont,1350f,715f);
 
-		canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-				2440, 720, 0,0.50f,0.50f );
-		canvas.drawText("NEXT",displayFont,2390f,715f);
+		if (onLevelSelectScreen){
+			canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+					1400, 720, 0,0.50f,0.50f );
+			canvas.drawText("MENU",displayFont,1340f,715f);
 
-		canvas.drawText("LEVEL SELECT", displayFont, 1800, 715);
+			canvas.draw(arrowLeft, Color.WHITE, arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
+					1340, 360, 0,1f,1f );
 
-		canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-				2680, 720, 0,0.50f,0.50f );
-		canvas.drawText("BACK",displayFont,2630,715f);
+			canvas.draw(arrowRight, Color.WHITE, arrowRight.getWidth()/2,arrowRight.getHeight()/2,
+					2500, 360, 0,1f,1f );
+		}
 
-		canvas.drawText("LEVEL SELECT", displayFont, 3080, 715);
+		if (onLevelSelectScreen2){
+			canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
+					2680, 720, 0,0.50f,0.50f );
+			canvas.drawText("MENU",displayFont,2620f,715f);
+
+			canvas.draw(arrowLeft, Color.WHITE, arrowLeft.getWidth()/2,arrowLeft.getHeight()/2,
+					2620, 360, 0,1f,1f );
+
+		}
 
     }
 
@@ -584,7 +602,13 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                     playClick();
                 }
 
-				if (screenX > 1030f && screenX < 1280f && screenY > 680 && screenY < 720){
+				if (screenX > 33f && screenX < 87f && screenY > 325 && screenY < 396){
+					panningToMainMenu = true;
+					onLevelSelectScreen = false;
+					playClick();
+				}
+
+				if (screenX > 1193f && screenX < 1220f && screenY > 325 && screenY < 396){
 					panningToLevelSelect2 = true;
 					onLevelSelectScreen = false;
 					playClick();
@@ -596,6 +620,11 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				//System.out.println("screenY is " +screenY);
 				// Check if main menu in level select is pressed
 				if (screenX > 0f && screenX < 250f && screenY > 680 && screenY < 720){
+					panningToMainMenu = true;
+					onLevelSelectScreen2 = false;
+					playClick();
+				}
+				if (screenX > 33f && screenX < 87f && screenY > 325 && screenY < 396){
 					panningToLevelSelectFromLevelSelect2 = true;
 					onLevelSelectScreen2 = false;
 					playClick();
