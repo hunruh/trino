@@ -1658,7 +1658,7 @@ public class GameController implements ContactListener, Screen {
 				canvas.draw(textureDict.get("1d"), 1000, 260);
 			}
 
-			canvas.drawText("Hold Till Green!", tutorialFont, 1030,275);
+			canvas.drawText("Hold Till Green!", tutorialFont, 1030,280);
 			canvas.end();
 		}
 
