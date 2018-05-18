@@ -141,7 +141,7 @@ public class InputHandler {
  	 */
 	public boolean didReturn() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 525) && (Gdx.input.getX() <= 725)) &&
+				((Gdx.input.getX() >= 541) && (Gdx.input.getX() <= 741)) &&
 				((Gdx.input.getY() >= 299) && (Gdx.input.getY() <= 335));
 	}
 
@@ -152,7 +152,7 @@ public class InputHandler {
 	 */
 	public boolean didHelp() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 580) && (Gdx.input.getX() <= 670)) &&
+				((Gdx.input.getX() >= 596) && (Gdx.input.getX() <= 686)) &&
 				((Gdx.input.getY() >= 365) && (Gdx.input.getY() <= 401));
 	}
 
@@ -163,7 +163,7 @@ public class InputHandler {
 	 */
 	public boolean didRestart() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 546) && (Gdx.input.getX() <= 703)) &&
+				((Gdx.input.getX() >= 562) && (Gdx.input.getX() <= 719)) &&
 				((Gdx.input.getY() >= 432) && (Gdx.input.getY() <= 467));
 	}
 
@@ -174,7 +174,7 @@ public class InputHandler {
 	 */
 	public boolean didResume() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 553) && (Gdx.input.getX() <= 698)) &&
+				((Gdx.input.getX() >= 569) && (Gdx.input.getX() <= 714)) &&
 				((Gdx.input.getY() >= 497) && (Gdx.input.getY() <= 533));
 	}
 
@@ -185,7 +185,7 @@ public class InputHandler {
 	 */
 	public boolean didMusic() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 509) && (Gdx.input.getX() <= 593)) &&
+				((Gdx.input.getX() >= 525) && (Gdx.input.getX() <= 609)) &&
 				((Gdx.input.getY() >= 217) && (Gdx.input.getY() <= 269));
 	}
 
@@ -196,7 +196,7 @@ public class InputHandler {
 	 */
 	public boolean didSound() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 656) && (Gdx.input.getX() <= 740)) &&
+				((Gdx.input.getX() >= 672) && (Gdx.input.getX() <= 756)) &&
 				((Gdx.input.getY() >= 217) && (Gdx.input.getY() <= 269));
 	}
 
@@ -207,8 +207,8 @@ public class InputHandler {
 	 */
 	public boolean didExitButton() {
 		return ((!pausePressed && pausePrevious) || !mousePrevious) && mousePressed &&
-				((Gdx.input.getX() >= 872) && (Gdx.input.getX() <= 912)) &&
-				((Gdx.input.getY() >= 186) && (Gdx.input.getY() <= 227));
+				((Gdx.input.getX() >= 892) && (Gdx.input.getX() <= 932)) &&
+				((Gdx.input.getY() >= 493) && (Gdx.input.getY() <= 534));
 	}
 
     /**
@@ -251,8 +251,8 @@ public class InputHandler {
 	 */
 	public boolean didDollHelp() {
 		return (!helpPrevious && !mousePrevious && mousePressed && !actionPrevious
-				&& ((Gdx.input.getX() >= 213) && (Gdx.input.getX() <= 379)) &&
-				((Gdx.input.getY() >= 221) && (Gdx.input.getY() <= 414)));
+				&& ((Gdx.input.getX() >= 388) && (Gdx.input.getX() <= 487)) &&
+				((Gdx.input.getY() >= 233) && (Gdx.input.getY() <= 398)));
 	}
 
 	/**
@@ -262,8 +262,19 @@ public class InputHandler {
 	 */
 	public boolean didHerbivoreHelp() {
 		return (!helpPrevious && !mousePressed
-				&& ((Gdx.input.getX() >= 597) && (Gdx.input.getX() <= 684)) &&
-				((Gdx.input.getY() >= 226) && (Gdx.input.getY() <= 421)));
+				&& ((Gdx.input.getX() >= 576) && (Gdx.input.getX() <= 705)) &&
+				((Gdx.input.getY() >= 233) && (Gdx.input.getY() <= 401)));
+	}
+
+	/**
+	 * Return true if the carnivore button was pressed.
+	 *
+	 * @return true if the carnivore button was presesd.
+	 */
+	public boolean didCarnivoreHelp() {
+		return (!helpPrevious && !mousePrevious && mousePressed && !actionPrevious
+				&& ((Gdx.input.getX() >= 761) && (Gdx.input.getX() <= 892)) &&
+				((Gdx.input.getY() >= 221) && (Gdx.input.getY() <= 398)));
 	}
 
 	public boolean didTransformDoll(){
