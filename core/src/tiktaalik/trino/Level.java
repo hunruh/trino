@@ -364,8 +364,8 @@ public class Level {
 
         LevelParser parser = new LevelParser();
         try {
-//            parser.parse("/trino/example.json");
-            parser.parse("trino/example.json");
+            parser.parse("/trino/example.json");
+//            parser.parse("trino/example.json");
         } catch(Exception e) {
             System.out.println("oops dude");
         }
@@ -600,7 +600,6 @@ public class Level {
             String sd = dir.get(i)[0];
             String et = dir.get(i)[1];
             if (et.equals("Herbi")) offsetY = 0.4f;
-            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + offsetY, dwidth, i+1);
             int d = 0;
             int type = -1;
             if (sd.equals("Up")) d = 2;
@@ -611,6 +610,7 @@ public class Level {
             if (et.equals("Carni")) type = Enemy.CARNIVORE_ENEMY;
             else if (et.equals("Herbi")) type = Enemy.HERBIVORE_ENEMY;
             else if (et.equals("Unkillable")) type = Enemy.UNKILLABLE_ENEMY;
+            Enemy en = new Enemy(screenToMaze(x), screenToMaze(y) + offsetY, dwidth, i+1, type);
             en.setType(ENEMY);
             en.setDrawScale(scale);
             if (type == Enemy.UNKILLABLE_ENEMY){
@@ -663,7 +663,6 @@ public class Level {
                         filmStripDict.get("herbivoreEnemySwimmingFront"), 8);
             }
             en.setDirection(d);
-            en.setEnemyType(type);
             en.setGridLocation(x,y);
 
             addObject(en);

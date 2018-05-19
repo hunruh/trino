@@ -402,8 +402,8 @@ public class HUDController  {
 //                    canvas.getHeight()/2.0f + 215.0f,0,0.10f,0.10f);
             origin = new Vector2(cloneImage.getRegionWidth()/2.0f, cloneImage.getRegionHeight()/2.0f);
             canvas.draw(cloneBackground,557,631);
-            canvas.draw(fs, color, origin.x, origin.y, 604+cloneImage.getRegionHeight()/8.0f,
-                    649+cloneImage.getRegionHeight()/8.0f,0,0.12f, 0.12f);
+            canvas.draw(fs, color, origin.x, origin.y, 640+cloneImage.getRegionHeight()/8.0f,
+                    685+cloneImage.getRegionHeight()/8.0f,0,1f, 1f);
             canvas.draw(cloneImage, color, origin.x, origin.y, 604+4.5f*cloneImage.getRegionHeight()/10.0f,
                     649+7*cloneImage.getRegionHeight()/10.0f,0,1f,1f);
         }

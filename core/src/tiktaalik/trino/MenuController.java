@@ -208,7 +208,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		displayFont = null;
 		saveFileParser = new SaveFileParser();
 		try {
-			saveFileParser.parse("jsons/save.json");
+			saveFileParser.parse("./save.json");
 		} catch(Exception e) {
 			System.out.println("oops dude");
 		}

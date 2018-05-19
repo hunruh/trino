@@ -13,9 +13,9 @@ public class LevelParser {
     JSONParser parser = new JSONParser();
     JSONArray levels = new JSONArray();
     public void parse(String path) throws Exception{
-//        InputStream in = getClass().getResourceAsStream(path);
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        FileReader reader = new FileReader(path);
+        InputStream in = getClass().getResourceAsStream(path);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//        FileReader reader = new FileReader(path);
         obj = (JSONObject)parser.parse(reader);
         levels = (JSONArray)obj.get("Levels");
     }

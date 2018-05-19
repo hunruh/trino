@@ -54,7 +54,6 @@ public class AIController {
         this.turnAngle = turnAngle;
         this.level = level;
         locationCache = new Vector2();
-        this.enemy.setEnemyType(type);
     }
 
     public void step() {

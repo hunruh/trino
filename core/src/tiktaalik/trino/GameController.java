@@ -2093,7 +2093,7 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_LEVEL_END;
 			swingAnimeFrame = 0;
 			readyForSwing = false;
-			try {saveFileParser.parse("jsons/save.json"); }
+			try {saveFileParser.parse("./save.json"); }
 			catch(Exception e){System.out.println("wow i messed up");}
 			int stars;
 			if (level.getStars(2) <= totalTime){stars = 3;}
@@ -2105,10 +2105,10 @@ public class GameController implements ContactListener, Screen {
 			}
 
 			//for clearing the file
-			saveFileParser.clearAll();
+//			saveFileParser.clearAll();
 
 			saveFileParser.changeLevelCompletion(currentLevel, true);
-			try {saveFileParser.writeToFile("jsons/save.json"); }
+			try {saveFileParser.writeToFile("./save.json"); }
 			catch(Exception e){System.out.println("wow i fucked up pt 2");}
 
 
@@ -2409,8 +2409,8 @@ public class GameController implements ContactListener, Screen {
 			}
 
 			if (InputHandler.getInstance().didTransform() && !isOnRiverTile()) {
-//				if (avatar.canTransform()) {
-				if (true) {
+				if (avatar.canTransform()) {
+//				if (true) {
 					if (InputHandler.getInstance().didTransformDoll() &&
 							avatar.getForm() != Dinosaur.DOLL_FORM) {
 

@@ -79,11 +79,13 @@ public class Enemy extends EdibleObject {
      * @param y  		Initial y position of the avatar center
      * @param radius	The object radius in physics units
      */
-    public Enemy(float x, float y, float radius, int id) {
+    public Enemy(float x, float y, float radius, int id, int type) {
         super(x,y + 0.4f);
         setDensity(100.0f);
         setFriction(0.0f);
         setName("enemy");
+
+        enemyType = type;
 
         shape = new PolygonShape();
         this.radius = radius;
@@ -94,8 +96,13 @@ public class Enemy extends EdibleObject {
             if (ctr >= 16)
                 break;
 
-            vertices[ctr++] = (float)(radius * Math.cos(theta) * .8); // x
-            vertices[ctr++] = (float)(-radius * Math.sin(theta) * .35) - radius/4; // y
+            if (enemyType != HERBIVORE_ENEMY) {
+                vertices[ctr++] = (float) (radius * Math.cos(theta) * .8); // x
+                vertices[ctr++] = (float) (-radius * Math.sin(theta) * .35) - radius / 4; // y
+            } else {
+                vertices[ctr++] = (float) (radius * Math.cos(theta) * .6); // x
+                vertices[ctr++] = (float) (-radius * Math.sin(theta) * .35) - radius / 1.8f; // y
+            }
         }
         shape.set(vertices);
 
@@ -120,8 +127,6 @@ public class Enemy extends EdibleObject {
         }
         alert = assignment;
     }
-
-    public void setEnemyType(int type){enemyType = type;}
 
     public void setController(AIController controller) {
         this.controller = controller;

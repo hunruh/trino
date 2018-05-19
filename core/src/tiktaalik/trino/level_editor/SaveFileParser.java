@@ -19,6 +19,7 @@ public class SaveFileParser {
         FileReader reader = new FileReader(path);
         obj = (JSONObject) parser.parse(reader);
         levels = (JSONArray) obj.get("Levels");
+        reader.close();
     }
 
     public boolean[] levelCompletionArray(){
@@ -77,7 +78,7 @@ public class SaveFileParser {
         System.out.println(obj);
     }
 
-    public void writeToFile(String path) throws Exception{
+    public void writeToFile(String path) throws Exception {
         BufferedWriter writer = new BufferedWriter(new FileWriter(path));
         writer.write(obj.toString());
 
