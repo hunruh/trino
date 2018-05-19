@@ -2093,7 +2093,7 @@ public class GameController implements ContactListener, Screen {
 			state = GAME_LEVEL_END;
 			swingAnimeFrame = 0;
 			readyForSwing = false;
-			try {saveFileParser.parse("./save.json"); }
+			try {saveFileParser.parse("jsons/save.json"); }
 			catch(Exception e){System.out.println("wow i messed up");}
 			int stars;
 			if (level.getStars(2) <= totalTime){stars = 3;}
@@ -2108,7 +2108,7 @@ public class GameController implements ContactListener, Screen {
 //			saveFileParser.clearAll();
 
 			saveFileParser.changeLevelCompletion(currentLevel, true);
-			try {saveFileParser.writeToFile("./save.json"); }
+			try {saveFileParser.writeToFile("jsons/save.json"); }
 			catch(Exception e){System.out.println("wow i fucked up pt 2");}
 
 

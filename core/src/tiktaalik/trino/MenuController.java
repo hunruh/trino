@@ -222,7 +222,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		displayFont = null;
 		saveFileParser = new SaveFileParser();
 		try {
-			saveFileParser.parse("./save.json");
+			saveFileParser.parse("jsons/save.json");
 		} catch(Exception e) {
 			System.out.println("oops dude");
 		}
@@ -1040,6 +1040,26 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 			playPressState = 2;
 			return false;
 		}
+
+		if (keycode == Input.Keys.SPACE) {
+			if (onStoryScreen){
+				ticks = 0;
+				onStoryScreen = false;
+				panningToStory2 = true;
+				return true;
+			}
+
+			if (onStoryScreen2){
+				ticks = 0;
+				onStoryScreen2 = false;
+				levelNum = 1;
+				currState = 2;
+				listener.exitScreen(this, 0);
+				canvas.getCamera().position.set(640, 360, canvas.getCamera().position.z);
+				return true;
+			}
+		}
+
 		return true;
 	}
 

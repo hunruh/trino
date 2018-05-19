@@ -14,7 +14,7 @@ public class SoundController {
     private static String MUSIC_FILE = "trino/doll_bg.mp3";
     private static String HERBIVORE_BG_FILE = "trino/herbivore_bg.mp3";
     private static String CARNIVORE_BG_FILE = "trino/carnivore_bg.mp3";
-    private static String MENU_FILE = "trino/mainMenu.wav";
+    private static String MENU_FILE = "trino/mainMenu.mp3";
     private static String POP_1_FILE = "trino/pop1.mp3";
     private static String POP_2_FILE = "trino/pop2.mp3";
     private static String POP_3_FILE = "trino/pop3.mp3";
@@ -168,6 +168,7 @@ public class SoundController {
             mainMenu.pause();
         }
         if (GDXRoot.musicScreen) {
+            System.out.println("Playing music...");
             mainMenu.setLooping(true);
             mainMenu.setVolume(0.10f);
             mainMenu.play();
