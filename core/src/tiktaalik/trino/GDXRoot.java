@@ -21,6 +21,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private GameController controller; // The game controller
 	public static boolean musicScreen = true;
 	public static boolean shownStudioLogo;
+	public static boolean shownStory;
 
 	public GDXRoot() {
 		manager = new AssetManager();
