@@ -328,6 +328,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				levelNum = 1;
 				currState = 2;
 				listener.exitScreen(this, 0);
+				canvas.getCamera().position.set(640, 360, canvas.getCamera().position.z);
 
 			}
 		}
@@ -837,6 +838,23 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 
 		// Flip to match graphics coordinates
 		screenY = heightY-screenY;
+
+		if (onStoryScreen){
+			ticks = 0;
+			onStoryScreen = false;
+			panningToStory2 = true;
+			return true;
+		}
+
+		if (onStoryScreen2){
+			ticks = 0;
+			onStoryScreen2 = false;
+			levelNum = 1;
+			currState = 2;
+			listener.exitScreen(this, 0);
+			canvas.getCamera().position.set(640, 360, canvas.getCamera().position.z);
+			return true;
+		}
 
 
 
