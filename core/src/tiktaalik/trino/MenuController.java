@@ -31,6 +31,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private static final String BLACK_BACKGROUND_FILE = "trino/blackBackground.png";
 	private static final String WHITE_BACKGROUND_FILE = "trino/whiteBackground.png";
 	private static final String CREDITS_FILE = "trino/credits.png";
+	private static final String STORY_1_FILE = "trino/story1.png";
+	private static final String STORY_2_FILE = "trino/story2.png";
+	private static final String STORY_3_FILE = "trino/story3.png";
+	private static final String STORY_4_FILE = "trino/story4.png";
 	private static final String LEVEL_BUTTON_FILE = "trino/wood.png";
 	private static final String ARROW_LEFT = "trino/left_arrow.png";
 	private static final String ARROW_RIGHT = "trino/right_arrow.png";
@@ -55,6 +59,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private Texture blackBackground; // black background for loading
 	private Texture whiteBackground; // white background for logo
 	private Texture credits;
+	private Texture story1;
+	private Texture story2;
+	private Texture story3;
+	private Texture story4;
 	private Texture loadingText;
 	private Texture studioLogo; // Studio logo
 	private FilmStrip logoAnimation;
@@ -88,6 +96,7 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	/** Scaling factor for when the student changes the resolution. */
 	private float scale;
 
+	private int ticks;
 	/** Current progress (0 to 1) of the asset manager */
 	private float progress;
 	/** The current state of the play button */
@@ -117,9 +126,14 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	private boolean panningToLevelSelect2;
 	private boolean panningToCredits;
 	private boolean panningToMainMenu;
+	private boolean panningToStoryFromMenu;
+	private boolean panningToStoryFromLevelSelect;
+	private boolean panningToStory2;
 	private boolean onLevelSelectScreen;
 	private boolean onLevelSelectScreen2;
 	private boolean onCreditsScreen;
+	private boolean onStoryScreen;
+	private boolean onStoryScreen2;
 	private boolean playedLogoAnimation;
 	private float cameraOffset;
 
@@ -252,6 +266,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 unfilled.dispose();
 		 studioLogo.dispose();
 		 click.dispose();
+		 story1.dispose();
+		 story2.dispose();
+		 story3.dispose();
+		 story4.dispose();
 		 blackBackground = null;
 		 whiteBackground = null;
 		 credits = null;
@@ -268,6 +286,10 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 		 unfilled = null;
 		 click = null;
 		 displayFont = null;
+		 story1 = null;
+		 story2 = null;
+		 story3 = null;
+		 story4 = null;
 		 if (playButton != null) {
 			 playButton.dispose();
 			 playButton = null;
@@ -289,6 +311,26 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	 */
 	private void update(float delta) {
 		//System.out.println("menu curr state is " + currState);
+		if (onStoryScreen){
+			ticks++;
+			if (ticks == 600){
+				ticks = 0;
+				onStoryScreen = false;
+				panningToStory2 = true;
+			}
+		}
+
+		if (onStoryScreen2){
+			ticks++;
+			if (ticks == 600){
+				ticks = 0;
+				onStoryScreen2 = false;
+				levelNum = 1;
+				currState = 2;
+				listener.exitScreen(this, 0);
+
+			}
+		}
 	    if (panningToLevelSelectFromMainMenu){
             canvas.getCamera().position.x += 20;
             if (canvas.getCamera().position.x >= 1920){
@@ -298,6 +340,26 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
             }
             canvas.getCamera().update();
         }
+        else if (panningToStoryFromLevelSelect || panningToStoryFromMenu){
+			canvas.getCamera().position.x -= 20;
+			if (canvas.getCamera().position.x <= -640){
+				canvas.getCamera().position.x = -640;
+				onStoryScreen = true;
+				panningToStoryFromLevelSelect = false;
+				panningToStoryFromMenu = false;
+			}
+			canvas.getCamera().update();
+		}
+
+		else if (panningToStory2){
+			canvas.getCamera().position.y -= 10;
+			if (canvas.getCamera().position.y <= -360){
+				canvas.getCamera().position.y = -360;
+				onStoryScreen2 = true;
+				panningToStory2 = false;
+			}
+			canvas.getCamera().update();
+		}
         else if (panningToCredits){
 			canvas.getCamera().position.x += 20;
 			if (canvas.getCamera().position.x >= 1920){
@@ -391,6 +453,12 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                     else {
 						displayFont = null;
 					}
+
+					// Load the story panels
+					story1 = new Texture(STORY_1_FILE);
+                    story2 = new Texture(STORY_2_FILE);
+                    story3 = new Texture(STORY_3_FILE);
+                    story4 = new Texture(STORY_4_FILE);
 				}
 
 		}
@@ -456,11 +524,28 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 				canvas.draw(creditsButton, creditsTint, creditsButton.getWidth()/2, creditsButton.getHeight()/2,
 						centerX, centerY - 50, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale );
 
+				if (onStoryScreen||onStoryScreen2||panningToStoryFromLevelSelect||panningToStoryFromMenu||panningToStory2){
+					canvas.draw(whiteBackground, -1280,0);
+
+					canvas.draw(story1, Color.WHITE, story1.getWidth()/2, story1.getHeight()/2, -920, 360,
+							0, 0.35f,0.35f);
+					canvas.draw(story2, Color.WHITE, story2.getWidth()/2, story2.getHeight()/2, -360, 360,
+							0, 0.35f,0.35f);
+
+					canvas.draw(whiteBackground, -1280,-720);
+
+					canvas.draw(story3, Color.WHITE, story3.getWidth()/2, story3.getHeight()/2, -920, -360,
+							0, 0.35f,0.35f);
+					canvas.draw(story4, Color.WHITE, story4.getWidth()/2, story4.getHeight()/2, -360, -360,
+							0, 0.35f,0.35f);
+				}
+
+
 				if (onCreditsScreen || panningToCredits){
 					canvas.draw(credits,1280,0);
 					if (!panningToMainMenu && !panningToCredits){
 						canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2,levelButton.getHeight()/2,
-								1400, 720, 0,0.50f,0.50f );
+								1400, 720, 0,0.25f,0.50f );
 						canvas.drawText("MENU",displayFont,1360f,708f);
 					}
 
@@ -659,9 +744,16 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	        if (x > (levelButtonPositions[i].x - offset - size/2.5f) && x < (levelButtonPositions[i].x - offset + size/2.5f) &&
                     y > (levelButtonPositions[i].y - size/4.5f) && y < (levelButtonPositions[i].y + size/4.5f)){
 	            //System.out.println("level " + (i+1) + "pressed");
-	            levelNum = i + 1;
-	            levelPressState = 1;
-	            playClick();
+				if (i == 0){
+					levelPressState = 1;
+					playClick();
+					panningToStoryFromLevelSelect = true;
+				} else {
+					levelNum = i + 1;
+					levelPressState = 1;
+					playClick();
+				}
+
             }
 
         }
@@ -754,6 +846,9 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
                 if ((screenX > centerX - playButton.getWidth()/2) && (screenX < centerX + playButton.getWidth()/2) &&
                         (screenY > centerY + 100 - playButton.getHeight()/2) && (screenY < centerY + 100 + playButton.getHeight()/2)) {
                     playPressState = 1;
+                    if (!GDXRoot.shownStory){
+						panningToStoryFromMenu = true;
+					}
                     playClick();
                 }
                 if ((screenX > centerX - levelSelectButton.getWidth()/2) && (screenX < centerX + levelSelectButton.getWidth()/2) &&
@@ -836,12 +931,17 @@ public class MenuController implements Screen, InputProcessor, ControllerListene
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (playPressState == 1) {
 			playPressState = 2;
-			currState = 1;
+			if (GDXRoot.shownStory){
+				currState = 1;
+			}
+			GDXRoot.shownStory = true;
 			return false;
 		}
 		if (levelPressState == 1) {
 			levelPressState = 2;
-			currState = 2;
+			if (!panningToStoryFromLevelSelect){
+				currState = 2;
+			}
 			return false;
 		}
 		if (creditsPressState == 1) {
